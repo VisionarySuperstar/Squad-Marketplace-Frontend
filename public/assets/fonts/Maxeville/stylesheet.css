@@ -1,0 +1,130 @@
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-Tekst.eot');
+    src: local('Maxeville Tekst'), local('Maxeville-Tekst'),
+        url('Maxeville-Tekst.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-Tekst.woff2') format('woff2'),
+        url('Maxeville-Tekst.woff') format('woff'),
+        url('Maxeville-Tekst.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-TekstItalic.eot');
+    src: local('Maxeville Tekst Italic'), local('Maxeville-TekstItalic'),
+        url('Maxeville-TekstItalic.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-TekstItalic.woff2') format('woff2'),
+        url('Maxeville-TekstItalic.woff') format('woff'),
+        url('Maxeville-TekstItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-RegularItalic.eot');
+    src: local('Maxeville Regular Italic'), local('Maxeville-RegularItalic'),
+        url('Maxeville-RegularItalic.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-RegularItalic.woff2') format('woff2'),
+        url('Maxeville-RegularItalic.woff') format('woff'),
+        url('Maxeville-RegularItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-Bold.eot');
+    src: local('Maxeville Bold'), local('Maxeville-Bold'),
+        url('Maxeville-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-Bold.woff2') format('woff2'),
+        url('Maxeville-Bold.woff') format('woff'),
+        url('Maxeville-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-BoldConstructItalic.eot');
+    src: local('Maxeville Bold Construct Italic'), local('Maxeville-BoldConstructItalic'),
+        url('Maxeville-BoldConstructItalic.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-BoldConstructItalic.woff2') format('woff2'),
+        url('Maxeville-BoldConstructItalic.woff') format('woff'),
+        url('Maxeville-BoldConstructItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-BoldItalic.eot');
+    src: local('Maxeville Bold Italic'), local('Maxeville-BoldItalic'),
+        url('Maxeville-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-BoldItalic.woff2') format('woff2'),
+        url('Maxeville-BoldItalic.woff') format('woff'),
+        url('Maxeville-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-BoldConstruct.eot');
+    src: local('Maxeville Bold Construct'), local('Maxeville-BoldConstruct'),
+        url('Maxeville-BoldConstruct.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-BoldConstruct.woff2') format('woff2'),
+        url('Maxeville-BoldConstruct.woff') format('woff'),
+        url('Maxeville-BoldConstruct.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-ConstructItalic.eot');
+    src: local('Maxeville Construct Italic'), local('Maxeville-ConstructItalic'),
+        url('Maxeville-ConstructItalic.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-ConstructItalic.woff2') format('woff2'),
+        url('Maxeville-ConstructItalic.woff') format('woff'),
+        url('Maxeville-ConstructItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-Construct.eot');
+    src: local('Maxeville Construct'), local('Maxeville-Construct'),
+        url('Maxeville-Construct.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-Construct.woff2') format('woff2'),
+        url('Maxeville-Construct.woff') format('woff'),
+        url('Maxeville-Construct.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Maxeville';
+    src: url('Maxeville-Regular.eot');
+    src: local('Maxeville Regular'), local('Maxeville-Regular'),
+        url('Maxeville-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Maxeville-Regular.woff2') format('woff2'),
+        url('Maxeville-Regular.woff') format('woff'),
+        url('Maxeville-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "NFT1",
+    "avatar": "/assets/photo/nfts/nft1.jpg"
+  },
+  {
+    "name": "NFT2",
+    "avatar": "/assets/photo/nfts/nft2.png"
+  },
+  {
+    "name": "NFT3",
+    "avatar": "/assets/photo/nfts/nft3.jpeg"
+  },
+  {
+    "name": "NFT4",
+    "avatar": "/assets/photo/nfts/nft4.jpeg"
+  },
+  {
+    "name": "NFT5",
+    "avatar": "/assets/photo/nfts/nft5.jpg"
+  }
+]

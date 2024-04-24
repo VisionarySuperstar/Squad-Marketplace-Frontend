@@ -1,0 +1,60 @@
+[
+  {
+    "name": "My_Group1",
+    "avatar": "/assets/photo/groups/group1.jpg",
+    "members": [
+      {
+        "name": "John1",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group2",
+    "avatar": "/assets/photo/groups/group2.jpg",
+    "members": [
+      {
+        "name": "John",
+        "avatar": "/assets/photo/users/user1.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group3",
+    "avatar": "/assets/photo/groups/group3.jpg",
+    "members": [
+      {
+        "name": "John",
+        "avatar": "/assets/photo/users/user1.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group4",
+    "avatar": "/assets/photo/groups/group4.jpg",
+    "members": [
+      {
+        "name": "John",
+        "avatar": "/assets/photo/users/user1.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group5",
+    "avatar": "/assets/photo/groups/group5.jpg",
+    "members": [
+      {
+        "name": "John",
+        "avatar": "/assets/photo/users/user1.jpg"
+      }
+    ]
+  }
+]
