@@ -1,0 +1,112 @@
+[
+    {
+      "name": "My_Collection1",
+      "members": [
+        {
+          "name": "John1",
+          "avatar": "/assets/photo/nfts/nft1.jpg"
+        },
+        {
+          "name": "John2",
+          "avatar": "/assets/photo/nfts/nft2.jpg"
+        },
+        {
+          "name": "John3",
+          "avatar": "/assets/photo/nfts/nft3.jpg"
+        },
+        {
+            "name": "John4",
+            "avatar": "/assets/photo/nfts/nft4.jpg"
+          }
+        
+      ]
+    },
+    {
+      "name": "My_Collection2",
+      "members": [
+        {
+          "name": "John1",
+          "avatar": "/assets/photo/nfts/nft1.jpg"
+        },
+        {
+          "name": "John2",
+          "avatar": "/assets/photo/nfts/nft2.jpg"
+        },
+        {
+          "name": "John3",
+          "avatar": "/assets/photo/nfts/nft3.jpg"
+        },
+        {
+            "name": "John4",
+            "avatar": "/assets/photo/nfts/nft4.jpg"
+          }
+        
+      ]
+    },
+    {
+      "name": "My_Collection3",
+      "members": [
+        {
+          "name": "John1",
+          "avatar": "/assets/photo/nfts/nft1.jpg"
+        },
+        {
+          "name": "John2",
+          "avatar": "/assets/photo/nfts/nft2.jpg"
+        },
+        {
+          "name": "John3",
+          "avatar": "/assets/photo/nfts/nft3.jpg"
+        },
+        {
+            "name": "John4",
+            "avatar": "/assets/photo/nfts/nft4.jpg"
+          }
+        
+      ]
+    },
+    {
+      "name": "My_Collection4",
+      "members": [
+        {
+          "name": "John1",
+          "avatar": "/assets/photo/nfts/nft1.jpg"
+        },
+        {
+          "name": "John2",
+          "avatar": "/assets/photo/nfts/nft2.jpg"
+        },
+        {
+          "name": "John3",
+          "avatar": "/assets/photo/nfts/nft3.jpg"
+        },
+        {
+            "name": "John4",
+            "avatar": "/assets/photo/nfts/nft4.jpg"
+          }
+        
+      ]
+    },
+    {
+      "name": "My_Collection5",
+      "members": [
+        {
+          "name": "John1",
+          "avatar": "/assets/photo/nfts/nft1.jpg"
+        },
+        {
+          "name": "John2",
+          "avatar": "/assets/photo/nfts/nft2.jpg"
+        },
+        {
+          "name": "John3",
+          "avatar": "/assets/photo/nfts/nft3.jpg"
+        },
+        {
+            "name": "John4",
+            "avatar": "/assets/photo/nfts/nft4.jpg"
+          }
+        
+      ]
+    }
+  ]

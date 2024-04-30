@@ -2,58 +2,630 @@
   {
     "name": "My_Group1",
     "avatar": "/assets/photo/groups/group1.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "members": [
       {
-        "name": "John1",
+        "name": "John",
+        "id": "190635",
         "avatar": "/assets/photo/users/user1.jpg"
       },
       {
         "name": "John2",
+        "id": "123456",
         "avatar": "/assets/photo/users/user2.jpg"
       },
       {
         "name": "John3",
+        "id": "123456",
         "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user4.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user5.png"
       }
     ]
   },
   {
     "name": "My_Group2",
     "avatar": "/assets/photo/groups/group2.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "members": [
       {
-        "name": "John",
+        "name": "John1",
+        "id": "190635",
         "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
       }
     ]
   },
   {
     "name": "My_Group3",
     "avatar": "/assets/photo/groups/group3.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "members": [
       {
-        "name": "John",
+        "name": "John1",
+        "id": "190635",
         "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
       }
     ]
   },
   {
     "name": "My_Group4",
     "avatar": "/assets/photo/groups/group4.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "members": [
       {
-        "name": "John",
+        "name": "John1",
+        "id": "190635",
         "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
       }
     ]
   },
   {
     "name": "My_Group5",
     "avatar": "/assets/photo/groups/group5.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "members": [
       {
-        "name": "John",
+        "name": "John1",
+        "id": "190635",
         "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group6",
+    "avatar": "/assets/photo/groups/group6.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group7",
+    "avatar": "/assets/photo/groups/group7.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group8",
+    "avatar": "/assets/photo/groups/group8.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group9",
+    "avatar": "/assets/photo/groups/group9.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group10",
+    "avatar": "/assets/photo/groups/group3.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group11",
+    "avatar": "/assets/photo/groups/group4.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group12",
+    "avatar": "/assets/photo/groups/group5.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group13",
+    "avatar": "/assets/photo/groups/group6.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group14",
+    "avatar": "/assets/photo/groups/group4.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group15",
+    "avatar": "/assets/photo/groups/group7.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group16",
+    "avatar": "/assets/photo/groups/group1.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group17",
+    "avatar": "/assets/photo/groups/group7.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group18",
+    "avatar": "/assets/photo/groups/group3.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group19",
+    "avatar": "/assets/photo/groups/group4.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      }
+    ]
+  },
+  {
+    "name": "My_Group20",
+    "avatar": "/assets/photo/groups/group5.jpg",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "members": [
+      {
+        "name": "John1",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user1.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
+      },
+      {
+        "name": "John2",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user2.jpg"
+      },
+      {
+        "name": "John3",
+        "id": "123456",
+        "avatar": "/assets/photo/users/user3.jpg"
       }
     ]
   }

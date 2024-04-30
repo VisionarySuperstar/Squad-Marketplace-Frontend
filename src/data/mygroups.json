@@ -15,6 +15,20 @@
         "name": "John3",
         "avatar": "/assets/photo/users/user3.jpg"
       }
+    ],
+    "upload": [
+      {
+        "name": "John1",
+        "avatar": "/assets/photo/nfts/nft1.jpg"
+      },
+      {
+        "name": "John2",
+        "avatar": "/assets/photo/nfts/nft2.jpg"
+      },
+      {
+        "name": "John3",
+        "avatar": "/assets/photo/nfts/nft3.jpg"
+      }
     ]
   },
   {
@@ -24,6 +38,20 @@
       {
         "name": "John",
         "avatar": "/assets/photo/users/user1.jpg"
+      }
+    ],
+    "upload": [
+      {
+        "name": "John1",
+        "avatar": "/assets/photo/nfts/nft1.jpg"
+      },
+      {
+        "name": "John2",
+        "avatar": "/assets/photo/nfts/nft2.jpg"
+      },
+      {
+        "name": "John3",
+        "avatar": "/assets/photo/nfts/nft3.jpg"
       }
     ]
   },
@@ -35,6 +63,20 @@
         "name": "John",
         "avatar": "/assets/photo/users/user1.jpg"
       }
+    ],
+    "upload": [
+      {
+        "name": "John1",
+        "avatar": "/assets/photo/nfts/nft1.jpg"
+      },
+      {
+        "name": "John2",
+        "avatar": "/assets/photo/nfts/nft2.jpg"
+      },
+      {
+        "name": "John3",
+        "avatar": "/assets/photo/nfts/nft3.jpg"
+      }
     ]
   },
   {
@@ -45,6 +87,20 @@
         "name": "John",
         "avatar": "/assets/photo/users/user1.jpg"
       }
+    ],
+    "upload": [
+      {
+        "name": "John1",
+        "avatar": "/assets/photo/nfts/nft1.jpg"
+      },
+      {
+        "name": "John2",
+        "avatar": "/assets/photo/nfts/nft2.jpg"
+      },
+      {
+        "name": "John3",
+        "avatar": "/assets/photo/nfts/nft3.jpg"
+      }
     ]
   },
   {
@@ -54,6 +110,20 @@
       {
         "name": "John",
         "avatar": "/assets/photo/users/user1.jpg"
+      }
+    ],
+    "upload": [
+      {
+        "name": "John1",
+        "avatar": "/assets/photo/nfts/nft1.jpg"
+      },
+      {
+        "name": "John2",
+        "avatar": "/assets/photo/nfts/nft2.jpg"
+      },
+      {
+        "name": "John3",
+        "avatar": "/assets/photo/nfts/nft3.jpg"
       }
     ]
   }

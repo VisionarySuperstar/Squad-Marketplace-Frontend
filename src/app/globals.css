@@ -406,7 +406,6 @@ body {
 .grouppage_container {
   padding-left: min(40px, max(18px, calc(var(--perX) * 40)));
   padding-right: min(40px, max(18px, calc(var(--perX) * 40)));
-  font-family: "Maxeville";
 }
 
 .userlist_avatar {
@@ -419,10 +418,6 @@ body {
   display: flex;
 }
 .group_avatar {
-  min-width: 460px;
-  width: 100%;
-}
-.group_info {
   min-width: 460px;
   width: 100%;
 }
@@ -591,5 +586,29 @@ body {
 }
 
 .content-card:hover .content-card-menu {
+  opacity: 1;
   display: flex !important;
+}
+
+.group-card:hover .group-card-info {
+  opacity: 1;
+  display: block !important;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 2px;
+  /* Width of the scrollbar */
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Track color */
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px; /* Thumb color */
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

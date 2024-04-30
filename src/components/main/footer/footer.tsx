@@ -106,7 +106,7 @@ const Footer = () => {
                         fill="none"
                         stroke-linecap="round"
                         strokeLinejoin="round"
-                        stroke-width="2"
+                        strokeWidth="2"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >

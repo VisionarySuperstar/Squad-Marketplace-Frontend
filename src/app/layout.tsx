@@ -24,10 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AosProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </AosProvider>
+      <AosProvider>
+        <html lang="en">
+          <body className={inter.className}>{children}</body>
+        </html>
+      </AosProvider>
   );
 }

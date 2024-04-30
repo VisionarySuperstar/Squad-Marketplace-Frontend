@@ -12,44 +12,298 @@ interface GroupDescriptionProps {
 }
 
 const GroupDescription: React.FC<GroupDescriptionProps> = ({ users }) => {
-  const _renderAvatar = (items: User[], index: number, len: number) => {
-    if (index % 3 === 0 && index < len) {
+  const _renderAvatar = (items: any[]) => {
+    const number: number = items.length;
+    const len: number = Math.floor(number / 3);
+    if (number == 1) {
       return (
-        <div className="absolute left-[120%] top-[-117%] w-[70px] bg-gray-500 aspect-square rounded-full">
+        <div className="flex justify-center items-center w-[50px] h-[50px] ml-[50px]">
           <Image
             src={items[0].avatar}
-            className="w-full h-full rounded-full object-cover"
-            width={100}
-            height={100}
+            width={500}
+            height={500}
+            className="rounded-full w-full h-full aspect-square object-cover"
             alt="avatar"
           />
-          {_renderAvatar(items.slice(1, items.length), index + 1, len)}
         </div>
       );
-    } else if (index % 3 === 1 && index < len) {
+    }
+    if (number == 2) {
       return (
-        <div className="absolute left-[60%] top-[60%] w-[70px] bg-gray-500 aspect-square rounded-full">
-          <Image
-            src={items[0].avatar}
-            className="w-full h-full rounded-full object-cover"
-            width={100}
-            height={100}
-            alt="avatar"
-          />
-          {_renderAvatar(items.slice(1, items.length), index + 1, len)}
+        <div className="flex ">
+          <div className="h-[50px] w-[50px]">
+            <Image
+              src={items[0].avatar}
+              width={300}
+              height={300}
+              className="rounded-full aspect-square h-full w-full  object-cover"
+              alt="avatar"
+              sizes="100vw"
+            />
+          </div>
+          <div className="-ml-2 h-[50px] w-[50px]">
+            <Image
+              src={items[1].avatar}
+              width={300}
+              height={300}
+              className="rounded-full aspect-square h-full w-full  object-cover"
+              alt="avatar"
+              sizes="100vw"
+            />
+          </div>
         </div>
       );
-    } else if (index % 3 === 2 && index < len) {
+    }
+    if (number == 3) {
       return (
-        <div className="absolute left-[-60%] top-[60%] w-[70px] bg-gray-500 aspect-square rounded-full">
-          <Image
-            src={items[0].avatar}
-            className="w-full h-full rounded-full object-cover"
-            width={100}
-            height={100}
-            alt="avatar"
-          />
-          {_renderAvatar(items.slice(1, items.length), index + 1, len)}
+        <div>
+          <div className="">
+            <div className="h-[50px] w-[50px] ml-[25px]">
+              <Image
+                src={items[2].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+          </div>
+          <div className="flex -mt-2">
+            <div className="h-[50px] w-[50px]">
+              <Image
+                src={items[0].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full  object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+            <div className="h-[50px] w-[50px]">
+              <Image
+                src={items[1].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (number == 4) {
+      return (
+        <div>
+          <div className="">
+            <div className="h-[50px] w-[50px] ml-[25px]">
+              <Image
+                src={items[2].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+          </div>
+          <div className="flex -mt-3">
+            <div className="h-[50px] w-[50px]">
+              <Image
+                src={items[0].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full  object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+            <div className="h-[50px] w-[50px]">
+              <Image
+                src={items[1].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+          </div>
+          <div className="-mt-3">
+            <div className="h-[50px] w-[50px] ml-[25px] ">
+              <Image
+                src={items[3].avatar}
+                width={300}
+                height={300}
+                className="rounded-full aspect-square h-full w-full object-cover"
+                alt="avatar"
+                sizes="100vw"
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (number % 3 == 2) {
+      return (
+        <div>
+          <div className="flex">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
+                <Image
+                  src={items[i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex -mt-3">
+            {Array.from({ length: len }, (_, i) => (
+              <div
+                key={i}
+                className={`h-[50px] w-[50px] ${
+                  !i ? "ml-[40px]" : "ml-[10px]"
+                }`}
+              >
+                <Image
+                  src={items[len + i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex -mt-3">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
+                <Image
+                  src={items[2 * len + i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    if (number % 3 == 0) {
+      // Handle case when number is divisible by 3
+      return (
+        <div>
+          <div className="flex ml-[30px]">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
+                <Image
+                  src={items[i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex -mt-3">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div
+                key={i}
+                className={`h-[50px] w-[50px] ${
+                  !i ? "ml-[10px]" : "ml-[10px]"
+                }`}
+              >
+                <Image
+                  src={items[len + i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex -mt-3 ml-[30px]">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
+                <Image
+                  src={items[2 * len + i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    if (number % 3 == 1) {
+      // Handle case when number modulo 3 is 1
+      return (
+        <div>
+          <div className="flex ml-[30px]">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
+                <Image
+                  src={items[i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex -mt-3">
+            {Array.from({ length: len + 2 }, (_, i) => (
+              <div
+                key={i}
+                className={`h-[50px] w-[50px] ${
+                  !i ? "ml-[10px]" : "ml-[10px]"
+                }`}
+              >
+                <Image
+                  src={items[len + i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex -mt-3 ml-[30px]">
+            {Array.from({ length: len + 1 }, (_, i) => (
+              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
+                <Image
+                  src={items[2 * len + i].avatar}
+                  width={300}
+                  height={300}
+                  className="rounded-full aspect-square h-full w-full object-cover"
+                  alt="avatar"
+                  sizes="100vw"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       );
     }
@@ -63,17 +317,11 @@ const GroupDescription: React.FC<GroupDescriptionProps> = ({ users }) => {
             <TrendingIcon />
           </div>
         </div>
-        <div className="mt-5">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </div>
         <div className="mt-5 text-gray-400">
           <div>MEMBERS ({users.length})</div>
-          <div className="relative w-0 mt-5">
-            {_renderAvatar(users, 0, users.length)}
-          </div>
+          <div className="my-[15px]">{_renderAvatar(users)}</div>
         </div>
-        <div className="flex mt-[170px]">
+        <div className="flex">
           <div className="mt-5 me-5">
             <div className="text-gray-400">TOTAL MINTED</div>
             <div>32</div>

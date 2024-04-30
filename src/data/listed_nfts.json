@@ -1,0 +1,95 @@
+[
+  {
+    "id": "1973700",
+    "name": "NFT7",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group2",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "live"
+  },
+  {
+    "id": "1973701",
+    "name": "NFT8",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 1,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      "1",
+      "12",
+      "34",
+      "45"
+    ],
+    "reducingRate": 50,
+    "status": "live"
+  },
+  {
+    "id": "1973702",
+    "name": "NFT9",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 2,
+    "groupName": "group3",
+    "initialPrice": 3500,
+    "status": "live"
+  },
+  {
+    "id": "1973703",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "live"
+  },
+  {
+    "id": "1973704",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "live"
+  },
+  {
+    "id": "1973705",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "live"
+  }
+]

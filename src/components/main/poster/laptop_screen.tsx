@@ -28,7 +28,7 @@ const Laptop = () => {
           id="canvas"
           className="w-full 1200:col-span-12 1200:col-start-2 aspect-video relative bg-black rounded-[0px] 1000:rounded-[40px] overflow-hidden"
         >
-          <video autoPlay muted loop playsInline width="100%">
+          <video autoPlay muted loop playsInline width="100%" preload="auto">
             <source src="./1.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
