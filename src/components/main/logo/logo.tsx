@@ -1,7 +1,7 @@
 const Logo = () => {
   return (
     <>
-      <div className="Logo">
+      <div className="LaptopLogo">
         <svg
           className="logo_svg"
           viewBox="0 0 628 628"

@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Sort from "@/components/groups/groupSearch/sort";
-import NavBar from "@/components/main/navbar";
-import Laptop from "@/components/main/poster/laptop_screen";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
 import Recruiting from "@/components/groups/groupSearch/recruiting";
 import Image from "next/image";
+import useLoadingControlStore from "@/store/UI_control/loading";
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import { useRouter } from "next/navigation";
@@ -14,14 +13,21 @@ import NFTs from "@/data/nfts.json";
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(60);
+
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>(0);
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
 
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+    setLoadingState(false);
+  }, [setLoadingState]);
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
-
     // Set initial screen width
     setScreenWidth(window.innerWidth);
     // Add event listener for window resize
@@ -39,14 +45,6 @@ export default function Home() {
   const router = useRouter();
   return (
     <>
-      <Image
-        src={"/assets/background_1.jpg"}
-        alt="back"
-        width={2900}
-        height={1750}
-        className="w-full"
-      />
-      <NavBar isBackbtn={false} url="marketplace" />
       <div className="mt-[100px] font-Maxeville">
         <div className="grouppage_container p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
           <div className="flex justify-between w-[60%] mt-2">
@@ -84,13 +82,16 @@ export default function Home() {
                 <div
                   key={index}
                   className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                  onClick={() => router.push(`/details/public/${item.id}`)}
+                  onClick={() => {
+                    console.log("clicked");
+                    router.push(`/details/public/${item.id}`);
+                  }}
                 >
                   <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
                     <div>
-                      <div className="absolute left-4 top-4">COLLECTION ID</div>
-                      <div className="absolute left-4 bottom-4">3000 USDC</div>
-                      <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2">
+                      <div className="absolute left-4 top-3">COLLECTION ID</div>
+                      <div className="absolute left-2 bottom-3">3000 USDC</div>
+                      <div className="absolute right-2 bottom-3 flex items-center gap-1">
                         <EyeIcon props="white" />
                         200
                         <HeartIcon props="white" />
@@ -126,7 +127,7 @@ export default function Home() {
                     <div>
                       <div className="absolute left-4 top-4">COLLECTION ID</div>
                       <div className="absolute left-4 bottom-4">3000 USDC</div>
-                      <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2">
+                      <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
                         <EyeIcon props="white" />
                         200
                         <HeartIcon props="white" />

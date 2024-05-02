@@ -1,34 +1,41 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
-import Navbar from "@/components/main/navbar";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
-import MintModal from "@/components/groups/modals/mintModal";
+import MintModal from "@/components/main/modals/groups/mintModal";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import EyeIcon from "@/components/svgs/eye_icon";
-import HeartIcon from "@/components/svgs/heart_icon";
 import { useRouter } from "next/navigation";
+import renderAvatar from "@/components/utils/renderAvatar";
+import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
 import Groups from "@/data/groups.json";
 import SoldNfts from "@/data/sold_nfts.json";
 import listedNfts from "@/data/listed_nfts.json";
 import MintedNfts from "@/data/minted_nfts.json";
+import NftCard from "@/components/main/cards/nftCard";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+    setLoadingState(false);
+  }, [setLoadingState]);
   const router = useRouter();
   const seletedGroup = Groups[Number(params.id)];
   const memebers_of_selectedGroup = seletedGroup.members;
-  console.log(memebers_of_selectedGroup);
   const mintModalState = useGroupUIControlStore((state) => state.mintModal);
   const setMintModalState = useGroupUIControlStore(
     (state) => state.updateMintModal
   );
   const [uploadId, setUploadId] = useState<number>(-1);
+
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -41,308 +48,12 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
       });
     }
   }
-  const _renderAvatar = (items: any[]) => {
-    const number: number = items.length;
-    const len: number = Math.floor(number / 3);
-    if (number == 1) {
-      return (
-        <div className="flex justify-center items-center w-[50px] h-[50px] ml-[50px]">
-          <Image
-            src={items[0].avatar}
-            width={500}
-            height={500}
-            className="rounded-full w-full h-full aspect-square object-cover"
-            alt="avatar"
-          />
-        </div>
-      );
-    }
-    if (number == 2) {
-      return (
-        <div className="flex ">
-          <div className="h-[50px] w-[50px]">
-            <Image
-              src={items[0].avatar}
-              width={300}
-              height={300}
-              className="rounded-full aspect-square h-full w-full  object-cover"
-              alt="avatar"
-              sizes="100vw"
-            />
-          </div>
-          <div className="-ml-2 h-[50px] w-[50px]">
-            <Image
-              src={items[1].avatar}
-              width={300}
-              height={300}
-              className="rounded-full aspect-square h-full w-full  object-cover"
-              alt="avatar"
-              sizes="100vw"
-            />
-          </div>
-        </div>
-      );
-    }
-    if (number == 3) {
-      return (
-        <div>
-          <div className="">
-            <div className="h-[50px] w-[50px] ml-[25px]">
-              <Image
-                src={items[2].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-          <div className="flex -mt-2">
-            <div className="h-[50px] w-[50px]">
-              <Image
-                src={items[0].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full  object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-            <div className="h-[50px] w-[50px]">
-              <Image
-                src={items[1].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-    if (number == 4) {
-      return (
-        <div>
-          <div className="">
-            <div className="h-[50px] w-[50px] ml-[25px]">
-              <Image
-                src={items[2].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-          <div className="flex -mt-3">
-            <div className="h-[50px] w-[50px]">
-              <Image
-                src={items[0].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full  object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-            <div className="h-[50px] w-[50px]">
-              <Image
-                src={items[1].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-          <div className="-mt-3">
-            <div className="h-[50px] w-[50px] ml-[25px] ">
-              <Image
-                src={items[3].avatar}
-                width={300}
-                height={300}
-                className="rounded-full aspect-square h-full w-full object-cover"
-                alt="avatar"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-    if (number % 3 == 2) {
-      return (
-        <div>
-          <div className="flex">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
-                <Image
-                  src={items[i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex -mt-3">
-            {Array.from({ length: len }, (_, i) => (
-              <div
-                key={i}
-                className={`h-[50px] w-[50px] ${
-                  !i ? "ml-[40px]" : "ml-[10px]"
-                }`}
-              >
-                <Image
-                  src={items[len + i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex -mt-3">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
-                <Image
-                  src={items[2 * len + i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    if (number % 3 == 0) {
-      // Handle case when number is divisible by 3
-      return (
-        <div>
-          <div className="flex ml-[30px]">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
-                <Image
-                  src={items[i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex -mt-3">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div
-                key={i}
-                className={`h-[50px] w-[50px] ${
-                  !i ? "ml-[10px]" : "ml-[10px]"
-                }`}
-              >
-                <Image
-                  src={items[len + i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex -mt-3 ml-[30px]">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
-                <Image
-                  src={items[2 * len + i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    if (number % 3 == 1) {
-      // Handle case when number modulo 3 is 1
-      return (
-        <div>
-          <div className="flex ml-[30px]">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
-                <Image
-                  src={items[i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex -mt-3">
-            {Array.from({ length: len + 2 }, (_, i) => (
-              <div
-                key={i}
-                className={`h-[50px] w-[50px] ${
-                  !i ? "ml-[10px]" : "ml-[10px]"
-                }`}
-              >
-                <Image
-                  src={items[len + i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex -mt-3 ml-[30px]">
-            {Array.from({ length: len + 1 }, (_, i) => (
-              <div key={i} className="h-[50px] w-[50px] ml-[10px]">
-                <Image
-                  src={items[2 * len + i].avatar}
-                  width={300}
-                  height={300}
-                  className="rounded-full aspect-square h-full w-full object-cover"
-                  alt="avatar"
-                  sizes="100vw"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-  };
+
   return (
     <>
       {mintModalState && (
         <MintModal uploadId={uploadId} groupId={parseInt(params.id)} />
       )}
-      <Navbar isBackbtn={true} url="groups" />
       <div className="pt-[100px] h-full">
         <div className="grouppage_container flex font-Maxeville" id="profile">
           <div>
@@ -433,26 +144,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 onClick={() => router.push(`/details/private/sold/${item.id}`)}
               >
-                <div className="absolute aspect-square top-0 content-card-menu opacity-0 transition-all rounded-lg text-white bg-chocolate-main/80 w-full">
-                  <div className="">
-                    <div className="absolute left-4 top-4">COLLECTION ID</div>
-                    <div className="absolute left-4 bottom-4">3000 USDC</div>
-                    <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 lg:flex xs:hidden">
-                      <EyeIcon props="white" />
-                      200
-                      <HeartIcon props="white" />
-                      20
-                    </div>
-                  </div>
-                </div>
-                <Image
-                  src={item.avatar}
-                  className="w-full h-full rounded-lg aspect-square object-cover"
-                  alt="market_nft"
-                  width={300}
-                  height={300}
-                />
-                <div className="mt-3">{item.name}</div>
+                <NftCard name={item.name} avatar={item.avatar} />
               </div>
             ))}
           </div>
@@ -468,27 +160,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 onClick={() => router.push(`/details/private/sold/${item.id}`)}
               >
-                <div className="absolute aspect-square top-0 content-card-menu opacity-0 transition-all rounded-lg text-white bg-chocolate-main/80 w-full">
-                  <div>
-                    <div className="absolute left-4 top-4">COLLECTION ID</div>
-                    <div className="absolute left-4 bottom-4">3000 USDC</div>
-                    <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
-                      <EyeIcon props="white" />
-                      200
-                      <HeartIcon props="white" />
-                      20
-                    </div>
-                  </div>
-                </div>
-                <Image
-                  src={item.avatar}
-                  className="w-full h-full aspect-square object-cover rounded-lg"
-                  alt="market_nft"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                />
-                <div className="mt-3">{item.name}</div>
+                <NftCard name={item.name} avatar={item.avatar} />
               </div>
             ))}
           </div>
@@ -504,27 +176,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 onClick={() => router.push(`/details/private/sold/${item.id}`)}
               >
-                <div className="absolute aspect-square top-0 content-card-menu opacity-0 transition-all rounded-lg text-white bg-chocolate-main/80 w-full">
-                  <div>
-                    <div className="absolute left-4 top-4">COLLECTION ID</div>
-                    <div className="absolute left-4 bottom-4">3000 USDC</div>
-                    <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
-                      <EyeIcon props="white" />
-                      200
-                      <HeartIcon props="white" />
-                      20
-                    </div>
-                  </div>
-                </div>
-                <Image
-                  src={item.avatar}
-                  className="w-full h-full aspect-square object-cover rounded-lg"
-                  alt="market_nft"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                />
-                <div className="mt-3">{item.name}</div>
+                <NftCard name={item.name} avatar={item.avatar} />
               </div>
             ))}
           </div>
@@ -539,7 +191,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div className="min-w-[50%] flex mt-[30px] gap-5">
                   <div>
                     <Image
-                      src="/rabbit.jpg"
+                      src="/temp.jpg"
                       className="aspect-square object-cover rounded-lg"
                       width={300}
                       height={300}
@@ -547,14 +199,14 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="mb-[15px]">John</div>
+                    <div className="mb-[5px]">John</div>
                     <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
-                      <div className="flex">
+                      <div className="flex me-[5px]">
                         <div className="text-gray-400">OFFERED</div>
                         <div className="ms-[5px]">1000 USDC</div>
                       </div>
                       <div className="flex">
-                        <div className="text-gray-400 ms-[5px]">FOR</div>
+                        <div className="text-gray-400">FOR</div>
                         <div className="ms-[5px]">TITLE</div>
                       </div>
                     </div>
@@ -562,7 +214,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                       CONFIRMED BY 3/6
                     </div>
                     <div className="my-[20px]">
-                      {_renderAvatar(memebers_of_selectedGroup)}
+                      {renderAvatar(memebers_of_selectedGroup)}
                     </div>
                     <div className="flex flex-col w-full">
                       <button className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px]">
@@ -592,7 +244,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div>
                   <div className="content-card relative ">
                     <Image
-                      src="/rabbit.jpg"
+                      src="/temp.jpg"
                       className="w-full h-full aspect-square object-cover rounded-lg"
                       width={300}
                       height={300}

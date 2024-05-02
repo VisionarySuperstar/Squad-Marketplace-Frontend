@@ -1,22 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
-import Navbar from "@/components/main/navbar";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
-import AllGroup from "@/components/groups/AllGroups";
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import { useRouter } from "next/navigation";
+import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
 import MyGroups from "@/data/groups.json";
 import Nfts from "@/data/sold_nfts.json";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+    setLoadingState(false);
+  }, [setLoadingState]);
   const seletedGroup = MyGroups[Number(params.id)];
   const memebers_of_selectedGroup = seletedGroup.members;
   const router = useRouter();
@@ -35,7 +41,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
-      <Navbar isBackbtn={true} url="groups" />
       <div className="pt-[100px] h-full">
         <div className="grouppage_container flex font-Maxeville" id="profile">
           <div>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import MyGroups from "@/data/mygroups.json";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import newgroups from "@/data/newgroups.json";
-import AddMemberModal from "@/components/groups/modals/addMemberModal";
+import AddMemberModal from "@/components/main/modals/groups/addMemberModal";
 
 const NewGroupModal = () => {
   const setCreateGroupModalState = useGroupUIControlStore(

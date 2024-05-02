@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AosProvider from "@/providers/aosProvider";
+import Loading_screen from "@/components/main/loading_screen";
+import NavBar from "@/components/main/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <AosProvider>
-        <html lang="en">
-          <body className={inter.className}>{children}</body>
-        </html>
-      </AosProvider>
+    <AosProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <NavBar />
+          <Loading_screen />
+          {children}
+        </body>
+      </html>
+    </AosProvider>
   );
 }

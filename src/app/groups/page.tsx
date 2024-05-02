@@ -7,15 +7,26 @@ import ViewProgress from "@/components/groups/groupSearch/viewProgress";
 import Recruiting from "@/components/groups/groupSearch/recruiting";
 import AllGroup from "@/components/groups/AllGroups";
 import GeneralButton from "@/components/groups/share/generalButton";
-import NavBar from "@/components/main/navbar";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
+import useLoadingControlStore from "@/store/UI_control/loading";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
 
 export default function Home() {
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
+
+  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
+  setNavbarCurrent("groups");
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+    setLoadingState(false);
+  }, [setLoadingState]);
+
   const [scale, setScale] = React.useState<number>(60);
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
-
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
@@ -38,7 +49,6 @@ export default function Home() {
 
   return (
     <>
-      <NavBar isBackbtn={false} url="groups" />
       <div className="grouppage_container pt-[120px]">
         <Split_line />
         <div className="mb-[50px]">
@@ -63,7 +73,7 @@ export default function Home() {
             <input
               className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
               placeholder="SEARCH"
-            ></input>
+            />
             <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
               ENTER
             </button>

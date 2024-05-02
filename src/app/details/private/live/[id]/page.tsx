@@ -5,11 +5,10 @@ import Image from "next/image";
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
-import Collapse from "@/components/groups/modals/collapse";
+import Collapse from "@/components/main/collapse";
 import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
-import NavBar from "@/components/main/navbar";
 import Split_line from "@/components/main/split_line";
 
 import NFTs from "@/data/nfts.json";
@@ -32,7 +31,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     <>
       {bidModalState && <BidModal />}
       {withdrawModalState && <WithdrawModal />}
-      <NavBar isBackbtn={true} url="marketplace" />
       <div className="mt-[120px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 p-[40px] xl:pt-5">
           {data && (

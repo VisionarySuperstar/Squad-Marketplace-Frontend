@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Card from "@/components/groups/share/groupCard";
+import Card from "@/components/main/cards/groupCard";
 import groups from "@/data/groups.json";
 
 interface IProps {

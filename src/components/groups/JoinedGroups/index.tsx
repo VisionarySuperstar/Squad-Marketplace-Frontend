@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "@/components/groups/share/groupCard";
+import Card from "@/components/main/cards/groupCard";
 
 //import states
 import useUserStore from "@/store/user_infor/userinfor";

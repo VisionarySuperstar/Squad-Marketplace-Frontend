@@ -17,6 +17,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  overflow: hidden;
 }
 
 @layer utilities {
@@ -41,6 +42,12 @@ body {
 }
 
 .Logo {
+  position: absolute;
+  top: calc(var(--perX) * 132);
+  mix-blend-mode: difference;
+}
+
+.LaptopLogo {
   position: absolute;
   top: calc(var(--perX) * 132);
   mix-blend-mode: difference;

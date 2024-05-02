@@ -1,21 +1,36 @@
+"use client";
+
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import useNotificationUIControlStore from "@/store/UI_control/notification";
+import useUserStore from "@/store/user_infor/userinfor";
 
-interface Props {
-  isBackbtn: boolean;
-  url: string;
-}
+import Notification from "./News&message/notifications";
 
-const NavBar: React.FC<Props> = ({ isBackbtn, url }) => {
-  const [current, setCurrent] = useState<string>(url);
+const NavBar = () => {
+  const isBackbtn = useNavbarUIControlStore((state) => state.isbackbtn);
   const [screenWidth, setScreenWidth] = useState<number>(0);
-  const [isMobile, setMobile] = useState<boolean>(true);
+  const current = useNavbarUIControlStore((state) => state.url);
+  const isShow = useNavbarUIControlStore((state) => state.isshow);
+  const isLogin = useUserStore((store) => store.isLogin);
+
+  const notificationModal = useNotificationUIControlStore(
+    (state) => state.notificationModal
+  );
+  const setIsShow = useNavbarUIControlStore((state) => state.updateIsShow);
+  const setNotificationState = useNotificationUIControlStore(
+    (state) => state.updateNotificationModal
+  );
+  //zustand Actions
   const setCreateGroupModalState = useGroupUIControlStore(
     (state) => state.updateCreateGroupModal
   );
+  const setCurrent = useNavbarUIControlStore((state) => state.updateUrl);
+
   const router = useRouter();
   const goBack = () => {
     router.back();
@@ -25,80 +40,195 @@ const NavBar: React.FC<Props> = ({ isBackbtn, url }) => {
       setScreenWidth(window.innerWidth);
     };
 
-    // Set initial screen width
     setScreenWidth(window.innerWidth);
-    // Add event listener for window resize
+
     window.addEventListener("resize", handleResize);
 
-    // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  useEffect(() => {
-    setMobile(screenWidth > 1000);
-  }, [screenWidth]);
-
   return (
     <>
-      <div className="flex justify-center w-full fixed bg-white top-[0px] h-[100px] border-b items-center p-3 z-10 drop-shadow-sm">
-        <svg
-          width="341"
-          height="31"
-          viewBox="0 0 341 31"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0.552307 15.5C0.552307 7.21573 7.26804 0.5 15.5523 0.5H104.552V30.5H15.5523C7.26804 30.5 0.552307 23.7843 0.552307 15.5Z"
-            fill="#322A44"
-          />
-          <path
-            d="M27.8243 15.084C29.6603 15.462 31.8563 16.236 31.8563 18.828C31.8563 19.998 31.2083 21.042 30.1463 21.744C29.2283 22.338 28.0043 22.68 26.7443 22.68C23.6123 22.68 21.3983 20.844 21.2723 18.09L23.4683 18.036C23.5583 19.998 25.2323 20.862 26.7443 20.862C27.4283 20.862 29.6063 20.556 29.6063 18.846C29.6063 18.018 28.9943 17.55 27.3743 17.136L25.5203 16.686C23.6663 16.218 21.7763 15.408 21.7763 12.96C21.7763 11.232 23.2163 9.36 26.4203 9.36C29.4803 9.36 31.3883 10.998 31.3883 13.644H29.1923C29.1923 11.754 27.6803 11.178 26.4203 11.178C24.1883 11.178 23.9543 12.474 23.9543 12.96C23.9543 13.5 24.1703 14.184 25.7903 14.598L27.8243 15.084ZM39.1182 9.36C42.2142 9.36 45.3282 11.448 45.3282 16.11C45.3282 19.548 43.1862 22.14 40.1262 22.608V24.48H42.1782V26.406H38.1282V22.608C35.0682 22.158 32.9442 19.566 32.9442 16.11C32.9442 11.574 35.9322 9.36 39.1182 9.36ZM39.1182 20.862C41.5482 20.862 43.1142 18.864 43.1142 16.02C43.1142 13.14 41.5842 11.178 39.1182 11.178C36.6702 11.178 35.1582 13.14 35.1582 16.02C35.1582 18.864 36.7062 20.862 39.1182 20.862ZM55.1126 17.874V9.54H57.2006V17.874C57.2006 20.844 55.2386 22.68 52.0706 22.68C48.9026 22.68 46.9406 20.844 46.9406 17.874V9.54H49.0286V17.874C49.0286 19.584 50.2346 20.862 52.0706 20.862C53.9066 20.862 55.1126 19.584 55.1126 17.874ZM63.0887 9.54H65.3027L70.2887 22.5H67.8587L66.6167 19.026H61.7747L60.5327 22.5H58.1027L63.0887 9.54ZM62.4587 17.082H65.9327L64.1867 12.222L62.4587 17.082ZM76.8733 9.54C79.8973 9.54 82.8673 11.754 82.8673 16.02C82.8673 20.124 79.5373 22.5 76.8733 22.5H71.7433V9.54H76.8733ZM76.4413 20.556C78.4753 20.556 80.6353 18.936 80.6353 16.038C80.6353 12.96 78.4573 11.484 76.4413 11.484H73.8313V20.556H76.4413Z"
-            fill="white"
-          />
-          <rect
-            width="143"
-            height="30"
-            transform="translate(104.552 0.5)"
-            fill="#322A44"
-          />
-          <path
-            d="M125.402 8.86C128.282 8.878 130.19 11.47 130.19 15.61C130.19 19.156 128.534 22.18 125.402 22.18C122.27 22.18 120.614 19.156 120.614 15.61C120.614 11.47 122.54 8.878 125.402 8.86ZM125.402 20.812C127.85 20.812 128.588 18.454 128.588 15.52C128.588 12.496 127.67 10.246 125.402 10.246C123.152 10.246 122.216 12.496 122.216 15.52C122.216 18.454 122.954 20.812 125.402 20.812ZM136.731 22V19.408H139.305V22H136.731ZM150.616 8.86C153.496 8.878 155.404 11.47 155.404 15.61C155.404 19.156 153.748 22.18 150.616 22.18C147.484 22.18 145.828 19.156 145.828 15.61C145.828 11.47 147.754 8.878 150.616 8.86ZM150.616 20.812C153.064 20.812 153.802 18.454 153.802 15.52C153.802 12.496 152.884 10.246 150.616 10.246C148.366 10.246 147.43 12.496 147.43 15.52C147.43 18.454 148.168 20.812 150.616 20.812ZM160.847 20.596H168.011V22H158.435V20.848L164.051 15.556C165.383 14.332 166.067 13.72 166.067 12.424C166.067 11.2 164.915 10.264 163.475 10.264C161.135 10.264 160.325 12.154 160.325 13.774H158.759C158.759 11.398 160.235 8.86 163.439 8.86C165.923 8.86 167.651 10.318 167.651 12.424C167.651 14.404 166.535 15.358 165.005 16.672C165.005 16.672 161.135 20.344 160.847 20.596ZM171.042 15.61C171.042 11.452 172.878 8.86 176.1 8.86C178.8 8.86 180.33 10.192 180.618 12.46H179.106C178.926 11.398 178.224 10.264 176.226 10.264C173.904 10.264 172.662 11.794 172.446 14.926C172.86 14.224 173.922 12.946 176.208 12.946C178.476 12.946 180.618 14.458 180.618 17.356C180.618 20.38 178.386 22.18 176.082 22.18C172.77 22.18 171.042 19.786 171.042 15.61ZM172.842 17.662C172.842 19.21 173.994 20.794 176.028 20.794C177.792 20.794 178.998 19.354 178.998 17.518C178.998 15.952 178.116 14.278 176.136 14.278C174.516 14.278 172.842 15.646 172.842 17.662ZM196.796 22V9.04H205.292V10.444H198.272V14.728H205.004V16.114H198.272V20.596H205.292V22H196.796ZM212.914 10.444H208.864V9.04H218.44V10.444H214.408V22H212.914V10.444ZM222.947 22H221.471V9.04H222.947V14.944H229.571V9.04H231.047V22H229.571V16.348H222.947V22Z"
-            fill="white"
-          />
-          <rect
-            width="60.8954"
-            height="30"
-            transform="translate(247.552 0.5)"
-            fill="#322A44"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M269.54 14.3436C269.54 12.1167 271.662 10.2668 274.352 10.2261H274.441C277.13 10.2668 279.252 12.1167 279.252 14.3436V21.0489H281.252V23.5725H275.99L276.1 23.79C276.198 23.9837 276.252 24.2 276.252 24.4283C276.252 25.2467 275.545 25.9254 274.652 25.9254C273.76 25.9254 273.052 25.2467 273.052 24.4283C273.052 24.2 273.107 23.9837 273.205 23.79L273.314 23.5725H267.552V21.0489H269.54V14.3436ZM274.398 12.6152L274.395 12.6152C273.623 12.6223 273.002 12.8073 272.573 13.1837C272.14 13.5632 271.924 14.1176 271.924 14.8142V21.0489H276.869V14.8142C276.869 14.1176 276.653 13.5632 276.22 13.1837C275.791 12.8073 275.17 12.6223 274.398 12.6152Z"
-            fill="white"
-          />
-          <circle cx="282.72" cy="10.8024" r="5.72725" fill="#FF0000" />
-          <path
-            d="M284.795 12.6896V13.2808H280.688V12.7957L283.128 10.5675C283.689 10.0521 283.977 9.79445 283.977 9.24876C283.977 8.73339 283.492 8.33929 282.886 8.33929C281.9 8.33929 281.552 9.13508 281.552 9.81718H280.892C280.892 8.81676 281.514 7.74813 282.87 7.74813C283.916 7.74813 284.644 8.36202 284.644 9.24876C284.644 10.0824 284.174 10.4841 283.53 11.0374C283.53 11.0374 281.825 12.5835 281.703 12.6896H284.795Z"
-            fill="white"
-          />
-          <path
-            d="M308.448 0.5H325.448C333.732 0.5 340.448 7.21573 340.448 15.5C340.448 23.7843 333.732 30.5 325.448 30.5H308.448V0.5Z"
-            fill="#322A44"
-          />
-          <rect
-            x="313.448"
-            y="4.5"
-            width="22"
-            height="22"
-            rx="11"
-            fill="#24FF00"
-          />
-        </svg>
-      </div>
+      {isShow && (
+        <div className="flex justify-between w-[100vw] fixed bg-white top-[0px] h-[100px] border-b items-center p-3 z-[1000] drop-shadow-sm">
+          <div className="xs:hidden">
+            <div className="min-w-[80px]">
+              {isBackbtn && (
+                <button
+                  className="border-2 border-black rounded-full px-5 h-[30px]"
+                  onClick={goBack}
+                >
+                  Back
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-center w-full z-[10000]">
+            <div className="font-Maxeville flex cursor-pointer justify-center">
+              <div
+                className={`bg-chocolate-main text-white font-bold text-[18px] h-[30px] flex items-center md:pe-[50px] md:ps-[50px] xs:px-[20px] rounded-l-full transition-all
+            ${current === "discover" ? "rounded-r-full" : ""}
+            ${current === "wallet" ? "xs:rounded-r-full md:rounded-r-none" : ""}
+            ${
+              current === "logo"
+                ? "rounded-r-full pe-[48px] ps-[50px] me-[2px]"
+                : "px-[50px]"
+            }`}
+                onClick={() => {
+                  setCurrent("logo");
+                  setIsShow(false);
+                  router.push("/");
+                }}
+              >
+                SQUAD
+              </div>
+              <div
+                className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block
+            ${
+              current === "discover"
+                ? "rounded-full px-[28px] mx-[2px]"
+                : "px-[30px]"
+            }
+            ${current === "marketplace" ? "rounded-r-full" : ""}
+            ${current === "logo" ? "rounded-l-full" : ""}`}
+                onClick={() => {
+                  setCurrent("discover");
+                }}
+              >
+                Discover
+              </div>
+              <div
+                className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block
+            ${current === "discover" ? "rounded-l-full" : ""}
+            ${current === "groups" ? "rounded-r-full" : ""}
+            ${
+              current === "marketplace"
+                ? "rounded-full px-[28px] mx-[2px]"
+                : "px-[30px]"
+            }
+            `}
+                onClick={() => {
+                  setCurrent("marketplace");
+                  router.push("/marketplace");
+                }}
+              >
+                Marketplace
+              </div>
+              <div
+                className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block
+            ${current === "marketplace" ? "rounded-l-full" : ""}
+            ${current === "wallet" ? "rounded-r-full" : ""}
+            ${
+              current === "groups"
+                ? "rounded-full px-[28px] mx-[2px]"
+                : "px-[30px]"
+            }
+            `}
+                onClick={() => {
+                  setCurrent("groups");
+                  router.push("/groups");
+                }}
+              >
+                Groups
+              </div>
+              <div
+                className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] md:px-[30px]
+            ${current === "logo" ? "md:rounded-none xs:rounded-l-full" : ""}
+            ${current === "alert" ? "rounded-r-full px-[30px]" : ""}
+            ${current === "groups" ? "md:rounded-l-full xs:rounded-none" : ""}
+            ${
+              current === "wallet"
+                ? "rounded-full px-[28px] mx-[2px]"
+                : "px-[30px]"
+            }
+            `}
+                onClick={() => {
+                  setCurrent("wallet");
+                }}
+              >
+                0.0266 ETH
+              </div>
+              <div
+                className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[20px] md:px-[30px]
+            ${current === "user" ? "rounded-r-full" : ""}
+            ${current === "wallet" ? "rounded-l-full" : ""}
+            ${
+              current === "alert"
+                ? "rounded-full px-[28px] mx-[2px]"
+                : "px-[30px]"
+            }
+            `}
+                onClick={() => {
+                  setCurrent("alert");
+                  setNotificationState(!notificationModal);
+                }}
+              >
+                <svg
+                  width="21"
+                  height="22"
+                  viewBox="0 0 21 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M1.98813 9.84313C1.98813 7.61616 4.11003 5.76628 6.79968 5.72559H6.88845C9.5781 5.76628 11.7 7.61616 11.7 9.84313V16.5484H13.7V19.072H8.43786L8.54768 19.2896C8.64544 19.4832 8.7 19.6995 8.7 19.9278C8.7 20.7462 7.99235 21.4249 7.1 21.4249C6.20765 21.4249 5.5 20.7462 5.5 19.9278C5.5 19.6995 5.55456 19.4832 5.65232 19.2896L5.76214 19.072H0V16.5484H1.98813V9.84313ZM6.84546 8.11466L6.84267 8.11469C6.07047 8.12185 5.44959 8.30681 5.02021 8.68323C4.58733 9.06271 4.37128 9.61714 4.37128 10.3137V16.5484H9.31685V10.3137C9.31685 9.61714 9.10079 9.06271 8.66792 8.68323C8.23854 8.30681 7.61766 8.12185 6.84546 8.11466Z"
+                    fill="white"
+                  />
+                  <circle cx="15.1682" cy="6.3022" r="5.72725" fill="#FF0000" />
+                  <path
+                    d="M17.2431 8.1896V8.78076H13.1353V8.29571L15.5757 6.0675C16.1366 5.55213 16.4246 5.29445 16.4246 4.74876C16.4246 4.23339 15.9395 3.83929 15.3332 3.83929C14.3479 3.83929 13.9993 4.63508 13.9993 5.31718H13.3399C13.3399 4.31676 13.9614 3.24813 15.318 3.24813C16.3639 3.24813 17.0915 3.86202 17.0915 4.74876C17.0915 5.58245 16.6216 5.98413 15.9774 6.53739C15.9774 6.53739 14.2721 8.0835 14.1509 8.1896H17.2431Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <Notification />
+              <div
+                className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all xs:ps-[10px] md:ps-[25px]
+            ${current === "alert" ? "rounded-l-full ps-[23px]" : ""}
+            ${
+              current === "user"
+                ? "rounded-l-full ps-[23px] ms-[2px] pe-[5px]"
+                : "ps-[25px] pe-[5px]"
+            }`}
+                onClick={() => {
+                  router.push("/profile");
+                  setCurrent("user");
+                }}
+              >
+                <svg
+                  width="23"
+                  height="22"
+                  viewBox="0 0 23 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="0.895508"
+                    width="22"
+                    height="22"
+                    rx="11"
+                    fill="#24FF00"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="xs:hidden">
+            <div className="min-w-[150px]">
+              <button
+                className="border-2 border-black rounded-full px-5 h-[30px]"
+                onClick={() => setCreateGroupModalState(true)}
+              >
+                NEW GROUP
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
