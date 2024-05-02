@@ -17,11 +17,18 @@ const ViewProgress: React.FC<IProps> = ({ setScale, scale }) => {
         onChange={(e) => setScale(Number(e.target.value))}
         className="appearance-none bg-transparent w-full border border-chocolate-main rounded-full p-[2px]
         [&::-webkit-slider-runnable-track]:rounded-full
-         [&::-webkit-slider-runnable-track]:bg-white [&::-webkit-slider-thumb]:appearance-none 
+         [&::-webkit-slider-runnable-track]:bg-white 
+         [&::-webkit-slider-thumb]:appearance-none 
          [&::-webkit-slider-thumb]:h-[24px]
          [&::-webkit-slider-thumb]:w-[24px]
          [&::-webkit-slider-thumb]:rounded-full
-          [&::-webkit-slider-thumb]:bg-chocolate-main"
+       [&::-webkit-slider-thumb]:bg-chocolate-main
+       [&::-moz-range-track]:bg-white 
+         [&::-moz-range-thumb]:appearance-none 
+         [&::-moz-range-thumb]:h-[20px] 
+         [&::-moz-range-thumb]:w-[20px] 
+         [&::-moz-range-thumb]:rounded-full 
+       [&::-moz-range-thumb]:bg-chocolate-main"
       />
     </div>
   );

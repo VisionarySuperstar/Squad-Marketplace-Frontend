@@ -11,7 +11,7 @@ interface CardProps {
   avatar: string;
 }
 
-const Card: React.FC<CardProps> = ({
+const GroupCard: React.FC<CardProps> = ({
   state,
   name,
   groupId,
@@ -68,4 +68,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default Card;
+export default GroupCard;
