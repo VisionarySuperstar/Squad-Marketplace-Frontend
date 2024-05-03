@@ -17,16 +17,25 @@ export default function Home() {
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
   );
-  const setCreateGroupModalState = useGroupUIControlStore(
-    (state) => state.updateCreateGroupModal
-  );
+  function scrollToElement(elementId: string) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const elementTop = element.getBoundingClientRect().top;
+      const windowScrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      window.scrollTo({
+        top: elementTop - 180 + windowScrollTop,
+        behavior: "smooth",
+      });
+    }
+  }
   return (
     <>
       <div className="font-Maxeville">
         {createGroupModalState && <NewGroupModal />}
 
         <div className="grouppage_container mt-[130px] font-Maxeville p-5">
-          <div className="flex justify-between">
+          <div className="flex justify-between" id="profile">
             <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">
               <div className="h-[160px] w-[160px]">
                 <Image
@@ -84,7 +93,7 @@ export default function Home() {
                     <div className="flex items-baseline space-x-4">
                       <a
                         onClick={() => {
-                          // scrollToElement("profile");
+                          scrollToElement("profile");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 py-2 text-lg"
                       >
@@ -92,7 +101,7 @@ export default function Home() {
                       </a>
                       <a
                         onClick={() => {
-                          // scrollToElement("nfts");
+                          scrollToElement("active_bid");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
@@ -100,7 +109,7 @@ export default function Home() {
                       </a>
                       <a
                         onClick={() => {
-                          // scrollToElement("offers");
+                          scrollToElement("groups");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
@@ -108,7 +117,7 @@ export default function Home() {
                       </a>
                       <a
                         onClick={() => {
-                          // scrollToElement("create");
+                          scrollToElement("collected");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
@@ -116,7 +125,7 @@ export default function Home() {
                       </a>
                       <a
                         onClick={() => {
-                          // scrollToElement("withdraw");
+                          scrollToElement("liked");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
@@ -124,7 +133,7 @@ export default function Home() {
                       </a>
                       <a
                         onClick={() => {
-                          // scrollToElement("withdraw");
+                          scrollToElement("setting");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
@@ -138,7 +147,7 @@ export default function Home() {
           </nav>
         </div>
         <div className="grouppage_container">
-          <div className="mt-5">
+          <div className="mt-5" id="active_bid">
             <h1 className="text-[18px]">ACTIVE BIDS (5)</h1>
             <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
               {NFT_DATA.map((item, index) => (
@@ -152,7 +161,7 @@ export default function Home() {
             </div>
           </div>
           <Split_line />
-          <div className="mt-5">
+          <div className="mt-5" id="groups">
             <h1 className="text-[18px]">GROUPS (5)</h1>
             <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
               {GROUPS_DATA.map((item, index) => (
@@ -169,7 +178,7 @@ export default function Home() {
             </div>
           </div>
           <Split_line />
-          <div className="mt-5">
+          <div className="mt-5" id="collected">
             <div className="flex justify-between">
               <h1 className="text-[18px]">COLLECTED (28)</h1>
               <h1 className="text-[18px] underline">VIEW ALL +</h1>
@@ -197,7 +206,7 @@ export default function Home() {
             </div>
           </div>
           <Split_line />
-          <div className="mt-5">
+          <div className="mt-5" id="liked">
             <div className="flex gap-3">
               <img src="/favorite.svg"></img>
               <h1 className="text-[18px]">LIKED</h1>
@@ -214,7 +223,7 @@ export default function Home() {
             </div>
           </div>
           <Split_line />
-          <div className="mt-5 mb-5">
+          <div className="mt-5 mb-5" id="setting">
             <div className="">
               <h1 className="text-[18px]">SETTINGS</h1>
             </div>
