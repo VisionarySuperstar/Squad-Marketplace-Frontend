@@ -13,17 +13,18 @@ const Carousel_Component = () => {
     dots: false,
     infinite: true,
     speed: 500,
-    autoplaySpeed: 3500,
+    autoplaySpeed: 5000,
     autoplay: true,
-    slidesToShow: 2,
+    slidesToShow: 1,
     slidesToScroll: 1,
+    arrows: false,
   };
 
-  const images = ["image1.png", "image2.png", "image3.png", "image4.png"]
+  const images = ["image1.png", "image2.png", "image3.png"]
 
   return (
     <>
-      <div className="w-full mt-[100px] bg-black" id="marketplace_carousel">
+      <div className="w-full bg-black" id="marketplace_carousel">
         <Slider {...settings}>
           {images.map((image, index) => {
             return (
@@ -33,9 +34,8 @@ const Carousel_Component = () => {
                   height={1000}
                   width={1000}
                   src={`/assets/images/slide/${image}`}
-                  className="object-contain w-auto mx-auto max-w-[500px] max-h-full"
+                  className="object-contain  mx-auto max-h-[100vh] "
                 />
-                <h3 className="text-white text-center pt-4">Spotlight: Juergen teller for Loewe</h3>
               </div>)
           })}
         </Slider>
