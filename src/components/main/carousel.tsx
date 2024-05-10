@@ -35,7 +35,7 @@ const Carousel_Component = () => {
                   src={`/assets/images/slide/${image}`}
                   className="object-contain w-auto mx-auto max-w-[500px] max-h-full"
                 />
-                <h3 className="text-white text-center">Spotlight: Juergen teller for Loewe</h3>
+                <h3 className="text-white text-center pt-4">Spotlight: Juergen teller for Loewe</h3>
               </div>)
           })}
         </Slider>
