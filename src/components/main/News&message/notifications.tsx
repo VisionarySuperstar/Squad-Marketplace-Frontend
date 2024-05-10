@@ -60,7 +60,7 @@ const Notification: React.FC = () => {
                   </h1>
                   <div>
                     {NotificationData.map((index, key) => (
-                      <>
+                      
                         <div
                           key={key}
                           className="flex items-center mt-5 gap-3 border-b-2 pb-3"
@@ -84,7 +84,7 @@ const Notification: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                      </>
+                      
                     ))}
                   </div>
                   <div className="text-gray-400 text-center mt-3 underline">
@@ -95,7 +95,7 @@ const Notification: React.FC = () => {
                   </h1>
                   <div>
                     {NotificationData.map((index, key) => (
-                      <>
+                     
                         <div
                           key={key}
                           className="flex items-center mt-5 gap-3 border-b-2 pb-3"
@@ -119,7 +119,7 @@ const Notification: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                      </>
+                      
                     ))}
                   </div>
                   <div className="text-gray-400 text-center mt-3 underline">

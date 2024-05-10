@@ -11,7 +11,7 @@ export default function Detail({ children }: { children: React.ReactNode }) {
   }, [setNavbarshow]);
   return (
     <div>
-      <NavBar />
+      {/* <NavBar /> */}
       {children}
     </div>
   );

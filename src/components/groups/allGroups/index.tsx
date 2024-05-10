@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Card from "@/components/main/cards/groupCard";
 import groups from "@/data/groups.json";
+import useAPI from "@/hooks/useAPI";
+import { IGROUP } from "@/types";
+
+
 
 interface IProps {
   scale: number;
@@ -11,6 +15,9 @@ interface IProps {
 const AllGroup = ({ scale }: IProps) => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
+  const [allGroupData, setAllGroupData] = useState<IGROUP[]>() ;
+  const api = useAPI();
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,7 +33,19 @@ const AllGroup = ({ scale }: IProps) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+
   }, []);
+
+  const getAllGroupData = async () => {
+    const { data: Data } = await api.get(`/api/getAllGroup`);
+    console.log("all Group Data------->", Data);
+    setAllGroupData(Data) ;
+    
+  }
+
+  useEffect(() => {
+    getAllGroupData();
+  }, []) ;
 
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
@@ -43,14 +62,14 @@ const AllGroup = ({ scale }: IProps) => {
               )}, 1fr)`,
             }}
           >
-            {groups.map((item, index) => (
+            {allGroupData && allGroupData.map((item, index) => (
               <Card
                 key={index}
                 state={"1"}
                 name={item.name}
-                groupBio={item.bio}
-                membercount={item.members.length}
-                groupId={index}
+                groupBio={item.description}
+                membercount={item.member.length}
+                groupId={item.id}
                 avatar={item.avatar}
               />
             ))}
@@ -62,14 +81,14 @@ const AllGroup = ({ scale }: IProps) => {
           <div
             className={`gap-3 flex-wrap grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5`}
           >
-            {groups.map((item, index) => (
+            {allGroupData && allGroupData.map((item, index) => (
               <Card
                 key={index}
                 state={"1"}
-                groupBio={item.bio}
-                membercount={item.members.length}
+                groupBio={item.description}
+                membercount={item.member.length}
                 name={item.name}
-                groupId={index}
+                groupId={item.id}
                 avatar={item.avatar}
               />
             ))}

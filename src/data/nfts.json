@@ -15,7 +15,9 @@
     "currentPrice": 2600,
     "currentBidder": "Jackson",
     "currentOwner": "Edward",
-    "status": "sold"
+    "status": "sold",
+    "collectionName": "Nature",
+    "collectionId": "1"
   },
   {
     "id": "1973695",
@@ -24,6 +26,7 @@
     "auctionType": 1,
     "groupName": "group2",
     "initialPrice": 2500,
+    "currentPrice":2000,
     "salePeriod": [
       "1",
       "12",
@@ -32,7 +35,9 @@
     ],
     "currentOwner": "Edward",
     "reducingRate": 50,
-    "status": "sold"
+    "status": "sold",
+    "collectionName": "Nature",
+    "collectionId": "2"
   },
   {
     "id": "1973696",
@@ -42,7 +47,9 @@
     "groupName": "group3",
     "initialPrice": 3500,
     "currentOwner": "Edward",
-    "status": "sold"
+    "status": "sold",
+    "collectionName": "Nature",
+    "collectionId": "1"
   },
   {
     "id": "1973697",
@@ -60,7 +67,9 @@
     "currentPrice": 2600,
     "currentBidder": "Jackson",
     "currentOwner": "Edward",
-    "status": "sold"
+    "status": "sold",
+    "collectionName": "Nature",
+    "collectionId": "4"
   },
   {
     "id": "1973698",
@@ -69,6 +78,7 @@
     "auctionType": 1,
     "groupName": "group2",
     "initialPrice": 2500,
+    "currentPrice":2000,
     "salePeriod": [
       "1",
       "12",
@@ -77,7 +87,9 @@
     ],
     "reducingRate": 50,
     "currentOwner": "Edward",
-    "status": "sold"
+    "status": "sold",
+    "collectionName": "Nature",
+    "collectionId": "5"
   },
   {
     "id": "1973699",
@@ -87,7 +99,9 @@
     "groupName": "group1",
     "initialPrice": 3500,
     "currentOwner": "Edward",
-    "status": "sold"
+    "status": "sold",
+    "collectionName": "Nature",
+    "collectionId": "3"
   },
   {
     "id": "1973700",
@@ -104,7 +118,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "live"
+    "status": "live",
+    "collectionName": "Nature",
+    "collectionId": "2"
   },
   {
     "id": "1973701",
@@ -113,6 +129,7 @@
     "auctionType": 1,
     "groupName": "group1",
     "initialPrice": 2500,
+    "currentPrice":2000,
     "salePeriod": [
       "1",
       "12",
@@ -120,7 +137,9 @@
       "45"
     ],
     "reducingRate": 50,
-    "status": "live"
+    "status": "live",
+    "collectionName": "Nature",
+    "collectionId": "5"
   },
   {
     "id": "1973702",
@@ -129,7 +148,9 @@
     "auctionType": 2,
     "groupName": "group3",
     "initialPrice": 3500,
-    "status": "live"
+    "status": "live",
+    "collectionName": "Nature",
+    "collectionId": "1"
   },
   {
     "id": "1973703",
@@ -146,7 +167,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "live"
+    "status": "live",
+    "collectionName": "Nature",
+    "collectionId": "6"
   },
   {
     "id": "1973704",
@@ -163,7 +186,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "live"
+    "status": "live",
+    "collectionName": "Nature",
+    "collectionId": "10"
   },
   {
     "id": "1973705",
@@ -180,7 +205,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "live"
+    "status": "live",
+    "collectionName": "Nature",
+    "collectionId": "11"
   },
   {
     "id": "1973706",
@@ -197,7 +224,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "minted"
+    "status": "minted",
+    "collectionName": "Nature",
+    "collectionId": "20"
   },
   {
     "id": "1973707",
@@ -214,7 +243,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "minted"
+    "status": "minted",
+    "collectionName": "Nature",
+    "collectionId": "21"
   },
   {
     "id": "1973708",
@@ -231,7 +262,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "minted"
+    "status": "minted",
+    "collectionName": "Nature",
+    "collectionId": "15"
   },
   {
     "id": "1973709",
@@ -248,7 +281,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "minted"
+    "status": "minted",
+    "collectionName": "Nature",
+    "collectionId": "6"
   },
   {
     "id": "1973710",
@@ -265,7 +300,9 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "minted"
+    "status": "minted",
+    "collectionName": "Nature",
+    "collectionId": "9"
   },
   {
     "id": "1973711",
@@ -282,6 +319,8 @@
     ],
     "currentPrice": 2600,
     "currentBidder": "Jackson",
-    "status": "minted"
+    "status": "minted",
+    "collectionName": "Nature",
+    "collectionId": "11"
   }
 ]

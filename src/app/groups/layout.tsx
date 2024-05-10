@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import NewGroupModal from "@/components/main/modals/groups/newGroupModal";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
-
+import NavBar from "@/components/main/navbar";
 export default function Groups({ children }: { children: React.ReactNode }) {
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
@@ -18,6 +18,7 @@ export default function Groups({ children }: { children: React.ReactNode }) {
   }, [setNavbarshow]);
   return (
     <div>
+      {/* <NavBar/> */}
       {children}
       {createGroupModalState && <NewGroupModal />}
     </div>

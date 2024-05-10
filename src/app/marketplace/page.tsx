@@ -9,8 +9,10 @@ import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import Carousel from "@/components/main/carousel";
 import { useRouter } from "next/navigation";
-
 import NFTs from "@/data/nfts.json";
+import {INFT} from "@/types";
+import useAPI from "@/hooks/useAPI";
+
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(60);
@@ -21,6 +23,10 @@ export default function Home() {
     (state) => state.updateLoadingState
   );
 
+  const [allNftData, setAllNftData] = useState<INFT[]>([]) ;
+  const api = useAPI();
+
+  
   useEffect(() => {
     document.body.style.overflow = "auto";
     setLoadingState(false);
@@ -40,10 +46,25 @@ export default function Home() {
     };
   }, []);
 
+  const getAllNftData = async () => {
+    const result1 = await api.post('/api/getListedNft', { id:'mint'});
+    setAllNftData(result1.data) ;
+    console.log("nftData ", result1.data) ;
+  }
+  useEffect(() => {
+    getAllNftData() ;
+  }, [])
+
+  
+
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
   }, [screenWidth]);
   const router = useRouter();
+
+
+
+
   return (
     <>
       <Carousel />
@@ -80,7 +101,7 @@ export default function Home() {
                 )}, 1fr)`,
               }}
             >
-              {NFTs.map((item, index) => (
+              {allNftData.map((item, index) => (
                 <div
                   key={index}
                   className="relative text-md content-card cursor-pointer drop-shadow-lg"
@@ -91,8 +112,8 @@ export default function Home() {
                 >
                   <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
                     <div>
-                      <div className="absolute left-4 top-3">COLLECTION ID</div>
-                      <div className="absolute left-2 bottom-3">3000 USDC</div>
+                      <div className="absolute left-4 top-3">{item.collectionname} #{item.collectionid}</div>
+                      <div className="absolute left-2 bottom-3">{item.currentprice} USDC</div>
                       <div className="absolute right-2 bottom-3 flex items-center gap-1">
                         <EyeIcon props="white" />
                         200
@@ -119,7 +140,7 @@ export default function Home() {
             <div
               className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
             >
-              {NFTs.map((item, index) => (
+              {allNftData.map((item, index) => (
                 <div
                   key={index}
                   className="relative text-md content-card cursor-pointer drop-shadow-lg"
@@ -127,8 +148,8 @@ export default function Home() {
                 >
                   <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
                     <div>
-                      <div className="absolute left-4 top-4">COLLECTION ID</div>
-                      <div className="absolute left-4 bottom-4">3000 USDC</div>
+                      <div className="absolute left-4 top-4">{item.collectionaddress} #{item.collectionid}</div>
+                      <div className="absolute left-4 bottom-4">{item.currentprice} USDC</div>
                       <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
                         <EyeIcon props="white" />
                         200

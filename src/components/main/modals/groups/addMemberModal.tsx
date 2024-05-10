@@ -1,8 +1,18 @@
 "use client";
 
-import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import React, { useState, useEffect } from 'react';
+import Image from "next/image";
 
-const AddMemberModal = () => {
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import useAuth from "@/hooks/useAuth";
+import useAPI from "@/hooks/useAPI";
+import { IUSER } from "@/types";
+
+interface AddMemberModalInterface {
+  addSelectedUsers: (user: IUSER) => void;
+}
+
+const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
   const setAddMemberModalState = useGroupUIControlStore(
     (state) => state.updateAddMemberModal
   );
@@ -12,6 +22,22 @@ const AddMemberModal = () => {
   const handleAddMember = () => {
     setAddMemberModalState(false);
   };
+  const { signIn, isAuthenticated, user } = useAuth();
+  const api = useAPI();
+  const [allUserData, setAllUserData] = useState<IUSER[]>();
+  const [selectedUser, setSelectedUser] = useState<IUSER>({} as IUSER);
+
+  const getAllUserData = async () => {
+    const { data: Data } = await api.post(`/auth/user/getAllMembers`);
+    console.log("User Data-->", Data);
+    setAllUserData(Data);
+  }
+  useEffect(() => {
+    getAllUserData();
+  }, []);
+  const [name, setName] = useState<string>("");
+
+
   return (
     <>
       <div className="">
@@ -52,9 +78,29 @@ const AddMemberModal = () => {
               <input
                 className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                 type="text"
-                placeholder=" E.G. 'TOP ARTISTS'"
+                placeholder=" E.G. 'Jack'"
+                value={name}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setName(event.target.value as string);
+                }}
               />
               <div className="absolute bg-black  h-10"></div>
+            </div>
+            <div className='flex-col gap-3'>
+              {
+                name && allUserData && allUserData.filter((_user: IUSER) => _user.name.toLowerCase().includes(name.toLowerCase() ) && _user.wallet != user?.wallet).map((_user: IUSER, key) =>
+                  <div className={`flex gap-3 items-center mt-3 cursor-pointer hover:bg-indigo-300 p-2 ${selectedUser === _user && 'bg-indigo-300'}`} onClick={() => setSelectedUser(_user)} key={key}>
+                    <Image
+                      src={_user.avatar}
+                      className="rounded-full object-cover"
+                      width={50}
+                      height={50}
+                      alt="avatar"
+                    />
+                    <h2 className="text-center">{_user.name}</h2>
+                  </div>
+                )
+              }
             </div>
             <div
               className="flex justify-center items-center mt-5 mb-3"
@@ -62,13 +108,13 @@ const AddMemberModal = () => {
                 setAddMemberModalState(false);
               }}
             >
-              <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg">
+              <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg" onClick={() => addSelectedUsers(selectedUser ? selectedUser:{} as IUSER)}>
                 ADD MEMBER
               </button>
-            </div>
           </div>
         </div>
       </div>
+    </div >
     </>
   );
 };

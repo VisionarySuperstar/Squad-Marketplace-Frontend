@@ -11,6 +11,9 @@ import NftCard from "@/components/main/cards/nftCard";
 import Footer from "@/components/main/footer/footer";
 import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
+import useAuth from "@/hooks/useAuth";
+
+
 
 export default function Home() {
   const router = useRouter();
@@ -29,8 +32,13 @@ export default function Home() {
       });
     }
   }
+  const { user } = useAuth();
+
   return (
     <>
+    {
+      user && 
+    
       <div className="font-Maxeville">
         {createGroupModalState && <NewGroupModal />}
 
@@ -39,7 +47,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">
               <div className="h-[160px] w-[160px]">
                 <Image
-                  src={"/assets/photo/users/user2.jpg"}
+                  src={user.avatar}
                   className="w-full h-full aspect-square rounded-full"
                   alt="user_avatar"
                   height={160}
@@ -49,11 +57,11 @@ export default function Home() {
               <div className="flex flex-col ">
                 <div>
                   <div className="text-gray-400">USERNAME</div>
-                  <div>ZAK LLC</div>
+                  <div>{user.name}</div>
                 </div>
                 <div className="mt-5">
                   <div className="text-gray-400">HANDLE</div>
-                  <div>@ZAK.LLC</div>
+                  <div>{user.email}</div>
                 </div>
               </div>
               <div className="flex flex-col ">
@@ -71,7 +79,7 @@ export default function Home() {
                   <div className="text-gray-400">SMART WALLETS</div>
                   <div className="flex gap-3">
                     <img src="/metamask.svg"></img>
-                    <div>0X111...222</div>
+                    <div className=" text-ellipsis">{user.wallet}</div>
                     <div className="underline">REMOVE</div>
                   </div>
                 </div>
@@ -80,7 +88,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="underline">EDIT PROFILE</div>
+            <div className="underline cursor-pointer" onClick={() => router.push("/profile/create")}>EDIT PROFILE</div>
           </div>
         </div>
         <div className="sticky top-[100px] z-10 hidden md:block">
@@ -155,7 +163,8 @@ export default function Home() {
                   key={index}
                   className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 >
-                  <NftCard name={item.name} avatar={item.avatar} />
+                  <NftCard name={item.name} avatar={item.avatar} collectionName={item.collectionName} collectionId={1} seen={200} favorite={20} price={item.currentPrice?item.currentPrice:item.initialPrice} />
+
                 </div>
               ))}
             </div>
@@ -171,7 +180,7 @@ export default function Home() {
                   name={item.name}
                   groupBio={item.bio}
                   membercount={item.members.length}
-                  groupId={index}
+                  groupId={index.toString()}
                   avatar={item.avatar}
                 />
               ))}
@@ -200,7 +209,8 @@ export default function Home() {
                   key={index}
                   className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 >
-                  <NftCard name={item.name} avatar={item.avatar} />
+                <NftCard name={item.name} avatar={item.avatar} collectionName={item.collectionName} collectionId={1} seen={200} favorite={20} price={item.currentPrice?item.currentPrice:item.initialPrice}/>
+
                 </div>
               ))}
             </div>
@@ -217,7 +227,7 @@ export default function Home() {
                   key={index}
                   className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 >
-                  <NftCard name={item.name} avatar={item.avatar} />
+                <NftCard name={item.name} avatar={item.avatar} collectionName={item.collectionName} collectionId={1} seen={200} favorite={20} price={item.currentPrice?item.currentPrice:item.initialPrice}/>
                 </div>
               ))}
             </div>
@@ -364,6 +374,7 @@ export default function Home() {
         ></div>
         <Footer />
       </div>
+    }
     </>
   );
 }

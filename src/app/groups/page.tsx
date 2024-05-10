@@ -5,7 +5,7 @@ import Sort from "@/components/groups/groupSearch/sort";
 import MyGroup from "@/components/groups/JoinedGroups";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
 import Recruiting from "@/components/groups/groupSearch/recruiting";
-import AllGroup from "@/components/groups/AllGroups";
+import AllGroup from "@/components/groups/allGroups";
 import GeneralButton from "@/components/groups/share/generalButton";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";

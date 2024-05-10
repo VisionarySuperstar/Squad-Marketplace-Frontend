@@ -17,8 +17,8 @@ const Footer = () => {
           <div>
             <FooterLogoAnimation />
           </div>
-          <div className="w-full xl:grid grid-cols-2 lg:grid grid-cols-1">
-            <div className="w-full xl:grid grid-cols-2 md:grid grid-cols-1">
+          <div className="w-full xl:grid grid-cols-2 lg:grid ">
+            <div className="w-full xl:grid grid-cols-2 md:grid ">
               <div className="grid grid-cols-2 gap-0 mb-[30px]">
                 <div>
                   <p className="footer_title mb-[30px] ">About</p>
@@ -104,7 +104,7 @@ const Footer = () => {
                       <svg
                         className="w-[9px] h-[9px] text-white"
                         fill="none"
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
                         viewBox="0 0 24 24"
@@ -127,7 +127,7 @@ const Footer = () => {
           <p className="second_title">SQUAD LABS</p>
           <p className="second_title">+44-02071013384</p>
           <p className="second_title">CO.NUMBER 15567909, HUCKLETREE,</p>
-          <div className="w-full lg:grid grid-cols-2 md:grid grid-cols-2">
+          <div className="w-full lg:grid grid-cols-2 md:grid ">
             <div>
               <p className="second_title">213 OXFORD STREET, W1D 2LG, LONDON</p>
             </div>

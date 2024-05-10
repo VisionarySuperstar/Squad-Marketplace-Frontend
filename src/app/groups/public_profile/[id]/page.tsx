@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
@@ -14,6 +14,9 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 //import data
 import MyGroups from "@/data/groups.json";
 import Nfts from "@/data/sold_nfts.json";
+import useAPI from "@/hooks/useAPI";
+import { IGROUP, IUSER, INFT } from "@/types";
+import useAuth from "@/hooks/useAuth";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -23,8 +26,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     document.body.style.overflow = "auto";
     setLoadingState(false);
   }, [setLoadingState]);
-  const seletedGroup = MyGroups[Number(params.id)];
-  const memebers_of_selectedGroup = seletedGroup.members;
   const router = useRouter();
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
@@ -39,6 +40,47 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   }
 
+  const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
+
+  const { signIn, isAuthenticated, user } = useAuth();
+  const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
+  const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
+  const api = useAPI();
+  const getMyGroupData = async () => {
+
+    const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
+    setMyGroupData(Data);
+  }
+
+  const getNftData = async () => {
+    const {data: Data} = await api.post('/api/getNftByGroupAndStatus', {id:params.id, status:'list'}) ;
+    setNftData(Data) ;
+    console.log("here is nft Data", Data) ;
+  }
+
+  useEffect(() => {
+    getMyGroupData();
+    getNftData() ;
+  }, []);
+
+  const getMembersData = async (id: string) => {
+    console.log("id", id);
+    const { data } = await api.get(`/auth/user/${id}`);
+    console.log("DataDATA ---------> ", data);
+    return data;
+  }
+  useEffect(() => {
+    if (!myGroupData) return;
+    (async() => {
+      const _members = await Promise.all(myGroupData.member.map(async(_member: any) => await getMembersData(_member.id)));
+      setMembers(_members);
+    }) ();
+
+  }, [myGroupData])
+
+
+
+
   return (
     <>
       <div className="pt-[100px] h-full">
@@ -46,16 +88,23 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <div>
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
               <div className="mt-5">
-                <Image
-                  src={seletedGroup.avatar}
-                  className="w-full aspect-square object-cover"
-                  alt="group_avatar"
-                  width={300}
-                  height={300}
-                />
+                {
+                  myGroupData && <Image
+                    src={myGroupData?.avatar}
+                    className="w-full aspect-square object-cover"
+                    alt="group_avatar"
+                    width={300}
+                    height={300}
+                  />
+                }
+
               </div>
               <div className="mt-5">
-                <GroupDescription users={memebers_of_selectedGroup} />
+                {
+                  members && myGroupData &&
+                  <GroupDescription users={members} myGroupData={myGroupData} />
+                }
+
               </div>
             </div>
           </div>
@@ -105,7 +154,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="border-b-2 border-indigo-500"></div>
           </div>
           <div className="mb-[50px] grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
-            {Nfts.map((item, index) => (
+            {nftData?.map((item, index) => (
               <div
                 key={index}
                 className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
@@ -113,8 +162,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
               >
                 <div className="absolute aspect-square top-0 content-card-menu opacity-0 transition-all rounded-lg text-white bg-chocolate-main/80 w-full">
                   <div>
-                    <div className="absolute left-4 top-4">COLLECTION ID</div>
-                    <div className="absolute left-4 bottom-4">3000 USDC</div>
+                    <div className="absolute left-4 top-4">{item.collectionname} {item.collectionid}</div>
+                    <div className="absolute left-4 bottom-4">{item.currentprice} USDC</div>
                     <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
                       <EyeIcon props="white" />
                       200
@@ -131,7 +180,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   height={0}
                   sizes="100vw"
                 />
-                <div className="mt-3">{item.name}</div>
+                <div className="mt-3">{""}</div>
               </div>
             ))}
           </div>

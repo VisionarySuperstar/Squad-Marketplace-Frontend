@@ -3,6 +3,7 @@ import Image from "next/image";
 const renderAvatar = (items: any[]) => {
   const number: number = items.length;
   const len: number = Math.floor(number / 3);
+  if(number == 0) return ;
   if (number == 1) {
     return (
       <div className="flex justify-center items-center w-[50px] h-[50px] ml-[50px]">
@@ -16,7 +17,7 @@ const renderAvatar = (items: any[]) => {
       </div>
     );
   }
-  if (number == 2) {
+  else if (number == 2) {
     return (
       <div className="flex ">
         <div className="h-[50px] w-[50px]">
@@ -42,7 +43,7 @@ const renderAvatar = (items: any[]) => {
       </div>
     );
   }
-  if (number == 3) {
+  else if (number == 3) {
     return (
       <div>
         <div className="">
@@ -82,7 +83,7 @@ const renderAvatar = (items: any[]) => {
       </div>
     );
   }
-  if (number == 4) {
+  else if (number == 4) {
     return (
       <div>
         <div className="">
@@ -134,7 +135,7 @@ const renderAvatar = (items: any[]) => {
       </div>
     );
   }
-  if (number % 3 == 2) {
+  else if (number % 3 == 2) {
     return (
       <div>
         <div className="flex">
@@ -185,7 +186,7 @@ const renderAvatar = (items: any[]) => {
       </div>
     );
   }
-  if (number % 3 == 0) {
+  else if (number % 3 == 0) {
     // Handle case when number is divisible by 3
     return (
       <div>
@@ -237,7 +238,7 @@ const renderAvatar = (items: any[]) => {
       </div>
     );
   }
-  if (number % 3 == 1) {
+  else if (number % 3 == 1) {
     // Handle case when number modulo 3 is 1
     return (
       <div>

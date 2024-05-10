@@ -7,21 +7,26 @@ import HeartIcon from "@/components/svgs/heart_icon";
 interface CardProps {
   name: string;
   avatar: string;
+  collectionName: string;
+  collectionId: number;
+  price: number;
+  seen:number;
+  favorite:number;
 }
 
-const NftCard: React.FC<CardProps> = ({ name, avatar }) => {
+const NftCard: React.FC<CardProps> = ({ name, avatar, collectionName, collectionId, price, seen, favorite }) => {
   return (
     <>
       <div className="transition-transform duration-200 active:translate-y-1">
         <div className="transition-all absolute aspect-square top-0 content-card-menu opacity-0 rounded-lg text-white bg-chocolate-main/80 w-full">
           <div>
-            <div className="absolute left-4 top-4">COLLECTION ID</div>
-            <div className="absolute left-4 bottom-4">3000 USDC</div>
+            <div className="absolute left-4 top-4">{collectionName} #{collectionId}</div>
+            <div className="absolute left-4 bottom-4">{price} USDC</div>
             <div className="absolute right-4 bottom-4 items-center gap-1 sm:gap-2 xs:hidden md:flex">
               <EyeIcon props="white" />
-              200
+              {seen}
               <HeartIcon props="white" />
-              20
+              {favorite}
             </div>
           </div>
         </div>

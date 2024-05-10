@@ -7,7 +7,7 @@ interface CardProps {
   name: string;
   membercount: number;
   groupBio: string;
-  groupId: number;
+  groupId: string;
   avatar: string;
 }
 
