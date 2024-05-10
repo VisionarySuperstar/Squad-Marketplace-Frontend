@@ -244,11 +244,10 @@ const NavBar = () => {
                   className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${current === "discover" ? "rounded-l-full" : ""}
             ${current === "groups" ? "rounded-r-full" : ""}
-            ${
-              current === "marketplace"
-                ? "rounded-full px-[28px] mx-[2px]"
-                : "px-[30px]"
-            }
+            ${current === "marketplace"
+                    ? "rounded-full px-[28px] mx-[2px]"
+                    : "px-[30px]"
+                  }
             `}
                   onClick={() => {
                     setCurrent("marketplace");
