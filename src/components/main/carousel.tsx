@@ -10,40 +10,34 @@ import { useEffect, useState } from "react";
 const Carousel_Component = () => {
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 3500,
     autoplay: true,
-    slidesToShow: 1,
+    slidesToShow: 2,
     slidesToScroll: 1,
   };
 
+  const images = ["image1.png", "image2.png", "image3.png", "image4.png"]
+
   return (
     <>
-      <div className="w-full h-[90vh] min-h-[800px]" id="marketplace_carousel">
+      <div className="w-full mt-[100px] bg-black" id="marketplace_carousel">
         <Slider {...settings}>
-          <Image
-            alt="slide"
-            width={2000}
-            height={2000}
-            src="/assets/images/slide/1.jpg"
-            className="object-cover w-full h-full"
-          />
-          <Image
-            alt="slide"
-            width={2000}
-            height={2000}
-            src="/assets/images/slide/2.jpg"
-            className="object-cover w-full h-full"
-          />
-          <Image
-            alt="slide"
-            width={2000}
-            height={2000}
-            src="/assets/images/slide/3.jpg"
-            className="object-cover w-full h-full"
-          />
+          {images.map((image, index) => {
+            return (
+              <div key={index} className="pt-5 px-10">
+                <Image
+                  alt="slide"
+                  height={1000}
+                  width={1000}
+                  src={`/assets/images/slide/${image}`}
+                  className="object-contain w-auto mx-auto max-w-[500px] max-h-full"
+                />
+                <h3 className="text-white text-center">Spotlight: Juergen teller for Loewe</h3>
+              </div>)
+          })}
         </Slider>
       </div>
     </>

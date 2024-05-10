@@ -99,7 +99,7 @@ const NavBar = () => {
     connector,
     isDisconnected,
     chainId,
-    
+
   } = useActiveWeb3();
   const { signIn, isAuthenticated, user } = useAuth();
 
@@ -189,7 +189,7 @@ const NavBar = () => {
         <>
           <div
             className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] ${
-              isBackground ? " bg-white border-b" : ""
+              isBackground ? " bg-white border-b" : "bg-black"
             }`}
           >
             <div className="hidden">
@@ -281,7 +281,7 @@ const NavBar = () => {
                 {!openConnectModal && openChainModal && (
                   <>
                     <div
-                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[30px] 
+                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[30px]
                       ${
                         current === "logo"
                           ? "lg:rounded-none xs:rounded-l-full"
@@ -391,7 +391,7 @@ const NavBar = () => {
                       <div
                         className={`${
                           user && "bg-white"
-                        } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all 
+                        } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
                       ${current === "alert" ? "rounded-l-full " : ""}
                       ${
                         current === "user"
@@ -430,7 +430,7 @@ const NavBar = () => {
                 {openConnectModal && (
                   <div
                     className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all rounded-r-full hover:bg-chocolate-main/80 active:bg-chocolate-main/90
-                
+
                   ${current === "groups" ? "rounded-l-full" : ""}
                   ${
                     current === "connectWallet"
