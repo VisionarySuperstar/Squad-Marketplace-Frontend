@@ -1,0 +1,92 @@
+[
+  {
+    "id": "1973694",
+    "name": "NFT1",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "currentOwner": "Edward",
+    "status": "sold"
+  },
+  {
+    "id": "1973695",
+    "name": "NFT2",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 1,
+    "groupName": "group2",
+    "initialPrice": 2500,
+    "salePeriod": [
+      "1",
+      "12",
+      "34",
+      "45"
+    ],
+    "currentOwner": "Edward",
+    "reducingRate": 50,
+    "status": "sold"
+  },
+  {
+    "id": "1973696",
+    "name": "NFT3",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 2,
+    "groupName": "group3",
+    "initialPrice": 3500,
+    "currentOwner": "Edward",
+    "status": "sold"
+  },
+  {
+    "id": "1973697",
+    "name": "NFT4",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group3",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "currentOwner": "Edward",
+    "status": "sold"
+  },
+  {
+    "id": "1973698",
+    "name": "NFT5",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 1,
+    "groupName": "group2",
+    "initialPrice": 2500,
+    "salePeriod": [
+      "1",
+      "12",
+      "34",
+      "45"
+    ],
+    "reducingRate": 50,
+    "currentOwner": "Edward",
+    "status": "sold"
+  },
+  {
+    "id": "1973699",
+    "name": "NFT6",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 2,
+    "groupName": "group1",
+    "initialPrice": 3500,
+    "currentOwner": "Edward",
+    "status": "sold"
+  }
+]

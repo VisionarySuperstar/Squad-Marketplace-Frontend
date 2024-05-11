@@ -2,11 +2,10 @@
 
 import Footer from "@/components/main/footer/footer";
 import { useRouter } from "next/navigation";
-import JoinModal from "@/components/main/modals/joinModal";
+import JoinModal from "@/components/main/modals/landing/joinModal";
 import React from "react";
-import Welcome from "@/components/main/modals/welcome";
+import Welcome from "@/components/main/modals/landing/welcome";
 import useUIControlStore from "@/store/UI_control/landingpage";
-import NavBar from "@/components/main/navbar";
 
 const About = () => {
   const joinModalState = useUIControlStore((state) => state.joinModal);

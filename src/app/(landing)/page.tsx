@@ -1,16 +1,26 @@
 "use client";
 
+import React, { useEffect } from "react";
 import Footer from "@/components/main/footer/footer";
-import JoinModal from "@/components/main/modals/joinModal";
-import Laptop from "@/components/main/poster/laptop_screen";
+import JoinModal from "@/components/main/modals/landing/joinModal";
 import Mobile from "@/components/main/poster/mobile_screen";
-import Welcome from "@/components/main/modals/welcome";
+import Welcome from "@/components/main/modals/landing/welcome";
 import useUIControlStore from "@/store/UI_control/landingpage";
+import useLoadingControlStore from "@/store/UI_control/loading";
+import Laptop from "@/components/main/poster/laptop_screen";
 
 export default function Home() {
   const joinModalState = useUIControlStore((state) => state.joinModal);
   const welcomeModalState = useUIControlStore((state) => state.welcomeModal);
   const setJoinModalState = useUIControlStore((state) => state.updateJoinModal);
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+    setLoadingState(false);
+  }, [setLoadingState]);
+
   const logoHandleHover = () => {
     const circle_1: HTMLElement = document.querySelector(
       ".circle_1"
@@ -66,13 +76,15 @@ export default function Home() {
     circle_5.style.top = `calc(var(--perX) * 785)`;
     circle_5.style.left = `calc(var(--perX) * 70)`;
   };
+
   return (
     <>
       <div>
         {welcomeModalState && <Welcome />}
         {joinModalState && <JoinModal />}
-        <Mobile />
         <Laptop />
+        <Mobile />
+
         <div className="main_container tracking-[1px]">
           <div className="section_container">
             <div className="line my-[40px]"></div>
@@ -246,7 +258,7 @@ export default function Home() {
                 logoHandleMouseOut();
               }}
             >
-              Join Now
+              Open App
             </button>
           </div>
           <Footer />
