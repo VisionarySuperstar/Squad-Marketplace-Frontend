@@ -79,7 +79,7 @@ const JoinModal = () => {
     <>
       <div className="">
         <div
-          className="join_background"
+          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setJoinModalState(false);
           }}

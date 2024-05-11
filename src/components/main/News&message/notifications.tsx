@@ -4,6 +4,7 @@ import React from "react";
 import useNotificationUIControlStore from "@/store/UI_control/notification";
 import NotificationData from "@/data/notifications.json";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Notification: React.FC = () => {
   const setNotificationState = useNotificationUIControlStore(
@@ -12,6 +13,7 @@ const Notification: React.FC = () => {
   const notificationModal = useNotificationUIControlStore(
     (state) => state.notificationModal
   );
+  const router = useRouter();
 
   return (
     <>
@@ -60,34 +62,35 @@ const Notification: React.FC = () => {
                   </h1>
                   <div>
                     {NotificationData.map((index, key) => (
-                      
-                        <div
-                          key={key}
-                          className="flex items-center mt-5 gap-3 border-b-2 pb-3"
-                        >
-                          <div className="h-[30px]">
-                            <Image
-                              src={index.avatar}
-                              className="h-full w-full aspect-square rounded-full"
-                              width={100}
-                              height={100}
-                              alt="avatar"
-                            />
-                          </div>
-
-                          <div className="flex gap-3">
-                            <div>NEW SALE</div>
-                            <div className="text-gray-400">IN</div>
-                            <div>{index.name} </div>
-                            <div className="text-gray-400">
-                              {index.lastSeen}
-                            </div>
-                          </div>
+                      <div
+                        key={key}
+                        className="flex items-center mt-5 gap-3 border-b-2 pb-3"
+                      >
+                        <div className="h-[30px]">
+                          <Image
+                            src={index.avatar}
+                            className="h-full w-full aspect-square rounded-full"
+                            width={100}
+                            height={100}
+                            alt="avatar"
+                          />
                         </div>
-                      
+
+                        <div className="flex gap-3">
+                          <div>NEW SALE</div>
+                          <div className="text-gray-400">IN</div>
+                          <div>{index.name} </div>
+                          <div className="text-gray-400">{index.lastSeen}</div>
+                        </div>
+                      </div>
                     ))}
                   </div>
-                  <div className="text-gray-400 text-center mt-3 underline">
+                  <div
+                    className="text-gray-400 text-center mt-3 underline"
+                    onClick={() => {
+                      router.push(`/message`);
+                    }}
+                  >
                     VIEW MESSAGES
                   </div>
                   <h1 className="text-[#322A44] mt-3 border-b-2 pb-2">
@@ -95,31 +98,27 @@ const Notification: React.FC = () => {
                   </h1>
                   <div>
                     {NotificationData.map((index, key) => (
-                     
-                        <div
-                          key={key}
-                          className="flex items-center mt-5 gap-3 border-b-2 pb-3"
-                        >
-                          <div className="h-[30px]">
-                            <Image
-                              src={index.avatar}
-                              className="h-full w-full aspect-square rounded-full"
-                              width={100}
-                              height={100}
-                              alt="avatar"
-                            />
-                          </div>
-
-                          <div className="flex gap-3">
-                            <div>NEW SALE</div>
-                            <div className="text-gray-400">IN</div>
-                            <div>{index.name} </div>
-                            <div className="text-gray-400">
-                              {index.lastSeen}
-                            </div>
-                          </div>
+                      <div
+                        key={key}
+                        className="flex items-center mt-5 gap-3 border-b-2 pb-3"
+                      >
+                        <div className="h-[30px]">
+                          <Image
+                            src={index.avatar}
+                            className="h-full w-full aspect-square rounded-full"
+                            width={100}
+                            height={100}
+                            alt="avatar"
+                          />
                         </div>
-                      
+
+                        <div className="flex gap-3">
+                          <div>NEW SALE</div>
+                          <div className="text-gray-400">IN</div>
+                          <div>{index.name} </div>
+                          <div className="text-gray-400">{index.lastSeen}</div>
+                        </div>
+                      </div>
                     ))}
                   </div>
                   <div className="text-gray-400 text-center mt-3 underline">

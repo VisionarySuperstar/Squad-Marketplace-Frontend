@@ -17,7 +17,6 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  overflow: hidden;
 }
 
 @layer utilities {
@@ -110,7 +109,7 @@ body {
 
 .background {
   margin-top: calc(var(--perX) * -750);
-  background-image: url("/assets/background.jpg");
+  background-image: url("/assets/images/backgrounds/background.jpg");
   min-height: calc(var(--perX) * 1800);
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -187,12 +186,6 @@ body {
 
 .join_background {
   background-color: #322a44;
-  opacity: 0.5;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0px;
-  z-index: 1000;
 }
 
 .head_bar {
@@ -410,7 +403,7 @@ body {
   border-radius: 30px;
 }
 
-.grouppage_container {
+.page_container_p40 {
   padding-left: min(40px, max(18px, calc(var(--perX) * 40)));
   padding-right: min(40px, max(18px, calc(var(--perX) * 40)));
 }
@@ -526,6 +519,7 @@ body {
   .footer_logo {
     display: none;
   }
+
   .space {
     margin-left: 0px;
   }
@@ -602,8 +596,18 @@ body {
   display: block !important;
 }
 
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: all 0.3s;
+}
+
+.scrollbar:hover {
+  scrollbar-color: #dadada transparent;
+}
+
 .scrollbar::-webkit-scrollbar {
-  width: 2px;
+  width: 5px;
   /* Width of the scrollbar */
 }
 
@@ -618,11 +622,4 @@ body {
 
 .scrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-
-.chain:hover:after{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgb(50 42 68 / var(--tw-bg-opacity));
 }

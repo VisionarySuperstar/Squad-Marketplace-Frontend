@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useLoadingControlStore from "@/store/UI_control/loading";
 
 interface CardProps {
   state: string;
@@ -19,9 +20,13 @@ const GroupCard: React.FC<CardProps> = ({
   membercount,
   groupBio,
 }) => {
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
   const router = useRouter();
 
   const handleClick = () => {
+    setLoadingState(true);
     if (state === "1") {
       router.push(`groups/public_profile/${groupId}`);
     } else if (state === "2") {
@@ -45,7 +50,7 @@ const GroupCard: React.FC<CardProps> = ({
             <div className="aspect-square w-full h-full relative rounded-lg">
               <div className="absolute top-0 z-10 w-full h-full bg-chocolate-main/80 opacity-0 transition-all group-card-info p-[15px] rounded-lg">
                 <div>GROUP BIO</div>
-                <div className="mt-[5px] lg:max-h-[70%] xs:max-h-[50%]  overflow-y-auto scrollbar">
+                <div className="mt-[5px] lg:max-h-[70%] xs:max-h-[50%]  overflow-y-auto scrollbar break-all">
                   {groupBio}
                 </div>
                 <div className="absolute bottom-[15px]">

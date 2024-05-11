@@ -1,6 +1,8 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 
+//import component
 import Sort from "@/components/groups/groupSearch/sort";
 import MyGroup from "@/components/groups/JoinedGroups";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
@@ -9,35 +11,32 @@ import AllGroup from "@/components/groups/allGroups";
 import GeneralButton from "@/components/groups/share/generalButton";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
+//import store
 import useLoadingControlStore from "@/store/UI_control/loading";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
 
 export default function Home() {
-  const setLoadingState = useLoadingControlStore(
-    (state) => state.updateLoadingState
-  );
-
-  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
-  setNavbarCurrent("groups");
-  useEffect(() => {
-    document.body.style.overflow = "auto";
-    setLoadingState(false);
-  }, [setLoadingState]);
-
+  //use state
   const [scale, setScale] = React.useState<number>(60);
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
+  //zustand
+  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
+  //useEffect
+  useEffect(() => {
+    setLoadingState(false);
+    setNavbarCurrent("groups");
+  }, [setLoadingState, setNavbarCurrent]);
+
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
-
-    // Set initial screen width
     setScreenWidth(window.innerWidth);
-    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
-
-    // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -49,7 +48,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="grouppage_container pt-[120px]">
+      <div className="page_container_p40 pt-[120px]">
         <Split_line />
         <div className="mb-[50px]">
           <MyGroup />

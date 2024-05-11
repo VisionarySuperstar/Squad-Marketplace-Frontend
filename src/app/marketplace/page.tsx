@@ -5,14 +5,15 @@ import ViewProgress from "@/components/groups/groupSearch/viewProgress";
 import Recruiting from "@/components/groups/groupSearch/recruiting";
 import Image from "next/image";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import Carousel from "@/components/main/carousel";
 import { useRouter } from "next/navigation";
+import NftCard from "@/components/main/cards/nftCard";
 import NFTs from "@/data/nfts.json";
-import {INFT} from "@/types";
+import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
-
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(60);
@@ -22,54 +23,68 @@ export default function Home() {
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
+  const updateNavbarBackground = useNavbarUIControlStore(
+    (state) => state.updateIsBackground
+  );
 
-  const [allNftData, setAllNftData] = useState<INFT[]>([]) ;
+  const [allNftData, setAllNftData] = useState<INFT[]>([]);
   const api = useAPI();
 
-  
   useEffect(() => {
     document.body.style.overflow = "auto";
     setLoadingState(false);
   }, [setLoadingState]);
+
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
+    };
+    const handleScroll = () => {
+      const carouselElement = document.getElementById("marketplace_carousel");
+      let carouselHeight = 0;
+      if (carouselElement) {
+        carouselHeight = carouselElement.clientHeight;
+        console.log(carouselElement.clientHeight);
+      }
+      const currentScrollPosition = window.scrollY;
+      console.log("scroll_position", currentScrollPosition);
+      if (currentScrollPosition >= carouselHeight) {
+        updateNavbarBackground(true);
+      } else {
+        updateNavbarBackground(false);
+      }
     };
     // Set initial screen width
     setScreenWidth(window.innerWidth);
     // Add event listener for window resize
     window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll);
 
     // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [updateNavbarBackground]);
 
   const getAllNftData = async () => {
-    const result1 = await api.post('/api/getListedNft', { id:'mint'});
-    setAllNftData(result1.data) ;
-    console.log("nftData ", result1.data) ;
-  }
+    const result1 = await api.post("/api/getListedNft", { id: "mint" });
+    setAllNftData(result1.data);
+    console.log("nftData ", result1.data);
+  };
   useEffect(() => {
-    getAllNftData() ;
-  }, [])
-
-  
+    getAllNftData();
+  }, []);
 
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
   }, [screenWidth]);
   const router = useRouter();
 
-
-
-
   return (
     <>
       <Carousel />
-      <div className="mt-[100px] font-Maxeville">
-        <div className="grouppage_container p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
+      <div className="font-Maxeville">
+        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
           <div className="flex justify-between w-[60%] mt-2">
             <Sort />
             {enableScale && (
@@ -92,7 +107,7 @@ export default function Home() {
           </div>
         </div>
         {enableScale && (
-          <div className="grouppage_container mt-5">
+          <div className="page_container_p40 mt-5">
             <div
               className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
               style={{
@@ -110,25 +125,13 @@ export default function Home() {
                     router.push(`/details/public/${item.id}`);
                   }}
                 >
-                  <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
-                    <div>
-                      <div className="absolute left-4 top-3">{item.collectionname} #{item.collectionid}</div>
-                      <div className="absolute left-2 bottom-3">{item.currentprice} USDC</div>
-                      <div className="absolute right-2 bottom-3 flex items-center gap-1">
-                        <EyeIcon props="white" />
-                        200
-                        <HeartIcon props="white" />
-                        20
-                      </div>
-                    </div>
-                  </div>
-                  <Image
-                    src={item.avatar}
-                    className="w-full h-full aspect-square object-cover rounded-lg"
-                    alt="market_nft"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
+                  <NftCard
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
                   />
                 </div>
               ))}
@@ -136,7 +139,7 @@ export default function Home() {
           </div>
         )}
         {!enableScale && (
-          <div className="grouppage_container mt-5">
+          <div className="page_container_p40 mt-5">
             <div
               className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
             >
@@ -146,10 +149,14 @@ export default function Home() {
                   className="relative text-md content-card cursor-pointer drop-shadow-lg"
                   onClick={() => router.push(`/details/public/${item.id}`)}
                 >
-                  <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
+                  {/* <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
                     <div>
-                      <div className="absolute left-4 top-4">{item.collectionaddress} #{item.collectionid}</div>
-                      <div className="absolute left-4 bottom-4">{item.currentprice} USDC</div>
+                      <div className="absolute left-4 top-4">
+                        {item.collectionaddress} #{item.collectionid}
+                      </div>
+                      <div className="absolute left-4 bottom-4">
+                        {item.currentprice} USDC
+                      </div>
                       <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
                         <EyeIcon props="white" />
                         200
@@ -157,7 +164,8 @@ export default function Home() {
                         20
                       </div>
                     </div>
-                  </div>
+                  </div> */}
+                  {/* 
                   <Image
                     src={item.avatar}
                     className="w-full h-full aspect-square object-cover rounded-lg"
@@ -165,6 +173,14 @@ export default function Home() {
                     width={0}
                     height={0}
                     sizes="100vw"
+                  /> */}
+                  <NftCard
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
                   />
                 </div>
               ))}

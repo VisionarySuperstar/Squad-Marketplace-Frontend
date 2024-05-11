@@ -3,15 +3,17 @@ import TrendingIcon from "@/components/svgs/trending_icon";
 import renderAvatar from "@/components/utils/renderAvatar";
 import { IUSER, IGROUP } from "@/types";
 
-
-
 interface GroupDescriptionProps {
   users: IUSER[];
   myGroupData: IGROUP;
-  totalEarning:string;
+  totalEarning: string;
 }
 
-const GroupDescription: React.FC<GroupDescriptionProps> = ({ users, myGroupData, totalEarning }) => {
+const GroupDescription: React.FC<GroupDescriptionProps> = ({
+  users,
+  myGroupData,
+  totalEarning,
+}) => {
   return (
     <>
       <div className="">
@@ -28,15 +30,15 @@ const GroupDescription: React.FC<GroupDescriptionProps> = ({ users, myGroupData,
         <div className="flex">
           <div className="mt-5 me-5">
             <div className="text-gray-400">TOTAL MINTED</div>
-            <div className="text-center">{myGroupData.mintnumber?myGroupData.mintnumber:"0"}</div>
+            <div>{myGroupData.mintnumber ? myGroupData.mintnumber : "0"}</div>
           </div>
           <div className="mt-5 me-5">
             <div className="text-gray-400">TOTAL SOLD</div>
-            <div className="text-center">{myGroupData.soldnumber?myGroupData.soldnumber:"0"}</div>
+            <div>{myGroupData.soldnumber ? myGroupData.soldnumber : "0"}</div>
           </div>
           <div className="mt-5 me-5">
             <div className="text-gray-400">TOTAL EARNINGS</div>
-            <div className="text-center">{totalEarning?totalEarning:"0"} USDC</div>
+            <div>{totalEarning ? totalEarning : "0"} USDC</div>
           </div>
         </div>
       </div>
