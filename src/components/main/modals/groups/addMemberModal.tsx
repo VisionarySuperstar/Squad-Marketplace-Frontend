@@ -25,17 +25,18 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
   const { signIn, isAuthenticated, user } = useAuth();
   const api = useAPI();
   const [allUserData, setAllUserData] = useState<IUSER[]>();
-  const [selectedUser, setSelectedUser] = useState<IUSER>({} as IUSER);
+  const [selectedUser, setSelectedUser] = useState<IUSER | undefined>(undefined);
 
   const getAllUserData = async () => {
     const { data: Data } = await api.post(`/auth/user/getAllMembers`);
-    console.log("User Data-->", Data);
+    // console.log("User Data-->", Data);
     setAllUserData(Data);
   };
   useEffect(() => {
     getAllUserData();
   }, []);
   const [name, setName] = useState<string>("");
+
 
   return (
     <>
@@ -122,7 +123,9 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
               <button
                 className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                 onClick={() =>
-                  addSelectedUsers(selectedUser ? selectedUser : ({} as IUSER))
+                  {
+                    selectedUser && addSelectedUsers(selectedUser) 
+                  }
                 }
               >
                 ADD MEMBER

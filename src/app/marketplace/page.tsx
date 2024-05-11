@@ -47,7 +47,7 @@ export default function Home() {
         console.log(carouselElement.clientHeight);
       }
       const currentScrollPosition = window.scrollY;
-      console.log("scroll_position", currentScrollPosition);
+      
       if (currentScrollPosition >= carouselHeight) {
         updateNavbarBackground(true);
       } else {

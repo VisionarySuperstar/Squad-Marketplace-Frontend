@@ -73,7 +73,11 @@ const NewGroupModal = () => {
   }, []);
 
   const addSelectedUsers = (_user: IUSER) => {
-    if (_user !== ({} as IUSER)) setSelectedUsers([...selectedUsers, _user]);
+    const isExist = selectedUsers.map((_user_index:IUSER) => _user_index.id === _user.id); 
+
+    console.log("isExist : ", isExist) ;
+    if(isExist.includes(true)) return ;
+    setSelectedUsers([...selectedUsers, _user]);
   };
 
   const _submitRegister = async () => {
@@ -143,6 +147,7 @@ const NewGroupModal = () => {
   };
 
   const handleSubmit = () => {
+    console.log("submit") ;
     if (isLoading) return;
 
     setIsInvalid(true);
@@ -157,11 +162,15 @@ const NewGroupModal = () => {
       showToast("Input your Group Description", "warning");
       valid = false;
     }
+    console.log("selectedUsers", selectedUsers);
     if (!selectedUsers.length) {
       showToast("Select at least one member", "warning");
       valid = false;
     }
-
+    if(!Number(groupConfirmNumber) || Number(groupConfirmNumber) >  selectedUsers.length){
+      showToast("Select right confirm number", "warning");
+      valid = false ;
+    }
     if (valid) {
       if (!isAuthenticated) {
         showToast("Connect your wallet!", "warning");
@@ -222,7 +231,7 @@ const NewGroupModal = () => {
             </svg>
           </div>
           {addMemberModalState && (
-            <AddMemberModal addSelectedUsers={addSelectedUsers} />
+            <AddMemberModal addSelectedUsers={addSelectedUsers}/>
           )}
           <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
             <h1 className="text-center mt-2 mb-[20px] text-chocolate-main text-lg ">
