@@ -24,7 +24,6 @@ import {
 import { useBalance, useAccount, useChainId } from 'wagmi';
 import useAuth from "@/hooks/useAuth";
 
-
 const NavBar = () => {
   const isBackbtn = useNavbarUIControlStore((state) => state.isbackbtn);
   const [screenWidth, setScreenWidth] = useState<number>(0);
@@ -54,6 +53,10 @@ const NavBar = () => {
     router.back();
   };
   useEffect(() => {
+    console.log("test++++++++> ", isLogin)
+    // signIn().then((data: any) => {
+    //   console.log("here:=========> ", data);
+    // })
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
@@ -86,17 +89,18 @@ const NavBar = () => {
   };
   useEffect(() => {
     if (isAuthenticated) {
-      updateLogin(true);
+      
       if (user) {
-        console.log("user", user) ;
+        console.log("user", user);
         setAvatar(user.avatar);
+        
       }
+      updateLogin(true);
     }
     else {
       updateLogin(false);
     }
   }, [isAuthenticated]);
-
   const _renderSignActions = () => {
     if (!isLogin) {
       return (
@@ -138,6 +142,7 @@ const NavBar = () => {
     <>
       {isShow && (
         <div className="flex justify-between w-[100vw] fixed bg-white top-[0px] h-[100px] border-b items-center p-3 z-[1000] drop-shadow-sm">
+          
           <div className="hidden">
             <div className="min-w-[80px]">
               {(

@@ -11,15 +11,15 @@ const ActiveWeb3Provider = dynamic(() => import("@/providers/web3Provider"), { s
 const Provider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
       <ToastProvider>
-        <JotaiProvider>
           <RainbowProvider>
             <ActiveWeb3Provider>
               <AuthProvider>
+        <JotaiProvider>
                 {children}
+        </JotaiProvider>
               </AuthProvider>
             </ActiveWeb3Provider>
           </RainbowProvider>
-        </JotaiProvider>
       </ToastProvider>
   );
 };

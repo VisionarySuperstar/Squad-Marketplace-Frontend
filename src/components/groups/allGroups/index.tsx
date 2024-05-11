@@ -10,9 +10,12 @@ import { IGROUP } from "@/types";
 
 interface IProps {
   scale: number;
+  // sortType:string;
+  // activelyRecruiting:boolean;
+  // searchContent:string;
 }
 
-const AllGroup = ({ scale }: IProps) => {
+const AllGroup = ({ scale}: IProps) => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [allGroupData, setAllGroupData] = useState<IGROUP[]>() ;

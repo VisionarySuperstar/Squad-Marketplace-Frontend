@@ -14,6 +14,7 @@ import useToastr from "@/hooks/useToastr";
 import { useRouter } from "next/navigation";
 import useAPI from "@/hooks/useAPI";
 
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 
 interface IContext {
   signIn: () => Promise<void>,
@@ -38,6 +39,7 @@ const AuthProvider = ({
   //atoms
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const [user, setUser] = useAtom(userAtom);
+  const setProfileModalState = useGroupUIControlStore((state) => state.updateProfileModal);
 
   const _setAuth = (user: IUSER | undefined, token: string | undefined) => {
     axios.defaults.headers.common['x-auth-token'] = token;
@@ -49,7 +51,6 @@ const AuthProvider = ({
     if (isDisconnected) {
       setUser(undefined);
       setIsAuthenticated(false);
-
       router.push("/groups");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,14 +76,17 @@ const AuthProvider = ({
 
       if (signData === "NONE") {
         _setAuth(undefined, undefined);
-        router.push("/profile/create");
+        setProfileModalState(true);
+        // router.push("/profile/create");
+
         showToast("Please create your profile.", 'warning');
       } else {
         const { data: _user }: any = jwt.decode(signData);
-        console.log("_user->", _user ) ;
+        console.log("_user->", _user);
         _setAuth(_user, signData);
         showToast("Signin Success", "success");
       }
+      return signData;
     } catch (err: any) {
       if (err.code === 4001) {
         showToast("User rejected the request.", 'warning');
@@ -132,7 +136,7 @@ const AuthProvider = ({
   const getAllGroup = async () => {
     try {
       const { data: allGroupData } = await api.get(`/api/getAllGroup`);
-      console.log("allGroupData: ", allGroupData) ;
+      console.log("allGroupData: ", allGroupData);
     } catch (err: any) {
       if (err.code === 4001) {
         showToast("User rejected the request.", 'warning');
