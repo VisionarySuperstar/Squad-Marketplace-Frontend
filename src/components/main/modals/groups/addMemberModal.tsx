@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
@@ -31,18 +31,17 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
     const { data: Data } = await api.post(`/auth/user/getAllMembers`);
     console.log("User Data-->", Data);
     setAllUserData(Data);
-  }
+  };
   useEffect(() => {
     getAllUserData();
   }, []);
   const [name, setName] = useState<string>("");
 
-
   return (
     <>
-      <div className="">
+      <div className="font-Maxeville">
         <div
-          className="join_background"
+          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setAddMemberModalState(false);
           }}
@@ -86,21 +85,33 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
               />
               <div className="absolute bg-black  h-10"></div>
             </div>
-            <div className='flex-col gap-3'>
-              {
-                name && allUserData && allUserData.filter((_user: IUSER) => _user.name.toLowerCase().includes(name.toLowerCase() ) && _user.wallet != user?.wallet).map((_user: IUSER, key) =>
-                  <div className={`flex gap-3 items-center mt-3 cursor-pointer hover:bg-indigo-300 p-2 ${selectedUser === _user && 'bg-indigo-300'}`} onClick={() => setSelectedUser(_user)} key={key}>
-                    <Image
-                      src={_user.avatar}
-                      className="rounded-full object-cover"
-                      width={50}
-                      height={50}
-                      alt="avatar"
-                    />
-                    <h2 className="text-center">{_user.name}</h2>
-                  </div>
-                )
-              }
+            <div className="flex-col gap-3">
+              {name &&
+                allUserData &&
+                allUserData
+                  .filter(
+                    (_user: IUSER) =>
+                      _user.name.toLowerCase().includes(name.toLowerCase()) &&
+                      _user.wallet != user?.wallet
+                  )
+                  .map((_user: IUSER, key) => (
+                    <div
+                      className={`flex gap-3 items-center mt-3 cursor-pointer hover:bg-indigo-300 p-2 ${
+                        selectedUser === _user && "bg-indigo-300"
+                      }`}
+                      onClick={() => setSelectedUser(_user)}
+                      key={key}
+                    >
+                      <Image
+                        src={_user.avatar}
+                        className="rounded-full object-cover"
+                        width={50}
+                        height={50}
+                        alt="avatar"
+                      />
+                      <h2 className="text-center">{_user.name}</h2>
+                    </div>
+                  ))}
             </div>
             <div
               className="flex justify-center items-center mt-5 mb-3"
@@ -108,13 +119,18 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
                 setAddMemberModalState(false);
               }}
             >
-              <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg" onClick={() => addSelectedUsers(selectedUser ? selectedUser:{} as IUSER)}>
+              <button
+                className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                onClick={() =>
+                  addSelectedUsers(selectedUser ? selectedUser : ({} as IUSER))
+                }
+              >
                 ADD MEMBER
               </button>
+            </div>
           </div>
         </div>
       </div>
-    </div >
     </>
   );
 };

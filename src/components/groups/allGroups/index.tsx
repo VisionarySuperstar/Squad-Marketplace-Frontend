@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -5,8 +6,7 @@ import Card from "@/components/main/cards/groupCard";
 import groups from "@/data/groups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP } from "@/types";
-
-
+import useCreatGroupState from "@/store/createGroupStatus";
 
 interface IProps {
   scale: number;
@@ -18,9 +18,12 @@ interface IProps {
 const AllGroup = ({ scale}: IProps) => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
-  const [allGroupData, setAllGroupData] = useState<IGROUP[]>() ;
+  const [allGroupData, setAllGroupData] = useState<IGROUP[]>();
+  const createGroupState = useCreatGroupState((state) => state.state);
+  const updateCreateGroupState = useCreatGroupState(
+    (state) => state.updateState
+  );
   const api = useAPI();
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -36,23 +39,26 @@ const AllGroup = ({ scale}: IProps) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-
   }, []);
 
   const getAllGroupData = async () => {
     const { data: Data } = await api.get(`/api/getAllGroup`);
-    console.log("all Group Data------->", Data);
-    setAllGroupData(Data) ;
-    
-  }
+    setAllGroupData(Data);
+    updateCreateGroupState("ready");
+  };
 
   useEffect(() => {
     getAllGroupData();
-  }, []) ;
+  }, []);
+
+  useEffect(() => {
+    if (createGroupState == "just_created") getAllGroupData();
+  }, [createGroupState]);
 
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
   }, [screenWidth]);
+
   return (
     <>
       {enableScale && (
@@ -65,17 +71,18 @@ const AllGroup = ({ scale}: IProps) => {
               )}, 1fr)`,
             }}
           >
-            {allGroupData && allGroupData.map((item, index) => (
-              <Card
-                key={index}
-                state={"1"}
-                name={item.name}
-                groupBio={item.description}
-                membercount={item.member.length}
-                groupId={item.id}
-                avatar={item.avatar}
-              />
-            ))}
+            {allGroupData &&
+              allGroupData.map((item, index) => (
+                <Card
+                  key={index}
+                  state={"1"}
+                  name={item.name}
+                  groupBio={item.description}
+                  membercount={item.member.length}
+                  groupId={item.id}
+                  avatar={item.avatar}
+                />
+              ))}
           </div>
         </div>
       )}
@@ -84,17 +91,18 @@ const AllGroup = ({ scale}: IProps) => {
           <div
             className={`gap-3 flex-wrap grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5`}
           >
-            {allGroupData && allGroupData.map((item, index) => (
-              <Card
-                key={index}
-                state={"1"}
-                groupBio={item.description}
-                membercount={item.member.length}
-                name={item.name}
-                groupId={item.id}
-                avatar={item.avatar}
-              />
-            ))}
+            {allGroupData &&
+              allGroupData.map((item, index) => (
+                <Card
+                  key={index}
+                  state={"1"}
+                  groupBio={item.description}
+                  membercount={item.member.length}
+                  name={item.name}
+                  groupId={item.id}
+                  avatar={item.avatar}
+                />
+              ))}
           </div>
         </div>
       )}

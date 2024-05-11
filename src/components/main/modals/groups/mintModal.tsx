@@ -16,10 +16,6 @@ import NFT_ABI from "@/constants/content_nft.json";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
 
-
-
-
-
 interface MintModalInterface {
   groupId: number;
   groupAddress: string;
@@ -29,9 +25,18 @@ interface MintModalInterface {
   deleteContent: (id: number) => void;
   getNFTData: () => void;
 }
-const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteContent, uploadId, getNFTData }: MintModalInterface) => {
+const MintModal = ({
+  groupId,
+  groupAddress,
+  mintAvatar,
+  avatarFile,
+  deleteContent,
+  uploadId,
+  getNFTData,
+}: MintModalInterface) => {
   const [allCollection, setAllCollection] = useState<ICOLLECTION[]>([]);
-  const [showProgressModal, setShowProgressModal] = React.useState<boolean>(false);
+  const [showProgressModal, setShowProgressModal] =
+    React.useState<boolean>(false);
   const [stepper, setStepper] = React.useState<number>(0);
   const [percent, setPercent] = React.useState<number>(0);
   const api = useAPI();
@@ -71,12 +76,11 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
   const { signIn, isAuthenticated, user } = useAuth();
   const { showToast } = useToastr();
 
-
   const getCollectionData = async () => {
-    const result = await api.get('/api/getCollection');
+    const result = await api.get("/api/getCollection");
     setAllCollection(result.data);
     console.log("result", result.data);
-  }
+  };
   useEffect(() => {
     getCollectionData();
   }, []);
@@ -85,9 +89,11 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
       const _avatarQuery: Record<string, string> = {};
 
       // Use Promise.all to wait for all promises to resolve
-      await Promise.all(allCollection.flatMap(collection =>
-        collection.nft.map(id => getNftById(id.id))
-      )).then((results) => {
+      await Promise.all(
+        allCollection.flatMap((collection) =>
+          collection.nft.map((id) => getNftById(id.id))
+        )
+      ).then((results) => {
         results.forEach((index, idIndex) => {
           // Assuming id.id is the key and index.avatar is the value
           _avatarQuery[index.id] = index.avatar;
@@ -116,19 +122,18 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
     const result = await api.post(`/api/getNftById`, { id: id });
     console.log("url", result.data);
     return result.data;
-  }
+  };
   const handleMint = async () => {
     // mint
-    let collection_address = "", collection_name;
+    let collection_address = "",
+      collection_name;
     if (selected === allCollection.length) {
       collection_name = newCollectionName;
-    }
-    else {
+    } else {
       collection_address = allCollection[selected].address;
       collection_name = allCollection[selected].name;
     }
     let collection_id = "1";
-
 
     // console.log("mintAvatar, ", avatarFile);
     // const formData = new FormData();
@@ -147,85 +152,100 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
     // @step1 upload logo to PINATA
     setStepper(1);
     setPercent(0);
-      const _avatar = await uploadToIPFS(
-        new File(
-          [
-            avatarFile
-          ], "metadata.json"
-        ),
-        ({ loaded, total }: { loaded: number; total: number }) => {
-          setPercent(Math.floor((loaded * 100) / total));
-          console.log(percent) ;
-        }
-      ).catch(err => {
-        console.log(err);
-        throw "Project Data upload failed to IPFS. Please retry.";
-      });
-      console.log("@logoURI: ", _avatar);
-      setStepper(2);
+    const _avatar = await uploadToIPFS(
+      new File([avatarFile], "metadata.json"),
+      ({ loaded, total }: { loaded: number; total: number }) => {
+        setPercent(Math.floor((loaded * 100) / total));
+        console.log(percent);
+      }
+    ).catch((err) => {
+      console.log(err);
+      throw "Project Data upload failed to IPFS. Please retry.";
+    });
+    console.log("@logoURI: ", _avatar);
+    setStepper(2);
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       //setIsLoading(true);
       if (selected === allCollection.length) {
-        const tx = await contract.mintNew(_avatar, newCollectionName, newCollectionSymbol, newCollectionDescription);
+        const tx = await contract.mintNew(
+          _avatar,
+          newCollectionName,
+          newCollectionSymbol,
+          newCollectionDescription
+        );
         await tx.wait();
         const newMintNftId = await contract.numberOfNFT();
-        collection_address = await contract.getNftAddress(Number(newMintNftId) - 1);
-
-      }
-      else {
+        collection_address = await contract.getNftAddress(
+          Number(newMintNftId) - 1
+        );
+      } else {
         const tx = await contract.mint(_avatar, collection_address);
         await tx.wait();
       }
       const _contract = new Contract(collection_address, NFT_ABI, signer);
       const collection_id_1 = await _contract.tokenNumber();
       console.log("collection_id: " + collection_id_1);
-      collection_id = (Number(Number(collection_id_1) - 1)).toString();
+      collection_id = Number(Number(collection_id_1) - 1).toString();
       console.log("collection_id", collection_id);
 
-
-
-      await api.post("/api/addNft", { collectionAddress: collection_address, collectionId: collection_id, avatar: _avatar, groupId: groupId, owner: groupAddress, status: "mint", collectionName: collection_name }).then(
-        async () => {
-          const result = await api.post("/api/getNftByCollection", { collectionAddress: collection_address, collectionId: collection_id });
+      await api
+        .post("/api/addNft", {
+          collectionAddress: collection_address,
+          collectionId: collection_id,
+          avatar: _avatar,
+          groupId: groupId,
+          owner: groupAddress,
+          status: "mint",
+          collectionName: collection_name,
+        })
+        .then(async () => {
+          const result = await api.post("/api/getNftByCollection", {
+            collectionAddress: collection_address,
+            collectionId: collection_id,
+          });
           console.log("result ", result.data);
           if (selected === allCollection.length) {
-            const nft_collection = [{ "id": result.data.id }];
-            console.log("nft_collection", nft_collection)
-            await api.post("/api/addCollection", { name: newCollectionName, symbol: newCollectionSymbol, description: newCollectionDescription, address: collection_address, nft: JSON.stringify(nft_collection) });
-          }
-          else {
+            const nft_collection = [{ id: result.data.id }];
+            console.log("nft_collection", nft_collection);
+            await api.post("/api/addCollection", {
+              name: newCollectionName,
+              symbol: newCollectionSymbol,
+              description: newCollectionDescription,
+              address: collection_address,
+              nft: JSON.stringify(nft_collection),
+            });
+          } else {
             const nft_collection_data = allCollection[selected].nft;
-            nft_collection_data.push({ "id": result.data.id });
+            nft_collection_data.push({ id: result.data.id });
             console.log("nft_collection_data", nft_collection_data);
-            await api.post("/api/updateCollection", { id: allCollection[selected].id, nft: JSON.stringify(nft_collection_data) })
+            await api.post("/api/updateCollection", {
+              id: allCollection[selected].id,
+              nft: JSON.stringify(nft_collection_data),
+            });
           }
           await api.post("/api/addMintNumberToGroup", { id: groupId });
-        }
-      )
+        });
       deleteContent(uploadId);
-      getNFTData() ;
+      getNFTData();
       setMintModalState(false);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
         showToast("User rejected transaction.", "warning");
       } else {
         showToast(String(error), "warning");
       }
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
-
-  }
+  };
   return (
     <>
       <div className="z-100 font-Maxeville text-chocolate-main">
         <div
-          className="join_background"
+          className=" bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setMintModalState(false);
           }}
@@ -264,8 +284,9 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
                   <div
                     key={key}
                     onClick={() => setSelected(key)}
-                    className={`cursor-pointer  rounded-lg m-2 p-3 ${selected === key ? "border border-chocolate-main/50" : ""
-                      }`}
+                    className={`cursor-pointer  rounded-lg m-2 p-3 ${
+                      selected === key ? "border border-chocolate-main/50" : ""
+                    }`}
                   >
                     <div className="grid grid-cols-2 gap-2">
                       {index.nft.map((nfts, key1) => (
@@ -302,7 +323,10 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
                 </button>
                 <button
                   className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
-                  onClick={() => { setSelected(allCollection.length); setStep(1); }}
+                  onClick={() => {
+                    setSelected(allCollection.length);
+                    setStep(1);
+                  }}
                 >
                   New Collection
                 </button>
@@ -464,12 +488,18 @@ const MintModal = ({ groupId, groupAddress, mintAvatar, avatarFile, deleteConten
                   className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
                   onClick={handleMint}
                 >
-                  {isLoading ?
+                  {isLoading ? (
                     <>
-                      <Icon icon="eos-icons:bubble-loading" width={20} height={20} /> PROCESSING...
-                    </> :
+                      <Icon
+                        icon="eos-icons:bubble-loading"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      PROCESSING...
+                    </>
+                  ) : (
                     "MINT"
-                  }
+                  )}
                 </button>
               </div>
             </div>

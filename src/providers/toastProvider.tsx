@@ -156,7 +156,7 @@ const ToastProvider = ({ children }: { children: ReactElement }) => {
                   alt=""
                   width={40}
                   height={40}
-                  sizes="100vw"                     
+                  sizes="100vw"
                 />
                 <div className="ml-3 flex items-center">
                   <p className="text-sm font-medium text-light-gray">{str}</p>

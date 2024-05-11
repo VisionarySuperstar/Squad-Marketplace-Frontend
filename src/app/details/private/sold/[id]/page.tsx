@@ -1,22 +1,18 @@
 "use client";
 
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
 import Collapse from "@/components/main/collapse";
 import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
-import BidModal from "@/components/marketplace/modals/bidModal";
-import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
 import NFTs from "@/data/nfts.json";
 
 import { INFT, IGROUP, IUSER } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
-
-
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setBidModalState = useMarketplaceUIControlStore(
@@ -31,20 +27,24 @@ const Home = ({ params }: { params: { id: string } }) => {
   );
   const data = NFTs.find((nft) => nft.id === params.id);
   const auctionType = data?.auctionType;
-  const [nftData, setNftData] = useState<INFT>() ;
-  const [groupName, setGroupName] = useState<string>("") ;
-  const [ownerName, setOwnerName] = useState<string>("") ;
+  const [nftData, setNftData] = useState<INFT>();
+  const [groupName, setGroupName] = useState<string>("");
+  const [ownerName, setOwnerName] = useState<string>("");
   const api = useAPI();
 
   const getNftData = async () => {
-    const result = await api.post("/api/getNftById", {id:params.id}) ;
-    setNftData(result.data) ;
-    console.log("result", result) ;
-    const result1 = await api.post("/api/getGroupId", {id: result.data.groupid});
-    setGroupName(result1.data.name) ;
-    const result2 = await api.post("/auth/user/getUserByAddress", {id: result.data.owner});
-    setOwnerName(result2.data.name) ;
-  }
+    const result = await api.post("/api/getNftById", { id: params.id });
+    setNftData(result.data);
+    console.log("result", result);
+    const result1 = await api.post("/api/getGroupId", {
+      id: result.data.groupid,
+    });
+    setGroupName(result1.data.name);
+    const result2 = await api.post("/auth/user/getUserByAddress", {
+      id: result.data.owner,
+    });
+    setOwnerName(result2.data.name);
+  };
 
   useEffect(() => {
     getNftData();
@@ -52,8 +52,6 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
-      {bidModalState && <BidModal />}
-      {withdrawModalState && <WithdrawModal />}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {nftData && (
@@ -87,7 +85,9 @@ const Home = ({ params }: { params: { id: string } }) => {
               <div className="text-gray-400 mt-3">Group</div>
               <div className="text-[18px]">{groupName}</div>
               <div className="text-gray-400 mt-3">Current Owner</div>
-              <div className="text-[18px]">{ownerName? ownerName:nftData?.owner}</div>
+              <div className="text-[18px]">
+                {ownerName ? ownerName : nftData?.owner}
+              </div>
             </div>
             <div className="flex flex-col mb-[35px]">
               <Split_line />

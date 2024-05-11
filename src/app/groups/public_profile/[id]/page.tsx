@@ -47,20 +47,22 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
   const api = useAPI();
   const getMyGroupData = async () => {
-
     const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
     setMyGroupData(Data);
-  }
+  };
 
   const getNftData = async () => {
-    const {data: Data} = await api.post('/api/getNftByGroupAndStatus', {id:params.id, status:'list'}) ;
-    setNftData(Data) ;
-    console.log("here is nft Data", Data) ;
-  }
+    const { data: Data } = await api.post("/api/getNftByGroupAndStatus", {
+      id: params.id,
+      status: "list",
+    });
+    setNftData(Data);
+    console.log("here is nft Data", Data);
+  };
 
   useEffect(() => {
     getMyGroupData();
-    getNftData() ;
+    getNftData();
   }, []);
 
   const getMembersData = async (id: string) => {
@@ -68,49 +70,50 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     const { data } = await api.get(`/auth/user/${id}`);
     console.log("DataDATA ---------> ", data);
     return data;
-  }
+  };
   useEffect(() => {
     if (!myGroupData) return;
-    (async() => {
-      const _members = await Promise.all(myGroupData.member.map(async(_member: any) => await getMembersData(_member.id)));
+    (async () => {
+      const _members = await Promise.all(
+        myGroupData.member.map(
+          async (_member: any) => await getMembersData(_member.id)
+        )
+      );
       setMembers(_members);
-    }) ();
-
-  }, [myGroupData])
-
-
-
+    })();
+  }, [myGroupData]);
 
   return (
     <>
       <div className="pt-[100px] h-full">
-        <div className="grouppage_container flex font-Maxeville" id="profile">
+        <div className="page_container_p40 flex font-Maxeville" id="profile">
           <div>
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
               <div className="mt-5">
-                {
-                  myGroupData && <Image
+                {myGroupData && (
+                  <Image
                     src={myGroupData?.avatar}
                     className="w-full aspect-square object-cover"
                     alt="group_avatar"
                     width={300}
                     height={300}
                   />
-                }
-
+                )}
               </div>
               <div className="mt-5">
-                {
-                  members && myGroupData &&
-                  <GroupDescription users={members} myGroupData={myGroupData} />
-                }
-
+                {members && myGroupData && (
+                  <GroupDescription
+                    users={members}
+                    myGroupData={myGroupData}
+                    totalEarning={""}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
         <div className="sticky top-[100px] z-10 hidden md:block">
-          <nav className="bg-white bg-opacity-95 border-b-[1px] grouppage_container font-Maxeville">
+          <nav className="bg-white bg-opacity-95 border-b-[1px] page_container_p40 font-Maxeville">
             <div>
               <div className="flex items-center h-16">
                 <div className="flex items-center cursor-pointer">
@@ -148,7 +151,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             </div>
           </nav>
         </div>
-        <div className="grouppage_container font-Maxeville">
+        <div className="page_container_p40 font-Maxeville">
           <div className="flex justify-between text-xl mt-5" id="nfts">
             <div>NFTs (23)</div>
             <div className="border-b-2 border-indigo-500"></div>
@@ -162,8 +165,12 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
               >
                 <div className="absolute aspect-square top-0 content-card-menu opacity-0 transition-all rounded-lg text-white bg-chocolate-main/80 w-full">
                   <div>
-                    <div className="absolute left-4 top-4">{item.collectionname} {item.collectionid}</div>
-                    <div className="absolute left-4 bottom-4">{item.currentprice} USDC</div>
+                    <div className="absolute left-4 top-4">
+                      {item.collectionname} {item.collectionid}
+                    </div>
+                    <div className="absolute left-4 bottom-4">
+                      {item.currentprice} USDC
+                    </div>
                     <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
                       <EyeIcon props="white" />
                       200
@@ -187,7 +194,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
 
           <div className="flex justify-between text-lg mt-5" id="post">
-            <div>NEWS</div>
+            <div>POST</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL</div>
           </div>
           <div

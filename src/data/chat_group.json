@@ -1,0 +1,961 @@
+[
+    {
+        "name": "Henry's group",
+        "members_bio": "Alice, Tim & Andrew",
+        "avatar": "/assets/images/groups/group1.jpg",
+        "chat": "Yes i agree with Andrew",
+        "lastSeen": "48m",
+        "number": 2,
+        "members": [
+            {
+                "avatar": "/assets/images/groups/group1.jpg",
+                "name": "Henry's group",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user1.jpg",
+                "name": "Alice",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "New"
+            }
+        ]
+    },
+    {
+        "name": "Joe's group",
+        "members_bio": "Jackie & Frank",
+        "avatar": "/assets/images/groups/group2.jpg",
+        "chat": "deal?",
+        "lastSeen": "48m",
+        "number": 2,
+        "members": [
+            {
+                "name": "Joe's group",
+                "avatar": "/assets/images/groups/group2.jpg",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user2.jpg",
+                "name": "Larry",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user3.jpg",
+                "name": "John",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "1h"
+            },
+            {
+                "avatar": "/assets/images/users/user4.jpg",
+                "name": "John",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "2h"
+            },
+            {
+                "avatar": "/assets/images/users/user1.jpg",
+                "name": "Larry",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            }
+        ]
+    },
+    {
+        "name": "Jack's group",
+        "members_bio": "Jack, Tom, Eric...",
+        "avatar": "/assets/images/groups/group3.jpg",
+        "chat": "Wow!",
+        "lastSeen": "48m",
+        "number": 5,
+        "members": [
+            {
+                "name": "Jack's group",
+                "avatar": "/assets/images/groups/group3.jpg",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user3.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user2.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user1.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user4.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            }
+        ]
+    },
+    {
+        "name": "Jack's group",
+        "members_bio": "Jack, Tom, Eric...",
+        "avatar": "/assets/images/groups/group3.jpg",
+        "chat": "Wow!",
+        "lastSeen": "48m",
+        "number": 5,
+        "members": [
+            {
+                "name": "Jack's group",
+                "avatar": "/assets/images/groups/group3.jpg",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user3.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user2.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user1.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            },
+            {
+                "avatar": "/assets/images/users/user4.jpg",
+                "name": "Paul",
+                "chat": [
+                    {
+                        "id": 1,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Hi",
+                        "time": "1h 15m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Hello",
+                        "time": "1h"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Nice to meet you!",
+                        "time": "30m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Me too!",
+                        "time": "15m"
+                    },
+                    {
+                        "id": 0,
+                        "text": "How are you?",
+                        "time": "3m"
+                    },
+                    {
+                        "id": 1,
+                        "text": "I am fine.",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 1,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    },
+                    {
+                        "id": 0,
+                        "text": "Now we are looking for something.\nAre you perfect for this position?",
+                        "time": "Just Now"
+                    }
+                ],
+                "lastSeen": "48m"
+            }
+        ]
+    }
+]

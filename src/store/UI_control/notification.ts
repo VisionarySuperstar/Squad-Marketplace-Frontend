@@ -1,17 +1,22 @@
 import { create } from "zustand";
 
 type State = {
+  newMessage: string;
   notificationModal: boolean;
-  
 };
 
 type Action = {
-  updateNotificationModal: (notificationModal: State["notificationModal"]) => void;
+  updateNewMessage: (notificationModal: State["newMessage"]) => void;
+  updateNotificationModal: (
+    notificationModal: State["notificationModal"]
+  ) => void;
 };
 
 const useNotificationUIControlStore = create<State & Action>((set) => ({
+  newMessage: "",
   notificationModal: false,
-  updateNotificationModal: (value) => set(() => ({ notificationModal: value }))
+  updateNewMessage: (value) => set(() => ({ newMessage: value })),
+  updateNotificationModal: (value) => set(() => ({ notificationModal: value })),
 }));
 
 export default useNotificationUIControlStore;
