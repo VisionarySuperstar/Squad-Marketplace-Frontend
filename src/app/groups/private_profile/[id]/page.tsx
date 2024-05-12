@@ -34,6 +34,7 @@ import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
@@ -47,6 +48,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   }, [setLoadingState]);
   const router = useRouter();
   const mintModalState = useGroupUIControlStore((state) => state.mintModal);
+  const [newPostMessage, setNewPostMessage] = useState<string>("");
   const setMintModalState = useGroupUIControlStore(
     (state) => state.updateMintModal
   );
@@ -484,6 +486,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const sendGroupPost = async () => {
+    const now = new Date();
+    const formattedDateTime = now.toISOString();
+    console.log("currentTime--->", formattedDateTime)
+    await api.post("/api/addPost", { groupId: myGroupData?.id, postTime: formattedDateTime, content: newPostMessage });
+    setNewPostMessage("");
+    toast.success("Successfully posted news!");
+
+  }
+
   return (
     <>
       {mintModalState && avatar && (
@@ -796,25 +808,33 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
           <Split_line />
 
-          <div className="flex justify-between text-xl">
-            <div>POST</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-          </div>
-          <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
-            <div>
-              <textarea
-                rows={4}
-                className="p-4 outline-none border w-full border-chocolate-main rounded-lg"
-                placeholder="Write a message to share with those outside your group."
-              />
-              <div className="text-gray-400 text-right">
-                <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg">
-                  SEND
-                </button>
+          {
+            isDirector &&
+            <>
+              <div className="flex justify-between text-xl">
+                <div>POST</div>
+                <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
               </div>
-            </div>
-            <div></div>
-          </div>
+              <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
+                
+                <div>
+                  <textarea
+                    rows={4}
+                    className="p-4 outline-none border w-full border-chocolate-main rounded-lg"
+                    placeholder="Write a message to share with those outside your group."
+                    value={newPostMessage}
+                    onChange={(e) => setNewPostMessage(e.target.value)}
+                  />
+                  <div className="text-gray-400 text-right">
+                    <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg" onClick={sendGroupPost}>
+                      SEND
+                    </button>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            </>
+          }
           <div className="flex items-center text-xl">
             <input
               id="default-radio"
@@ -881,17 +901,15 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               members.map((item, index) => (
                 <>
                   <div
-                    className={`flex flex-col ${
-                      item.id === myGroupData?.director && "hidden"
-                    } `}
+                    className={`flex flex-col ${item.id === myGroupData?.director && "hidden"
+                      } `}
                   >
                     <div
                       key={index}
-                      className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2 ${
-                        selected === index
-                          ? "border border-chocolate-main/50"
-                          : "border border-white"
-                      }`}
+                      className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2 ${selected === index
+                        ? "border border-chocolate-main/50"
+                        : "border border-white"
+                        }`}
                       onClick={() => setSelected(index)}
                     >
                       <div className="aspect-square rounded-full">
@@ -908,9 +926,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       </div>
                     </div>
                     <button
-                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center ${
-                        item.id === myGroupData?.director ? "hidden" : ""
-                      } `}
+                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center ${item.id === myGroupData?.director ? "hidden" : ""
+                        } `}
                       onClick={() => suggestDirectorSetting(index)}
                     >
                       SUGGEST

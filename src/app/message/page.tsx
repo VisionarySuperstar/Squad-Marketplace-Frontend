@@ -19,7 +19,7 @@ import useAuth from "@/hooks/useAuth";
 
 import Message from "@/interfaces/message";
 
-export default function MessagePage() {.
+export default function MessagePage() {
   const { user } = useAuth();
 
   //data
