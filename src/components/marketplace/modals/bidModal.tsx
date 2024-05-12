@@ -10,12 +10,13 @@ import Marketplace_ABI from "@/constants/marketplace.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
-import useToastr from "@/hooks/useToastr";
+
 import GROUP_ABI from "@/constants/creator_group.json";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import useAPI from "@/hooks/useAPI";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import toast from "react-hot-toast";
 
 interface BidGroupModalInterface {
   nftData: INFT;
@@ -42,7 +43,7 @@ const BidGroupModal = ({
   );
   const seletedGroup = MyGroups[3];
   const [bidAmount, setBidAmount] = useState<string>("");
-  const { showToast } = useToastr();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
@@ -138,9 +139,9 @@ const BidGroupModal = ({
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(err), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);

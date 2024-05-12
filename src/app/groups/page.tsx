@@ -25,11 +25,15 @@ export default function Home() {
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
+  const setIsGroupBtn = useNavbarUIControlStore(
+    (state) => state.updateIsGroupBtn
+  );
   //useEffect
   useEffect(() => {
     setLoadingState(false);
     setNavbarCurrent("groups");
-  }, [setLoadingState, setNavbarCurrent]);
+    setIsGroupBtn(true);
+  }, [setLoadingState, setNavbarCurrent, setIsGroupBtn]);
 
   useEffect(() => {
     const handleResize = () => {
