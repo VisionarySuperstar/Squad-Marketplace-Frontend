@@ -22,11 +22,20 @@ import {
   useChainModal,
 } from "@rainbow-me/rainbowkit";
 
-import { useBalance, useAccount, useChainId } from "wagmi";
+import { useBalance, useAccount, useChainId, useWalletClient } from "wagmi";
 import useAuth from "@/hooks/useAuth";
+import CreateProfileModal from "@/components/main/modals/createProfileModal";
+import { useDisconnect } from 'wagmi'
+
 
 const NavBar = () => {
   const isGroupBtn = useNavbarUIControlStore((state) => state.isgroupbtn);
+  const profileModalState = useGroupUIControlStore(
+    (state) => state.profileModal
+  );
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
+  );
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const current = useNavbarUIControlStore((state) => state.url);
   const isShow = useNavbarUIControlStore((state) => state.isshow);
@@ -90,6 +99,7 @@ const NavBar = () => {
     connector,
     isDisconnected,
     chainId,
+    
   } = useActiveWeb3();
   const { signIn, isAuthenticated, user } = useAuth();
 
@@ -135,7 +145,7 @@ const NavBar = () => {
           SignIn
         </div>
       );
-    } else {
+    } else if (user) {
       return (
         <div
           onClick={() => router.push("/profile")}
@@ -149,11 +159,32 @@ const NavBar = () => {
           Profile
         </div>
       );
+    } else if (!user) {
+      return (
+        <div
+          onClick={() => setProfileModalState(true)}
+          className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+        >
+          <Icon
+            icon="material-symbols:lab-profile-outline"
+            width={20}
+            height={20}
+          />
+          Create Profile
+        </div>
+      );
     }
+  };
+  const { disconnect } = useDisconnect() ;
+  const handleDisconnect = async () => {
+    disconnect();
+    window.localStorage.removeItem("accessToken");
   };
 
   return (
     <>
+      {profileModalState && <CreateProfileModal />}
+
       {isShow && (
         <>
           <div
@@ -346,7 +377,7 @@ const NavBar = () => {
                         <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
                           {_renderSignActions()}
                           <div
-                            onClick={openAccountModal}
+                            onClick={handleDisconnect}
                             className="flex gap-2 rounded-b-lg items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
                           >
                             <Icon icon="tabler:logout" width={20} height={20} />

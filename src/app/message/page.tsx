@@ -15,16 +15,17 @@ import useWebSocketStore from "@/store/webSocketStore";
 import useUserStore from "@/store/user_infor/userinfor";
 import useNotificationUIControlStore from "@/store/UI_control/notification";
 import useAuth from "@/hooks/useAuth";
+import useAPI from "@/hooks/useAPI";
 
 import Message from "@/interfaces/message";
+import toast from "react-hot-toast";
+
+import { IGROUP } from "@/types";
 
 export default function MessagePage() {
   const { user } = useAuth();
 
   //data
-  const JoinedGroups = data.filter((group) =>
-    group.members.some((member) => member.id === "190635")
-  );
   //useState
   const [content, setContent] = useState<string>("");
   const [inputid, setinputid] = useState<string>("");
@@ -35,6 +36,9 @@ export default function MessagePage() {
   const [messageData, setMessageData] = useState<Message[]>();
   const [sotedMessageData, setSotedMessageData] = useState<Message[]>();
   const [messageType, setMessageType] = useState<string>("");
+  const [MyGroupData, setMyGroupData] = useState<IGROUP[]>([]);
+  //use api
+  const api = useAPI();
   //useRef
   const messageInputRef = useRef<HTMLDivElement>(null);
   const clearMessageInput = () => {
@@ -63,6 +67,15 @@ export default function MessagePage() {
     (state) => state.updateLoadingState
   );
   //handler
+  const getJoinedGroupData = async () => {
+    const response = await api
+      .post(`/api/getGroup`, { id: user?.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    console.log("apple--->", response?.data);
+    setMyGroupData(response?.data);
+  };
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setinputid(event.target.value);
   };
@@ -156,12 +169,13 @@ export default function MessagePage() {
   //useEffect
   useEffect(() => {
     setLoadingState(false);
+    getJoinedGroupData();
     updateNavbarBackground(true);
   }, [setLoadingState, updateNavbarBackground]);
 
   useEffect(() => {
-    setSelectedGroup(JoinedGroups.find((group) => group.id == groupid));
-  }, [JoinedGroups, groupid]);
+    setSelectedGroup(MyGroupData?.find((group: any) => group.id == groupid));
+  }, [MyGroupData, groupid]);
 
   useEffect(() => {
     setSotedMessageData(messageData?.sort((a, b) => b.id - a.id));
@@ -231,7 +245,7 @@ export default function MessagePage() {
               <div className="text-gray-400 text-[12px] my-3 overflow-hidden text-overflow">
                 <p className="truncate">Groups</p>
               </div>
-              {JoinedGroups.map((item, index) => (
+              {MyGroupData.map((item, index) => (
                 <div key={index}>
                   <div
                     className={`flex flex-col gap-1 border-b-[1px] cursor-pointer transition-all ${

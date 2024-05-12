@@ -165,7 +165,7 @@ const BidGroupModal = ({
           setBidModalState(false);
         }}
       ></div>
-      <div className="joinModal drop-shadow-lg">
+      <div className="joinModal z-[1300] drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {

@@ -84,7 +84,7 @@ const WithdrawGroupModal = ({ groupAddress }: WithdrawGroupModalInterface) => {
           setWithdrawModalState(false);
         }}
       ></div>
-      <div className="joinModal drop-shadow-lg">
+      <div className="joinModal z-[1300] drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {

@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import NewGroupModal from "@/components/main/modals/groups/newGroupModal";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
-import CreateProfileModal from "@/components/main/modals/createProfileModal";
 export default function GroupsLayout({
   children,
 }: {
@@ -19,7 +18,6 @@ export default function GroupsLayout({
     (state) => state.updateIsBackground
   );
   const navbarCurrentUrl = useNavbarUIControlStore((state) => state.url);
-  const profileModalState = useGroupUIControlStore((state) => state.profileModal);
 
   if (navbarCurrentUrl === "") setNavbarCurrent("groups");
   useEffect(() => {
@@ -30,7 +28,6 @@ export default function GroupsLayout({
     <div>
       {children}
       {createGroupModalState && <NewGroupModal />}
-      {profileModalState && <CreateProfileModal />}
     </div>
   );
 }
