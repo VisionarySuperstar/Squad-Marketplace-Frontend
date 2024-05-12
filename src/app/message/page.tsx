@@ -4,7 +4,6 @@ import React, { useState, useEffect, ChangeEvent, useRef } from "react";
 import "react-quill/dist/quill.snow.css";
 import SearchIcon from "@/components/svgs/search_icon";
 import WriteIcon from "@/components/svgs/write_icon";
-import ChatMessageData from "@/data/chat_group.json";
 import data from "@/data/groups.json";
 import Image from "next/image";
 import SeenIcon from "@/components/svgs/seen_icon";
@@ -297,13 +296,7 @@ export default function MessagePage() {
                   </div>
                   <div className="flex flex-col">
                     <div className="text-[18px]">{selectedGroup?.name}</div>
-                    <div className="text-gray-400 text-[12px]">
-                      {
-                        ChatMessageData[selectedGroupListId]?.members[
-                          selectedUserListId
-                        ].lastSeen
-                      }
-                    </div>
+                    <div className="text-gray-400 text-[12px]">40min</div>
                   </div>
                 </div>
                 <div className="overflow-y-scroll scrollbar h-full flex flex-col-reverse">

@@ -62,7 +62,6 @@ const AuthProvider = ({
     if (isDisconnected) {
       setUser(undefined);
       setIsAuthenticated(false);
-      window.localStorage.removeItem("accessToken");
       router.push("/groups");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -13,10 +13,8 @@ import { Popover } from "flowbite-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import useLoadingControlStore from "@/store/UI_control/loading";
-import toast from "react-hot-toast";
 
 import useUserStore from "@/store/user_infor/userinfor";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Notification from "./News&message/notifications";
 import {
   useConnectModal,
