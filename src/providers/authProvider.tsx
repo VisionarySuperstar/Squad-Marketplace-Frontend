@@ -54,6 +54,7 @@ const AuthProvider = ({
   const _setAuth = (user: IUSER | undefined, token: string | undefined) => {
     axios.defaults.headers.common["x-auth-token"] = token;
     setIsAuthenticated(true);
+    console.log("_setAuth user", user);
     setUser(user);
   };
   //disconnect
@@ -107,6 +108,7 @@ const AuthProvider = ({
 
         toast.success("Please create your profile.");
       } else {
+        window.localStorage.setItem("accessToken", signData);
         const { data: _user }: any = jwt.decode(signData);
         console.log("_user->", _user);
         _setAuth(_user, signData);
@@ -119,6 +121,30 @@ const AuthProvider = ({
       } else if (err.code === "ERR_BAD_RESPONSE") {
         toast.error("Signin failed. Please try again.");
       }
+    }
+  };
+
+  const verifyUser = async () => {
+    const accessToken = window.localStorage.getItem("accessToken");
+    if (accessToken) {
+      const response = await api
+        .post("/auth/user/verifyuser", {
+          accessToken,
+        })
+        .catch((error) => {
+          toast.error(
+            "Your profile cannot be found or your access time has expired. Try logging in again."
+          );
+          signIn();
+        });
+      const token = response?.data;
+      const result: any = jwt.decode(token);
+      if (result?.data) {
+        _setAuth(result?.data, token);
+        toast.success("Signin Success");
+      }
+    } else {
+      signIn();
     }
   };
 
@@ -156,9 +182,9 @@ const AuthProvider = ({
       if (registerData === "exists") {
         toast.error("User already exists.");
       } else {
-        const { data: _user }: any = jwt.decode(registerData);
-        console.log(_user);
-        _setAuth(_user, registerData);
+        const result: any = jwt.decode(registerData);
+        console.log(result?.data);
+        _setAuth(result?.data, registerData);
         toast.success("Profile created Successfully.");
       }
     } catch (err: any) {
@@ -176,7 +202,8 @@ const AuthProvider = ({
 
   React.useEffect(() => {
     if (isConnected) {
-      signIn();
+      //
+      verifyUser();
     } else {
       setUser(undefined);
       setIsAuthenticated(false);

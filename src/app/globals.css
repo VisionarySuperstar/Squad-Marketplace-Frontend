@@ -345,7 +345,6 @@ body {
   background-color: white;
   top: 50%;
   left: 50%;
-  z-index: 1000;
   transform: translate(-50%, -50%);
   border-radius: 30px;
   animation: pulse 0.3s;
