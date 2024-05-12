@@ -12,8 +12,6 @@ import { useRouter } from "next/navigation";
 import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
-import MyGroups from "@/data/groups.json";
-import Nfts from "@/data/sold_nfts.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT } from "@/types";
 import useAuth from "@/hooks/useAuth";
@@ -187,7 +185,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   height={0}
                   sizes="100vw"
                 />
-                <div className="mt-3">{""}</div>
+                <div className="mt-3"></div>
               </div>
             ))}
           </div>
