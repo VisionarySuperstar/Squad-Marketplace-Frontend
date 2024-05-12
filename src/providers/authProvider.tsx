@@ -10,11 +10,11 @@ import { isAuthenticatedAtom, userAtom } from "@/store/user";
 import { IUSER, TRegister, IGROUP } from "@/types";
 import { TMsg } from "@/types/user";
 import jwt from "jsonwebtoken";
-import useToastr from "@/hooks/useToastr";
+
 import { useRouter } from "next/navigation";
 import useAPI from "@/hooks/useAPI";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-
+import toast from "react-hot-toast";
 
 interface IContext {
   signIn: () => Promise<void>;
@@ -41,13 +41,15 @@ const AuthProvider = ({
     chainId,
   } = useActiveWeb3();
   const { signMessageAsync } = useSignMessage();
-  const { showToast } = useToastr();
+
   const api = useAPI();
   const router = useRouter();
   //atoms
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const [user, setUser] = useAtom(userAtom);
-  const setProfileModalState = useGroupUIControlStore((state) => state.updateProfileModal);
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
+  );
 
   const _setAuth = (user: IUSER | undefined, token: string | undefined) => {
     axios.defaults.headers.common["x-auth-token"] = token;
@@ -64,7 +66,6 @@ const AuthProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDisconnected]);
 
-
   const signIn = async () => {
     try {
       if (!chain) throw "chain is not defined...";
@@ -77,7 +78,7 @@ const AuthProvider = ({
       const { id, message, profileId }: TMsg = msgData;
 
       if (!id || !message || !profileId) {
-        showToast("Undefined Message.", "warning");
+        toast.error("Undefined Message.");
         return;
       }
 
@@ -94,20 +95,19 @@ const AuthProvider = ({
         setProfileModalState(true);
         // router.push("/profile/create");
 
-        showToast("Please create your profile.", 'warning');
-
+        toast.error("Please create your profile.");
       } else {
         const { data: _user }: any = jwt.decode(signData);
         console.log("_user->", _user);
         _setAuth(_user, signData);
-        showToast("Signin Success", "success");
+        toast.success("Signin Success");
       }
       return signData;
     } catch (err: any) {
       if (err.code === 4001) {
-        showToast("User rejected the request.", "warning");
+        toast.error("User rejected the request.");
       } else if (err.code === "ERR_BAD_RESPONSE") {
-        showToast("Signin failed. Please try again.", "warning");
+        toast.error("Signin failed. Please try again.");
       }
     }
   };
@@ -123,7 +123,7 @@ const AuthProvider = ({
       });
       const { id, message, profileId }: TMsg = msgData;
       if (!id || !message || !profileId) {
-        showToast("Undefined Message.", "warning");
+        toast.error("Undefined Message.");
         return;
       }
       const signature = await signMessageAsync({ message });
@@ -137,22 +137,22 @@ const AuthProvider = ({
       });
 
       if (registerData === "exists") {
-        showToast("User already exists.", "warning");
+        toast.error("User already exists.");
       } else {
         const { data: _user }: any = jwt.decode(registerData);
         console.log(_user);
         _setAuth(_user, registerData);
-        showToast("Profile created Successfully.", "success");
+        toast.success("Profile created Successfully.");
       }
     } catch (err: any) {
       console.log(err);
       if (err.code === 4001) {
-        showToast("User rejected the request.", "warning");
+        toast.error("User rejected the request.");
       } else if (
         err.code === "ERR_BAD_RESPONSE" ||
         err.code === "ERR_NETWORK"
       ) {
-        showToast("Register failed. Please try again.", "warning");
+        toast.error("Register failed. Please try again.");
       }
     }
   };
@@ -163,9 +163,9 @@ const AuthProvider = ({
       console.log("allGroupData: ", allGroupData);
     } catch (err: any) {
       if (err.code === 4001) {
-        showToast("User rejected the request.", "warning");
+        toast.error("User rejected the request.");
       } else if (err.code === "ERR_BAD_RESPONSE") {
-        showToast("Backend is not working well", "warning");
+        toast.error("Backend is not working well");
       }
     }
   };

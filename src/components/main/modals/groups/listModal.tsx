@@ -10,9 +10,10 @@ import { Contract } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
-import useToastr from "@/hooks/useToastr";
+
 import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import toast from "react-hot-toast";
 
 type auctionQueryType = {
   initialPrice: string;
@@ -46,7 +47,6 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
-  const { showToast } = useToastr();
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -159,9 +159,9 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         router.back();
       } catch (error: any) {
         if (String(error.code) === "ACTION_REJECTED") {
-          showToast("User rejected transaction.", "warning");
+          toast.error("User rejected transaction.");
         } else {
-          showToast(String(error), "warning");
+          toast.error("An error occurred. please try again");
         }
       } finally {
         setIsLoading(false);
