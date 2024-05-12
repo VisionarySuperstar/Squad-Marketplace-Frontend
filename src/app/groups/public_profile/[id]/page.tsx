@@ -15,7 +15,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import MyGroups from "@/data/groups.json";
 import Nfts from "@/data/sold_nfts.json";
 import useAPI from "@/hooks/useAPI";
-import { IGROUP, IUSER, INFT } from "@/types";
+import { IGROUP, IUSER, INFT, IPOST_NEWS } from "@/types";
 import useAuth from "@/hooks/useAuth";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
@@ -45,6 +45,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const { signIn, isAuthenticated, user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
+  const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
+
   const api = useAPI();
   const getMyGroupData = async () => {
     const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
@@ -58,6 +60,11 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     });
     setNftData(Data);
     console.log("here is nft Data", Data);
+    const result_postNews = await api.post("/api/getPostByGroupId", {
+      id: params.id,
+    });
+    console.log("result postnews", result_postNews.data);
+    setPostNews(result_postNews.data);
   };
 
   useEffect(() => {
@@ -194,7 +201,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
 
           <div className="flex justify-between text-lg mt-5" id="post">
-            <div>POST</div>
+            <div>POST({postNews?.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL</div>
           </div>
           <div
@@ -202,23 +209,26 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             className="mt-5 mb-3 w-[26%]"
           ></div>
           <div>
-            {[1, 2].map((item: number) => (
-              <div key={item}>
-                <div className="flex text-lg gap-5">
-                  <div className="w-10 h-10 bg-gray-500 aspect-square rounded-full">
-                    <Image
-                      src="/user.png"
-                      className="w-full h-full rounded-full"
-                      alt="news_avatar"
-                      width={100}
-                      height={100}
-                    />
-                  </div>
-                  <div>We are looking for a talented photographer.</div>
+            {postNews &&
+              postNews?.length &&
+              postNews?.map((_news, key) => (
+                <div
+                  key={key}
+                  className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1"
+                >
+                    <div>
+                      {_news.content.split("\n").map((line, index) => (
+                        <React.Fragment key={index}>
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    <div>{_news.post_time.toString()}</div>
+                  
+                  <Split_line />
                 </div>
-                <Split_line />
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 

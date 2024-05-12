@@ -33,7 +33,8 @@ export interface IGROUP {
   mintnumber: string,
   soldnumber:string,
   earning:string,
-  address:string
+  address:string,
+  is_actively_recruiting:boolean
 }
 
 
@@ -98,5 +99,5 @@ export interface IPOST_NEWS{
   id: string;
   groupid:string;
   post_time:string;
-  content:Text;
+  content:string;
 }
