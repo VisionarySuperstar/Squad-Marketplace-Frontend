@@ -133,10 +133,12 @@ const CreateProfileModal = () => {
   };
 
   React.useEffect(() => {
+    console.log("user----------->", user) ;
     if (user) {
       setName(user.name);
       setEmail(user.email);
       setPreview(String(user.avatar));
+      console.log("user----------->", user) ;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
