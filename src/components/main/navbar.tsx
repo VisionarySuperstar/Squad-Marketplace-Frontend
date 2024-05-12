@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 import useUserStore from "@/store/user_infor/userinfor";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Notification from "./News&message/notifications";
-
 import {
   useConnectModal,
   useAccountModal,
@@ -420,7 +419,6 @@ const NavBar = () => {
             </div>
             <div></div>
           </div>
-
           <div
             className={`${
               isGroupBtn ? "" : "hidden"

@@ -93,3 +93,10 @@ export interface IDIRECTOR_TRANSACTION{
   ]
   transaction_id: string;
 }
+
+export interface IPOST_NEWS{
+  id: string;
+  groupid:string;
+  post_time:string;
+  content:Text;
+}

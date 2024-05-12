@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -26,7 +25,6 @@ import {
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import { IMGBB_API_KEY } from "@/constants/config";
-
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -83,6 +81,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const { signIn, isAuthenticated, user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
+  const [newPostMessage, setNewPostMessage] = useState<string>("") ;
   const api = useAPI();
   const getMyGroupData = async () => {
     const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
@@ -200,7 +199,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   >(undefined);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   useEffect(() => {
     if (!address || !chainId || !signer) {
       return;
@@ -484,6 +482,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setIsLoading(false);
     }
   };
+
+  const sendGroupPost = async () => {
+    const now = new Date();
+    const formattedDateTime = now.toISOString();
+    console.log("currentTime--->", formattedDateTime) ;
+    await api.post("/api/addPost", { groupId: myGroupData?.id, postTime: formattedDateTime, content: newPostMessage });
+    setNewPostMessage("");
+    toast.success("Successfully posted news!");
+
+  }
 
   return (
     <>
@@ -797,25 +805,33 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
           <Split_line />
 
-          <div className="flex justify-between text-xl">
-            <div>POST</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-          </div>
-          <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
-            <div>
-              <textarea
-                rows={4}
-                className="p-4 outline-none border w-full border-chocolate-main rounded-lg"
-                placeholder="Write a message to share with those outside your group."
-              />
-              <div className="text-gray-400 text-right">
-                <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg">
-                  SEND
-                </button>
+          {
+            isDirector &&
+            <>
+              <div className="flex justify-between text-xl">
+                <div>POST</div>
+                <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
               </div>
-            </div>
-            <div></div>
-          </div>
+              <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
+                
+                <div>
+                  <textarea
+                    rows={4}
+                    className="p-4 outline-none border w-full border-chocolate-main rounded-lg"
+                    placeholder="Write a message to share with those outside your group."
+                    value={newPostMessage}
+                    onChange={(e) => setNewPostMessage(e.target.value)}
+                  />
+                  <div className="text-gray-400 text-right">
+                    <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg" onClick={sendGroupPost}>
+                      SEND
+                    </button>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            </>
+          }
           <div className="flex items-center text-xl">
             <input
               id="default-radio"
