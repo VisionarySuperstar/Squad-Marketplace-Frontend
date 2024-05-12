@@ -22,6 +22,7 @@ import {
   INFT,
   IOFFER_TRANSACTION,
   IDIRECTOR_TRANSACTION,
+  IPOST_NEWS,
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import { IMGBB_API_KEY } from "@/constants/config";
@@ -69,19 +70,23 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const [listedNfts, setListedNfts] = useState<INFT[]>([]);
   const [mintedNfts, setMintedNfts] = useState<INFT[]>([]);
+
   const [offerTransactions, setOfferTransactions] = useState<
     IOFFER_TRANSACTION[]
   >([]);
   const [directorTransactions, setDirectorTransactions] = useState<
     IDIRECTOR_TRANSACTION[]
   >([]);
+
+  const [postNews, setPostNews] = useState<IPOST_NEWS[]>([]);
+
   const [offerNfts, setOfferNfts] = useState<INFT[]>([]);
 
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
 
   const { signIn, isAuthenticated, user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
-  const [newPostMessage, setNewPostMessage] = useState<string>("") ;
+  const [newPostMessage, setNewPostMessage] = useState<string>("");
   const api = useAPI();
   const getMyGroupData = async () => {
     const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
@@ -115,6 +120,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const result5 = await api.post("/api/getDirector", { id: params.id });
     setDirectorTransactions(result5.data);
     console.log("result5", result5.data);
+
+    const result_postNews = await api.post("/api/getPostByGroupId", {
+      id: params.id,
+    });
+    setPostNews(result_postNews.data);
+    console.log("result5 postnews", result_postNews.data);
   };
   useEffect(() => {
     getMyGroupData();
@@ -486,12 +497,15 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const sendGroupPost = async () => {
     const now = new Date();
     const formattedDateTime = now.toISOString();
-    console.log("currentTime--->", formattedDateTime) ;
-    await api.post("/api/addPost", { groupId: myGroupData?.id, postTime: formattedDateTime, content: newPostMessage });
+    console.log("currentTime--->", formattedDateTime);
+    await api.post("/api/addPost", {
+      groupId: myGroupData?.id,
+      postTime: formattedDateTime,
+      content: newPostMessage,
+    });
     setNewPostMessage("");
     toast.success("Successfully posted news!");
-
-  }
+  };
 
   return (
     <>
@@ -804,16 +818,30 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
 
           <Split_line />
+          <div className="flex justify-between text-xl">
+            <div>NEWS</div>
+            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
+          </div>
+          {postNews &&
+            postNews.map((_news, key) => (
+              <div  key={key} className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
+                <div>
+                  <div></div>
+                  <div className="text-gray-400 text-right">
+                    
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            ))}
 
-          {
-            isDirector &&
+          {isDirector && (
             <>
               <div className="flex justify-between text-xl">
                 <div>POST</div>
                 <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
               </div>
               <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
-                
                 <div>
                   <textarea
                     rows={4}
@@ -823,7 +851,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     onChange={(e) => setNewPostMessage(e.target.value)}
                   />
                   <div className="text-gray-400 text-right">
-                    <button className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg" onClick={sendGroupPost}>
+                    <button
+                      className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg"
+                      onClick={sendGroupPost}
+                    >
                       SEND
                     </button>
                   </div>
@@ -831,7 +862,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div></div>
               </div>
             </>
-          }
+          )}
           <div className="flex items-center text-xl">
             <input
               id="default-radio"
