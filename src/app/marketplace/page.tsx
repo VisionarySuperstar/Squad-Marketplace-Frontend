@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
 import Sort from "@/components/groups/groupSearch/sort";
@@ -14,6 +15,7 @@ import NftCard from "@/components/main/cards/nftCard";
 import NFTs from "@/data/nfts.json";
 import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(60);
@@ -47,7 +49,7 @@ export default function Home() {
         console.log(carouselElement.clientHeight);
       }
       const currentScrollPosition = window.scrollY;
-      
+
       if (currentScrollPosition >= carouselHeight) {
         updateNavbarBackground(true);
       } else {
@@ -67,9 +69,13 @@ export default function Home() {
   }, [updateNavbarBackground]);
 
   const getAllNftData = async () => {
-    const result1 = await api.post("/api/getListedNft", { id: "mint" });
-    setAllNftData(result1.data);
-    console.log("nftData ", result1.data);
+    const result1 = await api
+      .post("/api/getListedNft", { id: "mint" })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setAllNftData(result1?.data);
+    console.log("nftData ", result1?.data);
   };
   useEffect(() => {
     getAllNftData();

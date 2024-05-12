@@ -83,12 +83,16 @@ const CreateProfileModal = () => {
       if (user) {
         console.log("update process");
 
-        const { data: res } = await api.put("/user", {
-          avatar: _avatar,
-          name,
-          email,
-        });
-        if (res === "Update Success") {
+        const response = await api
+          .put("/user", {
+            avatar: _avatar,
+            name,
+            email,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
+        if (response?.data === "Update Success") {
           if (user) {
             setUser({ ...user, avatar: _avatar, email, name });
           }

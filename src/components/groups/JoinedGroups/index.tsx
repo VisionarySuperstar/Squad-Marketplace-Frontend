@@ -10,10 +10,11 @@ import useAuth from "@/hooks/useAuth";
 import { IGROUP } from "@/types";
 //import store
 import useCreatGroupState from "@/store/createGroupStatus";
+import toast from "react-hot-toast";
 
 const MyGroup = () => {
   //use state
-  const [allGroupData, setAllGroupData] = useState<IGROUP[]>([]);
+  const [MyGroupData, setMyGroupData] = useState<IGROUP[]>([]);
   //use auth
   const { signIn, isAuthenticated, user } = useAuth();
   //use api
@@ -25,8 +26,12 @@ const MyGroup = () => {
   );
   //func
   const getJoinedGroupData = async () => {
-    const { data: Data } = await api.post(`/api/getGroup`, { id: user?.id });
-    setAllGroupData(Data);
+    const response = await api
+      .post(`/api/getGroup`, { id: user?.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setMyGroupData(response?.data);
     updateCreateGroupState("ready");
   };
   //use effect
@@ -42,7 +47,7 @@ const MyGroup = () => {
     <div>
       <h1 className="my-5 text-lg">MY GROUPS</h1>
       <div className="gap-3 flex-wrap grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
-        {allGroupData.map((item, index) => (
+        {MyGroupData?.map((item, index) => (
           <Card
             key={index}
             state={"2"}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,7 +15,6 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 
 //import data
-import Groups from "@/data/groups.json";
 import NftCard from "@/components/main/cards/nftCard";
 import {
   IGROUP,
@@ -25,15 +25,11 @@ import {
   IPOST_NEWS,
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
-import { IMGBB_API_KEY } from "@/constants/config";
-import EyeIcon from "@/components/svgs/eye_icon";
-import HeartIcon from "@/components/svgs/heart_icon";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract, ContractFactory } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import useAPI from "@/hooks/useAPI";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
@@ -89,44 +85,71 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const api = useAPI();
   const getMyGroupData = async () => {
-    const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
+    const response = await api
+      .post(`/api/getGroupId`, { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    const Data = response?.data;
     setMyGroupData(Data);
     setActiveState(Data.is_actively_recruiting);
     if (Data.director === user?.id) setIsDirector(true);
   };
   const getNFTData = async () => {
-    const result1 = await api.post("/api/getNftByGroupAndStatus", {
-      id: params.id,
-      status: "sold",
-    });
-    console.log("result1", result1.data);
-    setSoldNfts(result1.data);
-    const result2 = await api.post("/api/getNftByGroupAndStatus", {
-      id: params.id,
-      status: "list",
-    });
-    setListedNfts(result2.data);
-    console.log("result2", result2.data);
-    const result3 = await api.post("/api/getNftByGroupAndStatus", {
-      id: params.id,
-      status: "mint",
-    });
-    setMintedNfts(result3.data);
-    console.log("result3", result3.data);
+    const result1 = await api
+      .post("/api/getNftByGroupAndStatus", {
+        id: params.id,
+        status: "sold",
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setSoldNfts(result1?.data);
+    const result2 = await api
+      .post("/api/getNftByGroupAndStatus", {
+        id: params.id,
+        status: "list",
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setListedNfts(result2?.data);
+    console.log("result2", result2?.data);
+    const result3 = await api
+      .post("/api/getNftByGroupAndStatus", {
+        id: params.id,
+        status: "mint",
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setMintedNfts(result3?.data);
 
-    const result4 = await api.post("/api/getOffering", { id: params.id });
-    setOfferTransactions(result4.data);
-    console.log("result4", result4.data);
+    const result4 = await api
+      .post("/api/getOffering", { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setOfferTransactions(result4?.data);
+    console.log("result4", result4?.data);
 
-    const result5 = await api.post("/api/getDirector", { id: params.id });
-    setDirectorTransactions(result5.data);
-    console.log("result5", result5.data);
+    const result5 = await api
+      .post("/api/getDirector", { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setDirectorTransactions(result5?.data);
+    console.log("result5", result5?.data);
 
-    const result_postNews = await api.post("/api/getPostByGroupId", {
-      id: params.id,
-    });
-    console.log("result5 postnews", result_postNews.data);
-    setPostNews(result_postNews.data);
+    const result_postNews = await api
+      .post("/api/getPostByGroupId", {
+        id: params.id,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setPostNews(result_postNews?.data);
+    console.log("result5 postnews", result_postNews?.data);
   };
   useEffect(() => {
     getMyGroupData();
@@ -151,7 +174,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const getMembersData = async (id: string) => {
     console.log("id", id);
-    const { data } = await api.get(`/auth/user/${id}`);
+    const response = await api.get(`/auth/user/${id}`).catch((error) => {
+      toast.error(error.message);
+    });
+    const data = response?.data;
     console.log("DataDATA ---------> ", data);
     return data;
   };
@@ -240,10 +266,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       await tx.wait();
       const confirm_member = item.confirm_member;
       confirm_member.push({ id: user.id });
-      await api.post("/api/updateOffering", {
-        id: item.id,
-        confirm_member: JSON.stringify(confirm_member),
-      });
+      await api
+        .post("/api/updateOffering", {
+          id: item.id,
+          confirm_member: JSON.stringify(confirm_member),
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -269,20 +299,28 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         BigInt(item.transactionid)
       );
       await tx.wait();
-      await api.post("/api/removeOffering", { id: item.nftid });
+      await api
+        .post("/api/removeOffering", { id: item.nftid })
+        .catch((error) => {
+          toast.error(error.message);
+        });
 
-      await api.post("/api/updateNft", {
-        id: item_nft?.id,
-        owner: item.buyer,
-        status: "sold",
-        auctionType: item_nft?.auctiontype,
-        initialPrice: item_nft?.initialprice,
-        salePeriod: item_nft?.saleperiod,
-        currentPrice: item_nft?.currentprice,
-        currentBidder: item_nft?.currentbidder,
-        reducingRate: item_nft?.reducingrate,
-        listedNumber: item_nft.listednumber,
-      });
+      await api
+        .post("/api/updateNft", {
+          id: item_nft?.id,
+          owner: item.buyer,
+          status: "sold",
+          auctionType: item_nft?.auctiontype,
+          initialPrice: item_nft?.initialprice,
+          salePeriod: item_nft?.saleperiod,
+          currentPrice: item_nft?.currentprice,
+          currentBidder: item_nft?.currentbidder,
+          reducingRate: item_nft?.reducingrate,
+          listedNumber: item_nft.listednumber,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -309,10 +347,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       await tx.wait();
       const confirm_member = item.confirm_member;
       confirm_member.push({ id: user.id });
-      await api.post("/api/updateDirector", {
-        id: item.id,
-        confirm_member: JSON.stringify(confirm_member),
-      });
+      await api
+        .post("/api/updateDirector", {
+          id: item.id,
+          confirm_member: JSON.stringify(confirm_member),
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -335,11 +377,19 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         BigInt(item.transaction_id)
       );
       await tx.wait();
-      await api.post("/api/removeDirector", { id: item.new_director });
-      await api.post("/api/updateGroupDirector", {
-        id: myGroupData?.id,
-        director: item.new_director,
-      });
+      await api
+        .post("/api/removeDirector", { id: item.new_director })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      await api
+        .post("/api/updateGroupDirector", {
+          id: myGroupData?.id,
+          director: item.new_director,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -404,10 +454,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         (_user) => _user.id !== user.id
       );
 
-      await api.post("/api/updateGroupMember", {
-        id: myGroupData?.id,
-        member: JSON.stringify(_member),
-      });
+      await api
+        .post("/api/updateGroupMember", {
+          id: myGroupData?.id,
+          member: JSON.stringify(_member),
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -431,10 +485,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       "(Number(Number(totalEarningAmount) / 1e18)).toString(), ",
       Number(Number(totalEarningAmount) / 1e18).toString()
     );
-    await api.post("/api/updateEarning", {
-      id: myGroupData?.id,
-      earning: Number(Number(totalEarningAmount) / 1e18).toString(),
-    });
+    await api
+      .post("/api/updateEarning", {
+        id: myGroupData?.id,
+        earning: Number(Number(totalEarningAmount) / 1e18).toString(),
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
     console.log("success here it is");
     if (!marketplaceContract) return;
 
@@ -476,13 +534,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       );
       await tx.wait();
       const transaction_id = await contract.getNumberOfCandidateTransaction();
-      await api.post("/api/addDirector", {
-        groupid: myGroupData?.id,
-        new_director: members[_num].id,
-        suggester: user?.id,
-        confirm_member: JSON.stringify([]),
-        transaction_id: Number(Number(transaction_id) - 1).toString(),
-      });
+      await api
+        .post("/api/addDirector", {
+          groupid: myGroupData?.id,
+          new_director: members[_num].id,
+          suggester: user?.id,
+          confirm_member: JSON.stringify([]),
+          transaction_id: Number(Number(transaction_id) - 1).toString(),
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -499,11 +561,15 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const now = new Date();
     const formattedDateTime = now.toISOString();
     console.log("currentTime--->", formattedDateTime);
-    await api.post("/api/addPost", {
-      groupId: myGroupData?.id,
-      postTime: formattedDateTime,
-      content: newPostMessage,
-    });
+    await api
+      .post("/api/addPost", {
+        groupId: myGroupData?.id,
+        postTime: formattedDateTime,
+        content: newPostMessage,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
     setNewPostMessage("");
     getNFTData();
     toast.success("Successfully posted news!");

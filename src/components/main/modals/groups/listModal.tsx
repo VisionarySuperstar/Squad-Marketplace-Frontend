@@ -141,20 +141,24 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         console.log("listed_number", listed_number);
         const listNumber = Number(Number(listed_number) - 1).toString();
         console.log("listed_number", listNumber);
-        await api.post("/api/updateNft", {
-          id: listNft.id,
-          owner: listNft.owner,
-          status: "list",
-          auctionType: auctionType,
-          initialPrice: auctionQuery.initialPrice,
-          salePeriod: _salePeriod,
-          currentPrice: auctionQuery.initialPrice,
-          currentBidder: "0x000",
-          reducingRate: auctionQuery.reducingRate
-            ? auctionQuery.reducingRate
-            : 0,
-          listedNumber: listNumber,
-        });
+        await api
+          .post("/api/updateNft", {
+            id: listNft.id,
+            owner: listNft.owner,
+            status: "list",
+            auctionType: auctionType,
+            initialPrice: auctionQuery.initialPrice,
+            salePeriod: _salePeriod,
+            currentPrice: auctionQuery.initialPrice,
+            currentBidder: "0x000",
+            reducingRate: auctionQuery.reducingRate
+              ? auctionQuery.reducingRate
+              : 0,
+            listedNumber: listNumber,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
         setListModalState(false);
         router.back();
       } catch (error: any) {
