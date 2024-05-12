@@ -53,6 +53,22 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   );
   const [uploadId, setUploadId] = useState<number>(-1);
   const [selected, setSelected] = useState<number>(0);
+  const [selectedSuggestBtn, setSelectedSuggestBtn] = useState<number>(-1);
+  const [selectedOfferConfirmBtn, setSelectedOfferConfirmBtn] =
+    useState<number>(-1);
+  const [selectedOfferExecuteBtn, setSelectedOfferExecuteBtn] =
+    useState<number>(-1);
+  const [selectedDirectorConfirmBtn, setSelectedDirectorConfirmBtn] =
+    useState<number>(-1);
+  const [selectedDirectorExecuteBtn, setSelectedDirectorExecuteBtn] =
+    useState<number>(-1);
+  const [isLoadingWithdrawButton, setIsLoadingWithdrawButton] =
+    useState<boolean>(false);
+  const [
+    isLoadingWithdrawMarketplaceButton,
+    setIsLoadingWithdrawMarketplaceButton,
+  ] = useState<boolean>(false);
+
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -253,6 +269,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setSelectedOfferConfirmBtn(-1);
     }
   };
 
@@ -293,6 +310,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setSelectedOfferExecuteBtn(-1);
     }
   };
 
@@ -322,6 +340,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setSelectedDirectorConfirmBtn(-1);
     }
   };
 
@@ -350,6 +369,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setSelectedDirectorExecuteBtn(-1);
     }
   };
 
@@ -358,7 +378,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsLoading(true);
+      setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
       await tx.wait();
       getBalancesForWithdraw();
@@ -369,7 +389,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingWithdrawButton(false);
     }
   };
   const withdrawFromMarketplace = async () => {
@@ -377,7 +397,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsLoading(true);
+      setIsLoadingWithdrawMarketplaceButton(true);
       const tx = await contract.withdrawFromMarketplace();
       await tx.wait();
       getBalancesForWithdraw();
@@ -388,7 +408,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingWithdrawMarketplaceButton(false);
     }
   };
 
@@ -455,6 +475,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) return;
       if (!user) return;
       setIsLoading(true);
+
       console.log("selected new director", members[_num].wallet);
 
       const members_in_group = await contract.members(0);
@@ -492,6 +513,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setSelectedSuggestBtn(-1);
     }
   };
 
@@ -520,6 +542,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   return (
     <>
+      {/* {
+        isLoading && 
+        
+      } */}
       {mintModalState && avatar && (
         <MintModal
           groupAddress={myGroupData ? myGroupData.address : ""}
@@ -750,23 +776,47 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       </div>
                       <div className="flex flex-col w-full">
                         <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px]"
-                          onClick={() =>
-                            offeringConfrimHandle(offerTransactions[key])
-                          }
+                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                          onClick={() => {
+                            offeringConfrimHandle(offerTransactions[key]);
+                            setSelectedOfferConfirmBtn(key);
+                          }}
                         >
-                          CONFIRM
+                          {selectedOfferConfirmBtn === key ? (
+                            <>
+                              <Icon
+                                icon="eos-icons:bubble-loading"
+                                width={20}
+                                height={20}
+                              />{" "}
+                              PROCESSING...
+                            </>
+                          ) : (
+                            "CONFIRM"
+                          )}
                         </button>
                         <button
                           className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px]"
-                          onClick={() =>
+                          onClick={() => {
                             offeringExecuteHandle(
                               offerTransactions[key],
                               offerNfts[key]
-                            )
-                          }
+                            );
+                            setSelectedOfferExecuteBtn(key);
+                          }}
                         >
-                          EXECUTE
+                          {selectedOfferExecuteBtn === key ? (
+                            <>
+                              <Icon
+                                icon="eos-icons:bubble-loading"
+                                width={20}
+                                height={20}
+                              />{" "}
+                              PROCESSING...
+                            </>
+                          ) : (
+                            "EXECUTE"
+                          )}
                         </button>
                       </div>
                     </div>
@@ -967,7 +1017,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       }`}
                       onClick={() => setSelected(index)}
                     >
-                      <div className="aspect-square rounded-full">
+                      <div className="aspect-square rounded-full mt-3">
                         <Image
                           src={item.avatar}
                           className="rounded-full aspect-square object-cover"
@@ -981,12 +1031,26 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       </div>
                     </div>
                     <button
-                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center ${
+                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
                         item.id === myGroupData?.director ? "hidden" : ""
                       } `}
-                      onClick={() => suggestDirectorSetting(index)}
+                      onClick={() => {
+                        suggestDirectorSetting(index);
+                        setSelectedSuggestBtn(index);
+                      }}
                     >
-                      SUGGEST
+                      {selectedSuggestBtn === index ? (
+                        <>
+                          <Icon
+                            icon="eos-icons:bubble-loading"
+                            width={20}
+                            height={20}
+                          />{" "}
+                          PROCESSING...
+                        </>
+                      ) : (
+                        "SUGGEST"
+                      )}
                     </button>
                   </div>
                 </>
@@ -1059,19 +1123,43 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         <div className="flex flex-col w-full">
                           <button
                             className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px]"
-                            onClick={() =>
-                              directorConfrimHandle(directorTransactions[key])
-                            }
+                            onClick={() => {
+                              directorConfrimHandle(directorTransactions[key]);
+                              setSelectedDirectorConfirmBtn(key);
+                            }}
                           >
-                            CONFIRM
+                            {selectedDirectorConfirmBtn === key ? (
+                              <>
+                                <Icon
+                                  icon="eos-icons:bubble-loading"
+                                  width={20}
+                                  height={20}
+                                />{" "}
+                                PROCESSING...
+                              </>
+                            ) : (
+                              "CONFIRM"
+                            )}
                           </button>
                           <button
                             className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px]"
-                            onClick={() =>
-                              directorExecuteHandle(directorTransactions[key])
-                            }
+                            onClick={() => {
+                              directorExecuteHandle(directorTransactions[key]);
+                              setSelectedDirectorExecuteBtn(key);
+                            }}
                           >
-                            EXECUTE
+                            {selectedDirectorExecuteBtn === key ? (
+                              <>
+                                <Icon
+                                  icon="eos-icons:bubble-loading"
+                                  width={20}
+                                  height={20}
+                                />{" "}
+                                PROCESSING...
+                              </>
+                            ) : (
+                              "Execute"
+                            )}
                           </button>
                         </div>
                       </div>
@@ -1097,9 +1185,20 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button
                 onClick={withdrawFromGroup}
-                className="border border-black rounded-full pl-4 pr-4 w-[190px] text-lg hover:bg-chocolate-main hover:text-white transition-all"
+                className="border border-black rounded-full pl-4 pr-4 w-[190px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
               >
-                Withdraw
+                {isLoadingWithdrawButton ? (
+                  <>
+                    <Icon
+                      icon="eos-icons:bubble-loading"
+                      width={20}
+                      height={20}
+                    />{" "}
+                    PROCESSING...
+                  </>
+                ) : (
+                  "WITHDRAW"
+                )}
               </button>
             </div>
           </div>
@@ -1107,7 +1206,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 text-lg lg:flex">
               <div className="flex gap-5">
                 <div className="flex items-center h-[32px]">AMOUNT</div>
-                <div className="flex border-2 border-black items-center justify-center pl-5 pr-5 rounded-lg text-gray-400">
+                <div className="flex border-2 border-black items-center justify-center pl-5 pr-5 rounded-lg text-gray-400 ">
                   {withdrawFromMarketplaceAmount
                     ? withdrawFromMarketplaceAmount
                     : "0"}
@@ -1118,9 +1217,20 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                 <button
                   onClick={withdrawFromMarketplace}
-                  className="border border-black rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all"
+                  className="border border-black rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
                 >
-                  Withdraw From Marketplace
+                  {isLoadingWithdrawMarketplaceButton ? (
+                    <>
+                      <Icon
+                        icon="eos-icons:bubble-loading"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      PROCESSING...
+                    </>
+                  ) : (
+                    "Withdraw From Marketplace"
+                  )}
                 </button>
               </div>
             </div>
