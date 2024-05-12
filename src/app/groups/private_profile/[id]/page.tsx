@@ -23,6 +23,7 @@ import {
   INFT,
   IOFFER_TRANSACTION,
   IDIRECTOR_TRANSACTION,
+  IPOST_NEWS,
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import { IMGBB_API_KEY } from "@/constants/config";
@@ -70,12 +71,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const [listedNfts, setListedNfts] = useState<INFT[]>([]);
   const [mintedNfts, setMintedNfts] = useState<INFT[]>([]);
+
   const [offerTransactions, setOfferTransactions] = useState<
     IOFFER_TRANSACTION[]
   >([]);
   const [directorTransactions, setDirectorTransactions] = useState<
     IDIRECTOR_TRANSACTION[]
   >([]);
+
+  const [postNews, setPostNews] = useState<IPOST_NEWS[]>([]);
+
   const [offerNfts, setOfferNfts] = useState<INFT[]>([]);
 
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
@@ -116,6 +121,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const result5 = await api.post("/api/getDirector", { id: params.id });
     setDirectorTransactions(result5.data);
     console.log("result5", result5.data);
+
+    const result_postNews = await api.post("/api/getPostByGroupId", {
+      id: params.id,
+    });
+    setPostNews(result_postNews.data);
+    console.log("result5 postnews", result_postNews.data);
   };
   useEffect(() => {
     getMyGroupData();
@@ -808,6 +819,22 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
 
           <Split_line />
+          <div className="flex justify-between text-xl">
+            <div>NEWS</div>
+            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
+          </div>
+          {postNews &&
+            postNews.map((_news, key) => (
+              <div  key={key} className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
+                <div>
+                  <div></div>
+                  <div className="text-gray-400 text-right">
+                    
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            ))}
 
           {isDirector && (
             <>
