@@ -213,14 +213,17 @@ const NewGroupModal = () => {
 
   return (
     <>
-      <div className="z-100 font-Maxeville">
-        <div
-          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
-          onClick={() => {
-            setCreateGroupModalState(false);
-          }}
-        ></div>
-        <div className="joinModal drop-shadow-lg">
+      {addMemberModalState && (
+        <AddMemberModal addSelectedUsers={addSelectedUsers} />
+      )}
+      <div
+        className=" bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        onClick={() => {
+          setCreateGroupModalState(false);
+        }}
+      ></div>
+      <div className="z-[1000] font-Maxeville">
+        <div className="joinModal drop-shadow-lg z-[1000]">
           <div
             className="closeBtn"
             onClick={() => {
@@ -240,9 +243,7 @@ const NewGroupModal = () => {
               />
             </svg>
           </div>
-          {addMemberModalState && (
-            <AddMemberModal addSelectedUsers={addSelectedUsers} />
-          )}
+
           <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
             <h1 className="text-center mt-2 mb-[20px] text-chocolate-main text-lg ">
               CREATE A NEW GROUP
