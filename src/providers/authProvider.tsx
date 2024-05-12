@@ -103,9 +103,9 @@ const AuthProvider = ({
       if (signData === "NONE") {
         _setAuth(undefined, undefined);
         setProfileModalState(true);
-        // router.push("/profile/create");
+        // router.push("/profile/create")
 
-        toast.error("Please create your profile.");
+        toast.success("Please create your profile.");
       } else {
         const { data: _user }: any = jwt.decode(signData);
         console.log("_user->", _user);
