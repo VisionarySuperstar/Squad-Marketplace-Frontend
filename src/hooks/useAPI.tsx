@@ -5,7 +5,6 @@ import { useAtom } from "jotai";
 import { userAtom, isAuthenticatedAtom } from "@/store/user";
 import { useRouter } from "next/navigation";
 import { baseURL } from "@/constants/config";
-import toast from "react-hot-toast";
 
 const useAPI = () => {
   const router = useRouter();

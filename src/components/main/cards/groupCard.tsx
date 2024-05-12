@@ -37,7 +37,7 @@ const GroupCard: React.FC<CardProps> = ({
   return (
     <>
       <div
-        className="transition-transform duration-200 transform text-sm cursor-pointer group-card font-Maxeville text-white active:translate-y-1 rounded-lg"
+        className="transition-transform duration-200 transform text-sm cursor-pointer group-card font-Maxeville text-white active:translate-y-1"
         onClick={handleClick}
       >
         <div className="w-full aspect-square flex justify-center items-center">
@@ -47,8 +47,8 @@ const GroupCard: React.FC<CardProps> = ({
               <div className="text-center">+</div>
             </div>
           ) : (
-            <div className="aspect-square w-full h-full relative rounded-lg">
-              <div className="absolute top-0 z-10 w-full h-full bg-chocolate-main/80 opacity-0 transition-all group-card-info p-[15px] rounded-lg">
+            <div className="aspect-square w-full h-full relative ">
+              <div className="absolute top-0 z-10 w-full h-full bg-chocolate-main/80 opacity-0 transition-all group-card-info p-[15px] ">
                 <div>GROUP BIO</div>
                 <div className="mt-[5px] lg:max-h-[70%] xs:max-h-[50%]  overflow-y-auto scrollbar break-all">
                   {groupBio}
@@ -59,7 +59,7 @@ const GroupCard: React.FC<CardProps> = ({
               </div>
               <Image
                 src={avatar}
-                className="w-full h-full shadow-md object-cover aspect-square rounded-lg"
+                className="w-full h-full shadow-md object-cover aspect-square "
                 alt="avatar"
                 width={500}
                 height={500}
