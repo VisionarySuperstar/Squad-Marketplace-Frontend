@@ -825,12 +825,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
           {postNews &&
             postNews.map((_news, key) => (
-              <div  key={key} className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
+              <div
+                key={key}
+                className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1"
+              >
                 <div>
                   <div></div>
-                  <div className="text-gray-400 text-right">
-                    
-                  </div>
+                  <div className="text-gray-400 text-right"></div>
                 </div>
                 <div></div>
               </div>
