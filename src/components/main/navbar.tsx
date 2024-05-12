@@ -426,14 +426,6 @@ const NavBar = () => {
           >
             <div className="min-w-[150px]">
               <button
-                className="z-[1000]"
-                onClick={() => {
-                  toast.success("Signin Success");
-                }}
-              >
-                {/* Toast */}
-              </button>
-              <button
                 className="border-2 border-black rounded-full px-5 h-[30px]"
                 onClick={() => setCreateGroupModalState(true)}
               >
