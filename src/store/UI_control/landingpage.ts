@@ -10,11 +10,11 @@ type Action = {
   updateWelcomeModal: (welcomeModal: State["welcomeModal"]) => void;
 };
 
-const useUIControlStore = create<State & Action>((set) => ({
+const useLandingUIControlStore = create<State & Action>((set) => ({
   joinModal: false,
   welcomeModal: false,
   updateJoinModal: (value) => set(() => ({ joinModal: value })),
   updateWelcomeModal: (value) => set(() => ({ welcomeModal: value })),
 }));
 
-export default useUIControlStore;
+export default useLandingUIControlStore;

@@ -1,0 +1,104 @@
+[
+  {
+    "id": "1973706",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "minted"
+  },
+  {
+    "id": "1973707",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "minted"
+  },
+  {
+    "id": "1973708",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "minted"
+  },
+  {
+    "id": "1973709",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "minted"
+  },
+  {
+    "id": "1973710",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "minted"
+  },
+  {
+    "id": "1973711",
+    "name": "NFT10",
+    "avatar": "/assets/photo/nfts/nft1.jpg",
+    "auctionType": 0,
+    "groupName": "group1",
+    "initialPrice": 2500,
+    "salePeriod": [
+      1,
+      12,
+      34,
+      45
+    ],
+    "currentPrice": 2600,
+    "currentBidder": "Jackson",
+    "status": "minted"
+  }
+]

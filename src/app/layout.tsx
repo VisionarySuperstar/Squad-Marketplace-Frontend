@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AosProvider from "@/providers/aosProvider";
+import Loading_screen from "@/components/main/loading_bar";
+import NavBar from "@/components/main/navbar";
+import dynamic from "next/dynamic";
+import SocketComponent from "@/components/WebSocketComponent";
+const Provider = dynamic(() => import("@/providers"), { ssr: false });
+import "@rainbow-me/rainbowkit/styles.css";
+// import Web3ContextProvider from "@/providers/web3Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +32,15 @@ export default function RootLayout({
 }>) {
   return (
     <AosProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
+      <html lang="en" suppressHydrationWarning={true}>
+        <body className={inter.className} suppressHydrationWarning={true}>
+          <Provider>
+            <NavBar />
+            <Loading_screen />
+            {children}
+          </Provider>
+          <SocketComponent />
+        </body>
       </html>
     </AosProvider>
   );
