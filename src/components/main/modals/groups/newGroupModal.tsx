@@ -118,18 +118,22 @@ const NewGroupModal = () => {
 
       const memberData = selectedUsers.map((item: IUSER) => ({ id: item.id }));
       console.log("memberData", JSON.stringify(memberData));
-      const { data: res } = await api.post("/api/addGroup", {
-        id: user.id,
-        name: groupName,
-        avatar: _avatar,
-        director: user.id,
-        requiredConfirmNumber: groupConfirmNumber,
-        member: JSON.stringify(memberData),
-        description: groupDescription,
-        address: _group_Address,
-      });
+      const response = await api
+        .post("/api/addGroup", {
+          id: user.id,
+          name: groupName,
+          avatar: _avatar,
+          director: user.id,
+          requiredConfirmNumber: groupConfirmNumber,
+          member: JSON.stringify(memberData),
+          description: groupDescription,
+          address: _group_Address,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       console.log("adding group arrived!!!");
-      if (res === "Success") {
+      if (response?.data === "Success") {
         setAvatar(avatar);
         toast.success("Successfully New Group Created.");
         updateCreateGroupState("just_created");
