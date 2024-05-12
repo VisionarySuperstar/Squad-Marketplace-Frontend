@@ -1077,7 +1077,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   <div
                     key={index}
                     className={`flex flex-col ${
-                      item.id === myGroupData?.director && "hidden"
+                      (item.id === myGroupData?.director || directorTransactions?.filter((_item:IDIRECTOR_TRANSACTION) => _item.new_director === item.id).length) && "hidden"
                     } `}
                   >
                     <div
@@ -1193,7 +1193,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         </div>
                         <div className="flex flex-col w-full">
                           <button
-                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px]"
+                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
                             onClick={() => {
                               directorConfrimHandle(directorTransactions[key]);
                               setSelectedDirectorConfirmBtn(key);
@@ -1213,7 +1213,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                             )}
                           </button>
                           <button
-                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px]"
+                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
                             onClick={() => {
                               directorExecuteHandle(directorTransactions[key]);
                               setSelectedDirectorExecuteBtn(key);
