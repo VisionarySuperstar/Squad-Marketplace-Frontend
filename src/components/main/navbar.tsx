@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 import useUserStore from "@/store/user_infor/userinfor";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Notification from "./News&message/notifications";
-
 import {
   useConnectModal,
   useAccountModal,
@@ -420,7 +419,6 @@ const NavBar = () => {
             </div>
             <div></div>
           </div>
-
           <div
             className={`${
               isGroupBtn ? "" : "hidden"
@@ -433,7 +431,7 @@ const NavBar = () => {
                   toast.success("Signin Success");
                 }}
               >
-                Toast
+                {/* Toast */}
               </button>
               <button
                 className="border-2 border-black rounded-full px-5 h-[30px]"
