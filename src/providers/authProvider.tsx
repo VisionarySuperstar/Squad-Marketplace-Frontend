@@ -71,24 +71,34 @@ const AuthProvider = ({
       if (!chain) throw "chain is not defined...";
       if (!address) throw "address is not defined...";
 
-      const { data: msgData } = await api.post(`/auth/user/request-message`, {
-        chain: 1,
-        address,
-      });
-      const { id, message, profileId }: TMsg = msgData;
+      const response = await api
+        .post(`/auth/user/request-message`, {
+          chain: 1,
+          address,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      const { id, message, profileId }: TMsg = response?.data;
 
       if (!id || !message || !profileId) {
         toast.error("Undefined Message.");
         return;
       }
 
-      const signature = await signMessageAsync({ message });
-
-      const { data: signData } = await api.post(`/auth/user/signin`, {
-        message,
-        signature,
+      const signature = await signMessageAsync({ message }).catch((error) => {
+        toast.error(error.message);
       });
-      console.log(signData);
+
+      const result_signdata = await api
+        .post(`/auth/user/signin`, {
+          message,
+          signature,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      const signData = result_signdata?.data;
 
       if (signData === "NONE") {
         _setAuth(undefined, undefined);
@@ -117,24 +127,31 @@ const AuthProvider = ({
       if (!chainId) throw "chain is not defined...";
       if (!address) throw "address is not defined...";
 
-      const { data: msgData } = await api.post(`/auth/user/request-message`, {
-        chain: chainId,
-        address,
-      });
+      const response_messageData = await api
+        .post(`/auth/user/request-message`, {
+          chain: chainId,
+          address,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      const msgData = response_messageData?.data;
       const { id, message, profileId }: TMsg = msgData;
       if (!id || !message || !profileId) {
         toast.error("Undefined Message.");
         return;
       }
       const signature = await signMessageAsync({ message });
-      const { data: registerData } = await api.post(`/auth/user/signup`, {
-        message,
-        signature,
-        user,
-      });
-      console.log({
-        jwt: registerData,
-      });
+      const response = await api
+        .post(`/auth/user/signup`, {
+          message,
+          signature,
+          user,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      const registerData = response?.data;
 
       if (registerData === "exists") {
         toast.error("User already exists.");
@@ -153,19 +170,6 @@ const AuthProvider = ({
         err.code === "ERR_NETWORK"
       ) {
         toast.error("Register failed. Please try again.");
-      }
-    }
-  };
-
-  const getAllGroup = async () => {
-    try {
-      const { data: allGroupData } = await api.get(`/api/getAllGroup`);
-      console.log("allGroupData: ", allGroupData);
-    } catch (err: any) {
-      if (err.code === 4001) {
-        toast.error("User rejected the request.");
-      } else if (err.code === "ERR_BAD_RESPONSE") {
-        toast.error("Backend is not working well");
       }
     }
   };

@@ -6,8 +6,10 @@ export const uploadToPinata = async (data: string, onProgress?: any) => {
     const base64Response = await fetch(data);
     const newBlob = await base64Response.blob();
     formData.append("file", newBlob);
-    const { data: res } = await axios
-      .post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+    const { data: res } = await axios.post(
+      "https://api.pinata.cloud/pinning/pinFileToIPFS",
+      formData,
+      {
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
         headers: {
@@ -16,10 +18,11 @@ export const uploadToPinata = async (data: string, onProgress?: any) => {
           Authorization: `Bearer ${PINATA_KEY}`,
         },
         onUploadProgress: onProgress,
-      });
+      }
+    );
     return Promise.resolve(`https://ipfs.io/ipfs/${res.IpfsHash}`);
   } catch (err) {
-    console.log(err)
-    return Promise.reject("failed")
+    console.log(err);
+    return Promise.reject("failed");
   }
 };

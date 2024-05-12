@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -20,7 +21,6 @@ import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 
-
 import toast from "react-hot-toast";
 
 const Home = ({ params }: { params: { id: string } }) => {
@@ -42,21 +42,33 @@ const Home = ({ params }: { params: { id: string } }) => {
   const api = useAPI();
 
   const getNftData = async () => {
-    const result = await api.post("/api/getNftById", { id: params.id });
-    setNftData(result.data);
-    console.log("auctiontype", result.data.auctiontype);
+    const result = await api
+      .post("/api/getNftById", { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setNftData(result?.data);
+    console.log("auctiontype", result?.data.auctiontype);
     console.log("result", result);
-    const result1 = await api.post("/api/getGroupId", {
-      id: result.data.groupid,
-    });
-    setGroupName(result1.data.name);
-    setGroupAddress(result1.data.address);
-    if (user?.id === result1.data.director) setIsDirector(true);
+    const result1 = await api
+      .post("/api/getGroupId", {
+        id: result?.data.groupid,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setGroupName(result1?.data.name);
+    setGroupAddress(result1?.data.address);
+    if (user?.id === result1?.data.director) setIsDirector(true);
 
-    const result2 = await api.post("/auth/user/getUserByAddress", {
-      id: result.data.owner,
-    });
-    setOwnerName(result2.data.name);
+    const result2 = await api
+      .post("/auth/user/getUserByAddress", {
+        id: result?.data.owner,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setOwnerName(result2?.data.name);
   };
 
   useEffect(() => {
@@ -70,7 +82,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     const minutes = Math.floor(seconds / 60);
     seconds %= 60;
     return [days, hours, minutes, seconds];
-
   };
   const router = useRouter();
 
@@ -97,7 +108,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
 
-
       const nftId = await contract.getNFTId(
         nftData.collectionaddress,
         BigInt(nftData.collectionid)
@@ -105,18 +115,22 @@ const Home = ({ params }: { params: { id: string } }) => {
       console.log("nftId", nftId.toString());
       const tx = await contract.cancelListing(nftId);
       await tx.wait();
-      await api.post("/api/updateNft", {
-        id: nftData?.id,
-        owner: nftData?.owner,
-        status: "mint",
-        auctionType: nftData?.auctiontype,
-        initialPrice: nftData?.initialprice,
-        salePeriod: nftData?.saleperiod,
-        currentPrice: nftData?.currentprice,
-        currentBidder: nftData?.currentbidder,
-        reducingRate: nftData?.reducingrate,
-        listedNumber: nftData.listednumber,
-      });
+      await api
+        .post("/api/updateNft", {
+          id: nftData?.id,
+          owner: nftData?.owner,
+          status: "mint",
+          auctionType: nftData?.auctiontype,
+          initialPrice: nftData?.initialprice,
+          salePeriod: nftData?.saleperiod,
+          currentPrice: nftData?.currentprice,
+          currentBidder: nftData?.currentbidder,
+          reducingRate: nftData?.reducingrate,
+          listedNumber: nftData.listednumber,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       router.back();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -149,18 +163,22 @@ const Home = ({ params }: { params: { id: string } }) => {
       console.log("nftId", nftId.toString());
       const tx = await contract.endEnglishAuction(nftId);
       await tx.wait();
-      await api.post("/api/updateNft", {
-        id: nftData?.id,
-        owner: nftData?.currentbidder,
-        status: "sold",
-        auctionType: nftData?.auctiontype,
-        initialPrice: nftData?.initialprice,
-        salePeriod: nftData?.saleperiod,
-        currentPrice: nftData?.currentprice,
-        currentBidder: nftData?.currentbidder,
-        reducingRate: nftData?.reducingrate,
-        listedNumber: nftData?.listednumber,
-      });
+      await api
+        .post("/api/updateNft", {
+          id: nftData?.id,
+          owner: nftData?.currentbidder,
+          status: "sold",
+          auctionType: nftData?.auctiontype,
+          initialPrice: nftData?.initialprice,
+          salePeriod: nftData?.saleperiod,
+          currentPrice: nftData?.currentprice,
+          currentBidder: nftData?.currentbidder,
+          reducingRate: nftData?.reducingrate,
+          listedNumber: nftData?.listednumber,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       router.back();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -171,11 +189,10 @@ const Home = ({ params }: { params: { id: string } }) => {
     } finally {
       setIsLoading1(false);
     }
-  }
+  };
 
   return (
     <>
-
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {nftData && (
@@ -213,8 +230,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                 {Number(nftData?.auctiontype) === 0
                   ? "English Auction"
                   : Number(nftData?.auctiontype) === 1
-                    ? "Dutch Auction"
-                    : "Offering"}
+                  ? "Dutch Auction"
+                  : "Offering"}
               </div>
               <div className="text-gray-400 mt-3">Initial Price</div>
               <div className="text-[18px]">{nftData?.initialprice}</div>
@@ -236,7 +253,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <div className="text-gray-400 mt-3">Sale Period</div>
                   <div className="text-[18px] flex gap-2">
                     {(() => {
-                      const period = convertSecondsToTime(Number(nftData?.saleperiod));
+                      const period = convertSecondsToTime(
+                        Number(nftData?.saleperiod)
+                      );
 
                       return period.map((item, index) => (
                         <div key={index}>
@@ -254,32 +273,46 @@ const Home = ({ params }: { params: { id: string } }) => {
                 </>
               )}
             </div>
-            {
-              isDirector &&
-
+            {isDirector && (
               <div className="flex  mt-3 mb-[35px]">
-                <button className="w-full bg-[#322A44] rounded-full text-white h-[30px] flex justify-center items-center text-center" onClick={cancelListing}>
-                  {isLoading ?
+                <button
+                  className="w-full bg-[#322A44] rounded-full text-white h-[30px] flex justify-center items-center text-center"
+                  onClick={cancelListing}
+                >
+                  {isLoading ? (
                     <>
-                      <Icon icon="eos-icons:bubble-loading" width={20} height={20} /> PROCESSING...
-                    </> :
+                      <Icon
+                        icon="eos-icons:bubble-loading"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      PROCESSING...
+                    </>
+                  ) : (
                     "CANCEL LISTING"
-                  }
+                  )}
                 </button>
-                {
-                  Number(nftData?.auctiontype) === 0 && (
-                    <button className="w-full bg-[#322A44] rounded-full text-white h-[30px] flex justify-center items-center text-center" onClick={endAuction}>
-                      {isLoading1 ?
-                        <>
-                          <Icon icon="eos-icons:bubble-loading" width={20} height={20} /> PROCESSING...
-                        </> :
-                        "END AUCTION"
-                      }
-                    </button>
-                  )
-                }
+                {Number(nftData?.auctiontype) === 0 && (
+                  <button
+                    className="w-full bg-[#322A44] rounded-full text-white h-[30px] flex justify-center items-center text-center"
+                    onClick={endAuction}
+                  >
+                    {isLoading1 ? (
+                      <>
+                        <Icon
+                          icon="eos-icons:bubble-loading"
+                          width={20}
+                          height={20}
+                        />{" "}
+                        PROCESSING...
+                      </>
+                    ) : (
+                      "END AUCTION"
+                    )}
+                  </button>
+                )}
               </div>
-            }
+            )}
             <Split_line />
             {/* <div>DESCRIPTION</div> */}
             <div className="">

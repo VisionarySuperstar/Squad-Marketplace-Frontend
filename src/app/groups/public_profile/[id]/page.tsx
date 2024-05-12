@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -12,11 +13,10 @@ import { useRouter } from "next/navigation";
 import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
-import MyGroups from "@/data/groups.json";
-import Nfts from "@/data/sold_nfts.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT, IPOST_NEWS } from "@/types";
 import useAuth from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -49,22 +49,24 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const api = useAPI();
   const getMyGroupData = async () => {
-    const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
-    setMyGroupData(Data);
+    const response = await api
+      .post(`/api/getGroupId`, { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setMyGroupData(response?.data);
   };
 
   const getNftData = async () => {
-    const { data: Data } = await api.post("/api/getNftByGroupAndStatus", {
-      id: params.id,
-      status: "list",
-    });
-    setNftData(Data);
-    console.log("here is nft Data", Data);
-    const result_postNews = await api.post("/api/getPostByGroupId", {
-      id: params.id,
-    });
-    console.log("result postnews", result_postNews.data);
-    setPostNews(result_postNews.data);
+    const response = await api
+      .post("/api/getNftByGroupAndStatus", {
+        id: params.id,
+        status: "list",
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setNftData(response?.data);
   };
 
   useEffect(() => {
@@ -73,10 +75,10 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   }, []);
 
   const getMembersData = async (id: string) => {
-    console.log("id", id);
-    const { data } = await api.get(`/auth/user/${id}`);
-    console.log("DataDATA ---------> ", data);
-    return data;
+    const response = await api.get(`/auth/user/${id}`).catch((error) => {
+      toast.error(error.message);
+    });
+    return response?.data;
   };
   useEffect(() => {
     if (!myGroupData) return;
@@ -194,7 +196,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   height={0}
                   sizes="100vw"
                 />
-                <div className="mt-3">{""}</div>
+                <div className="mt-3"></div>
               </div>
             ))}
           </div>

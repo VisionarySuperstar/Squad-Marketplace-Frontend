@@ -99,18 +99,22 @@ const BidGroupModal = ({
         const current_price = auction_data.currentPrice;
         const currentPrice = Number(Number(current_price) / 1e18).toString();
 
-        await api.post("/api/updateNft", {
-          id: nftData.id,
-          owner: nftData.owner,
-          status: "list",
-          auctionType: nftData.auctiontype,
-          initialPrice: nftData.initialprice,
-          salePeriod: nftData.saleperiod,
-          currentPrice: currentPrice,
-          currentBidder: user.name,
-          reducingRate: nftData.reducingrate ? nftData.reducingrate : 0,
-          listedNumber: nftData.listednumber,
-        });
+        await api
+          .post("/api/updateNft", {
+            id: nftData.id,
+            owner: nftData.owner,
+            status: "list",
+            auctionType: nftData.auctiontype,
+            initialPrice: nftData.initialprice,
+            salePeriod: nftData.saleperiod,
+            currentPrice: currentPrice,
+            currentBidder: user.name,
+            reducingRate: nftData.reducingrate ? nftData.reducingrate : 0,
+            listedNumber: nftData.listednumber,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
       } else if (Number(nftData.auctiontype) === 2) {
         const tx1 = await usdc_contract.approve(
           Marketplace_ADDRESSES[chainId],
@@ -126,14 +130,18 @@ const BidGroupModal = ({
         const _group_contract = new Contract(groupAddress, GROUP_ABI, signer);
         const offering_number =
           await _group_contract.getNumberOfSaleOfferingTransaction();
-        await api.post("/api/addOffering", {
-          groupId: groupId,
-          buyer: user.name,
-          nftId: nftData.id,
-          confirm_member: JSON.stringify([]),
-          price: bidAmount,
-          transactionId: Number(Number(offering_number) - 1).toString(),
-        });
+        await api
+          .post("/api/addOffering", {
+            groupId: groupId,
+            buyer: user.name,
+            nftId: nftData.id,
+            confirm_member: JSON.stringify([]),
+            price: bidAmount,
+            transactionId: Number(Number(offering_number) - 1).toString(),
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
       }
 
       getData();

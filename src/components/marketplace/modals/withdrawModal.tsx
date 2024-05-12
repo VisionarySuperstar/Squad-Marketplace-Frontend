@@ -65,11 +65,6 @@ const WithdrawGroupModal = ({ groupAddress }: WithdrawGroupModalInterface) => {
       const tx = await contract.withdrawFromMarketplace();
       await tx.wait();
 
-      // await api.post("/api/updateNft", {
-      //     id: listNft.id, owner: listNft.owner, status: "list", auctionType: auctionType, initialPrice: auctionQuery.initialPrice,
-      //     salePeriod: _salePeriod, currentPrice: auctionQuery.initialPrice, currentBidder: "0x000", reducingRate: auctionQuery.reducingRate ? auctionQuery.reducingRate : 0,
-      //     listedNumber: listNumber
-      // })
       setWithdrawModalState(false);
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
