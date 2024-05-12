@@ -1077,7 +1077,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   <div
                     key={index}
                     className={`flex flex-col ${
-                      (item.id === myGroupData?.director || directorTransactions?.filter((_item:IDIRECTOR_TRANSACTION) => _item.new_director === item.id).length) && "hidden"
+                      (item.id === myGroupData?.director ||
+                        directorTransactions?.filter(
+                          (_item: IDIRECTOR_TRANSACTION) =>
+                            _item.new_director === item.id
+                        ).length) &&
+                      "hidden"
                     } `}
                   >
                     <div
@@ -1162,7 +1167,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         )}
                       </div>
                       <div className="flex flex-col justify-between">
-                        <div className="mb-[5px]">
+                        <div className="mb-[5px] ">
                           {
                             members?.filter((_user: IUSER) =>
                               _user.id.includes(
@@ -1170,7 +1175,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                               )
                             )[0].name
                           }
-                          <span className="text-gray-400">SUGGESTED</span>
+                          <span className="text-gray-400 ml-2">SUGGESTED</span>
                         </div>
 
                         {members && directorTransactions && (
@@ -1306,14 +1311,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           )}
-          <div className="flex justify-center items-center mt-5">
-            <button
-              onClick={leaveGroupHandle}
-              className="border bg-[#FF0000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
-            >
-              LEAVE THIS GROUP
-            </button>
-          </div>
+
+          {!isDirector && (
+            <div className="flex justify-center items-center mt-5">
+              <button
+                onClick={leaveGroupHandle}
+                className="border bg-[#FF0000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+              >
+                LEAVE THIS GROUP
+              </button>
+            </div>
+          )}
           <Split_line />
         </div>
         <div

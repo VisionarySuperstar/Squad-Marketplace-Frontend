@@ -30,12 +30,15 @@ const CreateProfileModal = () => {
   const [avatar, setAvatar] = React.useState<File | undefined>(undefined);
   const [isInvalid, setIsInvalid] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
+  );
 
   const { address, chain, isConnected, chainId } = useActiveWeb3();
-  const { signUp, isAuthenticated } = useAuth();
+  const { signUp, isAuthenticated, user } = useAuth();
   const router = useRouter();
   const api = useAPI();
-  const [user, setUser] = useAtom(userAtom);
+  const [user1, setUser1] = useAtom(userAtom);
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -80,7 +83,7 @@ const CreateProfileModal = () => {
       }
 
       const data = { name, email, avatar: _avatar };
-      if (user) {
+      if (user1) {
         console.log("update process");
 
         const response = await api
@@ -93,8 +96,8 @@ const CreateProfileModal = () => {
             toast.error(error.message);
           });
         if (response?.data === "Update Success") {
-          if (user) {
-            setUser({ ...user, avatar: _avatar, email, name });
+          if (user1) {
+            setUser1({ ...user1, avatar: _avatar, email, name });
           }
           setAvatar(avatar);
           toast.success("Profile Updated Successfully.");
@@ -142,14 +145,12 @@ const CreateProfileModal = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-  const setProfileModalState = useGroupUIControlStore(
-    (state) => state.updateProfileModal
-  );
+
   return (
     <>
-      <div className="">
+      <div className="z-100 font-Maxeville">
         <div
-          className="join_background"
+          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setProfileModalState(false);
           }}

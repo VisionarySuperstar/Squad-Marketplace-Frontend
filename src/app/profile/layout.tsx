@@ -20,6 +20,7 @@ export default function Home({ children }: { children: React.ReactNode }) {
   const profileModalState = useGroupUIControlStore(
     (state) => state.profileModal
   );
+  console.log("profileModalState---->", profileModalState) ;
 
   if (navbarCurrentUrl === "") setNavbarCurrent("user");
   useEffect(() => {
