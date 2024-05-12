@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -13,6 +14,7 @@ import NFTs from "@/data/nfts.json";
 import { INFT, IGROUP, IUSER } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setBidModalState = useMarketplaceUIControlStore(
@@ -33,17 +35,29 @@ const Home = ({ params }: { params: { id: string } }) => {
   const api = useAPI();
 
   const getNftData = async () => {
-    const result = await api.post("/api/getNftById", { id: params.id });
-    setNftData(result.data);
+    const result = await api
+      .post("/api/getNftById", { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setNftData(result?.data);
     console.log("result", result);
-    const result1 = await api.post("/api/getGroupId", {
-      id: result.data.groupid,
-    });
-    setGroupName(result1.data.name);
-    const result2 = await api.post("/auth/user/getUserByAddress", {
-      id: result.data.owner,
-    });
-    setOwnerName(result2.data.name);
+    const result1 = await api
+      .post("/api/getGroupId", {
+        id: result?.data.groupid,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setGroupName(result1?.data.name);
+    const result2 = await api
+      .post("/auth/user/getUserByAddress", {
+        id: result?.data.owner,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setOwnerName(result2?.data.name);
   };
 
   useEffect(() => {

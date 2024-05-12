@@ -16,6 +16,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT } from "@/types";
 import useAuth from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -46,17 +47,24 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
   const api = useAPI();
   const getMyGroupData = async () => {
-    const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
-    setMyGroupData(Data);
+    const response = await api
+      .post(`/api/getGroupId`, { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setMyGroupData(response?.data);
   };
 
   const getNftData = async () => {
-    const { data: Data } = await api.post("/api/getNftByGroupAndStatus", {
-      id: params.id,
-      status: "list",
-    });
-    setNftData(Data);
-    console.log("here is nft Data", Data);
+    const response = await api
+      .post("/api/getNftByGroupAndStatus", {
+        id: params.id,
+        status: "list",
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setNftData(response?.data);
   };
 
   useEffect(() => {
@@ -65,10 +73,10 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   }, []);
 
   const getMembersData = async (id: string) => {
-    console.log("id", id);
-    const { data } = await api.get(`/auth/user/${id}`);
-    console.log("DataDATA ---------> ", data);
-    return data;
+    const response = await api.get(`/auth/user/${id}`).catch((error) => {
+      toast.error(error.message);
+    });
+    return response?.data;
   };
   useEffect(() => {
     if (!myGroupData) return;

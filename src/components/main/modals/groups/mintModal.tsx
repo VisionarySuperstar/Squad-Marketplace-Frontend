@@ -78,9 +78,11 @@ const MintModal = ({
   const { signIn, isAuthenticated, user } = useAuth();
 
   const getCollectionData = async () => {
-    const result = await api.get("/api/getCollection");
-    setAllCollection(result.data);
-    console.log("result", result.data);
+    const result = await api.get("/api/getCollection").catch((error) => {
+      toast.error(error.message);
+    });
+    setAllCollection(result?.data);
+    console.log("result", result?.data);
   };
   useEffect(() => {
     getCollectionData();
@@ -120,9 +122,13 @@ const MintModal = ({
   }, [address, chainId, signer, groupAddress]);
   const getNftById = async (id: string) => {
     console.log("id ", id);
-    const result = await api.post(`/api/getNftById`, { id: id });
-    console.log("url", result.data);
-    return result.data;
+    const result = await api
+      .post(`/api/getNftById`, { id: id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    console.log("url", result?.data);
+    return result?.data;
   };
   const handleMint = async () => {
     // mint
@@ -203,31 +209,47 @@ const MintModal = ({
           collectionName: collection_name,
         })
         .then(async () => {
-          const result = await api.post("/api/getNftByCollection", {
-            collectionAddress: collection_address,
-            collectionId: collection_id,
-          });
-          console.log("result ", result.data);
-          if (selected === allCollection.length) {
-            const nft_collection = [{ id: result.data.id }];
-            console.log("nft_collection", nft_collection);
-            await api.post("/api/addCollection", {
-              name: newCollectionName,
-              symbol: newCollectionSymbol,
-              description: newCollectionDescription,
-              address: collection_address,
-              nft: JSON.stringify(nft_collection),
+          const result = await api
+            .post("/api/getNftByCollection", {
+              collectionAddress: collection_address,
+              collectionId: collection_id,
+            })
+            .catch((error) => {
+              toast.error(error.message);
             });
+          console.log("result ", result?.data);
+          if (selected === allCollection.length) {
+            const nft_collection = [{ id: result?.data.id }];
+            console.log("nft_collection", nft_collection);
+            await api
+              .post("/api/addCollection", {
+                name: newCollectionName,
+                symbol: newCollectionSymbol,
+                description: newCollectionDescription,
+                address: collection_address,
+                nft: JSON.stringify(nft_collection),
+              })
+              .catch((error) => {
+                toast.error(error.message);
+              });
           } else {
             const nft_collection_data = allCollection[selected].nft;
-            nft_collection_data.push({ id: result.data.id });
+            nft_collection_data.push({ id: result?.data.id });
             console.log("nft_collection_data", nft_collection_data);
-            await api.post("/api/updateCollection", {
-              id: allCollection[selected].id,
-              nft: JSON.stringify(nft_collection_data),
-            });
+            await api
+              .post("/api/updateCollection", {
+                id: allCollection[selected].id,
+                nft: JSON.stringify(nft_collection_data),
+              })
+              .catch((error) => {
+                toast.error(error.message);
+              });
           }
-          await api.post("/api/addMintNumberToGroup", { id: groupId });
+          await api
+            .post("/api/addMintNumberToGroup", { id: groupId })
+            .catch((error) => {
+              toast.error(error.message);
+            });
         });
       deleteContent(uploadId);
       getNFTData();

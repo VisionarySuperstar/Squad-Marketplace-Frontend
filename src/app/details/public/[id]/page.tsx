@@ -54,15 +54,23 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
 
   const getData = async () => {
-    const result = await api.post("/api/getNftById", { id: params.id });
-    setData(result.data);
-    console.log("data", result.data);
-    const group_name = await api.post("/api/getGroupId", {
-      id: result.data.groupid,
-    });
-    setGroupName(group_name.data.name);
-    setGroupAddress(group_name.data.address);
-    setGroupId(group_name.data.id);
+    const result = await api
+      .post("/api/getNftById", { id: params.id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setData(result?.data);
+    console.log("data", result?.data);
+    const group_name = await api
+      .post("/api/getGroupId", {
+        id: result?.data.groupid,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setGroupName(group_name?.data.name);
+    setGroupAddress(group_name?.data.address);
+    setGroupId(group_name?.data.id);
   };
 
   useEffect(() => {
@@ -130,18 +138,22 @@ const Home = ({ params }: { params: { id: string } }) => {
         BigInt(Number(currentDutchPrice) * 1e18)
       );
       await tx.wait();
-      await api.post("/api/updateNft", {
-        id: data.id,
-        owner: user.name,
-        status: "sold",
-        auctionType: data.auctiontype,
-        initialPrice: data.initialprice,
-        salePeriod: data.saleperiod,
-        currentPrice: currentDutchPrice,
-        currentBidder: user.name,
-        reducingRate: data.reducingrate ? data.reducingrate : 0,
-        listedNumber: data.listednumber,
-      });
+      await api
+        .post("/api/updateNft", {
+          id: data.id,
+          owner: user.name,
+          status: "sold",
+          auctionType: data.auctiontype,
+          initialPrice: data.initialprice,
+          salePeriod: data.saleperiod,
+          currentPrice: currentDutchPrice,
+          currentBidder: user.name,
+          reducingRate: data.reducingrate ? data.reducingrate : 0,
+          listedNumber: data.listednumber,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
 
       getData();
     } catch (err: any) {
