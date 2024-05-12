@@ -67,7 +67,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   }
   const [soldNfts, setSoldNfts] = useState<INFT[]>([]);
   const [isDirector, setIsDirector] = useState<boolean>(false);
-
+  const [activeState, setActiveState] = useState<boolean>(false);
   const [listedNfts, setListedNfts] = useState<INFT[]>([]);
   const [mintedNfts, setMintedNfts] = useState<INFT[]>([]);
 
@@ -78,7 +78,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     IDIRECTOR_TRANSACTION[]
   >([]);
 
-  const [postNews, setPostNews] = useState<IPOST_NEWS[]>([]);
+  const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
 
   const [offerNfts, setOfferNfts] = useState<INFT[]>([]);
 
@@ -91,6 +91,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const getMyGroupData = async () => {
     const { data: Data } = await api.post(`/api/getGroupId`, { id: params.id });
     setMyGroupData(Data);
+    setActiveState(Data.is_actively_recruiting);
     if (Data.director === user?.id) setIsDirector(true);
   };
   const getNFTData = async () => {
@@ -124,8 +125,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const result_postNews = await api.post("/api/getPostByGroupId", {
       id: params.id,
     });
-    setPostNews(result_postNews.data);
     console.log("result5 postnews", result_postNews.data);
+    setPostNews(result_postNews.data);
   };
   useEffect(() => {
     getMyGroupData();
@@ -504,7 +505,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       content: newPostMessage,
     });
     setNewPostMessage("");
+    getNFTData();
     toast.success("Successfully posted news!");
+  };
+
+  const changeActiveState = async (_activeState: boolean) => {
+    await api.post("/api/updateActiveState", {
+      id: params.id,
+      activeState: _activeState,
+    });
+    setActiveState(_activeState);
+    toast.success("Successfully updated");
   };
 
   return (
@@ -818,23 +829,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
 
           <Split_line />
-          <div className="flex justify-between text-xl">
-            <div>NEWS</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-          </div>
-          {postNews &&
-            postNews.map((_news, key) => (
-              <div  key={key} className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
-                <div>
-                  <div></div>
-                  <div className="text-gray-400 text-right">
-                    
-                  </div>
-                </div>
-                <div></div>
-              </div>
-            ))}
-
           {isDirector && (
             <>
               <div className="flex justify-between text-xl">
@@ -863,25 +857,56 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </>
           )}
-          <div className="flex items-center text-xl">
-            <input
-              id="default-radio"
-              type="checkbox"
-              value=""
-              name="default-radio"
-              className="appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
-            />
-            <label
-              htmlFor="default-radio"
-              className="ms-2  font-medium text-gray-900 dark:text-gray-300"
-            >
-              ACTIVELY RECRUITING
-            </label>
+
+          <div className="flex justify-between text-xl">
+            <div>NEWS</div>
+            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
-          <div className="text-gray-400">
-            Looking to fill a role? set “actively recruiting” so users can find
-            your group!
+          <div>
+            {postNews &&
+              postNews?.length &&
+              postNews?.map((_news, key) => (
+                <div
+                  key={key}
+                  className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1"
+                >
+                  <div className="">
+                    {_news.content.split("\n").map((line, index) => (
+                      <React.Fragment key={index}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <div>{_news.post_time.toString()}</div>
+                </div>
+              ))}
           </div>
+
+          {isDirector && (
+            <>
+              <div className="flex items-center text-xl mt-5">
+                <input
+                  id="default-radio"
+                  type="checkbox"
+                  checked={activeState}
+                  onChange={(e) => changeActiveState(e.target.checked)}
+                  name="default-radio"
+                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
+                />
+                <label
+                  htmlFor="default-radio"
+                  className="ms-2  font-medium text-gray-900 dark:text-gray-300"
+                >
+                  ACTIVELY RECRUITING
+                </label>
+              </div>
+              <div className="text-gray-400">
+                Looking to fill a role? set “actively recruiting” so users can
+                find your group!
+              </div>
+            </>
+          )}
           <Split_line />
           <div className="flex justify-between text-xl">
             <div>MANAGE</div>
@@ -929,12 +954,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               members.map((item, index) => (
                 <>
                   <div
+                    key={index}
                     className={`flex flex-col ${
                       item.id === myGroupData?.director && "hidden"
                     } `}
                   >
                     <div
-                      key={index}
                       className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2 ${
                         selected === index
                           ? "border border-chocolate-main/50"
