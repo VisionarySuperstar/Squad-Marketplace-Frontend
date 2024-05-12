@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import renderAvatar from "@/components/utils/renderAvatar";
 import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 //import data
 import NftCard from "@/components/main/cards/nftCard";
@@ -598,10 +599,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   };
 
   const changeActiveState = async (_activeState: boolean) => {
-    await api.post("/api/updateActiveState", {
-      id: params.id,
-      activeState: _activeState,
-    });
+    const result = await api
+      .post("/api/updateActiveState", {
+        id: params.id,
+        activeState: _activeState,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
     setActiveState(_activeState);
     toast.success("Successfully updated");
   };

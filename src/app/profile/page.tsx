@@ -42,7 +42,6 @@ export default function Home() {
       {user && (
         <div className="font-Maxeville">
           {createGroupModalState && <NewGroupModal />}
-
           <div className="page_container_p40 mt-[130px] font-Maxeville p-5">
             <div className="flex justify-between" id="profile">
               <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">
