@@ -1,5 +1,4 @@
 "use client";
-
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import React, { useState, useEffect } from "react";
 import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
@@ -10,7 +9,6 @@ import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -20,23 +18,22 @@ import useAPI from "@/hooks/useAPI";
 import { useAtom } from "jotai";
 import { isAuthenticatedAtom, userAtom } from "@/store/user";
 import toast from "react-hot-toast";
-
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
-
 const CreateProfileModal = () => {
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
+  );
   const [name, setName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [preview, setPreview] = React.useState<string>("");
   const [avatar, setAvatar] = React.useState<File | undefined>(undefined);
   const [isInvalid, setIsInvalid] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
   const { address, chain, isConnected, chainId } = useActiveWeb3();
-  const { signUp, isAuthenticated } = useAuth();
+  const { signUp, isAuthenticated, user } = useAuth();
   const router = useRouter();
   const api = useAPI();
-  const [user, setUser] = useAtom(userAtom);
-
+  const [user1, setUser1] = useAtom(userAtom);
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (!event.target.files) throw "no files";
@@ -57,15 +54,12 @@ const CreateProfileModal = () => {
       setPreview("");
     }
   };
-
   const removeAvatar = () => {
     setPreview("");
   };
-
   const _submitRegister = async () => {
     try {
       setIsLoading(true);
-
       let _avatar = "";
       if (avatar) {
         const formData = new FormData();
@@ -78,11 +72,9 @@ const CreateProfileModal = () => {
         }).then((res) => res.json());
         _avatar = _newAvatar;
       }
-
       const data = { name, email, avatar: _avatar };
-      if (user) {
+      if (user1) {
         console.log("update process");
-
         const response = await api
           .put("/user", {
             avatar: _avatar,
@@ -93,8 +85,8 @@ const CreateProfileModal = () => {
             toast.error(error.message);
           });
         if (response?.data === "Update Success") {
-          if (user) {
-            setUser({ ...user, avatar: _avatar, email, name });
+          if (user1) {
+            setUser1({ ...user1, avatar: _avatar, email, name });
           }
           setAvatar(avatar);
           toast.success("Profile Updated Successfully.");
@@ -110,19 +102,14 @@ const CreateProfileModal = () => {
       setIsLoading(false);
     }
   };
-
   const handleSubmit = () => {
     if (isLoading) return;
-
     setIsInvalid(true);
-
     let valid = true;
-
     if (!name) {
       toast.error("Input your fullname");
       valid = false;
     }
-
     if (valid) {
       if (!isConnected) {
         toast.error("Connect your wallet!");
@@ -131,7 +118,6 @@ const CreateProfileModal = () => {
       }
     }
   };
-
   React.useEffect(() => {
     if (user) {
       setName(user.name);
@@ -140,14 +126,17 @@ const CreateProfileModal = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-  const setProfileModalState = useGroupUIControlStore(
-    (state) => state.updateProfileModal
-  );
+  React.useEffect(() => {
+    
+      console.log("preview changed!!!");
+    console.log(preview)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preview]);
   return (
     <>
-      <div className="">
+      <div className="z-100 font-Maxeville">
         <div
-          className="join_background"
+          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setProfileModalState(false);
           }}
@@ -173,32 +162,40 @@ const CreateProfileModal = () => {
             </svg>
           </div>
           <div
-            className={`p-5  rounded-lg h-[500px] flex flex-col justify-between`}
+            className={`p-5  rounded-lg sm:h-[500px] h-[600px] flex flex-col justify-between`}
           >
             <div className="flex w-full flex-col gap-2 text-[#141416] dark:text-[#FAFCFF] justify-center mt-5">
               <h1 className="text-lg px-1 text-center">Create Your Profile</h1>
               <div className="dark:bg-[#100E28] bg-white px-3 xs:px-6 py-6 rounded-xl ">
-                <section className="mt-5 flex gap-3 items-center">
-                  {preview ? (
-                    <Image
-                      src={preview}
-                      width={70}
-                      height={70}
-                      alt=""
-                      className="rounded-full aspect-square bg-[#be6a6a6b]"
-                    />
-                  ) : (
-                    <Icon
-                      icon="flowbite:user-solid"
-                      width={70}
-                      height={70}
-                      className="rounded-full bg-[#46455367] opacity-50"
-                    />
-                  )}
+                <section className="mt-5  sm:flex sm:flex-row gap-2 items-center justify-start flex-col">
+                  <div className="flex justify-center">
+                    {
+                      preview?(
+                        <Image
+                        src={preview}
+                        width={70}
+                        height={70}
+                        alt=""
+                        className="rounded-full aspect-square bg-[#be6a6a6b] z-[10000]"
+                      />
 
+                      ):
+                      (
+                        <Icon
+                        icon="flowbite:user-solid"
+                        width={70}
+                        height={70}
+                        className="rounded-full bg-[#46455367] opacity-50"
+                      />
+                      )
+                    }
+                   
+                      
+                    
+                  </div>
                   <label
                     htmlFor="avatar"
-                    className="bg-[#2B6EC8] cursor-pointer rounded-lg py-[10px] px-4 text-white text-xs hover:bg-[#2b35c8] font-bold flex gap-1"
+                    className="border bg-[#322A44] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center mt-5 sm:mt-0"
                   >
                     <Icon icon="ph:plus-bold" width={14} />
                     <span>Upload new avatar</span>
@@ -208,15 +205,17 @@ const CreateProfileModal = () => {
                     id="avatar"
                     type="file"
                     onChange={onFileChange}
+                    className=""
                   />
-                  <button
-                    onClick={removeAvatar}
-                    className="bg-white text-black rounded-lg py-[10px] px-4 text-xs border-2 dark:border-none border-[#EFEFEF] hover:bg-gray-200 font-bold"
-                  >
-                    Remove
-                  </button>
+                  <div className="flex justify-center items-center mt-5 sm:mt-0">
+                    <button
+                      onClick={removeAvatar}
+                      className="border bg-[#322A44] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center w-full"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </section>
-
                 <section className="text-sm mt-5">
                   <InputInfo
                     title="Display Name"
@@ -241,10 +240,10 @@ const CreateProfileModal = () => {
                     message="Input Email"
                   />
                 </section>
-                <div>
+                <div className="mt-5 flex justify-center items-center">
                   <button
                     onClick={handleSubmit}
-                    className="bg-[#2B6EC8] flex gap-1 justify-center items-center rounded-lg py-2 px-4 text-white text-xs hover:bg-[#2b35c8] font-bold mt-3"
+                    className="border bg-[#322A44] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-lg flex items-center justify-center text-center w-full sm:w-1/2"
                   >
                     {!isLoading ? (
                       <Icon icon="bx:cloud-upload" width={20} height={20} />
@@ -266,5 +265,4 @@ const CreateProfileModal = () => {
     </>
   );
 };
-
 export default CreateProfileModal;

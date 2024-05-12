@@ -26,9 +26,16 @@ import {
 
 import { useBalance, useAccount, useChainId } from "wagmi";
 import useAuth from "@/hooks/useAuth";
+import CreateProfileModal from "@/components/main/modals/createProfileModal";
 
 const NavBar = () => {
   const isGroupBtn = useNavbarUIControlStore((state) => state.isgroupbtn);
+  const profileModalState = useGroupUIControlStore(
+    (state) => state.profileModal
+  );
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
+  );
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const current = useNavbarUIControlStore((state) => state.url);
   const isShow = useNavbarUIControlStore((state) => state.isshow);
@@ -137,7 +144,7 @@ const NavBar = () => {
           SignIn
         </div>
       );
-    } else {
+    } else if(user){
       return (
         <div
           onClick={() => router.push("/profile")}
@@ -152,10 +159,27 @@ const NavBar = () => {
         </div>
       );
     }
+    else if(!user){
+      return (
+        <div
+          onClick={() => setProfileModalState(true)}
+          className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+        >
+          <Icon
+            icon="material-symbols:lab-profile-outline"
+            width={20}
+            height={20}
+          />
+          Create Profile
+        </div>
+      );
+    }
   };
 
   return (
     <>
+      {profileModalState && <CreateProfileModal />}
+
       {isShow && (
         <>
           <div
