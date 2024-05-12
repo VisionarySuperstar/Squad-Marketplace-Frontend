@@ -12,11 +12,15 @@ import Footer from "@/components/main/footer/footer";
 import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
 import useAuth from "@/hooks/useAuth";
+import CreateProfileModal from "@/components/main/modals/createProfileModal";
 
 export default function Home() {
   const router = useRouter();
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
+  );
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
   );
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
@@ -34,6 +38,7 @@ export default function Home() {
 
   return (
     <>
+      
       {user && (
         <div className="font-Maxeville">
           {createGroupModalState && <NewGroupModal />}
@@ -84,7 +89,7 @@ export default function Home() {
               </div>
               <div
                 className="underline cursor-pointer"
-                onClick={() => router.push("/profile/create")}
+                onClick={() => setProfileModalState(true)}
               >
                 EDIT_PROFILE
               </div>
