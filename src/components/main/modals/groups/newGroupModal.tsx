@@ -7,7 +7,7 @@ import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import newgroups from "@/data/newgroups.json";
 import { IUSER } from "@/types";
 import AddMemberModal from "@/components/main/modals/groups/addMemberModal";
-import useToastr from "@/hooks/useToastr";
+
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
 import { IMGBB_API_KEY } from "@/constants/config";
@@ -19,6 +19,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 
 import useCreatGroupState from "@/store/createGroupStatus";
+import toast from "react-hot-toast";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
@@ -40,7 +41,7 @@ const NewGroupModal = () => {
   const { signIn, isAuthenticated, user } = useAuth();
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
-  const { showToast } = useToastr();
+
   const [selectedUsers, setSelectedUsers] = React.useState<IUSER[]>(
     user ? [user] : []
   );
@@ -69,14 +70,16 @@ const NewGroupModal = () => {
   }, [address, chainId, signer]);
 
   useEffect(() => {
-    setPreview("/assets/images/preview.png");
+    setPreview("/assets/images/upload.png");
   }, []);
 
   const addSelectedUsers = (_user: IUSER) => {
-    const isExist = selectedUsers.map((_user_index:IUSER) => _user_index.id === _user.id); 
+    const isExist = selectedUsers.map(
+      (_user_index: IUSER) => _user_index.id === _user.id
+    );
 
-    console.log("isExist : ", isExist) ;
-    if(isExist.includes(true)) return ;
+    console.log("isExist : ", isExist);
+    if (isExist.includes(true)) return;
     setSelectedUsers([...selectedUsers, _user]);
   };
 
@@ -128,18 +131,18 @@ const NewGroupModal = () => {
       console.log("adding group arrived!!!");
       if (res === "Success") {
         setAvatar(avatar);
-        showToast("Successfully New Group Created.", "success");
+        toast.success("Successfully New Group Created.");
         updateCreateGroupState("just_created");
         setCreateGroupModalState(false);
         router.push(`/groups`);
       } else {
-        showToast("Group Creating Failed.", "warning");
+        toast.error("Group Creating Failed.");
       }
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(err), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -147,7 +150,7 @@ const NewGroupModal = () => {
   };
 
   const handleSubmit = () => {
-    console.log("submit") ;
+    console.log("submit");
     if (isLoading) return;
 
     setIsInvalid(true);
@@ -155,25 +158,28 @@ const NewGroupModal = () => {
     let valid = true;
 
     if (!groupName) {
-      showToast("Input your Group Name", "warning");
+      toast.error("Input your Group Name");
       valid = false;
     }
     if (!groupDescription) {
-      showToast("Input your Group Description", "warning");
+      toast.error("Input your Group Description");
       valid = false;
     }
     console.log("selectedUsers", selectedUsers);
     if (!selectedUsers.length) {
-      showToast("Select at least one member", "warning");
+      toast.error("Select at least one member");
       valid = false;
     }
-    if(!Number(groupConfirmNumber) || Number(groupConfirmNumber) >  selectedUsers.length){
-      showToast("Select right confirm number", "warning");
-      valid = false ;
+    if (
+      !Number(groupConfirmNumber) ||
+      Number(groupConfirmNumber) > selectedUsers.length
+    ) {
+      toast.error("Select right confirm number");
+      valid = false;
     }
     if (valid) {
       if (!isAuthenticated) {
-        showToast("Connect your wallet!", "warning");
+        toast.error("Connect your wallet!");
       } else {
         _submitRegister();
       }
@@ -196,8 +202,8 @@ const NewGroupModal = () => {
         setPreview(_file);
       };
     } catch (err) {
-      showToast("Image upload failed. please try again.", "warning");
-      setPreview("/assets/images/preview.png");
+      toast.error("Image upload failed. please try again.");
+      setPreview("/assets/images/upload.png");
     }
   };
 
@@ -231,7 +237,7 @@ const NewGroupModal = () => {
             </svg>
           </div>
           {addMemberModalState && (
-            <AddMemberModal addSelectedUsers={addSelectedUsers}/>
+            <AddMemberModal addSelectedUsers={addSelectedUsers} />
           )}
           <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
             <h1 className="text-center mt-2 mb-[20px] text-chocolate-main text-lg ">
@@ -249,10 +255,7 @@ const NewGroupModal = () => {
                   />
                   <div className="absolute top-0 w-full h-full">
                     <label htmlFor="avatar" className="w-full h-full ">
-                      <div className=" text-chocolate-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center">
-                        Upload group image
-                        <br /> +
-                      </div>
+                      <div className=" text-chocolate-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center hover:bg-chocolate-main/20 active:bg-chocolate-main/30 transition-all"></div>
                       <input
                         hidden
                         id="avatar"
@@ -305,7 +308,7 @@ const NewGroupModal = () => {
                   </div>
                 ))}
                 <div
-                  className=" cursor-pointer items-center rounded-full object-cover w-[60px] h-[60px] text-lg text-center justify-center flex bg-gray-200"
+                  className=" cursor-pointer items-center rounded-full object-cover w-[60px] h-[60px] text-lg text-center justify-center flex bg-gray-200 hover:bg-gray-300 active:bg-gray-400"
                   onClick={() => setAddMemberModalState(true)}
                 >
                   +
@@ -314,7 +317,7 @@ const NewGroupModal = () => {
               <h2 className="text-left text-lg text-chocolate-main my-3">
                 REQUIRED CONFIRMATION #
               </h2>
-              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main/50  h-[30px] mt-2 w-1/2">
+              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main/50 h-[30px] mt-2 w-1/2">
                 <input
                   className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                   type="text"

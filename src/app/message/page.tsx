@@ -184,7 +184,7 @@ export default function MessagePage() {
   return (
     <>
       <div className="fixed p-5 border flex-col bg-white min-h-[200px] drop-shadow-sm top-[110px] right-5 z-10">
-        <p>UserId:{userid}</p>
+        <p>UserId:{user?.id}</p>
         <p>GroupId:{groupid}</p>
 
         <div>

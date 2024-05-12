@@ -12,10 +12,12 @@ import { Popover } from "flowbite-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import toast from "react-hot-toast";
 
 import useUserStore from "@/store/user_infor/userinfor";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Notification from "./News&message/notifications";
+
 import {
   useConnectModal,
   useAccountModal,
@@ -61,7 +63,7 @@ const NavBar = () => {
     router.back();
   };
   useEffect(() => {
-    console.log("test++++++++> ", isLogin)
+    console.log("test++++++++> ", isLogin);
     // signIn().then((data: any) => {
     //   console.log("here:=========> ", data);
     // })
@@ -107,15 +109,12 @@ const NavBar = () => {
   };
   useEffect(() => {
     if (isAuthenticated) {
-      
       if (user) {
         console.log("user", user);
         setAvatar(user.avatar);
-        
       }
       updateLogin(true);
-    }
-    else {
+    } else {
       updateLogin(false);
     }
   }, [isAuthenticated]);
@@ -158,7 +157,6 @@ const NavBar = () => {
   return (
     <>
       {isShow && (
-
         <>
           <div
             className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] ${
@@ -422,12 +420,21 @@ const NavBar = () => {
             </div>
             <div></div>
           </div>
+
           <div
             className={`${
               isGroupBtn ? "" : "hidden"
             } z-[1000] fixed right-0 top-[35px]`}
           >
             <div className="min-w-[150px]">
+              <button
+                className="z-[1000]"
+                onClick={() => {
+                  toast.success("Signin Success");
+                }}
+              >
+                Toast
+              </button>
               <button
                 className="border-2 border-black rounded-full px-5 h-[30px]"
                 onClick={() => setCreateGroupModalState(true)}

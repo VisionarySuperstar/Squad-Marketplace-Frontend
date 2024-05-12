@@ -7,7 +7,7 @@ import mygroupsData from "@/data/mygroups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
 import useAuth from "@/hooks/useAuth";
-import useToastr from "@/hooks/useToastr";
+
 import { IMGBB_API_KEY } from "@/constants/config";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
@@ -15,6 +15,7 @@ import GROUP_ABI from "@/constants/creator_group.json";
 import NFT_ABI from "@/constants/content_nft.json";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
+import toast from "react-hot-toast";
 
 interface MintModalInterface {
   groupId: number;
@@ -74,7 +75,6 @@ const MintModal = ({
   const [newCollectionDescription, setNewCollectionDescription] =
     React.useState<string>("");
   const { signIn, isAuthenticated, user } = useAuth();
-  const { showToast } = useToastr();
 
   const getCollectionData = async () => {
     const result = await api.get("/api/getCollection");
@@ -233,9 +233,9 @@ const MintModal = ({
       setMintModalState(false);
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);

@@ -19,12 +19,12 @@ import Marketplace_ABI from "@/constants/marketplace.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
-import useToastr from "@/hooks/useToastr";
+
 import GROUP_ABI from "@/constants/creator_group.json";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
-
+import toast from "react-hot-toast";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setBidModalState = useMarketplaceUIControlStore(
@@ -37,13 +37,11 @@ const Home = ({ params }: { params: { id: string } }) => {
   const withdrawModalState = useMarketplaceUIControlStore(
     (state) => state.withdrawModal
   );
-  const { showToast } = useToastr();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
-  const [contract, setContract] = useState<Contract | undefined>(
-    undefined
-  );
+  const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
     undefined
   );
@@ -55,17 +53,17 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
 
-  
-
   const getData = async () => {
     const result = await api.post("/api/getNftById", { id: params.id });
     setData(result.data);
     console.log("data", result.data);
-    const group_name = await api.post('/api/getGroupId', { id: result.data.groupid });
+    const group_name = await api.post("/api/getGroupId", {
+      id: result.data.groupid,
+    });
     setGroupName(group_name.data.name);
     setGroupAddress(group_name.data.address);
     setGroupId(group_name.data.id);
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -74,24 +72,35 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (!address || !chainId || !signer) {
       return;
     }
-    const _contract = new Contract(Marketplace_ADDRESSES[chainId], Marketplace_ABI, signer);
+    const _contract = new Contract(
+      Marketplace_ADDRESSES[chainId],
+      Marketplace_ABI,
+      signer
+    );
     setContract(_contract);
-    const _usdc_contract = new Contract(USDC_ADDRESS[chainId], USDC_ABI, signer);
+    const _usdc_contract = new Contract(
+      USDC_ADDRESS[chainId],
+      USDC_ABI,
+      signer
+    );
     setUsdc_Contract(_usdc_contract);
-    
   }, [address, chainId, signer]);
 
   const getDutchAuctionPrice = async () => {
-    if(Number(data?.auctiontype) === 1 && contract && data && data.status !== 'sold'){
-      
+    if (
+      Number(data?.auctiontype) === 1 &&
+      contract &&
+      data &&
+      data.status !== "sold"
+    ) {
       const value = await contract.getDutchAuctionPrice(data?.listednumber);
       setCurrentDutchPrice((Number(value) / 1e18).toString());
     }
-  }
+  };
 
   useEffect(() => {
-    getDutchAuctionPrice() ;
-  },[contract, data])
+    getDutchAuctionPrice();
+  }, [contract, data]);
 
   const convertSecondsToTime = (seconds: number) => {
     const days = Math.floor(seconds / (24 * 60 * 60));
@@ -101,7 +110,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     const minutes = Math.floor(seconds / 60);
     seconds %= 60;
     return [days, hours, minutes, seconds];
-  }
+  };
 
   const buyClick = async () => {
     try {
@@ -111,32 +120,51 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       if (!data) throw "no data";
       setIsLoading(true);
-      const tx1 = await usdc_contract.approve(Marketplace_ADDRESSES[chainId], BigInt(Number(currentDutchPrice) * 1e18));
+      const tx1 = await usdc_contract.approve(
+        Marketplace_ADDRESSES[chainId],
+        BigInt(Number(currentDutchPrice) * 1e18)
+      );
       await tx1.wait();
-      const tx = await contract.buyDutchAuction(BigInt(data.listednumber), BigInt(Number(currentDutchPrice) * 1e18));
+      const tx = await contract.buyDutchAuction(
+        BigInt(data.listednumber),
+        BigInt(Number(currentDutchPrice) * 1e18)
+      );
       await tx.wait();
       await api.post("/api/updateNft", {
-        id: data.id, owner: user.name, status: "sold", auctionType: data.auctiontype, initialPrice: data.initialprice,
-        salePeriod: data.saleperiod, currentPrice: currentDutchPrice, currentBidder: user.name, reducingRate: data.reducingrate ? data.reducingrate : 0,
-        listedNumber: data.listednumber
-      })
-      
+        id: data.id,
+        owner: user.name,
+        status: "sold",
+        auctionType: data.auctiontype,
+        initialPrice: data.initialprice,
+        salePeriod: data.saleperiod,
+        currentPrice: currentDutchPrice,
+        currentBidder: user.name,
+        reducingRate: data.reducingrate ? data.reducingrate : 0,
+        listedNumber: data.listednumber,
+      });
+
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(err), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
     }
-
-  }
+  };
 
   return (
     <>
-      {bidModalState && data && <BidModal nftData={data} groupAddress={groupAddress} groupId={groupId} getData={getData} />}
+      {bidModalState && data && (
+        <BidModal
+          nftData={data}
+          groupAddress={groupAddress}
+          groupId={groupId}
+          getData={getData}
+        />
+      )}
       {withdrawModalState && <WithdrawModal groupAddress={groupAddress} />}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
@@ -158,8 +186,7 @@ const Home = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           )}
-          {
-            data &&
+          {data && (
             <div className="p-2 flex-col flex justify-between">
               <div className="flex-col">
                 <div className="text-[18px] flex gap-4">
@@ -177,8 +204,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                   {!Number(data?.auctiontype)
                     ? "English Auction"
                     : Number(data?.auctiontype) === 1
-                      ? "Dutch Auction"
-                      : "Offering"}
+                    ? "Dutch Auction"
+                    : "Offering"}
                 </div>
                 <div className="text-gray-400 mt-3">Initial Price</div>
                 <div className="text-[18px]">{data?.currentprice}</div>
@@ -193,15 +220,11 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <>
                     <div className="text-gray-400 mt-3">Current Price</div>
                     <div className="text-[18px]">
-
-                      {
-                        Number(data?.auctiontype) !== 1 ?
-                        data?.currentprice:
-                        data?.status === 'sold'?
-                        data?.currentprice:  
-                        currentDutchPrice
-                      }
-
+                      {Number(data?.auctiontype) !== 1
+                        ? data?.currentprice
+                        : data?.status === "sold"
+                        ? data?.currentprice
+                        : currentDutchPrice}
                     </div>
                   </>
                 )}
@@ -210,7 +233,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                     <div className="text-gray-400 mt-3">Sale Period</div>
                     <div className="text-[18px] flex gap-2">
                       {(() => {
-                        const period = convertSecondsToTime(Number(data?.saleperiod));
+                        const period = convertSecondsToTime(
+                          Number(data?.saleperiod)
+                        );
 
                         return period.map((item, index) => (
                           <div key={index}>
@@ -230,36 +255,49 @@ const Home = ({ params }: { params: { id: string } }) => {
               </div>
               <div className="flex flex-col mt-3 mb-[35px]">
                 {Number(data?.auctiontype) === 1 && data?.status !== "sold" && (
-                  <button className="w-full bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center" onClick={buyClick}>
-                    {isLoading ?
+                  <button
+                    className="w-full bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center"
+                    onClick={buyClick}
+                  >
+                    {isLoading ? (
                       <>
-                        <Icon icon="eos-icons:bubble-loading" width={20} height={20} /> PROCESSING...
-                      </> :
+                        <Icon
+                          icon="eos-icons:bubble-loading"
+                          width={20}
+                          height={20}
+                        />{" "}
+                        PROCESSING...
+                      </>
+                    ) : (
                       "BUY"
-                    }
+                    )}
                   </button>
                 )}
 
                 {Number(data?.auctiontype) !== 1 && (
-                  <div className={`grid grid-cols-1 gap-1 ${data?.status === 'sold' ? "sm:grid-cols-1" : "sm:grid-cols-2"}`}>
-                    {
-                      data?.status !== 'sold' &&
+                  <div
+                    className={`grid grid-cols-1 gap-1 ${
+                      data?.status === "sold"
+                        ? "sm:grid-cols-1"
+                        : "sm:grid-cols-2"
+                    }`}
+                  >
+                    {data?.status !== "sold" && (
                       <button
                         className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
                         onClick={() => setBidModalState(true)}
                       >
                         BID
                       </button>
-                    }
-                    { 
+                    )}
+                    {
                       <button
-                      className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
-                      onClick={() => setWithdrawModalState(true)}
-                    >
-                      WITHDRAW
-                    </button>
+                        className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
+                        onClick={() => setWithdrawModalState(true)}
+                      >
+                        WITHDRAW
+                      </button>
                     }
-
                   </div>
                 )}
               </div>
@@ -274,8 +312,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                 </Collapse>
               </div>
             </div>
-          }
-
+          )}
         </div>
       </div>
       <div

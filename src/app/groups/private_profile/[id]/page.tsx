@@ -12,6 +12,7 @@ import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import { useRouter } from "next/navigation";
 import renderAvatar from "@/components/utils/renderAvatar";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import toast from "react-hot-toast";
 
 //import data
 import Groups from "@/data/groups.json";
@@ -25,7 +26,7 @@ import {
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import { IMGBB_API_KEY } from "@/constants/config";
-import useToastr from "@/hooks/useToastr";
+
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -181,7 +182,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         setUploadedContent([...uploadedContent, _file]);
       };
     } catch (err) {
-      showToast(String(err), "warning");
+      toast.error("An error occurred. please try again");
       setPreview("");
     }
   };
@@ -199,7 +200,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   >(undefined);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { showToast } = useToastr();
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -237,9 +237,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -277,9 +277,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -306,9 +306,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -334,9 +334,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -354,9 +354,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getBalancesForWithdraw();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -373,9 +373,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getBalancesForWithdraw();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -402,9 +402,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
@@ -476,9 +476,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
