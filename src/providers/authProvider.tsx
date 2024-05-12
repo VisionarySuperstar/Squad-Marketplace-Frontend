@@ -157,18 +157,18 @@ const AuthProvider = ({
     }
   };
 
-  const getAllGroup = async () => {
-    try {
-      const { data: allGroupData } = await api.get(`/api/getAllGroup`);
-      console.log("allGroupData: ", allGroupData);
-    } catch (err: any) {
-      if (err.code === 4001) {
-        toast.error("User rejected the request.");
-      } else if (err.code === "ERR_BAD_RESPONSE") {
-        toast.error("Backend is not working well");
-      }
-    }
-  };
+  // const getAllGroup = async () => {
+  //   try {
+  //     const { data: allGroupData } = await api.get(`/api/getAllGroup`);
+  //     console.log("allGroupData: ", allGroupData);
+  //   } catch (err: any) {
+  //     if (err.code === 4001) {
+  //       toast.error("User rejected the request.");
+  //     } else if (err.code === "ERR_BAD_RESPONSE") {
+  //       toast.error("Backend is not working well");
+  //     }
+  //   }
+  // };
 
   React.useEffect(() => {
     if (isConnected) {
