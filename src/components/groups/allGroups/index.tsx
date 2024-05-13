@@ -11,12 +11,11 @@ import toast from "react-hot-toast";
 
 interface IProps {
   scale: number;
-  // sortType:string;
-  // activelyRecruiting:boolean;
-  // searchContent:string;
+  recruitingState: boolean;
+  searchFilter:string;
 }
 
-const AllGroup = ({ scale }: IProps) => {
+const AllGroup = ({ scale, recruitingState, searchFilter }: IProps) => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [allGroupData, setAllGroupData] = useState<IGROUP[]>();
@@ -49,6 +48,36 @@ const AllGroup = ({ scale }: IProps) => {
     setAllGroupData(response?.data);
     updateCreateGroupState("ready");
   };
+
+  const filterAllGroupData_state = async () => {
+    if(!allGroupData) return ;
+    if(recruitingState){
+      const _groupdata = allGroupData.filter((_group:IGROUP) => _group.is_actively_recruiting === (recruitingState)) ;
+      setAllGroupData(_groupdata) ;
+    }
+    else{
+      getAllGroupData();
+    }
+  }
+
+  const filterAllGroupData_search = async () => {
+    if(!allGroupData) return ;
+    if(searchFilter){
+      const _groupdata = allGroupData.filter((_group:IGROUP) => (_group.name).toLowerCase().includes(searchFilter.toLowerCase())) ;
+      setAllGroupData(_groupdata) ;
+    }
+    else{
+      getAllGroupData();
+    }
+  }
+
+  useEffect(() => {
+    filterAllGroupData_state() ;
+  },[recruitingState])
+
+  useEffect(() => {
+    filterAllGroupData_search() ;
+  },[searchFilter])
 
   useEffect(() => {
     getAllGroupData();
