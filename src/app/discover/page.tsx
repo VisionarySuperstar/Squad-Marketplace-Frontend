@@ -8,7 +8,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
-import Carousel from "@/components/main/carousel";
+import ImageHero from "@/components/main/image_hero";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
 
@@ -69,7 +69,7 @@ export default function Home() {
   const router = useRouter();
   return (
     <>
-      <Carousel />
+      <ImageHero />
       <div className="font-Maxeville">
         <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
           <div className="flex justify-between w-[60%] mt-2">
