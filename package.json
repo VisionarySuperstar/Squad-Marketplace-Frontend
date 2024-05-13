@@ -13,6 +13,7 @@
     "@moralisweb3/next": "^2.25.2",
     "@rainbow-me/rainbowkit": "^2.0.6",
     "@supabase/supabase-js": "^2.42.4",
+    "@tanstack/react-query": "^5.36.0",
     "aos": "^2.3.4",
     "encoding": "^0.1.13",
     "ethers": "^5.7.2",
