@@ -91,6 +91,14 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     );
     console.log("_members", _members);
     setMembers(_members);
+    const result_postNews = await api
+      .post("/api/getPostByGroupId", {
+        id: params.id,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    setPostNews(result_postNews?.data);
   };
 
   const checkIsAvailableRequest = async () => {
@@ -106,10 +114,10 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           toast.error(error.message);
         });
       console.log("result for all join request", result?.data);
-      console.log("user id", user.id) ;
+      console.log("user id", user.id);
       const all_requests: IRequest[] = result?.data;
       flg = all_requests
-        .map((_request: IRequest) => (_request.userid).toString())
+        .map((_request: IRequest) => _request.userid.toString())
         .includes(user.id);
     }
 
@@ -135,7 +143,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     toast.success("Successfully submitted join request!");
-    checkIsAvailableRequest() ;
+    checkIsAvailableRequest();
   };
 
   return (
@@ -218,12 +226,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         </div>
         <div className="page_container_p40 font-Maxeville">
           <div className="flex justify-between text-xl mt-5" id="nfts">
-            <div>
-              NFTs (
-              {Number(myGroupData?.mintnumber) -
-                Number(myGroupData?.soldnumber)}
-              )
-            </div>
+            <div>NFTs ({nftData?.length ? nftData?.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
           <div className="mb-[50px] grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">

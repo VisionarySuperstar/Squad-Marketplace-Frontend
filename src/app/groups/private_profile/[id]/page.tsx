@@ -140,7 +140,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setListedNfts(result2?.data);
-    // console.log("result2", result2?.data);
     const result3 = await api
       .post("/api/getNftByGroupAndStatus", {
         id: params.id,
@@ -314,13 +313,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     if(!contract) return ;
     const _number = await contract.numberOfMembers();
     console.log("groupMembers_number", _number.toString()) ;
-    const _members1 = await contract.members(0) ;
-    const _members2 = await contract.members(1) ;
-    const _members3 = await contract.members(2) ;
-
-    console.log("group members-1 ", _members1) ;
-    console.log("group members-2 ", _members2) ;
-    console.log("group members-3 ", _members3) ;
 
 
 
