@@ -181,6 +181,11 @@ const NewGroupModal = () => {
       toast.error("Select right confirm number");
       valid = false;
     }
+    if(!avatar){
+      toast.error("Upload Group Image!") ;
+      valid = false;
+    }
+    
     if (valid) {
       if (!isAuthenticated) {
         toast.error("Connect your wallet!");

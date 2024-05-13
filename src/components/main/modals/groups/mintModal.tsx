@@ -444,6 +444,7 @@ const MintModal = ({
                   <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
                     <input
                       defaultValue={newCollectionName}
+                      disabled
                       className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                       type="text"
                       placeholder=" E.G. 'Nature'"
@@ -455,6 +456,7 @@ const MintModal = ({
                   <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
                     <input
                       defaultValue={newCollectionSymbol}
+                      disabled
                       className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                       type="text"
                       placeholder=" E.G. 'NATURE'"
@@ -465,6 +467,7 @@ const MintModal = ({
                   </h2>
                   <textarea
                     defaultValue={newCollectionDescription}
+                    disabled
                     placeholder="Write a description..."
                     className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-chocolate-main"
                     rows={4}
