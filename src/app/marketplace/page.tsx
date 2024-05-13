@@ -87,7 +87,6 @@ export default function Home() {
   const router = useRouter();
   const [availableState, setAvailableState] = useState<boolean>(false);
 
-
   return (
     <>
       <Carousel />
@@ -101,7 +100,11 @@ export default function Home() {
               </div>
             )}
             <div>
-              <Recruiting recruitingState={availableState} setRecruitingState={setAvailableState} name="Available"/>
+              <Recruiting
+                recruitingState={availableState}
+                setRecruitingState={setAvailableState}
+                name="AVAILABLE"
+              />
             </div>
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">

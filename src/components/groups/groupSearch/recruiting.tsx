@@ -1,21 +1,29 @@
-'use-client'
-import React, {useState} from "react";
+"use-client";
+import React, { useState } from "react";
 
-interface RecruitingInterface{
-  name:string;
-  recruitingState:boolean;
-  setRecruitingState: React.Dispatch<React.SetStateAction<boolean>>,
-
+interface RecruitingInterface {
+  name: string;
+  recruitingState: boolean;
+  setRecruitingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Recruiting = ({recruitingState, setRecruitingState,name} : RecruitingInterface) => {
+const Recruiting = ({
+  recruitingState,
+  setRecruitingState,
+  name,
+}: RecruitingInterface) => {
   return (
     <div className="flex gap-3 px-[10px]">
-      <div className="text-md min-w-[180px] flex items-center">
-        {name}
-      </div>
       <label className="inline-flex items-center cursor-pointer">
-        <input type="checkbox" checked={recruitingState} onChange={() => setRecruitingState(!recruitingState)} className="sr-only peer" />
+        <div className="text-md min-w-[180px] me-[10px] flex items-center justify-end">
+          {name}
+        </div>
+        <input
+          type="checkbox"
+          checked={recruitingState}
+          onChange={() => setRecruitingState(!recruitingState)}
+          className="sr-only peer"
+        />
         <div
           className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
                  bg-white rounded-full
