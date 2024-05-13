@@ -49,11 +49,13 @@ export default function Home() {
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
   }, [screenWidth]);
+  
+
 
   return (
     <>
       <div className="page_container_p40 pt-[120px]">
-        <Split_line />
+        
         <div className="mb-[50px]">
           <MyGroup />
         </div>

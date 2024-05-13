@@ -24,6 +24,7 @@ import {
   IOFFER_TRANSACTION,
   IDIRECTOR_TRANSACTION,
   IPOST_NEWS,
+  IRequest,
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -65,6 +66,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     isLoadingWithdrawMarketplaceButton,
     setIsLoadingWithdrawMarketplaceButton,
   ] = useState<boolean>(false);
+  const [
+    isLoadingLeaveButton,
+    setIsLoadingLeaveButton,
+  ] = useState<boolean>(false);
+  const [selectedRequestButton, setSelectedRequestButton] =
+    useState<number>(-1);
 
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
@@ -83,6 +90,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [activeState, setActiveState] = useState<boolean>(false);
   const [listedNfts, setListedNfts] = useState<INFT[]>([]);
   const [mintedNfts, setMintedNfts] = useState<INFT[]>([]);
+  const [requests, setRequests] = useState<IRequest[]>([]);
+  const [requestMembers, setRequestMembers] = useState<IUSER[]>([]);
 
   const [offerTransactions, setOfferTransactions] = useState<
     IOFFER_TRANSACTION[]
@@ -131,7 +140,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setListedNfts(result2?.data);
-    console.log("result2", result2?.data);
+    // console.log("result2", result2?.data);
     const result3 = await api
       .post("/api/getNftByGroupAndStatus", {
         id: params.id,
@@ -148,7 +157,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setOfferTransactions(result4?.data);
-    console.log("result4", result4?.data);
+    // console.log("result4", result4?.data);
 
     const result5 = await api
       .post("/api/getDirector", { id: params.id })
@@ -156,7 +165,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setDirectorTransactions(result5?.data);
-    console.log("result5", result5?.data);
+    // console.log("result5", result5?.data);
 
     const result_postNews = await api
       .post("/api/getPostByGroupId", {
@@ -166,7 +175,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setPostNews(result_postNews?.data);
-    console.log("result5 postnews", result_postNews?.data);
+    // console.log("result5 postnews", result_postNews?.data);
+
+    const result_requests = await api.post("/api/getJoinRequestByGroupId", {
+      id: params.id,
+    });
+    setRequests(result_requests?.data);
   };
   useEffect(() => {
     getMyGroupData();
@@ -179,7 +193,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
         .includes(item.id)
     );
-    console.log({ _nfts });
+    // console.log({ _nfts });
     setOfferNfts(_nfts);
   };
 
@@ -190,12 +204,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   }, [listedNfts, offerTransactions]);
 
   const getMembersData = async (id: string) => {
-    console.log("id", id);
+    // console.log("id", id);
     const response = await api.get(`/auth/user/${id}`).catch((error) => {
       toast.error(error.message);
     });
     const data = response?.data;
-    console.log("DataDATA ---------> ", data);
+    // console.log("DataDATA ---------> ", data);
     return data;
   };
   useEffect(() => {
@@ -209,6 +223,30 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setMembers(_members);
     })();
   }, [myGroupData]);
+
+  const getRequestMembers = async () => {
+    if (requests) {
+      const _members = await api
+        .post("/auth/user/getAllMembers")
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      const _all_members = _members?.data;
+      console.log("_all_members", _all_members);
+      console.log("_requests", requests);
+      const _request_members = _all_members.filter((_user: IUSER) =>
+        requests
+          .map((_request: IRequest) => _request.userid.toString())
+          .includes(_user.id)
+      );
+      console.log("_request_member", _request_members);
+      setRequestMembers(_request_members);
+    }
+  };
+
+  useEffect(() => {
+    getRequestMembers();
+  }, [requests]);
 
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
@@ -241,7 +279,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
   const deleteContent = (id: number) => {
-    console.log("id", id);
+    // console.log("id", id);
     const newArray = [...uploadedContent];
     newArray.splice(id, 1);
     setUploadedContent(newArray);
@@ -468,7 +506,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsLoading(true);
+      setIsLoadingLeaveButton(true);
       const tx = await contract.removeMember(address);
       await tx.wait();
       const _member = myGroupData?.member.filter(
@@ -483,8 +521,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-      getMyGroupData();
-      getNFTData();
+      
+      router.push("/groups") ;
+
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
         toast.error("User rejected transaction.");
@@ -492,7 +531,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingLeaveButton(false);
     }
   };
 
@@ -502,10 +541,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     setWithdrawAmount(Number(Number(withdrawGroupBalance) / 1e18).toString());
     const totalEarningAmount = await contract.totalEarning();
     setTotalEarning(Number(Number(totalEarningAmount) / 1e18).toString());
-    console.log(
-      "(Number(Number(totalEarningAmount) / 1e18)).toString(), ",
-      Number(Number(totalEarningAmount) / 1e18).toString()
-    );
+    // console.log(
+    //   "(Number(Number(totalEarningAmount) / 1e18)).toString(), ",
+    //   Number(Number(totalEarningAmount) / 1e18).toString()
+    // );
     await api
       .post("/api/updateEarning", {
         id: myGroupData?.id,
@@ -514,7 +553,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
-    console.log("success here it is");
+    // console.log("success here it is");
     if (!marketplaceContract) return;
 
     const withdrawMarketplaceBalance =
@@ -535,21 +574,21 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) return;
       setIsLoading(true);
 
-      console.log("selected new director", members[_num].wallet);
+      // console.log("selected new director", members[_num].wallet);
 
       const members_in_group = await contract.members(0);
       const members_in_group1 = await contract.members(1);
       const currentDirector = await contract.director();
 
-      console.log(
-        "members:",
-        members_in_group,
-        " next member:",
-        members_in_group1,
-        " current director ",
-        currentDirector
-      );
-      console.log("dfafds", members[_num].wallet);
+      // console.log(
+      //   "members:",
+      //   members_in_group,
+      //   " next member:",
+      //   members_in_group1,
+      //   " current director ",
+      //   currentDirector
+      // );
+      // console.log("dfafds", members[_num].wallet);
 
       const tx = await contract.submitDirectorSettingTransaction(
         members[_num].wallet
@@ -583,7 +622,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const sendGroupPost = async () => {
     const now = new Date();
     const formattedDateTime = now.toISOString();
-    console.log("currentTime--->", formattedDateTime);
+    // console.log("currentTime--->", formattedDateTime);
     await api
       .post("/api/addPost", {
         groupId: myGroupData?.id,
@@ -609,6 +648,53 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       });
     setActiveState(_activeState);
     toast.success("Successfully updated");
+  };
+
+  const addMember = async (index:number) => {
+    try {
+      if (!contract) throw "no contract";
+      if (!chainId) throw "Invalid chain id";
+      if (!user) throw "You must sign in";
+      if(!myGroupData) throw "No groupdata";
+      
+      setIsLoading(true);
+      // const tx = await contract.addMember(address);
+      // await tx.wait();
+      console.log("asdf");
+      const _members = myGroupData?.member ;
+      console.log("_members", _members) ;
+      console.log("userid", requests[index]);
+
+      _members?.push({id: (requests[index].userid).toString()}) ;
+      console.log("_members again", _members) ;
+      const result1 = await api
+      .post("/api/removeJoinRequest", {
+        id: requests[index].id
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      }); 
+      console.log("here1") ;
+      const result = await api
+      .post("/api/updateGroupMember", {
+        id: params.id,
+        member:JSON.stringify(_members),
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      }); 
+      console.log("here2") ;
+      getMyGroupData();
+      getNFTData();
+    } catch (error: any) {
+      if (String(error.code) === "ACTION_REJECTED") {
+        toast.error("User rejected transaction.");
+      } else {
+        toast.error("An error occurred. please try again");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -1077,7 +1163,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   <div
                     key={index}
                     className={`flex flex-col ${
-                      (item.id === myGroupData?.director || directorTransactions?.filter((_item:IDIRECTOR_TRANSACTION) => _item.new_director === item.id).length) && "hidden"
+                      (item.id === myGroupData?.director ||
+                        directorTransactions?.filter(
+                          (_item: IDIRECTOR_TRANSACTION) =>
+                            _item.new_director === item.id
+                        ).length) &&
+                      "hidden"
                     } `}
                   >
                     <div
@@ -1128,7 +1219,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               ))}
           </div>
 
-          <div className="flex justify-between text-lg mt-5" id="offers">
+          <div className="flex justify-between  mt-5" id="offers">
             <div>
               SUGGESTED DIRECTORS (
               {directorTransactions.length ? directorTransactions.length : "0"})
@@ -1162,7 +1253,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         )}
                       </div>
                       <div className="flex flex-col justify-between">
-                        <div className="mb-[5px]">
+                        <div className="mb-[5px] ">
                           {
                             members?.filter((_user: IUSER) =>
                               _user.id.includes(
@@ -1170,7 +1261,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                               )
                             )[0].name
                           }
-                          <span className="text-gray-400">SUGGESTED</span>
+                          <span className="text-gray-400 ml-2">SUGGESTED</span>
                         </div>
 
                         {members && directorTransactions && (
@@ -1240,7 +1331,59 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             )}
 
+          <div className="mt-5">
+            <h1>JOIN REQUESTS</h1>
+          </div>
+          <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
+            {requestMembers &&
+              requestMembers.map((item, index) => (
+                <>
+                  <div key={index} className={`flex flex-col`}>
+                    <div
+                      className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2`}
+                    >
+                      <div className="aspect-square rounded-full mt-3">
+                        <Image
+                          src={item.avatar}
+                          className="rounded-full aspect-square object-cover"
+                          alt="mebers"
+                          width={160}
+                          height={160}
+                        />
+                      </div>
+                      <div className="mt-3 justify-center">
+                        <p className="flex justify-center">{item.name} </p>
+                      </div>
+                    </div>
+                    {isDirector && (
+                      <button
+                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center`}
+                        onClick={() => {
+                          setSelectedRequestButton(index);
+                          addMember(index);
+                        }}
+                      >
+                        {selectedRequestButton === index && isLoading ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />{" "}
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "ACCEPT"
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </>
+              ))}
+          </div>
+
           <Split_line />
+
           <div className="text-xl" id="withdraw">
             <div className="text-md">Withdraw</div>
             <div className="border-b-2 border-indigo-500"></div>
@@ -1306,14 +1449,29 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           )}
-          <div className="flex justify-center items-center mt-5">
-            <button
-              onClick={leaveGroupHandle}
-              className="border bg-[#FF0000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
-            >
-              LEAVE THIS GROUP
-            </button>
-          </div>
+
+          {!isDirector && (
+            <div className="flex justify-center items-center mt-5">
+              <button
+                onClick={leaveGroupHandle}
+                className="border bg-[#FF0000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+              >
+                {isLoadingLeaveButton ? (
+                    <>
+                      <Icon
+                        icon="eos-icons:bubble-loading"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      PROCESSING...
+                    </>
+                  ) : (
+                    "LEAVE THIS GROUP"
+                  )}
+                
+              </button>
+            </div>
+          )}
           <Split_line />
         </div>
         <div
