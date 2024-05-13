@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect, ChangeEvent, useRef } from "react";
@@ -49,10 +50,10 @@ export default function MessagePage() {
   //zustand State
   const userid = useUserStore((state) => state.userid);
   const setUseridStore = useUserStore((state) => state.updateUserId);
-  const setUserId = (id: string) => {
-    setUseridStore(id);
-    window.localStorage.setItem("userid", id);
-  };
+  // const setUserId = (id: string) => {
+  //   setUseridStore(id);
+  //   window.localStorage.setItem("userid", id);
+  // };
   const socket = useWebSocketStore((state) => state.socket);
   const newMessageStore = useNotificationUIControlStore(
     (state) => state.newMessage
@@ -73,12 +74,13 @@ export default function MessagePage() {
       .catch((error) => {
         toast.error(error.message);
       });
-    console.log("apple--->", response?.data);
     setMyGroupData(response?.data);
   };
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setinputid(event.target.value);
-  };
+
+  useEffect(() => {
+    getJoinedGroupData();
+  }, [user]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       if (e.ctrlKey) {
@@ -101,32 +103,23 @@ export default function MessagePage() {
 
   const fetchMessageData = async (type: string, receiverId: string) => {
     const init = { type: type, receiverId: receiverId };
-    try {
-      const response = await fetch("http://localhost:8080/api/getMessage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(init),
+    const messages = await api
+      .post(`/api/getMessage`, JSON.stringify(init))
+      .catch((error) => {
+        console.log("fetch groupmember is faild", error);
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      await response.json().then((data) => {
-        setMessageData(data);
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    setMessageData(messages?.data);
   };
   const addNewMessage = (receiverId: string, from: string, message: string) => {
     if (receiverId === groupid) {
+      const current_time = new Date();
+      const currentDataTime = current_time.toISOString();
       const newMessage: Message = {
         id: 0,
         from: from,
         to: receiverId,
         type: "group",
-        time: "2022-01-01 12:00:00",
+        time: currentDataTime,
         status: "unread",
         message: message,
       };
@@ -138,13 +131,14 @@ export default function MessagePage() {
     receiverId: string,
     message: string
   ) => {
+    console.log(user?.id);
     const init = {
       type: type,
-      senderId: userid,
+      senderId: user?.id,
       receiverId: groupid,
       message: message,
     };
-    addNewMessage(receiverId, userid ? userid : "0", message);
+    addNewMessage(receiverId, user?.id ? user?.id : "0", message);
     try {
       const response = await fetch("http://localhost:8080/api/saveMessage", {
         method: "POST",
@@ -169,9 +163,8 @@ export default function MessagePage() {
   //useEffect
   useEffect(() => {
     setLoadingState(false);
-    getJoinedGroupData();
     updateNavbarBackground(true);
-  }, [setLoadingState, updateNavbarBackground]);
+  }, []);
 
   useEffect(() => {
     setSelectedGroup(MyGroupData?.find((group: any) => group.id == groupid));
@@ -196,26 +189,6 @@ export default function MessagePage() {
 
   return (
     <>
-      <div className="fixed p-5 border flex-col bg-white min-h-[200px] drop-shadow-sm top-[110px] right-5 z-10">
-        <p>UserId:{user?.id}</p>
-        <p>GroupId:{groupid}</p>
-
-        <div>
-          <input
-            type="text"
-            className="border-2 my-5 border-gray-300 bg-white h-10 px-5 pr-10 rounded-lg text-sm focus:outline-none"
-            onChange={handleInputChange}
-          />
-        </div>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded active:translate-y-1"
-          onClick={() => {
-            setUserId(inputid);
-          }}
-        >
-          Set UserID
-        </button>
-      </div>
       <div>
         <div
           className="page_container_p40 pt-[100px] w-full h-[100vh] flex font-Maxeville"
@@ -245,7 +218,7 @@ export default function MessagePage() {
               <div className="text-gray-400 text-[12px] my-3 overflow-hidden text-overflow">
                 <p className="truncate">Groups</p>
               </div>
-              {MyGroupData.map((item, index) => (
+              {MyGroupData?.map((item, index) => (
                 <div key={index}>
                   <div
                     className={`flex flex-col gap-1 border-b-[1px] cursor-pointer transition-all ${
@@ -319,7 +292,7 @@ export default function MessagePage() {
                       <div
                         key={index}
                         className={`flex gap-5 p-3 ${
-                          item.from === userid && "flex-row-reverse"
+                          item.from === user?.id && "flex-row-reverse"
                         }`}
                       >
                         <div className="w-[50px] flex items-end">

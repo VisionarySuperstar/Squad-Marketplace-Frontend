@@ -48,13 +48,13 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
   return (
     <>
       <div
-        className="w-[100vw] h-[100vh] fixed top-0 z-[1100]"
+        className="w-[100vw] h-[100vh] fixed top-0 z-[1400]"
         onClick={() => {
           setAddMemberModalState(false);
         }}
       ></div>
       <div className="font-Maxeville">
-        <div className="joinModal !w-[500px] drop-shadow-lg mt-5 z-[1300]">
+        <div className="joinModal !w-[500px] drop-shadow-xl mt-5 z-[1500] border">
           <div
             className="closeBtn"
             onClick={() => {

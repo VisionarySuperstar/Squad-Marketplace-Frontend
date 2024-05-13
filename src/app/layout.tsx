@@ -37,9 +37,9 @@ export default function RootLayout({
           <Provider>
             <NavBar />
             <Loading_screen />
+            <SocketComponent />
             {children}
           </Provider>
-          <SocketComponent />
         </body>
       </html>
     </AosProvider>

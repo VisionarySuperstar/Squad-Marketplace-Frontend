@@ -84,7 +84,7 @@ const JoinModal = () => {
             setJoinModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] marker:drop-shadow-lg z-[1300]">
+        <div className="joinModal z-[1300] marker:drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {
