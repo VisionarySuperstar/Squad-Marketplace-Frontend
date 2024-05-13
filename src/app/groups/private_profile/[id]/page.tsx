@@ -248,6 +248,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getRequestMembers();
   }, [requests]);
 
+ 
+
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
   const [uploadedContent, setUploadedContent] = useState<string[]>([]);
@@ -307,6 +309,26 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setMarketplaceContract(_market_contract);
     }
   }, [address, chainId, signer, myGroupData]);
+
+  const dsiplayMembers = async () => {
+    if(!contract) return ;
+    const _number = await contract.numberOfMembers();
+    console.log("groupMembers_number", _number.toString()) ;
+    const _members1 = await contract.members(0) ;
+    const _members2 = await contract.members(1) ;
+    const _members3 = await contract.members(2) ;
+
+    console.log("group members-1 ", _members1) ;
+    console.log("group members-2 ", _members2) ;
+    console.log("group members-3 ", _members3) ;
+
+
+
+  }
+
+  useEffect(() => {
+    if(contract) dsiplayMembers() ;
+  }, [contract])
 
   const offeringConfrimHandle = async (item: IOFFER_TRANSACTION) => {
     try {
@@ -521,6 +543,15 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
+      await api
+        .post("/api/removeDirector", {
+          id:user.id
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        })
+      
+      
       
       router.push("/groups") ;
 
@@ -658,13 +689,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if(!myGroupData) throw "No groupdata";
       
       setIsLoading(true);
-      // const tx = await contract.addMember(address);
-      // await tx.wait();
+      const tx = await contract.addMember(requestMembers[index].wallet);
+      await tx.wait();
       console.log("asdf");
       const _members = myGroupData?.member ;
       console.log("_members", _members) ;
       console.log("userid", requests[index]);
-
       _members?.push({id: (requests[index].userid).toString()}) ;
       console.log("_members again", _members) ;
       const result1 = await api
@@ -1454,7 +1484,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="flex justify-center items-center mt-5">
               <button
                 onClick={leaveGroupHandle}
-                className="border bg-[#FF0000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+                className="border bg-[#FF0000] texxt-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
               >
                 {isLoadingLeaveButton ? (
                     <>
