@@ -152,7 +152,7 @@ export default function MessagePage() {
     };
     addNewMessage(receiverId, user?.id ? user?.id : "0", message);
     try {
-      const response = await fetch("http://localhost:8080/api/saveMessage", {
+      const response = await fetch("http://136.243.172.88:8000/api/saveMessage", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
