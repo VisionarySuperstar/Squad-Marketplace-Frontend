@@ -51,8 +51,8 @@ const NftCard: React.FC<CardProps> = ({
           src={avatar}
           className="w-full h-full aspect-square object-cover"
           alt="market_nft"
-          width={0}
-          height={0}
+          width={500}
+          height={500}
           sizes="100vw"
         />
       </div>
