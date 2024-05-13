@@ -24,7 +24,7 @@ const SocketComponent = () => {
 
   const create_new_connection = () => {
     close_original_connection();
-    const _socket = new WebSocket(`ws://localhost:8080`);
+    const _socket = new WebSocket(`ws://136.243.172.88:8000/`);
 
     _socket.onopen = () => {
       _socket.send(JSON.stringify({ type: "userId", userId: userid }));
