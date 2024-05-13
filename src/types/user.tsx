@@ -101,3 +101,10 @@ export interface IPOST_NEWS{
   post_time:string;
   content:string;
 }
+
+export interface IRequest{
+  id:string;
+  groupid:string;
+  userid:string;
+  date:string;
+}

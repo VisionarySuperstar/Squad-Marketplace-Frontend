@@ -14,7 +14,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
 import useAPI from "@/hooks/useAPI";
-import { IGROUP, IUSER, INFT, IPOST_NEWS } from "@/types";
+import { IGROUP, IUSER, INFT, IPOST_NEWS, IRequest } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 
@@ -46,7 +46,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
   const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
-
+  const [isAvailableRequest, setIsAvailableRequest] = useState<boolean>(true);
   const api = useAPI();
   const getMyGroupData = async () => {
     const response = await api
@@ -74,29 +74,75 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     getNftData();
   }, []);
 
-  const getMembersData = async (id: string) => {
-    const response = await api.get(`/auth/user/${id}`).catch((error) => {
-      toast.error(error.message);
-    });
-    return response?.data;
-  };
-  useEffect(() => {
+  const usersInfor = async () => {
     if (!myGroupData) return;
-    (async () => {
-      const _members = await Promise.all(
-        myGroupData.member.map(
-          async (_member: any) => await getMembersData(_member.id)
-        )
-      );
-      setMembers(_members);
-    })();
+    console.log("myGroupData", myGroupData);
+    const response = await api
+      .post(`/auth/user/getAllMembers`)
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    const _all_members = response?.data;
+    console.log("_all_members", _all_members);
+    const _members = _all_members.filter((_user: IUSER) =>
+      myGroupData.member
+        .map((_groupUser: any) => _groupUser.id)
+        .includes(_user.id)
+    );
+    console.log("_members", _members);
+    setMembers(_members);
+  };
+
+  const checkIsAvailableRequest = async () => {
+    if (!myGroupData) return;
+    if (!user) return;
+    let flg = false;
+
+    flg = myGroupData.member.map((_user: any) => _user.id).includes(user.id);
+    if (!flg) {
+      const result = await api
+        .post("/api/getJoinRequestByGroupId", { id: params.id })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      console.log("result for all join request", result?.data);
+      console.log("user id", user.id) ;
+      const all_requests: IRequest[] = result?.data;
+      flg = all_requests
+        .map((_request: IRequest) => (_request.userid).toString())
+        .includes(user.id);
+    }
+
+    setIsAvailableRequest(flg);
+  };
+
+  useEffect(() => {
+    console.log("here");
+    usersInfor();
+    checkIsAvailableRequest();
   }, [myGroupData]);
+
+  const requestJoinHandle = async () => {
+    const now = new Date();
+    const formattedDateTime = now.toISOString();
+    const response = await api
+      .post(`/api/addJoinRequest`, {
+        groupId: params.id,
+        userId: user?.id,
+        date: formattedDateTime,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    toast.success("Successfully submitted join request!");
+    checkIsAvailableRequest() ;
+  };
 
   return (
     <>
       <div className="pt-[100px] h-full">
         <div className="page_container_p40 flex font-Maxeville" id="profile">
-          <div>
+          <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row  md:justify-between w-full">
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
               <div className="mt-5">
                 {myGroupData && (
@@ -118,6 +164,16 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   />
                 )}
               </div>
+            </div>
+            <div className="mt-5 xs:flex sm:justify-center xs:justify-center  h-[40px] ">
+              {!isAvailableRequest && (
+                <button
+                  className="border bg-[#322A44] p-1 text-white rounded-full pl-6 pr-6 text-lg"
+                  onClick={() => requestJoinHandle()}
+                >
+                  REQUEST TO JOIN
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -162,7 +218,12 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         </div>
         <div className="page_container_p40 font-Maxeville">
           <div className="flex justify-between text-xl mt-5" id="nfts">
-            <div>NFTs (23)</div>
+            <div>
+              NFTs (
+              {Number(myGroupData?.mintnumber) -
+                Number(myGroupData?.soldnumber)}
+              )
+            </div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
           <div className="mb-[50px] grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
@@ -203,7 +264,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
 
           <div className="flex justify-between text-lg mt-5" id="post">
-            <div>POST({postNews?.length})</div>
+            <div>POST ({postNews?.length ? postNews?.length : "0"})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL</div>
           </div>
           <div
@@ -218,16 +279,16 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   key={key}
                   className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1"
                 >
-                    <div>
-                      {_news.content.split("\n").map((line, index) => (
-                        <React.Fragment key={index}>
-                          {line}
-                          <br />
-                        </React.Fragment>
-                      ))}
-                    </div>
-                    <div>{_news.post_time.toString()}</div>
-                  
+                  <div>
+                    {_news.content.split("\n").map((line, index) => (
+                      <React.Fragment key={index}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <div>{_news.post_time.toString()}</div>
+
                   <Split_line />
                 </div>
               ))}
