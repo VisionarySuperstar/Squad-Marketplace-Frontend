@@ -9,11 +9,14 @@ interface GroupDescriptionProps {
   totalEarning: string;
 }
 
+
+
 const GroupDescription: React.FC<GroupDescriptionProps> = ({
   users,
   myGroupData,
   totalEarning,
 }) => {
+  // console.log("users-------->", users) ;
   return (
     <>
       <div className="">

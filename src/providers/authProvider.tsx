@@ -62,6 +62,7 @@ const AuthProvider = ({
     if (isDisconnected) {
       setUser(undefined);
       setIsAuthenticated(false);
+      router.push("/groups");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDisconnected]);
