@@ -21,15 +21,13 @@ import useAPI from "@/hooks/useAPI";
 import Message from "@/interfaces/message";
 import toast from "react-hot-toast";
 
-import { IGROUP } from "@/types";
+import { IGROUP, IUSER } from "@/types";
 
 export default function MessagePage() {
   const { user } = useAuth();
-
   //data
   //useState
   const [content, setContent] = useState<string>("");
-  const [inputid, setinputid] = useState<string>("");
   const [groupid, setGroupId] = useState<string>("");
   const [selectedGroupListId, setSelectedGroupListId] = useState<number>(-1);
   const [selectedUserListId, setSelectedUserListId] = useState<number>(-1);
@@ -38,6 +36,7 @@ export default function MessagePage() {
   const [sotedMessageData, setSotedMessageData] = useState<Message[]>();
   const [messageType, setMessageType] = useState<string>("");
   const [MyGroupData, setMyGroupData] = useState<IGROUP[]>([]);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState<IUSER[]>([]);
   //use api
   const api = useAPI();
   //useRef
@@ -102,14 +101,27 @@ export default function MessagePage() {
   };
 
   const fetchMessageData = async (type: string, receiverId: string) => {
-    const init = { type: type, receiverId: receiverId };
-    const messages = await api
-      .post(`/api/getMessage`, JSON.stringify(init))
-      .catch((error) => {
-        console.log("fetch groupmember is faild", error);
+    try {
+      const init = { type, receiverId };
+
+      const messagesResponse = await api.post(`/api/getMessage`, init);
+      const messages = messagesResponse.data;
+      setMessageData(messages);
+
+      const membersResponse = await api.post(`/api/getGroupMembers`, {
+        groupId: receiverId,
       });
-    setMessageData(messages?.data);
+      const members = membersResponse.data;
+      setSelectedGroupMembers(members);
+
+      console.log("Messages:", messages);
+      console.log("Selected Group Members:", members);
+    } catch (error) {
+      console.log("Error fetching message data:", error);
+    }
   };
+
+  const fetchGroupMembers = async () => {};
   const addNewMessage = (receiverId: string, from: string, message: string) => {
     if (receiverId === groupid) {
       const current_time = new Date();
@@ -283,43 +295,48 @@ export default function MessagePage() {
                   </div>
                   <div className="flex flex-col">
                     <div className="text-[18px]">{selectedGroup?.name}</div>
-                    <div className="text-gray-400 text-[12px]">40min</div>
+                    {/* <div className="text-gray-400 text-[12px]">40min</div> */}
                   </div>
                 </div>
                 <div className="overflow-y-scroll scrollbar h-full flex flex-col-reverse">
-                  {sotedMessageData?.map((item, index) => (
-                    <>
-                      <div
-                        key={index}
-                        className={`flex gap-5 p-3 ${
-                          item.from === user?.id && "flex-row-reverse"
-                        }`}
-                      >
-                        <div className="w-[50px] flex items-end">
-                          <Image
-                            src={"/assets/images/users/user2.jpg"}
-                            className="w-[50px] h-[50px] rounded-full object-cover aspect-square"
-                            width={100}
-                            height={100}
-                            alt="avatar"
-                          />
-                        </div>
-                        <div className="flex flex-col lg:max-w-[60%] bg-white/50 border drop-shadow-sm p-5 rounded-md">
-                          <div className="text-[15px] break-all">
-                            {item.message.split("\n").map((line, index) => (
-                              <React.Fragment key={index}>
-                                {line}
-                                <br />
-                              </React.Fragment>
-                            ))}
+                  {sotedMessageData &&
+                    sotedMessageData.map((item, index) => (
+                      <>
+                        <div
+                          key={index}
+                          className={`flex gap-5 p-3 ${
+                            item.from === user?.id && "flex-row-reverse"
+                          }`}
+                        >
+                          <div className="w-[50px] flex items-end">
+                            <Image
+                              src={
+                                selectedGroupMembers.find(
+                                  (member) => member.id === item.from
+                                )?.avatar || ""
+                              }
+                              className="w-[50px] h-[50px] rounded-full object-cover aspect-square"
+                              width={100}
+                              height={100}
+                              alt="avatar"
+                            />
                           </div>
-                          <div className="text-gray-400 text-[12px] mt-[10px]">
-                            {item.time}
+                          <div className="flex flex-col lg:max-w-[60%] bg-white/50 border drop-shadow-sm p-5 rounded-md">
+                            <div className="text-[15px] break-all">
+                              {item.message.split("\n").map((line, index) => (
+                                <React.Fragment key={index}>
+                                  {line}
+                                  <br />
+                                </React.Fragment>
+                              ))}
+                            </div>
+                            <div className="text-gray-400 text-[12px] mt-[10px]">
+                              {item.time}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </>
-                  ))}
+                      </>
+                    ))}
                 </div>
 
                 <div className="flex p-3">
