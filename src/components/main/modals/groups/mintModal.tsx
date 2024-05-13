@@ -312,7 +312,7 @@ const MintModal = ({
                     }`}
                   >
                     <div className="grid grid-cols-2 gap-2">
-                      {index.nft.map((nfts, key1) => (
+                      {index.nft.slice(0, 4).map((nfts, key1) => (
                         <div
                           key={key1}
                           className="flex items-center justify-center"
@@ -476,7 +476,7 @@ const MintModal = ({
               ) : (
                 <div className="p-1 w-1/4 mt-5 border-2 border-gray-400">
                   <div className="grid grid-cols-2 gap-2">
-                    {allCollection[selected].nft.map((nfts, key1) => (
+                    {allCollection[selected].nft.slice(0,4).map((nfts, key1) => (
                       <div
                         key={key1}
                         className="flex items-center justify-center"
