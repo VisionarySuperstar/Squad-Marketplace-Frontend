@@ -86,7 +86,13 @@ export default function Home() {
             <input
               className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
               value={searchInput}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchInput(event.target.value as string)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const value = event.target.value as string ;
+                setSearchInput(value);
+                if(value === ''){
+                  setSearchFilter("") ;
+                }
+              }}
               onKeyDown={handleKeyDown} 
               placeholder="SEARCH"
             />
