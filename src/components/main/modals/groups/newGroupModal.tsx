@@ -181,6 +181,11 @@ const NewGroupModal = () => {
       toast.error("Select right confirm number");
       valid = false;
     }
+    if(!avatar){
+      toast.error("Upload Group Image!") ;
+      valid = false;
+    }
+    
     if (valid) {
       if (!isAuthenticated) {
         toast.error("Connect your wallet!");
@@ -223,7 +228,7 @@ const NewGroupModal = () => {
         }}
       ></div>
       <div className="z-[1000] font-Maxeville">
-        <div className="joinModal z-[1300] drop-shadow-lg z-[1000]">
+        <div className="joinModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

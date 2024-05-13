@@ -25,8 +25,7 @@ import {
 import { useBalance, useAccount, useChainId, useWalletClient } from "wagmi";
 import useAuth from "@/hooks/useAuth";
 import CreateProfileModal from "@/components/main/modals/createProfileModal";
-import { useDisconnect } from 'wagmi'
-
+import { useDisconnect } from "wagmi";
 
 const NavBar = () => {
   const isGroupBtn = useNavbarUIControlStore((state) => state.isgroupbtn);
@@ -99,7 +98,6 @@ const NavBar = () => {
     connector,
     isDisconnected,
     chainId,
-
   } = useActiveWeb3();
   const { signIn, isAuthenticated, user } = useAuth();
 
@@ -148,7 +146,10 @@ const NavBar = () => {
     } else if (user) {
       return (
         <div
-          onClick={() => router.push("/profile")}
+          onClick={() => {
+            setCurrent("user");
+            router.push("/profile");
+          }}
           className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
         >
           <Icon
@@ -175,7 +176,7 @@ const NavBar = () => {
       );
     }
   };
-  const { disconnect } = useDisconnect() ;
+  const { disconnect } = useDisconnect();
   const handleDisconnect = async () => {
     disconnect();
     window.localStorage.removeItem("accessToken");
@@ -218,6 +219,7 @@ const NavBar = () => {
                   onClick={() => {
                     setCurrent("logo");
                     setIsGroupBtn(false);
+                    setLoadingState(true);
                     router.push("/");
                   }}
                 >
@@ -280,7 +282,7 @@ const NavBar = () => {
                 {!openConnectModal && openChainModal && (
                   <>
                     <div
-                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[30px]
+                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:pe-[10px] lg:ps-[20px]
                       ${
                         current === "logo"
                           ? "lg:rounded-none xs:rounded-l-full"
@@ -301,11 +303,7 @@ const NavBar = () => {
                           ? "lg:rounded-l-full xs:rounded-none"
                           : ""
                       }
-                      ${
-                        current === "wallet"
-                          ? "rounded-full px-[28px] mx-[2px]"
-                          : "px-[30px]"
-                      }
+                      ${current === "wallet" ? "rounded-full mx-[2px]" : ""}
                        ${
                          chainID === 11155111 &&
                          "hover:after:content-['Sepolia']"
@@ -313,8 +311,8 @@ const NavBar = () => {
                        ${chainID === 1 && "hover:after:content-['Mainnet']"}
                        ${chainID === 137 && "hover:after:content-['Polygon']"}
                        hover:after:absolute
-                       hover:after:w-full
                        hover:after:h-full
+                       hover:after:w-full
                        hover:after:bg-chocolate-main
                     `}
                       onClick={() => {
@@ -329,19 +327,16 @@ const NavBar = () => {
                       </div>
                     </div>
                     <div
-                      className={`${
-                        user && "rounded-r-full"
-                      } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[20px] lg:px-[30px]
+                      className={` rounded-r-full bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[20px] hover:bg-chocolate-main/80
                 ${current === "user" ? "rounded-r-full" : ""}
                 ${current === "wallet" ? "rounded-l-full" : ""}
                 ${
                   current === "alert"
-                    ? "rounded-full px-[28px] mx-[2px]"
-                    : "px-[30px]"
+                    ? "rounded-full px-[18px] mx-[2px]"
+                    : "px-[10px]"
                 }
             `}
                       onClick={() => {
-                        setCurrent("alert");
                         setNotificationState(!notificationModal);
                       }}
                     >
@@ -388,27 +383,22 @@ const NavBar = () => {
                       trigger="hover"
                     >
                       <div
-                        className={`${
-                          user && "bg-white"
-                        } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
-                      ${current === "alert" ? "rounded-l-full " : ""}
+                        className={`bg-transparent bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
+                      ${current === "alert" ? "rounded-l-full" : ""}
                       ${
                         current === "user"
-                          ? "rounded-l-full ms-[2px] ps-[20px] pe-[20px]"
-                          : "ps-[20px] pe-[20px]"
+                          ? "rounded-l-full ms-[2px] ps-[10px] pe-[20px]"
+                          : "ps-[10px] rounded-l-full pe-[20px]"
                       }`}
-                        onClick={() => {
-                          setCurrent("user");
-                        }}
                       >
-                        <div className="flex flex-none justify-center items-center p-2">
+                        <div className="flex flex-none justify-center items-center rounded-full border-white border-[2px]">
                           {user && user.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <Image
                               src={avatar}
                               key={avatar}
-                              width={36}
-                              height={36}
+                              width={26}
+                              height={26}
                               alt={"wallet avatar"}
                               // priority={true}
                               className="rounded-full aspect-square"
@@ -416,8 +406,8 @@ const NavBar = () => {
                           ) : (
                             <Icon
                               icon="flowbite:user-solid"
-                              width={36}
-                              height={36}
+                              width={26}
+                              height={26}
                               className="rounded-full bg-[#46455367] dark:text-black dark:bg-[#868592c4] opacity-50"
                             />
                           )}

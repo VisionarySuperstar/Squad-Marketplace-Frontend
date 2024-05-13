@@ -49,13 +49,20 @@ export default function Home() {
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
   }, [screenWidth]);
-  
 
+  const [recruitingState, setRecruitingState] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchFilter, setSearchFilter] = useState<string>("");
+  // console.log("searchInput", searchInput) ;
+  const handleKeyDown = (event: any) => {
+    if (event.key === "Enter") {
+      setSearchFilter(searchInput);
+    }
+  };
 
   return (
     <>
       <div className="page_container_p40 pt-[120px]">
-        
         <div className="mb-[50px]">
           <MyGroup />
         </div>
@@ -71,20 +78,40 @@ export default function Home() {
               </div>
             )}
             <div>
-              <Recruiting />
+              <Recruiting
+                recruitingState={recruitingState}
+                setRecruitingState={setRecruitingState}
+                name="ACTIVELY RECRUITING"
+              />
             </div>
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
             <input
               className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+              value={searchInput}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const value = event.target.value as string;
+                setSearchInput(value);
+                if (value === "") {
+                  setSearchFilter("");
+                }
+              }}
+              onKeyDown={handleKeyDown}
               placeholder="SEARCH"
             />
-            <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
+            <button
+              className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
+              onClick={() => setSearchFilter(searchInput)}
+            >
               ENTER
             </button>
           </div>
         </div>
-        <AllGroup scale={scale} />
+        <AllGroup
+          scale={scale}
+          recruitingState={recruitingState}
+          searchFilter={searchFilter}
+        />
         <div className="flex items-center justify-center mt-5">
           <GeneralButton name={"LOAD  MORE"} />
         </div>

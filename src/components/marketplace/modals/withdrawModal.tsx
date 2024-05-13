@@ -14,23 +14,19 @@ import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
+import { INFT } from "@/types";
 
 interface WithdrawGroupModalInterface {
-  groupAddress: string;
+  nftData: INFT;
 }
 
-const WithdrawGroupModal = ({ groupAddress }: WithdrawGroupModalInterface) => {
+const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
   );
-  const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
-  const withdrawModalState = useMarketplaceUIControlStore(
-    (state) => state.withdrawModal
-  );
-  const seletedGroup = MyGroups[3];
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const api = useAPI();
 
@@ -40,30 +36,51 @@ const WithdrawGroupModal = ({ groupAddress }: WithdrawGroupModalInterface) => {
   const { signIn, isAuthenticated, user } = useAuth();
 
   useEffect(() => {
-    if (!address || !chainId || !signer) {
+    if (!address || !chainId || !signer || !nftData) {
       return;
     }
-    const _contract = new Contract(groupAddress, GROUP_ABI, signer);
-    setContract(_contract);
     const _market_contract = new Contract(
       Marketplace_ADDRESSES[chainId],
       MARKETPLACE_ABI,
       signer
     );
-    async () => {
-      const value = await _market_contract.balanceOfSeller(groupAddress);
+    setContract(_market_contract);
+    
+    
+  }, [address, chainId, signer, nftData]);
+  useEffect(() => {
+    getWithdrawAmounts() ;
+  }, [contract]) ;
+  const getWithdrawAmounts = async () => {
+    if(!contract) return ;
+    if (Number(nftData.auctiontype) === 0) {
+      const value = await contract.withdrawBalanceForEnglishAuction(
+        BigInt(nftData.listednumber), user?.wallet
+      );
       console.log("value ", value);
       setWithdrawAmount((Number(value) / 1e18).toString());
-    };
-  }, [address, chainId, signer, groupAddress]);
+    } else if (Number(nftData.auctiontype) === 2) {
+      const value = await contract.withdrawBalanceForOfferingSale(
+        BigInt(nftData.listednumber), user?.wallet
+      );
+      console.log("value ", value);
+      setWithdrawAmount((Number(value) / 1e18).toString());
+    }
+  };
   const handleWithdrawClick = async () => {
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
-      const tx = await contract.withdrawFromMarketplace();
-      await tx.wait();
+      if (Number(nftData.auctiontype) === 0) {
+        const tx = await contract.withdrawFromEnglishAuction(BigInt(nftData.listednumber));
+        await tx.wait();
+      }
+      else if (Number(nftData.auctiontype) === 2) {
+        const tx = await contract.withdrawFromOfferingSale(BigInt(nftData.listednumber));
+        await tx.wait();
+      }
 
       setWithdrawModalState(false);
     } catch (error: any) {

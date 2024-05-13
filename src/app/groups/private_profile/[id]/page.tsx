@@ -66,10 +66,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     isLoadingWithdrawMarketplaceButton,
     setIsLoadingWithdrawMarketplaceButton,
   ] = useState<boolean>(false);
-  const [
-    isLoadingLeaveButton,
-    setIsLoadingLeaveButton,
-  ] = useState<boolean>(false);
+  const [isLoadingLeaveButton, setIsLoadingLeaveButton] =
+    useState<boolean>(false);
   const [selectedRequestButton, setSelectedRequestButton] =
     useState<number>(-1);
 
@@ -140,7 +138,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setListedNfts(result2?.data);
-    // console.log("result2", result2?.data);
     const result3 = await api
       .post("/api/getNftByGroupAndStatus", {
         id: params.id,
@@ -307,6 +304,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setMarketplaceContract(_market_contract);
     }
   }, [address, chainId, signer, myGroupData]);
+
+  const dsiplayMembers = async () => {
+    if (!contract) return;
+    const _number = await contract.numberOfMembers();
+    console.log("groupMembers_number", _number.toString());
+  };
+
+  useEffect(() => {
+    if (contract) dsiplayMembers();
+  }, [contract]);
 
   const offeringConfrimHandle = async (item: IOFFER_TRANSACTION) => {
     try {
@@ -521,9 +528,15 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-      
-      router.push("/groups") ;
+      await api
+        .post("/api/removeDirector", {
+          id: user.id,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
 
+      router.push("/groups");
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
         toast.error("User rejected transaction.");
@@ -650,40 +663,39 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     toast.success("Successfully updated");
   };
 
-  const addMember = async (index:number) => {
+  const addMember = async (index: number) => {
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!myGroupData) throw "No groupdata";
-      
-      setIsLoading(true);
-      // const tx = await contract.addMember(address);
-      // await tx.wait();
-      console.log("asdf");
-      const _members = myGroupData?.member ;
-      console.log("_members", _members) ;
-      console.log("userid", requests[index]);
+      if (!myGroupData) throw "No groupdata";
 
-      _members?.push({id: (requests[index].userid).toString()}) ;
-      console.log("_members again", _members) ;
+      setIsLoading(true);
+      const tx = await contract.addMember(requestMembers[index].wallet);
+      await tx.wait();
+      console.log("asdf");
+      const _members = myGroupData?.member;
+      console.log("_members", _members);
+      console.log("userid", requests[index]);
+      _members?.push({ id: requests[index].userid.toString() });
+      console.log("_members again", _members);
       const result1 = await api
-      .post("/api/removeJoinRequest", {
-        id: requests[index].id
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      }); 
-      console.log("here1") ;
+        .post("/api/removeJoinRequest", {
+          id: requests[index].id,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      console.log("here1");
       const result = await api
-      .post("/api/updateGroupMember", {
-        id: params.id,
-        member:JSON.stringify(_members),
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      }); 
-      console.log("here2") ;
+        .post("/api/updateGroupMember", {
+          id: params.id,
+          member: JSON.stringify(_members),
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      console.log("here2");
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -1454,21 +1466,20 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="flex justify-center items-center mt-5">
               <button
                 onClick={leaveGroupHandle}
-                className="border bg-[#FF0000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+                className="border bg-[#FF0000] texxt-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
               >
                 {isLoadingLeaveButton ? (
-                    <>
-                      <Icon
-                        icon="eos-icons:bubble-loading"
-                        width={20}
-                        height={20}
-                      />{" "}
-                      PROCESSING...
-                    </>
-                  ) : (
-                    "LEAVE THIS GROUP"
-                  )}
-                
+                  <>
+                    <Icon
+                      icon="eos-icons:bubble-loading"
+                      width={20}
+                      height={20}
+                    />{" "}
+                    PROCESSING...
+                  </>
+                ) : (
+                  "LEAVE THIS GROUP"
+                )}
               </button>
             </div>
           )}
