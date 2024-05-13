@@ -219,6 +219,7 @@ const NavBar = () => {
                   onClick={() => {
                     setCurrent("logo");
                     setIsGroupBtn(false);
+                    setLoadingState(true);
                     router.push("/");
                   }}
                 >
@@ -310,8 +311,8 @@ const NavBar = () => {
                        ${chainID === 1 && "hover:after:content-['Mainnet']"}
                        ${chainID === 137 && "hover:after:content-['Polygon']"}
                        hover:after:absolute
-                       hover:after:w-full
                        hover:after:h-full
+                       hover:after:w-full
                        hover:after:bg-chocolate-main
                     `}
                       onClick={() => {
@@ -326,9 +327,7 @@ const NavBar = () => {
                       </div>
                     </div>
                     <div
-                      className={`${
-                        user && "rounded-r-full"
-                      } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[20px] hover:bg-chocolate-main/80
+                      className={` rounded-r-full bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[20px] hover:bg-chocolate-main/80
                 ${current === "user" ? "rounded-r-full" : ""}
                 ${current === "wallet" ? "rounded-l-full" : ""}
                 ${
@@ -384,14 +383,12 @@ const NavBar = () => {
                       trigger="hover"
                     >
                       <div
-                        className={`${
-                          user && "bg-transparent"
-                        } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
-                      ${current === "alert" ? "rounded-l-full " : ""}
+                        className={`bg-transparent bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
+                      ${current === "alert" ? "rounded-l-full" : ""}
                       ${
                         current === "user"
                           ? "rounded-l-full ms-[2px] ps-[10px] pe-[20px]"
-                          : "ps-[10px] pe-[20px]"
+                          : "ps-[10px] rounded-l-full pe-[20px]"
                       }`}
                       >
                         <div className="flex flex-none justify-center items-center rounded-full border-white border-[2px]">
