@@ -33,7 +33,7 @@ const NftCard: React.FC<CardProps> = ({
           setLoadingState(true);
         }}
       >
-        <div className="transition-all absolute aspect-square top-0 content-card-menu opacity-0 rounded-lg text-white bg-chocolate-main/80 w-full">
+        <div className="transition-all absolute aspect-square top-0 content-card-menu opacity-0 text-white bg-chocolate-main/80 w-full">
           <div>
             <div className="absolute left-4 top-4">
               {collectionName} #{collectionId}
@@ -49,7 +49,7 @@ const NftCard: React.FC<CardProps> = ({
         </div>
         <Image
           src={avatar}
-          className="w-full h-full aspect-square object-cover rounded-lg"
+          className="w-full h-full aspect-square object-cover"
           alt="market_nft"
           width={0}
           height={0}
