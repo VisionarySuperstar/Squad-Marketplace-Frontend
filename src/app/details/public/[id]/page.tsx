@@ -177,7 +177,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           getData={getData}
         />
       )}
-      {withdrawModalState && <WithdrawModal groupAddress={groupAddress} />}
+      {withdrawModalState && data && <WithdrawModal nftData={data} />}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (

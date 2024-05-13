@@ -138,7 +138,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     setListedNfts(result2?.data);
-    // console.log("result2", result2?.data);
     const result3 = await api
       .post("/api/getNftByGroupAndStatus", {
         id: params.id,
