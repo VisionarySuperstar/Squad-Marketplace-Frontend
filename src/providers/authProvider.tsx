@@ -62,8 +62,6 @@ const AuthProvider = ({
     if (isDisconnected) {
       setUser(undefined);
       setIsAuthenticated(false);
-      window.localStorage.removeItem("accessToken");
-      router.push("/groups");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDisconnected]);
@@ -89,7 +87,8 @@ const AuthProvider = ({
       }
 
       const signature = await signMessageAsync({ message }).catch((error) => {
-        toast.error(error.message);
+        toast.error("Signin Cancelled");
+        throw "";
       });
 
       const result_signdata = await api
