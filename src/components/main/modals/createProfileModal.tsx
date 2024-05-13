@@ -127,9 +127,8 @@ const CreateProfileModal = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
   React.useEffect(() => {
-    
-      console.log("preview changed!!!");
-    console.log(preview)
+    console.log("preview changed!!!");
+    console.log(preview);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preview]);
   return (
@@ -141,7 +140,7 @@ const CreateProfileModal = () => {
             setProfileModalState(false);
           }}
         ></div>
-        <div className="joinModal drop-shadow-lg">
+        <div className="joinModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {
@@ -169,29 +168,22 @@ const CreateProfileModal = () => {
               <div className="dark:bg-[#100E28] bg-white px-3 xs:px-6 py-6 rounded-xl ">
                 <section className="mt-5  sm:flex sm:flex-row gap-2 items-center justify-start flex-col">
                   <div className="flex justify-center">
-                    {
-                      preview?(
-                        <Image
+                    {preview ? (
+                      <Image
                         src={preview}
                         width={70}
                         height={70}
                         alt=""
                         className="rounded-full aspect-square bg-[#be6a6a6b] z-[10000]"
                       />
-
-                      ):
-                      (
-                        <Icon
+                    ) : (
+                      <Icon
                         icon="flowbite:user-solid"
                         width={70}
                         height={70}
                         className="rounded-full bg-[#46455367] opacity-50"
                       />
-                      )
-                    }
-                   
-                      
-                    
+                    )}
                   </div>
                   <label
                     htmlFor="avatar"

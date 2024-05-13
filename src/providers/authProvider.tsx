@@ -88,8 +88,8 @@ const AuthProvider = ({
       }
 
       const signature = await signMessageAsync({ message }).catch((error) => {
-        toast.error(error.message);
-        throw ""
+        toast.error("Signin Cancelled");
+        throw "";
       });
 
       const result_signdata = await api
