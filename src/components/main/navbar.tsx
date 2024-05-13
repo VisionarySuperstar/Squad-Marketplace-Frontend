@@ -238,6 +238,7 @@ const NavBar = () => {
                     setCurrent("discover");
                     setIsGroupBtn(false);
                     setLoadingState(true);
+                    router.push("/discover");
                   }}
                 >
                   Discover

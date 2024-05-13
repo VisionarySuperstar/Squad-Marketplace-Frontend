@@ -28,7 +28,7 @@ const ImageHero = () => {
   });
 
   return (
-    <div className="grid grid-cols-4 grid-rows-2 gap-5 w-full bg-black max-h-[100vh] py-10" id="marketplace_carousel">
+    <div className="grid grid-cols-4 grid-rows-2 gap-5 w-full bg-black h-[100vh] py-10" id="marketplace_carousel">
       {displayed.map((image, index) => {
         return (
           <div key={index} className={`pt-5 px-10 ${layout[index]}`}>
