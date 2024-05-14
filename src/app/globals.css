@@ -555,6 +555,10 @@ body {
   }
 }
 
+.inherit-height div {
+  height: 100%;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0; /* Start with transparent background */

@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import NFTs from "@/data/nfts.json";
 import { IImageWithCaption } from "@/types/images";
 import Link from "next/link";
+import Carousel_Component from "@/components/main/carousel";
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(60);
@@ -94,7 +95,12 @@ export default function Home() {
   const router = useRouter();
   return (
     <>
-      <ImageHero />
+      <div className="hidden lg:block image-hero">
+        <ImageHero />
+      </div>
+      <div className="block lg:hidden carousel">
+        <Carousel_Component hasCaption={true} />
+      </div>
       <div className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"
         style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}>
         <div className="page_container_p40 mt-5 min-h-[920px]">
