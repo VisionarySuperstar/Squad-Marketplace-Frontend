@@ -68,10 +68,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     isLoadingWithdrawMarketplaceButton,
     setIsLoadingWithdrawMarketplaceButton,
   ] = useState<boolean>(false);
-  const [
-    isLoadingLeaveButton,
-    setIsLoadingLeaveButton,
-  ] = useState<boolean>(false);
+  const [isLoadingLeaveButton, setIsLoadingLeaveButton] =
+    useState<boolean>(false);
   const [selectedRequestButton, setSelectedRequestButton] =
     useState<number>(-1);
 
@@ -249,8 +247,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getRequestMembers();
   }, [requests]);
 
- 
-
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
   const [uploadedContent, setUploadedContent] = useState<string[]>([]);
@@ -312,17 +308,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   }, [address, chainId, signer, myGroupData]);
 
   const dsiplayMembers = async () => {
-    if(!contract) return ;
+    if (!contract) return;
     const _number = await contract.numberOfMembers();
-    console.log("groupMembers_number", _number.toString()) ;
-
-
-
-  }
+    console.log("groupMembers_number", _number.toString());
+  };
 
   useEffect(() => {
-    if(contract) dsiplayMembers() ;
-  }, [contract])
+    if (contract) dsiplayMembers();
+  }, [contract]);
 
   const offeringConfrimHandle = async (item: IOFFER_TRANSACTION) => {
     try {
@@ -553,16 +546,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         });
       await api
         .post("/api/removeDirector", {
-          id:user.id
+          id: user.id,
         })
         .catch((error) => {
           toast.error(error.message);
-        })
-      
-      
-      
-      router.push("/groups") ;
+        });
 
+      router.push("/groups");
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
         toast.error("User rejected transaction.");
@@ -673,7 +663,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     toast.success("Successfully updated");
   };
 
-  const addMember = async (index:number) => {
+  const addMember = async (index: number) => {
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
@@ -685,28 +675,28 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       const tx = await contract.addMember(requestMembers[index].wallet);
       await tx.wait();
       console.log("asdf");
-      const _members = myGroupData?.member ;
-      console.log("_members", _members) ;
+      const _members = myGroupData?.member;
+      console.log("_members", _members);
       console.log("userid", requests[index]);
-      _members?.push({id: (requests[index].userid).toString()}) ;
-      console.log("_members again", _members) ;
+      _members?.push({ id: requests[index].userid.toString() });
+      console.log("_members again", _members);
       const result1 = await api
-      .post("/api/removeJoinRequest", {
-        id: requests[index].id
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      }); 
-      console.log("here1") ;
+        .post("/api/removeJoinRequest", {
+          id: requests[index].id,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      console.log("here1");
       const result = await api
-      .post("/api/updateGroupMember", {
-        id: params.id,
-        member:JSON.stringify(_members),
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      }); 
-      console.log("here2") ;
+        .post("/api/updateGroupMember", {
+          id: params.id,
+          member: JSON.stringify(_members),
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      console.log("here2");
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -1478,18 +1468,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 className="border bg-[#FF0000] texxt-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
               >
                 {isLoadingLeaveButton ? (
-                    <>
-                      <Icon
-                        icon="eos-icons:bubble-loading"
-                        width={20}
-                        height={20}
-                      />{" "}
-                      PROCESSING...
-                    </>
-                  ) : (
-                    "LEAVE THIS GROUP"
-                  )}
-                
+                  <>
+                    <Icon
+                      icon="eos-icons:bubble-loading"
+                      width={20}
+                      height={20}
+                    />{" "}
+                    PROCESSING...
+                  </>
+                ) : (
+                  "LEAVE THIS GROUP"
+                )}
               </button>
             </div>
           )}

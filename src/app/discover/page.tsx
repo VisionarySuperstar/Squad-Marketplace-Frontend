@@ -79,9 +79,7 @@ export default function Home() {
                 <ViewProgress scale={scale} setScale={setScale} />
               </div>
             )}
-            <div>
-              {/* <Recruiting /> */}
-            </div>
+            <div>{/* <Recruiting /> */}</div>
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
             <input
@@ -111,7 +109,14 @@ export default function Home() {
                     router.push(`/details/public/${item.id}`);
                   }}
                 >
-                  {/* <NftCard name={item.name} avatar={item.avatar} /> */}
+                  <NftCard
+                    avatar={item.avatar}
+                    collectionName={""}
+                    collectionId={0}
+                    price={0}
+                    seen={0}
+                    favorite={0}
+                  />
                 </div>
               ))}
             </div>
