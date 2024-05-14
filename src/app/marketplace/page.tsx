@@ -89,9 +89,11 @@ export default function Home() {
 
   return (
     <>
-      <Carousel />
+      <Carousel hasCaption={false} />
+
       <div className="font-Maxeville">
-        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
+        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 w-full bg-no-repeat bg-bottom border-b-[1px]"
+          style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}>
           <div className="flex justify-between w-[60%] mt-2">
             <Sort />
             {enableScale && (
@@ -118,7 +120,7 @@ export default function Home() {
           </div>
         </div>
         {enableScale && (
-          <div className="page_container_p40 mt-5">
+          <div className="page_container_p40">
             <div
               className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
               style={{
@@ -198,10 +200,10 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div
+        {/* <div
           className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
           style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-        ></div>
+        ></div> */}
       </div>
     </>
   );
