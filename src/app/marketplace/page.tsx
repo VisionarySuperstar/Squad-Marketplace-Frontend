@@ -74,7 +74,7 @@ export default function Home() {
       .catch((error) => {
         toast.error(error.message);
       });
-    setAllNftData(result1?.data);
+    setAllNftData(result1?.data || []);
     console.log("nftData ", result1?.data);
   };
   useEffect(() => {
@@ -176,7 +176,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div> */}
-                  {/* 
+                  {/*
                   <Image
                     src={item.avatar}
                     className="w-full h-full aspect-square object-cover rounded-lg"

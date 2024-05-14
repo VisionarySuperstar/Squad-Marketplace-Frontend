@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 
 import NFTs from "@/data/nfts.json";
 import { IImageWithCaption } from "@/types/images";
+import Link from "next/link";
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(60);
@@ -94,32 +95,30 @@ export default function Home() {
   return (
     <>
       <ImageHero />
-      <div className="font-Maxeville">
-        <div className="page_container_p40 mt-5 min-h-[920px] w-full">
+      <div className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"
+        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}>
+        <div className="page_container_p40 mt-5 min-h-[920px]">
           <Section
             title="TOP NFTS"
             viewAllUrl="#"
             itemsPerRow={3}
             images={topNfts}
           />
-
           <Section
             title="TOP GROUPS"
             viewAllUrl="#"
             itemsPerRow={3}
             images={topGroups} />
-
           <Section
             title="NEWLY MINTED"
             viewAllUrl="#"
             itemsPerRow={4}
             images={newlyMinted} />
         </div>
-        {/* <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-          style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-        ></div> */}
-      </div>
+        <div className="text-center">
+          <Link href="/marketplace" className="inline-block px-6 py-3 text-white bg-chocolate-main rounded-3xl hover:opacity-60">GO TO MARKETPLACE</Link>
+        </div>
+      </div >
     </>
   );
 }
