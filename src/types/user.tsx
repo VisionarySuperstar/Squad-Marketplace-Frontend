@@ -54,6 +54,7 @@ export interface INFT {
   reducingrate:string;
   collectionname:string;
   listednumber:string;
+  marketplacenumber:string;
 }
 
 export interface ICOLLECTION {

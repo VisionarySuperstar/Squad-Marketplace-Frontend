@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import SocketComponent from "@/components/WebSocketComponent";
 const Provider = dynamic(() => import("@/providers"), { ssr: false });
 import "@rainbow-me/rainbowkit/styles.css";
+import DisplayingScreen from "@/components/main/displaying_bar";
 // import Web3ContextProvider from "@/providers/web3Provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Provider>
             <NavBar />
             <Loading_screen />
+            <DisplayingScreen />
             <SocketComponent />
             {children}
           </Provider>

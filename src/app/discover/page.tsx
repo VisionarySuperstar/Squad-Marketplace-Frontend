@@ -80,7 +80,7 @@ export default function Home() {
               </div>
             )}
             <div>
-              <Recruiting />
+              {/* <Recruiting /> */}
             </div>
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
@@ -111,7 +111,7 @@ export default function Home() {
                     router.push(`/details/public/${item.id}`);
                   }}
                 >
-                  <NftCard name={item.name} avatar={item.avatar} />
+                  {/* <NftCard name={item.name} avatar={item.avatar} /> */}
                 </div>
               ))}
             </div>
