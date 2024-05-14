@@ -21,8 +21,8 @@ export const Factory_ADDRESSES = {
 export const USDC_ADDRESS = {
   [NetworkId.SEPOLIA]: "0x1578876aCc56349FC800B1f8efe624c688f5eF4B", //verified
 };
-export const baseURL = "http://136.243.172.88:8000/";
-export const webSocketURL = "ws://136.243.172.88:8000/";
+export const baseURL = "http://37.60.229.95:8080/";
+export const webSocketURL = "ws://37.60.229.95:8080/";
 // export const baseURL = "http://localhost:8080/";
 // export const webSocketURL = "ws://localhost:8080/";
 export const IMGBB_API_KEY = "cef3855d197b6e623e08088e854ed444";
