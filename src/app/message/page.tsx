@@ -132,7 +132,7 @@ export default function MessagePage() {
         message: message,
       };
       sotedMessageData?.unshift(newMessage);
-    } else alert(`New Message received on group ${receiverId}`);
+    } else console.log(`New Message received on group ${receiverId}`);
   };
   const saveMessageData = async (
     type: string,
