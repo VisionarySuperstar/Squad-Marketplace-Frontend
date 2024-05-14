@@ -38,7 +38,9 @@ import useAPI from "@/hooks/useAPI";
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
 const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
@@ -72,6 +74,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     useState<boolean>(false);
   const [selectedRequestButton, setSelectedRequestButton] =
     useState<number>(-1);
+  const [isLoadingChangeConfirm, setIsLoadingChangeConfirm] = useState<boolean>(false);
 
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
@@ -109,6 +112,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const { signIn, isAuthenticated, user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [newPostMessage, setNewPostMessage] = useState<string>("");
+  const [requiredConfirmNumber, setRequiredConfirmNumber] = useState<string>("") ;
   const api = useAPI();
   const getMyGroupData = async () => {
     const response = await api
@@ -323,7 +327,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       const tx = await contract.confirmOfferingSaleTransaction(
         BigInt(item.transactionid),
         true
@@ -348,7 +352,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setSelectedOfferConfirmBtn(-1);
     }
   };
@@ -362,7 +366,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
 
       const tx = await contract.excuteOfferingSaleTransaction(
         BigInt(item.transactionid)
@@ -399,7 +403,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedOfferExecuteBtn(-1);
     }
@@ -411,7 +415,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       const tx = await contract.confirmDirectorSettingTransaction(
         BigInt(item.transaction_id),
         true
@@ -435,7 +439,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedDirectorConfirmBtn(-1);
     }
@@ -446,7 +450,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       setIsLoading(true);
       const tx = await contract.excuteDirectorSettingTransaction(
         BigInt(item.transaction_id)
@@ -474,7 +478,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedDirectorExecuteBtn(-1);
     }
@@ -485,7 +489,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
       await tx.wait();
@@ -497,7 +501,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoadingWithdrawButton(false);
     }
   };
@@ -506,7 +510,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       setIsLoadingWithdrawMarketplaceButton(true);
       const tx = await contract.withdrawFromMarketplace();
       await tx.wait();
@@ -518,7 +522,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoadingWithdrawMarketplaceButton(false);
     }
   };
@@ -528,7 +532,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       setIsLoadingLeaveButton(true);
       const tx = await contract.removeMember(address);
       await tx.wait();
@@ -560,7 +564,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoadingLeaveButton(false);
     }
   };
@@ -598,7 +602,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) return;
       if (!user) return;
       setIsLoading(true);
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       const members_in_group = await contract.members(0);
       const members_in_group1 = await contract.members(1);
       const currentDirector = await contract.director();
@@ -626,7 +630,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedSuggestBtn(-1);
     }
@@ -668,9 +672,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!myGroupData) throw "No groupdata";
-      
-      setIsDisplaying(true) ;
+      if (!myGroupData) throw "No groupdata";
+
+      setIsDisplaying(true);
       setIsLoading(true);
       const tx = await contract.addMember(requestMembers[index].wallet);
       await tx.wait();
@@ -706,14 +710,51 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
-      setIsDisplaying(false) ;
+      setIsDisplaying(false);
       setIsLoading(false);
     }
   };
 
+  const changeConfirmNumberHandle = async () => {
+    try {
+      if (!contract) throw "no contract";
+      if (!chainId) throw "Invalid chain id";
+      if (!user) throw "You must sign in";
+      if (!myGroupData) throw "No groupdata";
+
+      if(Number(requiredConfirmNumber) > myGroupData.member.length || Number(requiredConfirmNumber) < 0){
+        toast.error("Invalid confirm number") ;
+        return ;
+      }
+      setIsDisplaying(true);
+      setIsLoadingChangeConfirm(true);
+
+      const tx = await contract.setConfirmationRequiredNumber(BigInt(requiredConfirmNumber));
+      await tx.wait();
+      const result = await api
+        .post("/api/updateGroup", {
+          groupId: params.id, name:myGroupData.name, avatar:myGroupData.avatar, member: JSON.stringify(myGroupData.member), director: myGroupData.director,
+            requiredConfirmNumber: requiredConfirmNumber, description: myGroupData.description, mintnumber:myGroupData.mintnumber, soldnumber:myGroupData.soldnumber,
+            earning: myGroupData.earning
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });    
+      getMyGroupData();
+    } catch (error: any) {
+      if (String(error.code) === "ACTION_REJECTED") {
+        toast.error("User rejected transaction.");
+      } else {
+        toast.error("An error occurred. please try again");
+      }
+    } finally {
+      setIsDisplaying(false);
+      setIsLoadingChangeConfirm(false);
+    }
+  }
+
   return (
     <>
-      
       {mintModalState && avatar && (
         <MintModal
           groupAddress={myGroupData ? myGroupData.address : ""}
@@ -1392,7 +1433,44 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </>
               ))}
           </div>
-
+          {isDirector && (
+            <>
+              <div className="mt-5 text-xl">
+                <h1>CHANGE REQUIRED CONFIRM NUMBER</h1>
+              </div>
+              <div className="mt-5 text-lg lg:flex gap-5">
+                <div className="flex items-center h-[32px]">
+                  CURRENT{" "}
+                  <span className="ml-5 text-red-400 text-xl">
+                    {myGroupData?.requiredconfirmnumber}
+                  </span>
+                </div>
+                <input className="flex border-2 border-black items-center justify-center pl-5 pr-5 rounded-lg " placeholder="Type New Confirm Number" 
+                  value={requiredConfirmNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setRequiredConfirmNumber(e.target.value)
+                  }/>
+                <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
+                <button
+                  onClick={changeConfirmNumberHandle}
+                  className="border border-black rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                >
+                  {isLoadingChangeConfirm ? (
+                    <>
+                      <Icon
+                        icon="eos-icons:bubble-loading"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      PROCESSING...
+                    </>
+                  ) : (
+                    "CHANGE"
+                  )}
+                </button>
+              </div>
+              </div>
+            </>
+          )}
           <Split_line />
 
           <div className="text-xl" id="withdraw">
