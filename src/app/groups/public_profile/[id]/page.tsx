@@ -2,6 +2,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import useActiveWeb3 from "@/hooks/useActiveWeb3";
+import { Contract } from "ethers";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
@@ -17,6 +19,8 @@ import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT, IPOST_NEWS, IRequest } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
+import { Marketplace_ADDRESSES } from "@/constants/config";
+import MARKETPLACE_ABI from "@/constants/marketplace.json";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -73,6 +77,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     getMyGroupData();
     getNftData();
   }, []);
+
 
   const usersInfor = async () => {
     if (!myGroupData) return;

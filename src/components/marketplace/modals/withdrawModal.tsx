@@ -15,12 +15,15 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 import { INFT } from "@/types";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+
 
 interface WithdrawGroupModalInterface {
   nftData: INFT;
 }
 
 const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -72,7 +75,12 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      if(!Number(withdrawAmount)){
+        toast.error("You don't have any balance to withdraw!") ;
+        return ;
+      }
       setIsLoading(true);
+      setIsDisplaying(true) ;
       if (Number(nftData.auctiontype) === 0) {
         const tx = await contract.withdrawFromEnglishAuction(BigInt(nftData.listednumber));
         await tx.wait();
@@ -91,6 +99,8 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false) ;
+
     }
   };
   return (

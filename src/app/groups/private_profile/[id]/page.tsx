@@ -32,11 +32,13 @@ import { Contract, ContractFactory } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
 const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
@@ -321,6 +323,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true) ;
       const tx = await contract.confirmOfferingSaleTransaction(
         BigInt(item.transactionid),
         true
@@ -345,6 +348,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false) ;
       setSelectedOfferConfirmBtn(-1);
     }
   };
@@ -358,6 +362,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true) ;
+
       const tx = await contract.excuteOfferingSaleTransaction(
         BigInt(item.transactionid)
       );
@@ -393,6 +399,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoading(false);
       setSelectedOfferExecuteBtn(-1);
     }
@@ -404,6 +411,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true) ;
       const tx = await contract.confirmDirectorSettingTransaction(
         BigInt(item.transaction_id),
         true
@@ -427,6 +435,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoading(false);
       setSelectedDirectorConfirmBtn(-1);
     }
@@ -437,6 +446,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true) ;
       setIsLoading(true);
       const tx = await contract.excuteDirectorSettingTransaction(
         BigInt(item.transaction_id)
@@ -464,6 +474,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoading(false);
       setSelectedDirectorExecuteBtn(-1);
     }
@@ -474,6 +485,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true) ;
       setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
       await tx.wait();
@@ -485,6 +497,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoadingWithdrawButton(false);
     }
   };
@@ -493,6 +506,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true) ;
       setIsLoadingWithdrawMarketplaceButton(true);
       const tx = await contract.withdrawFromMarketplace();
       await tx.wait();
@@ -504,6 +518,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoadingWithdrawMarketplaceButton(false);
     }
   };
@@ -513,6 +528,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true) ;
       setIsLoadingLeaveButton(true);
       const tx = await contract.removeMember(address);
       await tx.wait();
@@ -544,6 +560,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoadingLeaveButton(false);
     }
   };
@@ -554,10 +571,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     setWithdrawAmount(Number(Number(withdrawGroupBalance) / 1e18).toString());
     const totalEarningAmount = await contract.totalEarning();
     setTotalEarning(Number(Number(totalEarningAmount) / 1e18).toString());
-    // console.log(
-    //   "(Number(Number(totalEarningAmount) / 1e18)).toString(), ",
-    //   Number(Number(totalEarningAmount) / 1e18).toString()
-    // );
+
     await api
       .post("/api/updateEarning", {
         id: myGroupData?.id,
@@ -566,9 +580,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
-    // console.log("success here it is");
     if (!marketplaceContract) return;
-
     const withdrawMarketplaceBalance =
       await marketplaceContract.balanceOfSeller(myGroupData?.address);
     setWithdrawFromMarketplace(
@@ -586,23 +598,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) return;
       if (!user) return;
       setIsLoading(true);
-
-      // console.log("selected new director", members[_num].wallet);
-
+      setIsDisplaying(true) ;
       const members_in_group = await contract.members(0);
       const members_in_group1 = await contract.members(1);
       const currentDirector = await contract.director();
-
-      // console.log(
-      //   "members:",
-      //   members_in_group,
-      //   " next member:",
-      //   members_in_group1,
-      //   " current director ",
-      //   currentDirector
-      // );
-      // console.log("dfafds", members[_num].wallet);
-
       const tx = await contract.submitDirectorSettingTransaction(
         members[_num].wallet
       );
@@ -627,6 +626,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoading(false);
       setSelectedSuggestBtn(-1);
     }
@@ -668,8 +668,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if (!myGroupData) throw "No groupdata";
-
+      if(!myGroupData) throw "No groupdata";
+      
+      setIsDisplaying(true) ;
       setIsLoading(true);
       const tx = await contract.addMember(requestMembers[index].wallet);
       await tx.wait();
@@ -705,16 +706,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false) ;
       setIsLoading(false);
     }
   };
 
   return (
     <>
-      {/* {
-        isLoading && 
-        
-      } */}
+      
       {mintModalState && avatar && (
         <MintModal
           groupAddress={myGroupData ? myGroupData.address : ""}
@@ -965,7 +964,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           )}
                         </button>
                         <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px]"
+                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
                           onClick={() => {
                             offeringExecuteHandle(
                               offerTransactions[key],

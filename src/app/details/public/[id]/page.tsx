@@ -24,9 +24,11 @@ import GROUP_ABI from "@/constants/creator_group.json";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
 import toast from "react-hot-toast";
 
 const Home = ({ params }: { params: { id: string } }) => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -52,7 +54,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [groupId, setGroupId] = useState<string>("");
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
-
+  const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
   const getData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -94,6 +96,27 @@ const Home = ({ params }: { params: { id: string } }) => {
     setUsdc_Contract(_usdc_contract);
   }, [address, chainId, signer]);
 
+  const calcRemainTime = async () => {
+    if (!contract) return;
+    if (!data) return;
+    if (Number(data.auctiontype) === 2) return;
+    const nftInContract = await contract.listedNFTs(
+      BigInt(data?.marketplacenumber)
+    );
+    const startTime = Number(String(nftInContract.startTime));
+    console.log("startTime", startTime);
+    const endTime = startTime + Number(data.saleperiod);
+    console.log("endTime", endTime);
+    const currentTime = Math.floor(Date.now() / 1000);
+    console.log("currentTime", currentTime);
+    setRemainTime(endTime - currentTime);
+  };
+  console.log("remainTime", remainTime);
+
+  useEffect(() => {
+    calcRemainTime();
+  }, [contract, data]);
+
   const getDutchAuctionPrice = async () => {
     if (
       Number(data?.auctiontype) === 1 &&
@@ -120,6 +143,16 @@ const Home = ({ params }: { params: { id: string } }) => {
     return [days, hours, minutes, seconds];
   };
 
+  useEffect(() => {
+    // Set up an interval to decrease the value every second
+    const intervalId = setInterval(() => {
+      setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
+    }, 1000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
   const buyClick = async () => {
     try {
       if (!contract) throw "no contract";
@@ -128,6 +161,8 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       if (!data) throw "no data";
       setIsLoading(true);
+      setIsDisplaying(true);
+
       const tx1 = await usdc_contract.approve(
         Marketplace_ADDRESSES[chainId],
         BigInt(Number(currentDutchPrice) * 1e18)
@@ -163,6 +198,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         toast.error(String(err));
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoading(false);
     }
   };
@@ -242,49 +278,61 @@ const Home = ({ params }: { params: { id: string } }) => {
                 )}
                 {Number(data?.auctiontype) !== 2 && data?.status !== "sold" && (
                   <>
-                    <div className="text-gray-400 mt-3">Sale Period</div>
-                    <div className="text-[18px] flex gap-2">
-                      {(() => {
-                        const period = convertSecondsToTime(
-                          Number(data?.saleperiod)
-                        );
+                    {remainTime === 0 ? (
+                      <div className="text-gray-400 mt-3">Already Finished</div>
+                    ) : (
+                      <>
+                        <div className="text-gray-400 mt-3">Sale Ends In</div>
 
-                        return period.map((item, index) => (
-                          <div key={index}>
-                            {index ? ": " : ""} {item >= 10 ? item : "0" + item}
-                          </div>
-                        ));
-                      })()}
-                    </div>
+                        <div className="text-[18px] flex gap-2">
+                          {(() => {
+                            const period = convertSecondsToTime(
+                              Number(remainTime)
+                            );
+
+                            return period.map((item, index) => (
+                              <div key={index}>
+                                {index ? ": " : ""}{" "}
+                                {item >= 10 ? item : "0" + item}
+                              </div>
+                            ));
+                          })()}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
-                {Number(data?.auctiontype) === 0 && (
-                  <>
-                    <div className="text-gray-400 mt-3">Highest Bidder</div>
-                    <div className="text-[18px]">{data?.currentbidder}</div>
-                  </>
-                )}
+                {Number(data?.auctiontype) === 0 &&
+                  data?.currentbidder !== "0x000" && (
+                    <>
+                      <div className="text-gray-400 mt-3">Highest Bidder</div>
+                      <div className="text-[18px]">{data?.currentbidder}</div>
+                    </>
+                  )}
+                
               </div>
               <div className="flex flex-col mt-3 mb-[35px]">
-                {Number(data?.auctiontype) === 1 && data?.status !== "sold" && (
-                  <button
-                    className="w-full bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center"
-                    onClick={buyClick}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Icon
-                          icon="eos-icons:bubble-loading"
-                          width={20}
-                          height={20}
-                        />{" "}
-                        PROCESSING...
-                      </>
-                    ) : (
-                      "BUY"
-                    )}
-                  </button>
-                )}
+                {Number(data?.auctiontype) === 1 &&
+                  data?.status !== "sold" &&
+                  remainTime && (
+                    <button
+                      className="w-full bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center"
+                      onClick={buyClick}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Icon
+                            icon="eos-icons:bubble-loading"
+                            width={20}
+                            height={20}
+                          />{" "}
+                          PROCESSING...
+                        </>
+                      ) : (
+                        "BUY"
+                      )}
+                    </button>
+                  )}
 
                 {Number(data?.auctiontype) !== 1 && (
                   <div

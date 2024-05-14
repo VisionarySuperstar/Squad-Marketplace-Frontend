@@ -17,6 +17,7 @@ import NFT_ABI from "@/constants/content_nft.json";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
 import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
 
 interface MintModalInterface {
   groupId: number;
@@ -36,6 +37,8 @@ const MintModal = ({
   uploadId,
   getNFTData,
 }: MintModalInterface) => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+
   const [allCollection, setAllCollection] = useState<ICOLLECTION[]>([]);
   const [showProgressModal, setShowProgressModal] =
     React.useState<boolean>(false);
@@ -156,6 +159,7 @@ const MintModal = ({
     // progress Modal show
     setShowProgressModal(true);
     setIsLoading(true);
+    setIsDisplaying(true) ;
     // @step1 upload logo to PINATA
     setStepper(1);
     setPercent(0);
@@ -262,6 +266,8 @@ const MintModal = ({
       }
     } finally {
       setIsLoading(false);
+    setIsDisplaying(false) ;
+
     }
   };
   return (
