@@ -17,6 +17,8 @@ import { USDC_ADDRESS } from "@/constants/config";
 import useAPI from "@/hooks/useAPI";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+
 
 interface BidGroupModalInterface {
   nftData: INFT;
@@ -31,6 +33,8 @@ const BidGroupModal = ({
   groupId,
   getData,
 }: BidGroupModalInterface) => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -78,6 +82,7 @@ const BidGroupModal = ({
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true) ;
       if (Number(nftData.auctiontype) === 0) {
         if (Number(bidAmount) <= Number(nftData.currentprice))
           throw "You must bid higher than now";
@@ -153,6 +158,8 @@ const BidGroupModal = ({
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false) ;
+
     }
 
     setBidModalState(false);
