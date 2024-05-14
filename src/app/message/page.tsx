@@ -47,13 +47,9 @@ export default function MessagePage() {
     }
   };
   //zustand State
-  const userid = useUserStore((state) => state.userid);
-  const setUseridStore = useUserStore((state) => state.updateUserId);
-  // const setUserId = (id: string) => {
-  //   setUseridStore(id);
-  //   window.localStorage.setItem("userid", id);
-  // };
-  const socket = useWebSocketStore((state) => state.socket);
+  // const userid = useUserStore((state) => state.userid);
+  // const setUseridStore = useUserStore((state) => state.updateUserId);
+  // const socket = useWebSocketStore((state) => state.socket);
   const newMessageStore = useNotificationUIControlStore(
     (state) => state.newMessage
   );
@@ -152,13 +148,16 @@ export default function MessagePage() {
     };
     addNewMessage(receiverId, user?.id ? user?.id : "0", message);
     try {
-      const response = await fetch("http://136.243.172.88:8000/api/saveMessage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(init),
-      });
+      const response = await fetch(
+        "http://136.243.172.88:8000/api/saveMessage",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(init),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
