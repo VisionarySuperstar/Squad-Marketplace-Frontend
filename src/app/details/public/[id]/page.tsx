@@ -375,6 +375,11 @@ const Home = ({ params }: { params: { id: string } }) => {
           )}
         </div>
       </div>
+      <div>
+        <h1 className="text-xl p-10">
+          MORE FROM THIS COLLECTION
+        </h1>
+      </div>
       <div
         className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
         style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
