@@ -13,7 +13,7 @@ import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
 
 import useAPI from "@/hooks/useAPI";
-import { INFT } from "@/types";
+import { INFT, ICOLLECTION } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
@@ -26,6 +26,9 @@ import { USDC_ADDRESS } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import toast from "react-hot-toast";
+import NftCard from "@/components/main/cards/nftCard";
+
+
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
@@ -55,6 +58,13 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
+  const [collectionData, setCollectionData] = useState<ICOLLECTION[] | undefined>(undefined);
+  const [allNftData, setAllNftData] = useState<INFT[] | undefined>(undefined);
+  const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(undefined);
+  const [scale, setScale] = React.useState<number>(60);
+  const router = useRouter();
+
+
   const getData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -73,6 +83,14 @@ const Home = ({ params }: { params: { id: string } }) => {
     setGroupName(group_name?.data.name);
     setGroupAddress(group_name?.data.address);
     setGroupId(group_name?.data.id);
+
+    const _allNft = await api
+      .get("/api/getAllNft")
+      .catch((error) => {
+        toast.error(error.message) ;
+      })
+    console.log("list nfts", _allNft?.data) ;
+    setAllNftData(_allNft?.data) ;
   };
 
   useEffect(() => {
@@ -111,7 +129,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     console.log("currentTime", currentTime);
     setRemainTime(endTime - currentTime);
   };
-  console.log("remainTime", remainTime);
+  
 
   useEffect(() => {
     calcRemainTime();
@@ -202,6 +220,26 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsLoading(false);
     }
   };
+
+  const getCollectionData = async () => {
+    if(!data) return ;
+    if(!allNftData) return ;
+    const result = await api.post("/api/getCollectionByAddress", {id:data?.collectionaddress}) ;
+    const _collectionData:ICOLLECTION = result.data ;
+    console.log("_collectionData", _collectionData) ;
+    const nfts_in_collection = _collectionData.nft;
+    console.log("allNftData", allNftData) ;
+    let  _allNftData = allNftData.filter((_nft:INFT) =>  nfts_in_collection.map((index:any) => String(index.id)).includes(String(_nft.id))) ;
+    _allNftData = _allNftData.filter((_nft:INFT) => String(_nft.id) !== String(data.id)) ;
+    console.log("_selected nfts ", _allNftData) ;
+    setSelectedNFTS(_allNftData) ;
+  }
+
+  useEffect( () =>  {
+    getCollectionData() ;
+  }, [data, allNftData])
+
+
 
   return (
     <>
@@ -374,6 +412,40 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
           )}
         </div>
+      </div>
+      <div>
+        <h1 className="text-xl p-10">
+          MORE FROM THIS COLLECTION
+        </h1>
+        <div className="page_container_p40 mt-5">
+            <div
+              className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+              style={{
+                gridTemplateColumns: `repeat(${Math.floor(
+                  (100 - scale) / 10 + 1
+                )}, 1fr)`,
+              }}
+            >
+              {selectedNFTS?.map((item, index) => (
+                <div
+                  key={index}
+                  className="relative text-md content-card cursor-pointer drop-shadow-lg"
+                  onClick={() => {
+                    router.push(`/details/public/${item.id}`);
+                  }}
+                >
+                  <NftCard
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
       </div>
       <div
         className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
