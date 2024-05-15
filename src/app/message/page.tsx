@@ -117,7 +117,6 @@ export default function MessagePage() {
     }
   };
 
-  const fetchGroupMembers = async () => {};
   const addNewMessage = (receiverId: string, from: string, message: string) => {
     if (receiverId === groupid) {
       const current_time = new Date();
@@ -132,7 +131,7 @@ export default function MessagePage() {
         message: message,
       };
       sotedMessageData?.unshift(newMessage);
-    } else alert(`New Message received on group ${receiverId}`);
+    } else console.log(`New Message received on group ${receiverId}`);
   };
   const saveMessageData = async (
     type: string,
