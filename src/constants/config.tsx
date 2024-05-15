@@ -12,10 +12,10 @@ export const supportedChainIds = [
 ];
 
 export const Marketplace_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0xA7e082ca285f6B8f53fD868a9ef3fF38de655FeF", //verified
+  [NetworkId.SEPOLIA]: "0x0d7b06E60B1082DA1d4cB546D190CB75763727A5", //verified
 };
 export const Factory_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0x51198bd42317FEb223a95F5464103C1fE4e3592E", //verified
+  [NetworkId.SEPOLIA]: "0xe441A3c77D82a41997B37e3d815f1a9db0c2E79d", //verified
 };
 
 export const USDC_ADDRESS = {
