@@ -72,25 +72,29 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const handleNext = async () => {
     console.log("step: ", step);
     if (step === 0) {
-      console.log(
-        auctionQuery.salePeriod_day +
-          " : " +
-          auctionQuery.salePeriod_hour +
-          " : " +
-          auctionQuery.salePeriod_minute
-      );
       if (!auctionQuery.initialPrice) {
+        toast.error("Initial Price Required!") ;
         return;
       }
       if (
-        (!auctionType || auctionType === 1) &&
-        (!auctionQuery.salePeriod_day ||
-          !auctionQuery.salePeriod_hour ||
-          !auctionQuery.salePeriod_minute)
+        auctionType !== 2
       ) {
-        return;
+        if(!auctionQuery.salePeriod_day){
+          toast.error("Type valid days!");
+          return ;
+        }
+        if(!auctionQuery.salePeriod_hour || Number(auctionQuery.salePeriod_hour) < 0 || Number(auctionQuery.salePeriod_hour) > 23)
+        {
+          toast.error("Type valid hours") ;
+          return ;
+        }
+        if(!auctionQuery.salePeriod_minute || Number(auctionQuery.salePeriod_minute) < 0 || Number(auctionQuery.salePeriod_minute) > 59){
+          toast.error("Type valid minutes") ;
+          return ;
+        }
       }
       if (auctionType === 1 && !auctionQuery.reducingRate) {
+        toast.error("Reducing rate required!") ;
         return;
       }
       setStep(1);
@@ -180,7 +184,6 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
       } finally {
         setIsLoading(false);
         setIsDisplaying(false);
-
       }
     }
   };
