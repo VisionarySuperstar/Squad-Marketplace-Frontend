@@ -8,6 +8,7 @@ import useAuth from "@/hooks/useAuth";
 import useNotificationUIControlStore from "@/store/UI_control/notification";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import NotificationComponent from "@/components/main/News&message/NotificationComponent";
 import { webSocketURL } from "@/constants/config";
 
 const SocketComponent = () => {
@@ -18,6 +19,12 @@ const SocketComponent = () => {
   const close_original_connection = () => {
     originalSocket?.close();
     console.log("original connection closed");
+  };
+  const handleNotify = () => {
+    <NotificationComponent
+      title="Hello"
+      body="This is a system notification!"
+    />;
   };
   const updateNewMessageStore = useNotificationUIControlStore(
     (state) => state.updateNewMessage
@@ -36,6 +43,18 @@ const SocketComponent = () => {
       updateNewMessageStore(message.data);
       const messageData = JSON.parse(message.data);
 
+      if (Notification.permission === "granted") {
+        new Notification("New message from " + messageData.name, {
+          body: messageData.message,
+          icon: messageData.avatar,
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification("sadasdsad");
+          }
+        });
+      }
       toast.custom((t) => (
         <div
           className={`${
