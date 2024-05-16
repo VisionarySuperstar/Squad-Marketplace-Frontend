@@ -25,6 +25,7 @@ const NftCard: React.FC<CardProps> = ({
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
+  const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
   return (
     <>
       <div
@@ -48,12 +49,14 @@ const NftCard: React.FC<CardProps> = ({
           </div>
         </div>
         <div className="bg-white w-full h-full flex justify-center">
+          {!imageLoaded && <div>Loading...</div>}
           <Image
             src={avatar}
             alt={"nft"}
             width={300}
             height={300}
             className=" object-fill w-auto h-full"
+            onLoad={() => setImageLoaded(true)}
           />
         </div>
       </div>

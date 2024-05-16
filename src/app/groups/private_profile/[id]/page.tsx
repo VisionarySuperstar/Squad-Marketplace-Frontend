@@ -878,6 +878,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>SOLD ({soldNfts.length ? soldNfts.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
+
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts.map((item, index) => (
               <div
