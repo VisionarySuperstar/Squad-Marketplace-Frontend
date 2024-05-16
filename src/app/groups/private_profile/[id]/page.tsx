@@ -878,7 +878,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>SOLD ({soldNfts.length ? soldNfts.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-
+          {soldNfts.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts.map((item, index) => (
               <div
@@ -902,6 +906,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>LISTED ({listedNfts.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
+          {listedNfts.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {listedNfts.map((item, index) => (
               <div
@@ -925,6 +934,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>NOT LISTED ({mintedNfts.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
+          {mintedNfts.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {mintedNfts.map((item, index) => (
               <div
@@ -945,115 +959,118 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
           <Split_line />
           <div className="flex justify-between text-lg" id="offers">
-            <div>
-              OFFERS (
-              {offerTransactions.length ? offerTransactions.length : "0"})
-            </div>
+            <div>OFFERS ({offerTransactions.length})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
+          {offerTransactions.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
-            {offerTransactions.length &&
-              myGroupData &&
-              members?.length &&
-              offerNfts.length &&
-              offerTransactions.map((item, key) => (
-                <div key={key}>
-                  <div className="min-w-[50%] flex mt-[30px] gap-5">
-                    <div>
-                      <Image
-                        src={offerNfts[key].avatar}
-                        className="aspect-square object-cover rounded-lg"
-                        width={300}
-                        height={300}
-                        alt="offer"
-                      />
+            {offerTransactions?.map((item, key) => (
+              <div key={key}>
+                <div className="min-w-[50%] flex mt-[30px] gap-5">
+                  <div>
+                    <Image
+                      src={offerNfts[key]?.avatar}
+                      className="aspect-square object-cover rounded-lg"
+                      width={300}
+                      height={300}
+                      alt="offer"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="mb-[5px]">
+                      {offerTransactions[key].buyer}
                     </div>
-                    <div className="flex flex-col">
-                      <div className="mb-[5px]">
-                        {offerTransactions[key].buyer}
-                      </div>
-                      <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
-                        <div className="flex me-[5px]">
-                          <div className="text-gray-400">OFFERED</div>
-                          <div className="ms-[5px]">
-                            {offerTransactions[key].price} USDC
-                          </div>
-                        </div>
-                        <div className="flex">
-                          <div className="text-gray-400">FOR</div>
-                          <div className="ms-[5px]">CONTENT</div>
+                    <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
+                      <div className="flex me-[5px]">
+                        <div className="text-gray-400">OFFERED</div>
+                        <div className="ms-[5px]">
+                          {offerTransactions[key]?.price} USDC
                         </div>
                       </div>
-                      <div className="text-gray-400 mt-5 text-md">
-                        CONFIRMED BY{" "}
-                        {offerTransactions[key].confirm_member.length}/
-                        {myGroupData.member.length}
+                      <div className="flex">
+                        <div className="text-gray-400">FOR</div>
+                        <div className="ms-[5px]">CONTENT</div>
                       </div>
-                      <div className="my-[20px]">
-                        {renderAvatar(
-                          members.filter((item: IUSER) =>
-                            offerTransactions[key].confirm_member
+                    </div>
+                    <div className="text-gray-400 mt-5 text-md">
+                      CONFIRMED BY{" "}
+                      {offerTransactions[key].confirm_member.length}/
+                      {myGroupData?.member.length}
+                    </div>
+                    <div className="my-[20px]">
+                      {members &&
+                        renderAvatar(
+                          members?.filter((item: IUSER) =>
+                            offerTransactions[key]?.confirm_member
                               .map((_id: any) => _id.id)
                               .includes(item.id)
                           )
                         )}
-                      </div>
-                      <div className="flex flex-col w-full">
-                        <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
-                          onClick={() => {
-                            offeringConfrimHandle(offerTransactions[key]);
-                            setSelectedOfferConfirmBtn(key);
-                          }}
-                        >
-                          {selectedOfferConfirmBtn === key ? (
-                            <>
-                              <Icon
-                                icon="eos-icons:bubble-loading"
-                                width={20}
-                                height={20}
-                              />{" "}
-                              PROCESSING...
-                            </>
-                          ) : (
-                            "CONFIRM"
-                          )}
-                        </button>
-                        <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
-                          onClick={() => {
-                            offeringExecuteHandle(
-                              offerTransactions[key],
-                              offerNfts[key]
-                            );
-                            setSelectedOfferExecuteBtn(key);
-                          }}
-                        >
-                          {selectedOfferExecuteBtn === key ? (
-                            <>
-                              <Icon
-                                icon="eos-icons:bubble-loading"
-                                width={20}
-                                height={20}
-                              />{" "}
-                              PROCESSING...
-                            </>
-                          ) : (
-                            "EXECUTE"
-                          )}
-                        </button>
-                      </div>
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <button
+                        className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                        onClick={() => {
+                          offeringConfrimHandle(offerTransactions[key]);
+                          setSelectedOfferConfirmBtn(key);
+                        }}
+                      >
+                        {selectedOfferConfirmBtn === key ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />{" "}
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "CONFIRM"
+                        )}
+                      </button>
+                      <button
+                        className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                        onClick={() => {
+                          offeringExecuteHandle(
+                            offerTransactions[key],
+                            offerNfts[key]
+                          );
+                          setSelectedOfferExecuteBtn(key);
+                        }}
+                      >
+                        {selectedOfferExecuteBtn === key ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "EXECUTE"
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
           <Split_line />
           <div className="flex justify-between text-xl" id="create">
             <div>UPLOADED CONTENT (0)</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-
+          {uploadedContent.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
             {uploadedContent.map((_content: string, item: number) => (
               <div key={item} className="flex flex-col">
@@ -1091,7 +1108,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             ))}
           </div>
-          <Split_line />
           <div className="flex justify-center items-center mt-5">
             <label
               htmlFor="avatar"
@@ -1101,7 +1117,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               UPLOAD NEW
             </label>
           </div>
-
           <Split_line />
           {isDirector && (
             <>
@@ -1131,14 +1146,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </>
           )}
-
           <div className="flex justify-between text-xl">
             <div>NEWS</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
+          {postNews?.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div>
             {postNews &&
-              postNews?.length &&
               postNews?.map((_news, key) => (
                 <div
                   key={key}
@@ -1156,7 +1174,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </div>
               ))}
           </div>
-
           {isDirector && (
             <>
               <div className="flex items-center text-xl mt-5">
@@ -1189,7 +1206,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <div className="mt-5">
             <h1>SET A NEW DIRECTOR</h1>
           </div>
-
           <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
             {members && myGroupData && (
               <div
@@ -1285,7 +1301,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </>
               ))}
           </div>
-
           <div className="flex justify-between  mt-5" id="offers">
             <div>
               SUGGESTED DIRECTORS (
@@ -1397,7 +1412,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 ))}
               </div>
             )}
-
           <div className="mt-5">
             <h1>JOIN REQUESTS</h1>
           </div>
@@ -1491,7 +1505,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             </>
           )}
           <Split_line />
-
           <div className="text-xl" id="withdraw">
             <div className="text-md">Withdraw</div>
             <div className="border-b-2 border-indigo-500"></div>
@@ -1557,7 +1570,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           )}
-
           {!isDirector && (
             <div className="flex justify-center items-center mt-5">
               <button
