@@ -5,16 +5,19 @@ import React, { useEffect, useRef } from "react";
 
 const LoadingScreen: React.FC = () => {
   const isDisplaying = useDisplayingControlStore((state) => state.displaying);
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
   useEffect(() => {
-    setIsDisplaying(false) ;
-  }, [])
+    setIsDisplaying(false);
+  }, []);
   return (
     <>
       {isDisplaying ? (
-        <div className="fixed w-full h-[100vh] top-0 z-[9000] bg-transparent"></div>
-      ):("")}
-
+        <div className="fixed w-full h-[100vh] top-0 z-[9000] bg-black/10"></div>
+      ) : (
+        ""
+      )}
     </>
   );
 };

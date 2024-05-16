@@ -78,7 +78,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     getNftData();
   }, []);
 
-
   const usersInfor = async () => {
     if (!myGroupData) return;
     console.log("myGroupData", myGroupData);
@@ -154,7 +153,10 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   return (
     <>
       <div className="pt-[100px] h-full">
-        <div className="page_container_p40 flex font-Maxeville" id="profile">
+        <div
+          className="page_container_p40 flex font-Maxeville bg-white"
+          id="profile"
+        >
           <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row  md:justify-between w-full">
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
               <div className="mt-5">
