@@ -1,8 +1,8 @@
 import MobileLogo from "../logo/mobile_logo";
-import useUIControlStore from "@/store/UI_control/landingpage";
+import useLoadingControlStore from "@/store/UI_control/loading";
+import { useRouter } from "next/navigation";
 
 const Mobile = () => {
-  const setJoinModalState = useUIControlStore((state) => state.updateJoinModal);
   const handleLogoClick = () => {
     const main_container: HTMLElement = document.querySelector(
       ".main_container"
@@ -24,6 +24,10 @@ const Mobile = () => {
     mobile_logo.style.width = `calc(var(--perX) * 150)`;
     mobile_logo.style.height = `calc(var(--perX) * 150)`;
   };
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
+  const router = useRouter();
   return (
     <>
       <div
@@ -44,14 +48,15 @@ const Mobile = () => {
           </div>
         </div>
 
-        <div className="mobile_join_btn">
+        <div className="mobile_join_btn active:translate-y-1">
           <div
             className="join_btn"
             onClick={() => {
-              setJoinModalState(true);
+              router.push("/discover");
+              setLoadingState(true);
             }}
           >
-            <p className="tracking-[1px] font-bold">Join Waitlist</p>
+            <p className="tracking-[1px] font-bold ">Open App</p>
           </div>
         </div>
         <div className="discover_text tracking-[1px]">

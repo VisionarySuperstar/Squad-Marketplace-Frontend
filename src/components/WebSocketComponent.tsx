@@ -44,14 +44,20 @@ const SocketComponent = () => {
       const messageData = JSON.parse(message.data);
 
       if (Notification.permission === "granted") {
-        new Notification("New message from " + messageData.name, {
-          body: messageData.message,
-          icon: messageData.avatar,
-        });
+        new Notification(
+          "New message from " + messageData.name,
+          {
+            body: messageData.message,
+            icon: messageData.avatar,
+          }
+        );
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
-            new Notification("sadasdsad");
+            new Notification("New message from " + messageData.name, {
+              body: messageData.message,
+              icon: messageData.avatar,
+            });
           }
         });
       }
