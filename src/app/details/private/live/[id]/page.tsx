@@ -63,6 +63,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
+    console.log("groupName", result1?.data.name);
     setGroupName(result1?.data.name);
     setGroupAddress(result1?.data.address);
     if (user?.id === result1?.data.director) setIsDirector(true);
@@ -133,7 +134,6 @@ const Home = ({ params }: { params: { id: string } }) => {
 
     setRemainTime(endTime - currentTime > 0 ? endTime - currentTime : 0);
   };
-  console.log("remainTime", remainTime);
 
   useEffect(() => {
     calcRemainTime();
@@ -158,20 +158,28 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsLoading(true);
       setIsDisplaying(true);
 
+      const __director = await contract.director() ;
+      console.log("_director", __director) ;
+      const _name = await contract.name() ;
+      console.log("groupname", _name) ;
+
       const nftId = await contract.getNFTId(
         nftData.collectionaddress,
         BigInt(nftData.collectionid)
       );
       console.log("nftId", nftId.toString());
       console.log("auctionType", nftData.auctiontype);
+      console.log("currentbidder", nftData.currentbidder) ;
       if (Number(nftData.auctiontype) === 0) {
-        if (remainTime && remainTime > 0) {
-          toast.error("Auction is not ended!");
-          return;
-        }
-        if (nftData.currentbidder !== "0x000") {
-          toast.error("Already someone made a bid");
-          return;
+        if (nftData.currentbidder !== "0x000"){
+          if (remainTime && remainTime > 0) {
+            toast.error("Auction is not ended!");
+            return;
+          }
+          else{
+            toast.error("Already someone made a bid");
+            return;
+          }
         }
       }
       if (Number(nftData.auctiontype) === 2) {

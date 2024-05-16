@@ -1275,28 +1275,30 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         <p className="flex justify-center">{item.name} </p>
                       </div>
                     </div>
-                    <button
-                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
-                        item.id === myGroupData?.director ? "hidden" : ""
-                      } `}
-                      onClick={() => {
-                        suggestDirectorSetting(index);
-                        setSelectedSuggestBtn(index);
-                      }}
-                    >
-                      {selectedSuggestBtn === index ? (
-                        <>
-                          <Icon
-                            icon="eos-icons:bubble-loading"
-                            width={20}
-                            height={20}
-                          />{" "}
-                          PROCESSING...
-                        </>
-                      ) : (
-                        "SUGGEST"
-                      )}
-                    </button>
+                    {index === selected && (
+                      <button
+                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
+                          item.id === myGroupData?.director ? "hidden" : ""
+                        } `}
+                        onClick={() => {
+                          suggestDirectorSetting(index);
+                          setSelectedSuggestBtn(index);
+                        }}
+                      >
+                        {selectedSuggestBtn === index ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />{" "}
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "SUGGEST"
+                        )}
+                      </button>
+                    )}
                   </div>
                 </>
               ))}

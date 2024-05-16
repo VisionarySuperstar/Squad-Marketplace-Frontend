@@ -159,7 +159,7 @@ const renderAvatar = (items: any[]) => {
               className={`h-[50px] w-[50px] ${!i ? "ml-[40px]" : "ml-[10px]"}`}
             >
               <Image
-                src={items[len + i].avatar}
+                src={items[len + i + 1].avatar}
                 width={300}
                 height={300}
                 className="rounded-full aspect-square h-full w-full object-cover"
@@ -173,7 +173,7 @@ const renderAvatar = (items: any[]) => {
           {Array.from({ length: len + 1 }, (_, i) => (
             <div key={i} className="h-[50px] w-[50px] ml-[10px]">
               <Image
-                src={items[2 * len + i].avatar}
+                src={items[2 * len + i + 1].avatar}
                 width={300}
                 height={300}
                 className="rounded-full aspect-square h-full w-full object-cover"
@@ -191,7 +191,7 @@ const renderAvatar = (items: any[]) => {
     return (
       <div>
         <div className="flex ml-[30px]">
-          {Array.from({ length: len + 1 }, (_, i) => (
+          {Array.from({ length: len}, (_, i) => (
             <div key={i} className="h-[50px] w-[50px] ml-[10px]">
               <Image
                 src={items[i].avatar}
@@ -205,7 +205,7 @@ const renderAvatar = (items: any[]) => {
           ))}
         </div>
         <div className="flex -mt-3">
-          {Array.from({ length: len + 1 }, (_, i) => (
+          {Array.from({ length: len}, (_, i) => (
             <div
               key={i}
               className={`h-[50px] w-[50px] ${!i ? "ml-[10px]" : "ml-[10px]"}`}
@@ -222,7 +222,7 @@ const renderAvatar = (items: any[]) => {
           ))}
         </div>
         <div className="flex -mt-3 ml-[30px]">
-          {Array.from({ length: len + 1 }, (_, i) => (
+          {Array.from({ length: len}, (_, i) => (
             <div key={i} className="h-[50px] w-[50px] ml-[10px]">
               <Image
                 src={items[2 * len + i].avatar}
@@ -243,7 +243,7 @@ const renderAvatar = (items: any[]) => {
     return (
       <div>
         <div className="flex ml-[30px]">
-          {Array.from({ length: len + 1 }, (_, i) => (
+          {Array.from({ length: len}, (_, i) => (
             <div key={i} className="h-[50px] w-[50px] ml-[10px]">
               <Image
                 src={items[i].avatar}
@@ -257,7 +257,7 @@ const renderAvatar = (items: any[]) => {
           ))}
         </div>
         <div className="flex -mt-3">
-          {Array.from({ length: len + 2 }, (_, i) => (
+          {Array.from({ length: len + 1}, (_, i) => (
             <div
               key={i}
               className={`h-[50px] w-[50px] ${!i ? "ml-[10px]" : "ml-[10px]"}`}
@@ -274,10 +274,10 @@ const renderAvatar = (items: any[]) => {
           ))}
         </div>
         <div className="flex -mt-3 ml-[30px]">
-          {Array.from({ length: len + 1 }, (_, i) => (
+          {Array.from({ length: len}, (_, i) => (
             <div key={i} className="h-[50px] w-[50px] ml-[10px]">
               <Image
-                src={items[2 * len + i].avatar}
+                src={items[2 * len + i + 1].avatar}
                 width={300}
                 height={300}
                 className="rounded-full aspect-square h-full w-full object-cover"
