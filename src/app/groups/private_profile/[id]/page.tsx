@@ -1012,49 +1012,58 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         )}
                     </div>
                     <div className="flex flex-col w-full">
-                      <button
-                        className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
-                        onClick={() => {
-                          offeringConfrimHandle(offerTransactions[key]);
-                          setSelectedOfferConfirmBtn(key);
-                        }}
-                      >
-                        {selectedOfferConfirmBtn === key ? (
-                          <>
-                            <Icon
-                              icon="eos-icons:bubble-loading"
-                              width={20}
-                              height={20}
-                            />{" "}
-                            PROCESSING...
-                          </>
-                        ) : (
-                          "CONFIRM"
+                      {item.confirm_member.filter(
+                        (_item: any) => _item.id === user?.id
+                      ).length === 0 &&
+                        item.confirm_member.length !==
+                          Number(myGroupData?.requiredconfirmnumber) && (
+                          <button
+                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                            onClick={() => {
+                              offeringConfrimHandle(offerTransactions[key]);
+                              setSelectedOfferConfirmBtn(key);
+                            }}
+                          >
+                            {selectedOfferConfirmBtn === key ? (
+                              <>
+                                <Icon
+                                  icon="eos-icons:bubble-loading"
+                                  width={20}
+                                  height={20}
+                                />{" "}
+                                PROCESSING...
+                              </>
+                            ) : (
+                              "CONFIRM"
+                            )}
+                          </button>
                         )}
-                      </button>
-                      <button
-                        className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
-                        onClick={() => {
-                          offeringExecuteHandle(
-                            offerTransactions[key],
-                            offerNfts[key]
-                          );
-                          setSelectedOfferExecuteBtn(key);
-                        }}
-                      >
-                        {selectedOfferExecuteBtn === key ? (
-                          <>
-                            <Icon
-                              icon="eos-icons:bubble-loading"
-                              width={20}
-                              height={20}
-                            />
-                            PROCESSING...
-                          </>
-                        ) : (
-                          "EXECUTE"
-                        )}
-                      </button>
+                      {item.confirm_member.length ===
+                        Number(myGroupData?.requiredconfirmnumber) && (
+                        <button
+                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                          onClick={() => {
+                            offeringExecuteHandle(
+                              offerTransactions[key],
+                              offerNfts[key]
+                            );
+                            setSelectedOfferExecuteBtn(key);
+                          }}
+                        >
+                          {selectedOfferExecuteBtn === key ? (
+                            <>
+                              <Icon
+                                icon="eos-icons:bubble-loading"
+                                width={20}
+                                height={20}
+                              />
+                              PROCESSING...
+                            </>
+                          ) : (
+                            "EXECUTE"
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1367,46 +1376,59 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           )}
                         </div>
                         <div className="flex flex-col w-full">
-                          <button
-                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
-                            onClick={() => {
-                              directorConfrimHandle(directorTransactions[key]);
-                              setSelectedDirectorConfirmBtn(key);
-                            }}
-                          >
-                            {selectedDirectorConfirmBtn === key ? (
-                              <>
-                                <Icon
-                                  icon="eos-icons:bubble-loading"
-                                  width={20}
-                                  height={20}
-                                />{" "}
-                                PROCESSING...
-                              </>
-                            ) : (
-                              "CONFIRM"
+                          {item.confirm_member.filter(
+                            (_item: any) => _item.id === user?.id
+                          ).length === 0 &&
+                            item.confirm_member.length !==
+                              Number(myGroupData?.requiredconfirmnumber) && (
+                              <button
+                                className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                                onClick={() => {
+                                  directorConfrimHandle(
+                                    directorTransactions[key]
+                                  );
+                                  setSelectedDirectorConfirmBtn(key);
+                                }}
+                              >
+                                {selectedDirectorConfirmBtn === key ? (
+                                  <>
+                                    <Icon
+                                      icon="eos-icons:bubble-loading"
+                                      width={20}
+                                      height={20}
+                                    />{" "}
+                                    PROCESSING...
+                                  </>
+                                ) : (
+                                  "CONFIRM"
+                                )}
+                              </button>
                             )}
-                          </button>
-                          <button
-                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
-                            onClick={() => {
-                              directorExecuteHandle(directorTransactions[key]);
-                              setSelectedDirectorExecuteBtn(key);
-                            }}
-                          >
-                            {selectedDirectorExecuteBtn === key ? (
-                              <>
-                                <Icon
-                                  icon="eos-icons:bubble-loading"
-                                  width={20}
-                                  height={20}
-                                />{" "}
-                                PROCESSING...
-                              </>
-                            ) : (
-                              "Execute"
-                            )}
-                          </button>
+                          {item.confirm_member.length ===
+                            Number(myGroupData?.requiredconfirmnumber) && (
+                            <button
+                              className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                              onClick={() => {
+                                directorExecuteHandle(
+                                  directorTransactions[key]
+                                );
+                                setSelectedDirectorExecuteBtn(key);
+                              }}
+                            >
+                              {selectedDirectorExecuteBtn === key ? (
+                                <>
+                                  <Icon
+                                    icon="eos-icons:bubble-loading"
+                                    width={20}
+                                    height={20}
+                                  />{" "}
+                                  PROCESSING...
+                                </>
+                              ) : (
+                                "Execute"
+                              )}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
