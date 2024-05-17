@@ -51,7 +51,7 @@ const MyGroup = () => {
     <div>
       {user && (
         <>
-        <Split_line />
+          <Split_line />
           <h1 className="my-5 text-lg">MY GROUPS</h1>
           {MyGroupData.length ? (
             <>
@@ -70,8 +70,7 @@ const MyGroup = () => {
               </div>
             </>
           ) : (
-            // <h1 className="my-5 text-lg">CREATE NEW GROUP</h1>
-            <div className="flex items-center justify-center mt-5">
+            <div className="flex items-center justify-center mt-5 min-h-[500px]">
               <button
                 onClick={() => setCreateGroupModalState(true)}
                 className="border border-black rounded-full pl-4 pr-4 w-[350px] text-[18px] mb-[5px] text-center flex items-center justify-center bg-[#322A44] text-white"

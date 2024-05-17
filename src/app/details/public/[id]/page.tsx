@@ -18,20 +18,19 @@ import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
-import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
-import GROUP_ABI from "@/constants/creator_group.json";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
-
-
+import { useRouter } from "next/navigation";
 
 const Home = ({ params }: { params: { id: string } }) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -44,7 +43,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { signIn, isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
@@ -58,12 +57,15 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
-  const [collectionData, setCollectionData] = useState<ICOLLECTION[] | undefined>(undefined);
+  const [collectionData, setCollectionData] = useState<
+    ICOLLECTION[] | undefined
+  >(undefined);
   const [allNftData, setAllNftData] = useState<INFT[] | undefined>(undefined);
-  const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(undefined);
+  const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(
+    undefined
+  );
   const [scale, setScale] = React.useState<number>(60);
   const router = useRouter();
-
 
   const getData = async () => {
     const result = await api
@@ -84,13 +86,11 @@ const Home = ({ params }: { params: { id: string } }) => {
     setGroupAddress(group_name?.data.address);
     setGroupId(group_name?.data.id);
 
-    const _allNft = await api
-      .get("/api/getAllNft")
-      .catch((error) => {
-        toast.error(error.message) ;
-      })
-    console.log("list nfts", _allNft?.data) ;
-    setAllNftData(_allNft?.data) ;
+    const _allNft = await api.get("/api/getAllNft").catch((error) => {
+      toast.error(error.message);
+    });
+    console.log("list nfts", _allNft?.data);
+    setAllNftData(_allNft?.data);
   };
 
   useEffect(() => {
@@ -129,7 +129,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     console.log("currentTime", currentTime);
     setRemainTime(endTime - currentTime);
   };
-  
 
   useEffect(() => {
     calcRemainTime();
@@ -222,24 +221,30 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   const getCollectionData = async () => {
-    if(!data) return ;
-    if(!allNftData) return ;
-    const result = await api.post("/api/getCollectionByAddress", {id:data?.collectionaddress}) ;
-    const _collectionData:ICOLLECTION = result.data ;
-    console.log("_collectionData", _collectionData) ;
+    if (!data) return;
+    if (!allNftData) return;
+    const result = await api.post("/api/getCollectionByAddress", {
+      id: data?.collectionaddress,
+    });
+    const _collectionData: ICOLLECTION = result.data;
+    console.log("_collectionData", _collectionData);
     const nfts_in_collection = _collectionData.nft;
-    console.log("allNftData", allNftData) ;
-    let  _allNftData = allNftData.filter((_nft:INFT) =>  nfts_in_collection.map((index:any) => String(index.id)).includes(String(_nft.id))) ;
-    _allNftData = _allNftData.filter((_nft:INFT) => String(_nft.id) !== String(data.id)) ;
-    console.log("_selected nfts ", _allNftData) ;
-    setSelectedNFTS(_allNftData) ;
-  }
+    console.log("allNftData", allNftData);
+    let _allNftData = allNftData.filter((_nft: INFT) =>
+      nfts_in_collection
+        .map((index: any) => String(index.id))
+        .includes(String(_nft.id))
+    );
+    _allNftData = _allNftData.filter(
+      (_nft: INFT) => String(_nft.id) !== String(data.id)
+    );
+    console.log("_selected nfts ", _allNftData);
+    setSelectedNFTS(_allNftData);
+  };
 
-  useEffect( () =>  {
-    getCollectionData() ;
-  }, [data, allNftData])
-
-
+  useEffect(() => {
+    getCollectionData();
+  }, [data, allNftData]);
 
   return (
     <>
@@ -256,19 +261,23 @@ const Home = ({ params }: { params: { id: string } }) => {
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
             <div className="drop-shadow-md lg:me-[40px] sm:me-0">
-              <Image
-                src={data.avatar}
-                className="md:h-[70vh] aspect-square w-full object-cover"
-                alt="group_avatar"
-                width={706}
-                height={706}
-              />
-              <div className="flex items-center gap-3 p-2">
-                <EyeIcon props="#322A44" />
-                <div>200</div>
-                <div>WATCHING</div>
-                <HeartIcon props="#322A44" />
-                <div>20</div>
+              <div className="flex justify-center  bg-white">
+                <Image
+                  src={data.avatar}
+                  className="md:h-[70vh] object-fill w-auto h-full"
+                  alt="group_avatar"
+                  width={706}
+                  height={706}
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-3 p-2">
+                  <EyeIcon props="#322A44" />
+                  <div>200</div>
+                  <div>WATCHING</div>
+                  <HeartIcon props="#322A44" />
+                  <div>20</div>
+                </div>
               </div>
             </div>
           )}
@@ -347,7 +356,6 @@ const Home = ({ params }: { params: { id: string } }) => {
                       <div className="text-[18px]">{data?.currentbidder}</div>
                     </>
                   )}
-                
               </div>
               <div className="flex flex-col mt-3 mb-[35px]">
                 {Number(data?.auctiontype) === 1 &&
@@ -414,41 +422,39 @@ const Home = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div>
-        <h1 className="text-xl p-10">
-          MORE FROM THIS COLLECTION
-        </h1>
+        <h1 className="text-xl p-10">MORE FROM THIS COLLECTION</h1>
         <div className="page_container_p40 mt-5">
-            <div
-              className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
-              style={{
-                gridTemplateColumns: `repeat(${Math.floor(
-                  (100 - scale) / 10 + 1
-                )}, 1fr)`,
-              }}
-            >
-              {selectedNFTS?.map((item, index) => (
-                <div
-                  key={index}
-                  className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                  onClick={() => {
-                    router.push(`/details/public/${item.id}`);
-                  }}
-                >
-                  <NftCard
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={parseInt(item.collectionid)}
-                    price={parseInt(item.currentprice)}
-                    seen={200}
-                    favorite={20}
-                  />
-                </div>
-              ))}
-            </div>
+          <div
+            className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+            style={{
+              gridTemplateColumns: `repeat(${Math.floor(
+                (100 - scale) / 10 + 1
+              )}, 1fr)`,
+            }}
+          >
+            {selectedNFTS?.map((item, index) => (
+              <div
+                key={index}
+                className="relative text-md content-card cursor-pointer drop-shadow-lg"
+                onClick={() => {
+                  router.push(`/details/public/${item.id}`);
+                }}
+              >
+                <NftCard
+                  avatar={item.avatar}
+                  collectionName={item.collectionname}
+                  collectionId={parseInt(item.collectionid)}
+                  price={parseInt(item.currentprice)}
+                  seen={200}
+                  favorite={20}
+                />
+              </div>
+            ))}
           </div>
+        </div>
       </div>
       <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10" 
+        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
         style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
       ></div>
     </>

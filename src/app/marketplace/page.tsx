@@ -113,87 +113,64 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {enableScale && (
-          <div className="page_container_p40 mt-5">
-            <div
-              className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
-              style={{
-                gridTemplateColumns: `repeat(${Math.floor(
-                  (100 - scale) / 10 + 1
-                )}, 1fr)`,
-              }}
-            >
-              {allNftData.map((item, index) => (
-                <div
-                  key={index}
-                  className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                  onClick={() => {
-                    console.log("clicked");
-                    router.push(`/details/public/${item.id}`);
-                  }}
-                >
-                  <NftCard
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={parseInt(item.collectionid)}
-                    price={parseInt(item.currentprice)}
-                    seen={200}
-                    favorite={20}
-                  />
-                </div>
-              ))}
+        <div className="min-h-[600px]">
+          {enableScale && (
+            <div className="page_container_p40 mt-5">
+              <div
+                className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+                style={{
+                  gridTemplateColumns: `repeat(${Math.floor(
+                    (100 - scale) / 10 + 1
+                  )}, 1fr)`,
+                }}
+              >
+                {allNftData.map((item, index) => (
+                  <div
+                    key={index}
+                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
+                    onClick={() => {
+                      console.log("clicked");
+                      router.push(`/details/public/${item.id}`);
+                    }}
+                  >
+                    <NftCard
+                      avatar={item.avatar}
+                      collectionName={item.collectionname}
+                      collectionId={parseInt(item.collectionid)}
+                      price={parseInt(item.currentprice)}
+                      seen={200}
+                      favorite={20}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        {!enableScale && (
-          <div className="page_container_p40 mt-5">
-            <div
-              className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
-            >
-              {allNftData.map((item, index) => (
-                <div
-                  key={index}
-                  className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                  onClick={() => router.push(`/details/public/${item.id}`)}
-                >
-                  {/* <div className="absolute top-0 content-card-menu opacity-0 transition-all text-white bg-chocolate-main/80 w-full h-full rounded-lg">
-                    <div>
-                      <div className="absolute left-4 top-4">
-                        {item.collectionaddress} #{item.collectionid}
-                      </div>
-                      <div className="absolute left-4 bottom-4">
-                        {item.currentprice} USDC
-                      </div>
-                      <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
-                        <EyeIcon props="white" />
-                        200
-                        <HeartIcon props="white" />
-                        20
-                      </div>
-                    </div>
-                  </div> */}
-                  {/* 
-                  <Image
-                    src={item.avatar}
-                    className="w-full h-full aspect-square object-cover rounded-lg"
-                    alt="market_nft"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                  /> */}
-                  <NftCard
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={parseInt(item.collectionid)}
-                    price={parseInt(item.currentprice)}
-                    seen={200}
-                    favorite={20}
-                  />
-                </div>
-              ))}
+          )}
+          {!enableScale && (
+            <div className="page_container_p40 mt-5">
+              <div
+                className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+              >
+                {allNftData.map((item, index) => (
+                  <div
+                    key={index}
+                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
+                    onClick={() => router.push(`/details/public/${item.id}`)}
+                  >
+                    <NftCard
+                      avatar={item.avatar}
+                      collectionName={item.collectionname}
+                      collectionId={parseInt(item.collectionid)}
+                      price={parseInt(item.currentprice)}
+                      seen={200}
+                      favorite={20}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
         <div
           className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
           style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}

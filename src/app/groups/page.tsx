@@ -62,7 +62,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="page_container_p40 pt-[120px]">
+      <div className="page_container_p40 lg:pt-[120px]">
         <div className="mb-[50px]">
           <MyGroup />
         </div>

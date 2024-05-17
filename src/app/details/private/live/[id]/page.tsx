@@ -288,7 +288,7 @@ const Home = ({ params }: { params: { id: string } }) => {
             <div className="drop-shadow-md lg:me-[40px] sm:me-0">
               <Image
                 src={nftData?.avatar}
-                className="md:h-[70vh] aspect-square w-full object-cover"
+                className="md:h-[70vh] w-full object-cover"
                 alt="group_avatar"
                 width={706}
                 height={706}
