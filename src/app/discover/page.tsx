@@ -53,9 +53,8 @@ export default function Home() {
       }
       let limitHeight = 0;
       limitHeight = Math.max(carouselHeight, imageHeroHeight);
-      console.log("Limit Height:", limitHeight);
       const currentScrollPosition = window.scrollY;
-      if (currentScrollPosition >= carouselHeight) {
+      if (currentScrollPosition >= limitHeight) {
         updateNavbarBackground(true);
       } else {
         updateNavbarBackground(false);
