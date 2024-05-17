@@ -20,11 +20,14 @@ import { useRouter } from "next/navigation";
 
 import useCreatGroupState from "@/store/createGroupStatus";
 import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
 const NewGroupModal = () => {
   const router = useRouter();
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
 
   const setCreateGroupModalState = useGroupUIControlStore(
     (state) => state.updateCreateGroupModal
@@ -89,6 +92,7 @@ const NewGroupModal = () => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true) ;
       const memberAddresses = selectedUsers.map((item: IUSER) => item.wallet);
       const tx = await contract.createGroup(
         groupName,
@@ -150,6 +154,7 @@ const NewGroupModal = () => {
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false) ;
     }
   };
 

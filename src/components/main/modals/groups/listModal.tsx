@@ -14,6 +14,8 @@ import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+
 
 type auctionQueryType = {
   initialPrice: string;
@@ -27,6 +29,8 @@ interface ListModalInterface {
   groupAddress: string;
 }
 const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+
   const setListModalState = useGroupUIControlStore(
     (state) => state.updateListModal
   );
@@ -68,25 +72,29 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const handleNext = async () => {
     console.log("step: ", step);
     if (step === 0) {
-      console.log(
-        auctionQuery.salePeriod_day +
-          " : " +
-          auctionQuery.salePeriod_hour +
-          " : " +
-          auctionQuery.salePeriod_minute
-      );
       if (!auctionQuery.initialPrice) {
+        toast.error("Initial Price Required!") ;
         return;
       }
       if (
-        (!auctionType || auctionType === 1) &&
-        (!auctionQuery.salePeriod_day ||
-          !auctionQuery.salePeriod_hour ||
-          !auctionQuery.salePeriod_minute)
+        auctionType !== 2
       ) {
-        return;
+        if(!auctionQuery.salePeriod_day){
+          toast.error("Type valid days!");
+          return ;
+        }
+        if(!auctionQuery.salePeriod_hour || Number(auctionQuery.salePeriod_hour) < 0 || Number(auctionQuery.salePeriod_hour) > 23)
+        {
+          toast.error("Type valid hours") ;
+          return ;
+        }
+        if(!auctionQuery.salePeriod_minute || Number(auctionQuery.salePeriod_minute) < 0 || Number(auctionQuery.salePeriod_minute) > 59){
+          toast.error("Type valid minutes") ;
+          return ;
+        }
       }
       if (auctionType === 1 && !auctionQuery.reducingRate) {
+        toast.error("Reducing rate required!") ;
         return;
       }
       setStep(1);
@@ -97,6 +105,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (!chainId) throw "Invalid chain id";
         if (!user) throw "You must sign in";
         setIsLoading(true);
+        setIsDisplaying(true);
         console.log("groupAddress", groupAddress);
         console.log("listNft.collectionaddress ", listNft.collectionaddress);
         console.log("listNft.collectionid ", listNft.collectionid);
@@ -138,6 +147,10 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
           await tx.wait();
           listed_number = await _market_contract.getOfferingSaleAuctionNumber();
         }
+        const marketplace_number = await _market_contract.getListedNumber() ;
+        const _marketplace_number = Number(Number(marketplace_number) - 1).toString();
+        console.log("_marketplace_number", _marketplace_number) ;
+
         console.log("listed_number", listed_number);
         const listNumber = Number(Number(listed_number) - 1).toString();
         console.log("listed_number", listNumber);
@@ -155,6 +168,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
               ? auctionQuery.reducingRate
               : 0,
             listedNumber: listNumber,
+            marketplaceNumber:_marketplace_number
           })
           .catch((error) => {
             toast.error(error.message);
@@ -169,6 +183,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         }
       } finally {
         setIsLoading(false);
+        setIsDisplaying(false);
       }
     }
   };

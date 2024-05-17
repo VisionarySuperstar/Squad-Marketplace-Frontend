@@ -25,15 +25,16 @@ const NftCard: React.FC<CardProps> = ({
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
+  const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
   return (
     <>
       <div
-        className="transition-transform duration-200 active:translate-y-1"
+        className="transition-transform duration-200 active:translate-y-1 aspect-square"
         onClick={() => {
           setLoadingState(true);
         }}
       >
-        <div className="transition-all absolute aspect-square top-0 content-card-menu opacity-0 text-white bg-chocolate-main/80 w-full">
+        <div className="transition-all absolute aspect-square top-0 left-0 content-card-menu opacity-0 text-white bg-chocolate-main/80 w-full">
           <div>
             <div className="absolute left-4 top-4">
               {collectionName} #{collectionId}
@@ -47,14 +48,17 @@ const NftCard: React.FC<CardProps> = ({
             </div>
           </div>
         </div>
-        <Image
-          src={avatar}
-          className="w-full h-full aspect-square object-cover"
-          alt="market_nft"
-          width={500}
-          height={500}
-          sizes="100vw"
-        />
+        <div className="bg-white w-full h-full flex justify-center">
+          {!imageLoaded && <div>Loading...</div>}
+          <Image
+            src={avatar}
+            alt={"nft"}
+            width={300}
+            height={300}
+            className=" object-fill w-auto h-full"
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
       </div>
     </>
   );

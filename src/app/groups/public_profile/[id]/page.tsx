@@ -2,6 +2,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import useActiveWeb3 from "@/hooks/useActiveWeb3";
+import { Contract } from "ethers";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
@@ -149,10 +151,13 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   return (
     <>
       <div className="pt-[100px] h-full">
-        <div className="page_container_p40 flex font-Maxeville" id="profile">
+        <div
+          className="page_container_p40 flex font-Maxeville bg-white"
+          id="profile"
+        >
           <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row  md:justify-between w-full">
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
-              <div className="mt-5">
+              <div className="mt-5 min-h-[452px]">
                 {myGroupData && (
                   <Image
                     src={myGroupData?.avatar}
@@ -173,7 +178,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 )}
               </div>
             </div>
-            <div className="mt-5 xs:flex sm:justify-center xs:justify-center  h-[40px] ">
+            <div className="mt-5 xs:flex sm:justify-center xs:justify-center h-[30px] ">
               {!isAvailableRequest && (
                 <button
                   className="border bg-[#322A44] p-1 text-white rounded-full pl-6 pr-6 text-lg"
@@ -229,6 +234,11 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>NFTs ({nftData?.length ? nftData?.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
+          {nftData?.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="mb-[50px] grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
             {nftData?.map((item, index) => (
               <div
@@ -270,13 +280,17 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>POST ({postNews?.length ? postNews?.length : "0"})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL</div>
           </div>
+          {postNews?.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div
             style={{ borderBottom: "3px solid #ccc" }}
             className="mt-5 mb-3 w-[26%]"
           ></div>
           <div>
             {postNews &&
-              postNews?.length &&
               postNews?.map((_news, key) => (
                 <div
                   key={key}

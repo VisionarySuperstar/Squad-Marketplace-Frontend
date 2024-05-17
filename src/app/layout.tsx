@@ -8,6 +8,8 @@ import dynamic from "next/dynamic";
 import SocketComponent from "@/components/WebSocketComponent";
 const Provider = dynamic(() => import("@/providers"), { ssr: false });
 import "@rainbow-me/rainbowkit/styles.css";
+import DisplayingScreen from "@/components/main/displaying_bar";
+import MobileNav from "@/components/main/MobileNav";
 // import Web3ContextProvider from "@/providers/web3Provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,8 +37,14 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning={true}>
         <body className={inter.className} suppressHydrationWarning={true}>
           <Provider>
-            <NavBar />
+            <div className="hidden lg:block">
+              <NavBar />
+            </div>
+            <div className="block lg:hidden">
+              <MobileNav />
+            </div>
             <Loading_screen />
+            <DisplayingScreen />
             <SocketComponent />
             {children}
           </Provider>

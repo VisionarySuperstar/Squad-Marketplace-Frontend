@@ -7,14 +7,16 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 
 export default function Detail({ children }: { children: React.ReactNode }) {
   const setNavbarshow = useNavbarUIControlStore((state) => state.updateIsShow);
-  useEffect(() => {
-    setNavbarshow(true);
-  }, [setNavbarshow]);
+  const setNavbarBg = useNavbarUIControlStore(
+    (state) => state.updateIsBackground
+  );
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
   useEffect(() => {
     setLoadingState(false);
-  }, [setLoadingState]);
+    setNavbarshow(true);
+    setNavbarBg(true);
+  }, []);
   return <div>{children}</div>;
 }

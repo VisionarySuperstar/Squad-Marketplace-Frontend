@@ -7,20 +7,25 @@ const RainbowProvider = dynamic(() => import("@/providers/rainbowProvider"), { s
 const ToastProvider = dynamic(() => import("@/providers/toastProvider"), { ssr: false });
 const AuthProvider = dynamic(() => import("@/providers/authProvider"), { ssr: false });
 const ActiveWeb3Provider = dynamic(() => import("@/providers/web3Provider"), { ssr: false });
+import { ThemeProvider } from "styled-components";
+import theme from "@/constants/theme";
+
 
 const Provider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
+    <ThemeProvider theme={theme}>
       <ToastProvider>
-          <RainbowProvider>
-            <ActiveWeb3Provider>
-              <AuthProvider>
-        <JotaiProvider>
+        <RainbowProvider>
+          <ActiveWeb3Provider>
+            <AuthProvider>
+              <JotaiProvider>
                 {children}
-        </JotaiProvider>
-              </AuthProvider>
-            </ActiveWeb3Provider>
-          </RainbowProvider>
+              </JotaiProvider>
+            </AuthProvider>
+          </ActiveWeb3Provider>
+        </RainbowProvider>
       </ToastProvider>
+    </ThemeProvider>
   );
 };
 

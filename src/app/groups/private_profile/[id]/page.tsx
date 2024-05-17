@@ -32,11 +32,15 @@ import { Contract, ContractFactory } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
 const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
@@ -70,6 +74,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     useState<boolean>(false);
   const [selectedRequestButton, setSelectedRequestButton] =
     useState<number>(-1);
+  const [isLoadingChangeConfirm, setIsLoadingChangeConfirm] =
+    useState<boolean>(false);
 
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
@@ -107,6 +113,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const { signIn, isAuthenticated, user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [newPostMessage, setNewPostMessage] = useState<string>("");
+  const [requiredConfirmNumber, setRequiredConfirmNumber] =
+    useState<string>("");
   const api = useAPI();
   const getMyGroupData = async () => {
     const response = await api
@@ -321,6 +329,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true);
       const tx = await contract.confirmOfferingSaleTransaction(
         BigInt(item.transactionid),
         true
@@ -345,6 +354,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false);
       setSelectedOfferConfirmBtn(-1);
     }
   };
@@ -358,6 +368,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true);
+
       const tx = await contract.excuteOfferingSaleTransaction(
         BigInt(item.transactionid)
       );
@@ -393,6 +405,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedOfferExecuteBtn(-1);
     }
@@ -404,6 +417,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true);
       const tx = await contract.confirmDirectorSettingTransaction(
         BigInt(item.transaction_id),
         true
@@ -427,6 +441,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedDirectorConfirmBtn(-1);
     }
@@ -437,6 +452,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true);
       setIsLoading(true);
       const tx = await contract.excuteDirectorSettingTransaction(
         BigInt(item.transaction_id)
@@ -464,6 +480,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedDirectorExecuteBtn(-1);
     }
@@ -474,6 +491,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
       await tx.wait();
@@ -485,6 +503,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoadingWithdrawButton(false);
     }
   };
@@ -493,6 +512,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true);
       setIsLoadingWithdrawMarketplaceButton(true);
       const tx = await contract.withdrawFromMarketplace();
       await tx.wait();
@@ -504,6 +524,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoadingWithdrawMarketplaceButton(false);
     }
   };
@@ -513,6 +534,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      setIsDisplaying(true);
       setIsLoadingLeaveButton(true);
       const tx = await contract.removeMember(address);
       await tx.wait();
@@ -544,6 +566,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoadingLeaveButton(false);
     }
   };
@@ -554,10 +577,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     setWithdrawAmount(Number(Number(withdrawGroupBalance) / 1e18).toString());
     const totalEarningAmount = await contract.totalEarning();
     setTotalEarning(Number(Number(totalEarningAmount) / 1e18).toString());
-    // console.log(
-    //   "(Number(Number(totalEarningAmount) / 1e18)).toString(), ",
-    //   Number(Number(totalEarningAmount) / 1e18).toString()
-    // );
+
     await api
       .post("/api/updateEarning", {
         id: myGroupData?.id,
@@ -566,9 +586,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
-    // console.log("success here it is");
     if (!marketplaceContract) return;
-
     const withdrawMarketplaceBalance =
       await marketplaceContract.balanceOfSeller(myGroupData?.address);
     setWithdrawFromMarketplace(
@@ -586,23 +604,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) return;
       if (!user) return;
       setIsLoading(true);
-
-      // console.log("selected new director", members[_num].wallet);
-
+      setIsDisplaying(true);
       const members_in_group = await contract.members(0);
       const members_in_group1 = await contract.members(1);
       const currentDirector = await contract.director();
-
-      // console.log(
-      //   "members:",
-      //   members_in_group,
-      //   " next member:",
-      //   members_in_group1,
-      //   " current director ",
-      //   currentDirector
-      // );
-      // console.log("dfafds", members[_num].wallet);
-
       const tx = await contract.submitDirectorSettingTransaction(
         members[_num].wallet
       );
@@ -627,6 +632,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoading(false);
       setSelectedSuggestBtn(-1);
     }
@@ -670,6 +676,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       if (!myGroupData) throw "No groupdata";
 
+      setIsDisplaying(true);
       setIsLoading(true);
       const tx = await contract.addMember(requestMembers[index].wallet);
       await tx.wait();
@@ -705,16 +712,63 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         toast.error("An error occurred. please try again");
       }
     } finally {
+      setIsDisplaying(false);
       setIsLoading(false);
+    }
+  };
+
+  const changeConfirmNumberHandle = async () => {
+    try {
+      if (!contract) throw "no contract";
+      if (!chainId) throw "Invalid chain id";
+      if (!user) throw "You must sign in";
+      if (!myGroupData) throw "No groupdata";
+
+      if (
+        Number(requiredConfirmNumber) > myGroupData.member.length ||
+        Number(requiredConfirmNumber) < 0
+      ) {
+        toast.error("Invalid confirm number");
+        return;
+      }
+      setIsDisplaying(true);
+      setIsLoadingChangeConfirm(true);
+
+      const tx = await contract.setConfirmationRequiredNumber(
+        BigInt(requiredConfirmNumber)
+      );
+      await tx.wait();
+      const result = await api
+        .post("/api/updateGroup", {
+          groupId: params.id,
+          name: myGroupData.name,
+          avatar: myGroupData.avatar,
+          member: JSON.stringify(myGroupData.member),
+          director: myGroupData.director,
+          requiredConfirmNumber: requiredConfirmNumber,
+          description: myGroupData.description,
+          mintnumber: myGroupData.mintnumber,
+          soldnumber: myGroupData.soldnumber,
+          earning: myGroupData.earning,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      getMyGroupData();
+    } catch (error: any) {
+      if (String(error.code) === "ACTION_REJECTED") {
+        toast.error("User rejected transaction.");
+      } else {
+        toast.error("An error occurred. please try again");
+      }
+    } finally {
+      setIsDisplaying(false);
+      setIsLoadingChangeConfirm(false);
     }
   };
 
   return (
     <>
-      {/* {
-        isLoading && 
-        
-      } */}
       {mintModalState && avatar && (
         <MintModal
           groupAddress={myGroupData ? myGroupData.address : ""}
@@ -824,6 +878,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>SOLD ({soldNfts.length ? soldNfts.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
+          {soldNfts.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts.map((item, index) => (
               <div
@@ -847,6 +906,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>LISTED ({listedNfts.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
+          {listedNfts.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {listedNfts.map((item, index) => (
               <div
@@ -870,6 +934,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>NOT LISTED ({mintedNfts.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
+          {mintedNfts.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {mintedNfts.map((item, index) => (
               <div
@@ -890,115 +959,118 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
           <Split_line />
           <div className="flex justify-between text-lg" id="offers">
-            <div>
-              OFFERS (
-              {offerTransactions.length ? offerTransactions.length : "0"})
-            </div>
+            <div>OFFERS ({offerTransactions.length})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
+          {offerTransactions.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
-            {offerTransactions.length &&
-              myGroupData &&
-              members?.length &&
-              offerNfts.length &&
-              offerTransactions.map((item, key) => (
-                <div key={key}>
-                  <div className="min-w-[50%] flex mt-[30px] gap-5">
-                    <div>
-                      <Image
-                        src={offerNfts[key].avatar}
-                        className="aspect-square object-cover rounded-lg"
-                        width={300}
-                        height={300}
-                        alt="offer"
-                      />
+            {offerTransactions?.map((item, key) => (
+              <div key={key}>
+                <div className="min-w-[50%] flex mt-[30px] gap-5">
+                  <div>
+                    <Image
+                      src={offerNfts[key]?.avatar}
+                      className="aspect-square object-cover rounded-lg"
+                      width={300}
+                      height={300}
+                      alt="offer"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="mb-[5px]">
+                      {offerTransactions[key].buyer}
                     </div>
-                    <div className="flex flex-col">
-                      <div className="mb-[5px]">
-                        {offerTransactions[key].buyer}
-                      </div>
-                      <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
-                        <div className="flex me-[5px]">
-                          <div className="text-gray-400">OFFERED</div>
-                          <div className="ms-[5px]">
-                            {offerTransactions[key].price} USDC
-                          </div>
-                        </div>
-                        <div className="flex">
-                          <div className="text-gray-400">FOR</div>
-                          <div className="ms-[5px]">CONTENT</div>
+                    <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
+                      <div className="flex me-[5px]">
+                        <div className="text-gray-400">OFFERED</div>
+                        <div className="ms-[5px]">
+                          {offerTransactions[key]?.price} USDC
                         </div>
                       </div>
-                      <div className="text-gray-400 mt-5 text-md">
-                        CONFIRMED BY{" "}
-                        {offerTransactions[key].confirm_member.length}/
-                        {myGroupData.member.length}
+                      <div className="flex">
+                        <div className="text-gray-400">FOR</div>
+                        <div className="ms-[5px]">CONTENT</div>
                       </div>
-                      <div className="my-[20px]">
-                        {renderAvatar(
-                          members.filter((item: IUSER) =>
-                            offerTransactions[key].confirm_member
+                    </div>
+                    <div className="text-gray-400 mt-5 text-md">
+                      CONFIRMED BY{" "}
+                      {offerTransactions[key].confirm_member.length}/
+                      {myGroupData?.member.length}
+                    </div>
+                    <div className="my-[20px]">
+                      {members &&
+                        renderAvatar(
+                          members?.filter((item: IUSER) =>
+                            offerTransactions[key]?.confirm_member
                               .map((_id: any) => _id.id)
                               .includes(item.id)
                           )
                         )}
-                      </div>
-                      <div className="flex flex-col w-full">
-                        <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
-                          onClick={() => {
-                            offeringConfrimHandle(offerTransactions[key]);
-                            setSelectedOfferConfirmBtn(key);
-                          }}
-                        >
-                          {selectedOfferConfirmBtn === key ? (
-                            <>
-                              <Icon
-                                icon="eos-icons:bubble-loading"
-                                width={20}
-                                height={20}
-                              />{" "}
-                              PROCESSING...
-                            </>
-                          ) : (
-                            "CONFIRM"
-                          )}
-                        </button>
-                        <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px]"
-                          onClick={() => {
-                            offeringExecuteHandle(
-                              offerTransactions[key],
-                              offerNfts[key]
-                            );
-                            setSelectedOfferExecuteBtn(key);
-                          }}
-                        >
-                          {selectedOfferExecuteBtn === key ? (
-                            <>
-                              <Icon
-                                icon="eos-icons:bubble-loading"
-                                width={20}
-                                height={20}
-                              />{" "}
-                              PROCESSING...
-                            </>
-                          ) : (
-                            "EXECUTE"
-                          )}
-                        </button>
-                      </div>
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <button
+                        className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                        onClick={() => {
+                          offeringConfrimHandle(offerTransactions[key]);
+                          setSelectedOfferConfirmBtn(key);
+                        }}
+                      >
+                        {selectedOfferConfirmBtn === key ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />{" "}
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "CONFIRM"
+                        )}
+                      </button>
+                      <button
+                        className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                        onClick={() => {
+                          offeringExecuteHandle(
+                            offerTransactions[key],
+                            offerNfts[key]
+                          );
+                          setSelectedOfferExecuteBtn(key);
+                        }}
+                      >
+                        {selectedOfferExecuteBtn === key ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "EXECUTE"
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
           <Split_line />
           <div className="flex justify-between text-xl" id="create">
             <div>UPLOADED CONTENT (0)</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-
+          {uploadedContent.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
             {uploadedContent.map((_content: string, item: number) => (
               <div key={item} className="flex flex-col">
@@ -1036,7 +1108,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             ))}
           </div>
-          <Split_line />
           <div className="flex justify-center items-center mt-5">
             <label
               htmlFor="avatar"
@@ -1046,7 +1117,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               UPLOAD NEW
             </label>
           </div>
-
           <Split_line />
           {isDirector && (
             <>
@@ -1076,14 +1146,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </>
           )}
-
           <div className="flex justify-between text-xl">
             <div>NEWS</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
+          {postNews?.length == 0 && (
+            <div className="w-full flex items-center justify-center min-h-[100px]">
+              NO RESULT
+            </div>
+          )}
           <div>
             {postNews &&
-              postNews?.length &&
               postNews?.map((_news, key) => (
                 <div
                   key={key}
@@ -1101,7 +1174,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </div>
               ))}
           </div>
-
           {isDirector && (
             <>
               <div className="flex items-center text-xl mt-5">
@@ -1134,7 +1206,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <div className="mt-5">
             <h1>SET A NEW DIRECTOR</h1>
           </div>
-
           <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
             {members && myGroupData && (
               <div
@@ -1204,33 +1275,34 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         <p className="flex justify-center">{item.name} </p>
                       </div>
                     </div>
-                    <button
-                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
-                        item.id === myGroupData?.director ? "hidden" : ""
-                      } `}
-                      onClick={() => {
-                        suggestDirectorSetting(index);
-                        setSelectedSuggestBtn(index);
-                      }}
-                    >
-                      {selectedSuggestBtn === index ? (
-                        <>
-                          <Icon
-                            icon="eos-icons:bubble-loading"
-                            width={20}
-                            height={20}
-                          />{" "}
-                          PROCESSING...
-                        </>
-                      ) : (
-                        "SUGGEST"
-                      )}
-                    </button>
+                    {index === selected && (
+                      <button
+                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
+                          item.id === myGroupData?.director ? "hidden" : ""
+                        } `}
+                        onClick={() => {
+                          suggestDirectorSetting(index);
+                          setSelectedSuggestBtn(index);
+                        }}
+                      >
+                        {selectedSuggestBtn === index ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />{" "}
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "SUGGEST"
+                        )}
+                      </button>
+                    )}
                   </div>
                 </>
               ))}
           </div>
-
           <div className="flex justify-between  mt-5" id="offers">
             <div>
               SUGGESTED DIRECTORS (
@@ -1342,7 +1414,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 ))}
               </div>
             )}
-
           <div className="mt-5">
             <h1>JOIN REQUESTS</h1>
           </div>
@@ -1393,9 +1464,49 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </>
               ))}
           </div>
-
+          {isDirector && (
+            <>
+              <div className="mt-5 text-xl">
+                <h1>CHANGE REQUIRED CONFIRM NUMBER</h1>
+              </div>
+              <div className="mt-5 text-lg lg:flex gap-5">
+                <div className="flex items-center h-[32px]">
+                  CURRENT{" "}
+                  <span className="ml-5 text-red-400 text-xl">
+                    {myGroupData?.requiredconfirmnumber}
+                  </span>
+                </div>
+                <input
+                  className="flex border-2 border-black items-center justify-center pl-5 pr-5 rounded-lg "
+                  placeholder="Type New Confirm Number"
+                  value={requiredConfirmNumber}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setRequiredConfirmNumber(e.target.value)
+                  }
+                />
+                <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
+                  <button
+                    onClick={changeConfirmNumberHandle}
+                    className="border border-black rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                  >
+                    {isLoadingChangeConfirm ? (
+                      <>
+                        <Icon
+                          icon="eos-icons:bubble-loading"
+                          width={20}
+                          height={20}
+                        />{" "}
+                        PROCESSING...
+                      </>
+                    ) : (
+                      "CHANGE"
+                    )}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
           <Split_line />
-
           <div className="text-xl" id="withdraw">
             <div className="text-md">Withdraw</div>
             <div className="border-b-2 border-indigo-500"></div>
@@ -1461,7 +1572,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           )}
-
           {!isDirector && (
             <div className="flex justify-center items-center mt-5">
               <button

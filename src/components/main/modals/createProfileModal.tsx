@@ -18,8 +18,13 @@ import useAPI from "@/hooks/useAPI";
 import { useAtom } from "jotai";
 import { isAuthenticatedAtom, userAtom } from "@/store/user";
 import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+
+
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
-const CreateProfileModal = () => {
+  const CreateProfileModal = () => {
+  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+
   const setProfileModalState = useGroupUIControlStore(
     (state) => state.updateProfileModal
   );
@@ -60,6 +65,7 @@ const CreateProfileModal = () => {
   const _submitRegister = async () => {
     try {
       setIsLoading(true);
+      setIsDisplaying(true);
       let _avatar = "";
       if (avatar) {
         const formData = new FormData();
@@ -100,6 +106,8 @@ const CreateProfileModal = () => {
     } catch (err) {
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false);
+
     }
   };
   const handleSubmit = () => {

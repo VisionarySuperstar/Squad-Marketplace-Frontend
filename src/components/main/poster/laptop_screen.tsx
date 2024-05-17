@@ -1,7 +1,12 @@
 import Logo from "../logo/logo";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import useLoadingControlStore from "@/store/UI_control/loading";
 
 const Laptop = () => {
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
   const router = useRouter();
   return (
     <>
@@ -10,7 +15,8 @@ const Laptop = () => {
           <div
             className="join_btn"
             onClick={() => {
-              router.push("/groups");
+              router.push("/discover");
+              setLoadingState(true);
             }}
           >
             <p className="tracking-[1px] font-bold">Open App</p>

@@ -189,8 +189,8 @@ const NavBar = () => {
       {isShow && (
         <>
           <div
-            className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] ${
-              isBackground ? " bg-white border-b" : "bg-black"
+            className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] transition-all ${
+              isBackground ? " bg-white" : ""
             }`}
           >
             <div className="hidden">
@@ -238,6 +238,7 @@ const NavBar = () => {
                     setCurrent("discover");
                     setIsGroupBtn(false);
                     setLoadingState(true);
+                    router.push("/discover");
                   }}
                 >
                   Discover
