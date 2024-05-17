@@ -102,9 +102,11 @@ const NewGroupModal = () => {
       );
       await tx.wait();
       const numberOfCreators = await contract.numberOfCreators();
+      console.log("numberOfCreators", numberOfCreators) ;
       const _group_Address = await contract.getCreatorGroupAddress(
         Number(numberOfCreators) - 1
       );
+      console.log("_group_Address", _group_Address) ;
 
       let _avatar = "";
       if (avatar) {

@@ -1103,7 +1103,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
           <Split_line />
           {isDirector && (
-            <>
+            <> 
               <div className="flex justify-between text-xl">
                 <div>POST</div>
                 <div className="border-b-2 border-indigo-500">VIEW ALL +</div>

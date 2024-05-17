@@ -130,7 +130,7 @@ const MintModal = ({
       .catch((error) => {
         toast.error(error.message);
       });
-    console.log("url", result?.data);
+    console.log("url", result?.data); 
     return result?.data;
   };
   const handleMint = async () => {
