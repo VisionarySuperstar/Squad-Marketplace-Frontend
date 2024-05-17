@@ -11,6 +11,10 @@ import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/mar
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
+import styled from "styled-components";
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import 'react-photo-view/dist/react-photo-view.css';
+
 
 import useAPI from "@/hooks/useAPI";
 import { INFT, ICOLLECTION } from "@/types";
@@ -262,13 +266,17 @@ const Home = ({ params }: { params: { id: string } }) => {
           {data && (
             <div className="drop-shadow-md lg:me-[40px] sm:me-0">
               <div className="flex justify-center  bg-white">
-                <Image
-                  src={data.avatar}
-                  className="md:h-[70vh] object-fill w-auto h-full"
-                  alt="group_avatar"
-                  width={706}
-                  height={706}
-                />
+                <PhotoProvider bannerVisible={false}>
+                  <PhotoView src={data.avatar}>
+                    <Image
+                      src={data.avatar}
+                      className="md:h-[70vh] object-fill w-auto h-full"
+                      alt="group_avatar"
+                      width={706}
+                      height={706}
+                    />
+                  </PhotoView>
+                </PhotoProvider>
               </div>
               <div>
                 <div className="flex items-center gap-3 p-2">
@@ -299,8 +307,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                   {!Number(data?.auctiontype)
                     ? "English Auction"
                     : Number(data?.auctiontype) === 1
-                    ? "Dutch Auction"
-                    : "Offering"}
+                      ? "Dutch Auction"
+                      : "Offering"}
                 </div>
                 <div className="text-gray-400 mt-3">Initial Price</div>
                 <div className="text-[18px]">{data?.currentprice}</div>
@@ -318,8 +326,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                       {Number(data?.auctiontype) !== 1
                         ? data?.currentprice
                         : data?.status === "sold"
-                        ? data?.currentprice
-                        : currentDutchPrice}
+                          ? data?.currentprice
+                          : currentDutchPrice}
                     </div>
                   </>
                 )}
@@ -382,11 +390,10 @@ const Home = ({ params }: { params: { id: string } }) => {
 
                 {Number(data?.auctiontype) !== 1 && (
                   <div
-                    className={`grid grid-cols-1 gap-1 ${
-                      data?.status === "sold"
-                        ? "sm:grid-cols-1"
-                        : "sm:grid-cols-2"
-                    }`}
+                    className={`grid grid-cols-1 gap-1 ${data?.status === "sold"
+                      ? "sm:grid-cols-1"
+                      : "sm:grid-cols-2"
+                      }`}
                   >
                     {data?.status !== "sold" && (
                       <button
