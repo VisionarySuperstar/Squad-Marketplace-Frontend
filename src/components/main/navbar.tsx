@@ -445,12 +445,13 @@ const NavBar = () => {
               isGroupBtn ? "" : "hidden"
             } z-[1000] fixed right-0 top-[35px]`}
           >
-            <div className="min-w-[150px]">
+            <div className="me-2">
               <button
-                className="border-2 border-black rounded-full px-5 h-[30px]"
+                className="border border-chocolate-main rounded-full px-5 h-[30px] hover:bg-chocolate-main hover:text-white transition-all"
                 onClick={() => setCreateGroupModalState(true)}
               >
-                NEW GROUP
+                <p className="hidden xl:block">NEW GROUP</p>
+                <p className="xl:hidden xs:block">+</p>
               </button>
             </div>
           </div>

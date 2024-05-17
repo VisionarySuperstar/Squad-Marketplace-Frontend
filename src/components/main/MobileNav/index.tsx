@@ -5,11 +5,11 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
-
 import Pill from "./Pill";
 
 const Nav = styled.nav<{ $active: boolean }>`
-  background-color: ${({ $active, theme }) => $active ? theme.colors.chocolateMain : "transparent"};
+  background-color: ${({ $active, theme }) =>
+    $active ? theme.colors.chocolateMain : "transparent"};
   height: ${({ theme }) => theme.sizes.mobileNavbarHeight};
   padding-top: 75px;
   text-align: center;
@@ -28,7 +28,7 @@ const ConnectionIndicator = styled.span`
 `;
 
 const MobileNavPage = styled.div<{ $active: boolean }>`
-  display: ${({ $active }) => $active ? "block" : "none"};
+  display: ${({ $active }) => ($active ? "block" : "none")};
   position: absolute;
   height: ${({ theme }) => `calc(100vh - ${theme.sizes.mobileNavbarHeight})`};
   top: ${({ theme }) => theme.sizes.mobileNavbarHeight};
@@ -41,8 +41,6 @@ const MobileNavPage = styled.div<{ $active: boolean }>`
     margin-bottom: 15px;
   }
 `;
-
-
 type NavbarLinkProps = {
   title: string;
   href: string;
@@ -55,18 +53,22 @@ const MobileNav = () => {
   const handleClick = (index: number) => {
     setActive(true);
     setActiveTab(index);
-  }
+  };
 
   const items = [
     { element: <>SQUAD</>, onClick: () => setActive(true) },
     { element: <>0.026 ETH</> },
     { element: <BellIcon /> },
-    { element: <ConnectionIndicator />, pillProps: { $paddingX: "0.3rem" } }
+    { element: <ConnectionIndicator />, pillProps: { $paddingX: "0.3rem" } },
   ];
 
   const getConnections = (index: number) => {
-    const $connectedLeft = index !== 0 && activeTab !== index && activeTab !== index - 1;
-    const $connectedRight = index !== items.length - 1 && activeTab !== index && activeTab !== index + 1;
+    const $connectedLeft =
+      index !== 0 && activeTab !== index && activeTab !== index - 1;
+    const $connectedRight =
+      index !== items.length - 1 &&
+      activeTab !== index &&
+      activeTab !== index + 1;
     return { $connectedLeft, $connectedRight };
   };
 
@@ -74,26 +76,39 @@ const MobileNav = () => {
     if (e) e.preventDefault();
     setActive(false);
     setActiveTab(-1);
-  }
+  };
 
   const NavbarLink = ({ title, href }: NavbarLinkProps) => {
     return (
-      <li><Link onClick={() => close()} href={href}>{title}</Link></li>)
+      <li>
+        <Link onClick={() => close()} href={href}>
+          {title}
+        </Link>
+      </li>
+    );
   };
-
 
   return (
     <>
       <Nav $active={active}>
-        {items.map((item, index) =>
-          <Pill key={index} $active={active} {...getConnections(index)} {...item.pillProps}
-            onClick={() => handleClick(index)}>{item.element}</Pill>
-        )}
+        {items.map((item, index) => (
+          <Pill
+            key={index}
+            $active={active}
+            {...getConnections(index)}
+            {...item.pillProps}
+            onClick={() => handleClick(index)}
+          >
+            {item.element}
+          </Pill>
+        ))}
       </Nav>
       <MobileNavPage $active={active}>
         <div>
           <div className="text-right">
-            <a href="#" className="text-gray-500 text-sm" onClick={close}>CLOSE</a>
+            <a href="#" className="text-gray-500 text-sm" onClick={close}>
+              CLOSE
+            </a>
           </div>
           <ul>
             <NavbarLink href="/discover" title="Discover" />
@@ -105,7 +120,6 @@ const MobileNav = () => {
             <NavbarLink href="/search" title="Search" />
           </ul>
         </div>
-
       </MobileNavPage>
     </>
   );
