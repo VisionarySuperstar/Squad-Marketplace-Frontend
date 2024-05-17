@@ -25,11 +25,20 @@ const Carousel_Component = ({ hasCaption }: Props) => {
     arrows: false,
   };
 
-  const images = ["image1.png", "image3.png"];
+  const images = [
+    "2.gif",
+    "3.gif",
+    "4.gif",
+    "5.gif",
+    "6.gif",
+    "7.gif",
+    "8.gif",
+    "9.gif",
+  ];
 
   return (
     <div
-      className="w-full bg-black h-screen lg:h-screen inherit-height pt-[80px]"
+      className="w-full bg-black h-screen lg:h-screen inherit-height"
       id="marketplace_carousel"
     >
       <div className="z-[150]">
@@ -37,17 +46,14 @@ const Carousel_Component = ({ hasCaption }: Props) => {
           {images.map((image, index) => {
             return (
               <>
-                <div
-                  key={index}
-                  className="pt-5 px-10 h-full pb-5 drop-shadow-xl"
-                >
+                <div key={index} className="w-full h-full drop-shadow-xl">
                   {hasCaption ? (
                     <ImageWithCaption
-                      src={`/assets/images/slide/${image}`}
+                      src={`/assets/images/slide/marketplace_slide/${image}`}
                       alt="slide"
                       caption="Spotlight:
               Juergen teller for Loewe"
-                      imageStyle="h-[92%] object-cover w-auto mb-5"
+                      imageStyle="h-[92%] object-cover w-full mb-5"
                       captionColor="text-white"
                       captionAlign="text-center"
                       height={800}
@@ -57,8 +63,8 @@ const Carousel_Component = ({ hasCaption }: Props) => {
                       alt="slide"
                       height={1000}
                       width={1000}
-                      src={`/assets/images/slide/${image}`}
-                      className="h-full object-cover w-auto mx-auto"
+                      src={`/assets/images/slide/marketplace_slide/${image}`}
+                      className="h-full object-cover w-full mx-auto"
                     />
                   )}
                 </div>
