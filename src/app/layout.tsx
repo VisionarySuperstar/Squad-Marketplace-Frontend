@@ -37,12 +37,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning={true}>
         <body className={inter.className} suppressHydrationWarning={true}>
           <Provider>
-            <div className="hidden lg:block">
-              <NavBar />
-            </div>
-            <div className="block lg:hidden">
-              <MobileNav />
-            </div>
+            <NavBar />
             <Loading_screen />
             <DisplayingScreen />
             <SocketComponent />

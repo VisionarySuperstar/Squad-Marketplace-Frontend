@@ -57,7 +57,6 @@ export default function Home() {
     // Add event listener for window resize
     window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll);
-
     // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
