@@ -22,6 +22,8 @@ export const USDC_ADDRESS = {
   [NetworkId.SEPOLIA]: "0x1578876aCc56349FC800B1f8efe624c688f5eF4B", //verified
 };
 export const baseURL = "http://37.60.229.95:8080/";
+// export const baseURL = "http://localhost:8080/";
+
 export const webSocketURL = "ws://37.60.229.95:8080/";
 // export const baseURL = "http://localhost:8080/";
 // export const webSocketURL = "ws://localhost:8080/";

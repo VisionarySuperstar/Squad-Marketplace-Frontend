@@ -738,17 +738,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       );
       await tx.wait();
       const result = await api
-        .post("/api/updateGroup", {
-          groupId: params.id,
-          name: myGroupData.name,
-          avatar: myGroupData.avatar,
-          member: JSON.stringify(myGroupData.member),
-          director: myGroupData.director,
-          requiredConfirmNumber: requiredConfirmNumber,
-          description: myGroupData.description,
-          mintnumber: myGroupData.mintnumber,
-          soldnumber: myGroupData.soldnumber,
-          earning: myGroupData.earning,
+        .post("/api/updateGroupConfirmNumber", {
+          id:myGroupData.id,
+          confirmNumber: Number(requiredConfirmNumber).toString()
         })
         .catch((error) => {
           toast.error(error.message);
