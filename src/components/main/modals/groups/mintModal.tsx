@@ -18,6 +18,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import NftCard from "../../cards/nftCard";
 
 interface MintModalInterface {
   groupId: number;
@@ -174,6 +175,23 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
+
+    const _metadata = await uploadToIPFS(
+      new File([
+        JSON.stringify({
+          assetType: "image",
+          image: _avatar,
+        })
+      ], "metadata.json"),  
+      ({ loaded, total }: { loaded: number; total: number }) => {
+        setPercent(Math.floor((loaded * 100) / total));
+        console.log(percent);
+      }
+    ).catch((err) => {
+      console.log(err);
+      throw "Project Data upload failed to IPFS. Please retry.";
+    });
+    console.log("@logoURI: ", _avatar);
     setStepper(2);
     try {
       if (!contract) throw "no contract";
@@ -182,7 +200,7 @@ const MintModal = ({
       //setIsLoading(true);
       if (selected === allCollection.length) {
         const tx = await contract.mintNew(
-          _avatar,
+          _metadata,
           newCollectionName,
           newCollectionSymbol,
           newCollectionDescription

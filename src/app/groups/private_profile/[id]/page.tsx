@@ -35,7 +35,7 @@ import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
 
-const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
+const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/gif"];
 
 const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -192,14 +192,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getNFTData();
   }, []);
 
+
   const getOffer_nfts = async () => {
-    const _nfts = listedNfts.filter((item: INFT) =>
-      offerTransactions
-        .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
-        .includes(item.id)
-    );
+
+
     // console.log({ _nfts });
-    setOfferNfts(_nfts);
+    const nfts: any[] = offerTransactions.map((_offer: IOFFER_TRANSACTION) => listedNfts.find((item: INFT) => item.id === _offer.nftid))
+    setOfferNfts(nfts as INFT[]);
   };
 
   useEffect(() => {
@@ -278,8 +277,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         setPreview(_file);
         setUploadedContent([...uploadedContent, _file]);
       };
-    } catch (err) {
-      toast.error("An error occurred. please try again");
+    } catch (err:any) {
+      toast.error(err.message);
       setPreview("");
     }
   };
@@ -1015,7 +1014,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       {item.confirm_member.filter(
                         (_item: any) => _item.id === user?.id
                       ).length === 0 &&
-                        item.confirm_member.length !==
+                        item.confirm_member.length <
                           Number(myGroupData?.requiredconfirmnumber) && (
                           <button
                             className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
@@ -1038,7 +1037,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                             )}
                           </button>
                         )}
-                      {item.confirm_member.length ===
+                      {item.confirm_member.length >=
                         Number(myGroupData?.requiredconfirmnumber) && (
                         <button
                           className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
@@ -1379,7 +1378,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           {item.confirm_member.filter(
                             (_item: any) => _item.id === user?.id
                           ).length === 0 &&
-                            item.confirm_member.length !==
+                            item.confirm_member.length <=
                               Number(myGroupData?.requiredconfirmnumber) && (
                               <button
                                 className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
@@ -1404,7 +1403,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                                 )}
                               </button>
                             )}
-                          {item.confirm_member.length ===
+                          {item.confirm_member.length >=
                             Number(myGroupData?.requiredconfirmnumber) && (
                             <button
                               className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"

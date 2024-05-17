@@ -434,7 +434,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div
             className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
             style={{
-              gridTemplateColumns: `repeat(${Math.floor(
+              gridTemplateColumns: `repeat(${Math.floor( 
                 (100 - scale) / 10 + 1
               )}, 1fr)`,
             }}
