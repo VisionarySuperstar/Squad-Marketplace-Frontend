@@ -19,6 +19,7 @@ import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT, IPOST_NEWS, IRequest } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
+import NftCard from "@/components/main/cards/nftCard";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -181,7 +182,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 xs:flex sm:justify-center xs:justify-center h-[30px] ">
               {!isAvailableRequest && (
                 <button
-                  className="border bg-[#322A44] p-1 text-white rounded-full pl-6 pr-6 text-lg"
+                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main transition-all"
                   onClick={() => requestJoinHandle()}
                 >
                   REQUEST TO JOIN
@@ -246,31 +247,14 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                 className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                 onClick={() => router.push(`/details/public/${item.id}`)}
               >
-                <div className="absolute aspect-square top-0 content-card-menu opacity-0 transition-all rounded-lg text-white bg-chocolate-main/80 w-full">
-                  <div>
-                    <div className="absolute left-4 top-4">
-                      {item.collectionname} {item.collectionid}
-                    </div>
-                    <div className="absolute left-4 bottom-4">
-                      {item.currentprice} USDC
-                    </div>
-                    <div className="absolute right-4 bottom-4 flex items-center gap-1 sm:gap-2 xs:hidden">
-                      <EyeIcon props="white" />
-                      200
-                      <HeartIcon props="white" />
-                      20
-                    </div>
-                  </div>
-                </div>
-                <Image
-                  src={item.avatar}
-                  className="w-full h-full aspect-square object-cover rounded-lg"
-                  alt="market_nft"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
+                <NftCard
+                  avatar={item.avatar}
+                  collectionName={item.collectionname}
+                  collectionId={Number(item.collectionid)}
+                  seen={200}
+                  favorite={20}
+                  price={Number(item.currentprice)}
                 />
-                <div className="mt-3"></div>
               </div>
             ))}
           </div>

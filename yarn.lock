@@ -10153,6 +10153,11 @@ react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0":
     ws "^6.2.2"
     yargs "^17.6.2"
 
+react-photo-view@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.npmjs.org/react-photo-view/-/react-photo-view-1.2.4.tgz"
+  integrity sha512-8G7yb0YgQuVgEMT3DopiROZyY8cgCDpba+G5MoxDkHNFOyqtw3r5T5tazYeifybPrvHWuKXj/bnAlBtQcpxyzQ==
+
 react-player@^2.16.0:
   version "2.16.0"
   resolved "https://registry.npmjs.org/react-player/-/react-player-2.16.0.tgz"

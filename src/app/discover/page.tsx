@@ -42,13 +42,19 @@ export default function Home() {
     };
     const handleScroll = () => {
       const carouselElement = document.getElementById("marketplace_carousel");
+      const imageHero = document.getElementById("imagehero");
       let carouselHeight = 0;
+      let imageHeroHeight = 0;
       if (carouselElement) {
         carouselHeight = carouselElement.clientHeight;
-        console.log(carouselElement.clientHeight);
       }
+      if (imageHero) {
+        imageHeroHeight = imageHero.clientHeight;
+      }
+      let limitHeight = 0;
+      limitHeight = Math.max(carouselHeight, imageHeroHeight);
+      console.log("Limit Height:", limitHeight);
       const currentScrollPosition = window.scrollY;
-      console.log("scroll_position", currentScrollPosition);
       if (currentScrollPosition >= carouselHeight) {
         updateNavbarBackground(true);
       } else {
@@ -64,6 +70,7 @@ export default function Home() {
     // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.addEventListener("scroll", handleScroll);
     };
   }, [updateNavbarBackground]);
 
@@ -72,24 +79,72 @@ export default function Home() {
   }, [screenWidth]);
 
   const topNfts: IImageWithCaption[] = [
-    { src: "/assets/images/slide/image1.png", caption: "Image 1", alt: "image 1" },
-    { src: "/assets/images/slide/image6.png", caption: "Image 2", alt: "image 2" },
-    { src: "/assets/images/slide/image5.png", caption: "Image 3", alt: "image 3" },
+    {
+      src: "/assets/images/slide/image1.png",
+      caption: "Image 1",
+      alt: "image 1",
+    },
+    {
+      src: "/assets/images/slide/image6.png",
+      caption: "Image 2",
+      alt: "image 2",
+    },
+    {
+      src: "/assets/images/slide/image5.png",
+      caption: "Image 3",
+      alt: "image 3",
+    },
   ];
 
   const topGroups: IImageWithCaption[] = [
-    { src: "/assets/images/slide/image2.png", caption: "Image 1", alt: "image 1" },
-    { src: "/assets/images/slide/image4.png", caption: "Image 2", alt: "image 2" },
-    { src: "/assets/images/slide/image3.png", caption: "Image 3", alt: "image 3" },
+    {
+      src: "/assets/images/slide/image2.png",
+      caption: "Image 1",
+      alt: "image 1",
+    },
+    {
+      src: "/assets/images/slide/image4.png",
+      caption: "Image 2",
+      alt: "image 2",
+    },
+    {
+      src: "/assets/images/slide/image3.png",
+      caption: "Image 3",
+      alt: "image 3",
+    },
   ];
 
   const newlyMinted: IImageWithCaption[] = [
-    { src: "/assets/images/slide/image6.png", caption: "Image 1", alt: "image 1" },
-    { src: "/assets/images/slide/image5.png", caption: "Image 2", alt: "image 2" },
-    { src: "/assets/images/slide/image1.png", caption: "Image 3", alt: "image 3" },
-    { src: "/assets/images/slide/image2.png", caption: "Image 4", alt: "image 4" },
-    { src: "/assets/images/slide/image3.png", caption: "Image 5", alt: "image 5" },
-    { src: "/assets/images/slide/image4.png", caption: "Image 6", alt: "image 6" },
+    {
+      src: "/assets/images/slide/image6.png",
+      caption: "Image 1",
+      alt: "image 1",
+    },
+    {
+      src: "/assets/images/slide/image5.png",
+      caption: "Image 2",
+      alt: "image 2",
+    },
+    {
+      src: "/assets/images/slide/image1.png",
+      caption: "Image 3",
+      alt: "image 3",
+    },
+    {
+      src: "/assets/images/slide/image2.png",
+      caption: "Image 4",
+      alt: "image 4",
+    },
+    {
+      src: "/assets/images/slide/image3.png",
+      caption: "Image 5",
+      alt: "image 5",
+    },
+    {
+      src: "/assets/images/slide/image4.png",
+      caption: "Image 6",
+      alt: "image 6",
+    },
   ];
 
   const router = useRouter();
@@ -101,8 +156,10 @@ export default function Home() {
       <div className="block lg:hidden carousel">
         <Carousel_Component hasCaption={true} />
       </div>
-      <div className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}>
+      <div
+        className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"
+        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
+      >
         <div className="page_container_p40 mt-5 min-h-[920px]">
           <Section
             title="TOP NFTS"
@@ -114,17 +171,24 @@ export default function Home() {
             title="TOP GROUPS"
             viewAllUrl="#"
             itemsPerRow={3}
-            images={topGroups} />
+            images={topGroups}
+          />
           <Section
             title="NEWLY MINTED"
             viewAllUrl="#"
             itemsPerRow={4}
-            images={newlyMinted} />
+            images={newlyMinted}
+          />
         </div>
         <div className="text-center">
-          <Link href="/marketplace" className="inline-block px-6 py-3 text-white bg-chocolate-main rounded-3xl hover:opacity-60">GO TO MARKETPLACE</Link>
+          <Link
+            href="/marketplace"
+            className="inline-block px-6 py-3 text-white bg-chocolate-main rounded-3xl hover:opacity-60"
+          >
+            GO TO MARKETPLACE
+          </Link>
         </div>
-      </div >
+      </div>
     </>
   );
 }
