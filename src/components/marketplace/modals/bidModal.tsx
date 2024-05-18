@@ -116,6 +116,7 @@ const BidGroupModal = ({
             currentBidder: user.name,
             reducingRate: nftData.reducingrate ? nftData.reducingrate : 0,
             listedNumber: nftData.listednumber,
+            marketplaceNumber: nftData.marketplacenumber
           })
           .catch((error) => {
             toast.error(error.message);
