@@ -20,6 +20,8 @@ import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import NftCard from "../../cards/nftCard";
 
+
+
 interface MintModalInterface {
   groupId: number;
   groupAddress: string;
@@ -175,7 +177,8 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-
+    setStepper(2) ;
+    setPercent(0) ;
     const _metadata = await uploadToIPFS(
       new File([
         JSON.stringify({
@@ -192,7 +195,7 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-    setStepper(2);
+    setStepper(3);
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
@@ -290,6 +293,7 @@ const MintModal = ({
   };
   return (
     <>
+    
       <div className="z-100 font-Maxeville text-chocolate-main">
         <div
           className=" bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
@@ -551,6 +555,7 @@ const MintModal = ({
                     "MINT"
                   )}
                 </button>
+
               </div>
             </div>
           )}
