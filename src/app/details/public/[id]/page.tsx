@@ -28,7 +28,16 @@ import useDisplayingControlStore from "@/store/UI_control/displaying";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
+<<<<<<<<< Temporary merge branch 1
+import Content_ABI from "@/constants/content_nft.json" ;
+type transferHistoryType={
+  from: string;
+  to: string;
+  timestamp: BigInt;
+}
+=========
 import useLoadingControlStore from "@/store/UI_control/loading";
+>>>>>>>>> Temporary merge branch 2
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -564,11 +573,6 @@ const Home = ({ params }: { params: { id: string } }) => {
         <div className="page_container_p40 mt-5">
           <div
             className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
-            style={{
-              gridTemplateColumns: `repeat(${Math.floor(
-                (100 - scale) / 10 + 1
-              )}, 1fr)`,
-            }}
           >
             {selectedNFTS?.map((item, index) => (
               <div
