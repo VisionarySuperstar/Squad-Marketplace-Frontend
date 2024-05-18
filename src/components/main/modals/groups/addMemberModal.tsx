@@ -54,7 +54,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
         }}
       ></div>
       <div className="font-Maxeville">
-        <div className="joinModal !w-[500px] drop-shadow-xl mt-5 z-[1500] border">
+        <div className="generalModal !w-[500px] drop-shadow-xl mt-5 z-[1500] border">
           <div
             className="closeBtn"
             onClick={() => {

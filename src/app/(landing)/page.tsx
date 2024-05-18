@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Footer from "@/components/main/footer/footer";
-import JoinModal from "@/components/main/modals/landing/joinModal";
+import JoinModal from "@/components/main/modals/landing/generalModal";
 import Mobile from "@/components/main/poster/mobile_screen";
 import Welcome from "@/components/main/modals/landing/welcome";
 import useLoadingControlStore from "@/store/UI_control/loading";

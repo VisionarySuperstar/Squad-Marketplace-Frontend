@@ -11,10 +11,8 @@ import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/mar
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
-import styled from "styled-components";
-import { PhotoProvider, PhotoView } from 'react-photo-view';
-import 'react-photo-view/dist/react-photo-view.css';
-
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 import useAPI from "@/hooks/useAPI";
 import { INFT, ICOLLECTION } from "@/types";
@@ -47,6 +45,9 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
   );
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
   const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
   const withdrawModalState = useMarketplaceUIControlStore(
     (state) => state.withdrawModal
@@ -75,7 +76,6 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(
     undefined
   );
-  const [scale, setScale] = React.useState<number>(60);
   const router = useRouter();
   const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>([]) ;
   const [ownedName, setOwnedName] = useState<string[]>([]);
@@ -108,6 +108,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getData();
+    setLoadingState(false);
   }, []);
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -136,7 +137,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       return ;
     }
     const nftInContract = await contract.listedNFTs(
-      BigInt(data?.marketplacenumber)
+      BigInt(data?.marketplacenumber || 0)
     );
     const startTime = Number(String(nftInContract.startTime));
     console.log("startTime", startTime);
@@ -292,7 +293,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         .post("/api/updateNft", {
           id: data.id,
           owner: user.name,
-          status: "sold",
+          status: "sold",             
           auctionType: data.auctiontype,
           initialPrice: data.initialprice,
           salePeriod: data.saleperiod,
@@ -359,13 +360,13 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="drop-shadow-md lg:me-[40px] sm:me-0">
-              <div className="flex justify-center  bg-white">
+            <div className="lg:me-[40px] sm:me-0">
+              <div className="flex justify-center">
                 <PhotoProvider bannerVisible={false}>
                   <PhotoView src={data.avatar}>
                     <Image
                       src={data.avatar}
-                      className="md:h-[70vh] object-fill w-auto h-full"
+                      className="md:h-[70vh] object-cover w-auto h-full"
                       alt="group_avatar"
                       width={706}
                       height={706}
@@ -373,6 +374,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   </PhotoView>
                 </PhotoProvider>
               </div>
+              <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
                   <EyeIcon props="#322A44" />
@@ -402,8 +404,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                   {!Number(data?.auctiontype)
                     ? "English Auction"
                     : Number(data?.auctiontype) === 1
-                      ? "Dutch Auction"
-                      : "Offering"}
+                    ? "Dutch Auction"
+                    : "Offering"}
                 </div>
                 <div className="text-gray-400 mt-3">Initial Price</div>
                 <div className="text-[18px]">{data?.currentprice}</div>
@@ -421,8 +423,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                       {Number(data?.auctiontype) !== 1
                         ? data?.currentprice
                         : data?.status === "sold"
-                          ? data?.currentprice
-                          : currentDutchPrice}
+                        ? data?.currentprice
+                        : currentDutchPrice}
                     </div>
                   </>
                 )}
@@ -489,10 +491,11 @@ const Home = ({ params }: { params: { id: string } }) => {
 
                 {Number(data?.auctiontype) !== 1 && (
                   <div
-                    className={`grid grid-cols-1 gap-1 ${data?.status === "sold"
-                      ? "sm:grid-cols-1"
-                      : "sm:grid-cols-2"
-                      }`}
+                    className={`grid grid-cols-1 gap-1 ${
+                      data?.status === "sold"
+                        ? "sm:grid-cols-1"
+                        : "sm:grid-cols-2"
+                    }`}
                   >
                     {data?.status !== "sold" && (
                       <button

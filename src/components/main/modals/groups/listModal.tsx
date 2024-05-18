@@ -16,7 +16,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 
-
 type auctionQueryType = {
   initialPrice: string;
   reducingRate: string;
@@ -29,7 +28,9 @@ interface ListModalInterface {
   groupAddress: string;
 }
 const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
 
   const setListModalState = useGroupUIControlStore(
     (state) => state.updateListModal
@@ -73,28 +74,33 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
     console.log("step: ", step);
     if (step === 0) {
       if (!auctionQuery.initialPrice) {
-        toast.error("Initial Price Required!") ;
+        toast.error("Initial Price Required!");
         return;
       }
-      if (
-        auctionType !== 2
-      ) {
-        if(!auctionQuery.salePeriod_day){
+      if (auctionType !== 2) {
+        if (!auctionQuery.salePeriod_day) {
           toast.error("Type valid days!");
-          return ;
+          return;
         }
-        if(!auctionQuery.salePeriod_hour || Number(auctionQuery.salePeriod_hour) < 0 || Number(auctionQuery.salePeriod_hour) > 23)
-        {
-          toast.error("Type valid hours") ;
-          return ;
+        if (
+          !auctionQuery.salePeriod_hour ||
+          Number(auctionQuery.salePeriod_hour) < 0 ||
+          Number(auctionQuery.salePeriod_hour) > 23
+        ) {
+          toast.error("Type valid hours");
+          return;
         }
-        if(!auctionQuery.salePeriod_minute || Number(auctionQuery.salePeriod_minute) < 0 || Number(auctionQuery.salePeriod_minute) > 59){
-          toast.error("Type valid minutes") ;
-          return ;
+        if (
+          !auctionQuery.salePeriod_minute ||
+          Number(auctionQuery.salePeriod_minute) < 0 ||
+          Number(auctionQuery.salePeriod_minute) > 59
+        ) {
+          toast.error("Type valid minutes");
+          return;
         }
       }
       if (auctionType === 1 && !auctionQuery.reducingRate) {
-        toast.error("Reducing rate required!") ;
+        toast.error("Reducing rate required!");
         return;
       }
       setStep(1);
@@ -147,9 +153,11 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
           await tx.wait();
           listed_number = await _market_contract.getOfferingSaleAuctionNumber();
         }
-        const marketplace_number = await _market_contract.getListedNumber() ;
-        const _marketplace_number = Number(Number(marketplace_number) - 1).toString();
-        console.log("_marketplace_number", _marketplace_number) ;
+        const marketplace_number = await _market_contract.getListedNumber();
+        const _marketplace_number = Number(
+          Number(marketplace_number) - 1
+        ).toString();
+        console.log("_marketplace_number", _marketplace_number);
 
         console.log("listed_number", listed_number);
         const listNumber = Number(Number(listed_number) - 1).toString();
@@ -168,7 +176,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
               ? auctionQuery.reducingRate
               : 0,
             listedNumber: listNumber,
-            marketplaceNumber:_marketplace_number
+            marketplaceNumber: _marketplace_number,
           })
           .catch((error) => {
             toast.error(error.message);
@@ -191,12 +199,12 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
     <>
       <div className="font-Maxeville">
         <div
-          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setListModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] drop-shadow-lg">
+        <div className="generalModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

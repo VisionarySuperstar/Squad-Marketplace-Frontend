@@ -158,7 +158,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         >
           <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row  md:justify-between w-full">
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
-              <div className="mt-5 min-h-[452px]">
+              <div className="mt-5">
                 {myGroupData && (
                   <Image
                     src={myGroupData?.avatar}
