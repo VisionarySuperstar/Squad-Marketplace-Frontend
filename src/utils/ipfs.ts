@@ -3,7 +3,7 @@ import axios from 'axios';
 export const uploadToIPFS = (data: File, progress: any) => new Promise(async (resolve, reject) => {
     const formData = new FormData();
     formData.append('file', data)
-    formData.append('pinataMetadata', JSON.stringify({ name: 'vulcan.launchpad' }));
+    formData.append('pinataMetadata', JSON.stringify({ name: 'SQD' }));
     formData.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
 
     const res = await axios
