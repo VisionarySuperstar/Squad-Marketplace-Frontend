@@ -28,6 +28,7 @@ import useDisplayingControlStore from "@/store/UI_control/displaying";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
+import useLoadingControlStore from "@/store/UI_control/loading";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -54,7 +55,9 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
     undefined
   );
-  const [contentContract, setContentContract] = useState<Contract | undefined>(undefined);
+  const [contentContract, setContentContract] = useState<Contract | undefined>(
+    undefined
+  );
   const [data, setData] = useState<INFT | undefined>(undefined);
   const [groupName, setGroupName] = useState<string>("");
   const api = useAPI();
@@ -63,15 +66,17 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
-  const [collectionData, setCollectionData] = useState<
-    ICOLLECTION | undefined
-  >(undefined);
+  const [collectionData, setCollectionData] = useState<ICOLLECTION | undefined>(
+    undefined
+  );
   const [allNftData, setAllNftData] = useState<INFT[] | undefined>(undefined);
   const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(
     undefined
   );
   const router = useRouter();
-  const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>([]) ;
+  const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
+    []
+  );
   const [ownedName, setOwnedName] = useState<string[]>([]);
 
   const getData = async () => {
@@ -127,8 +132,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (!data) return;
     if (Number(data.auctiontype) === 2) return;
     if (data.status === "sold") {
-
-      return ;
+      return;
     }
     const nftInContract = await contract.listedNFTs(
       BigInt(data?.marketplacenumber || 0)
@@ -150,13 +154,9 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (!address || !chainId || !signer || !data) {
       return;
     }
-    const _contract = new Contract(
-      data.collectionaddress,
-      Content_ABI,
-      signer
-    );
-    setContentContract(_contract) ;
-  }, [address, chainId, signer, data])
+    const _contract = new Contract(data.collectionaddress, Content_ABI, signer);
+    setContentContract(_contract);
+  }, [address, chainId, signer, data]);
   const getHistory = async () => {
     if (!contentContract) return;
     const transaction_history: transferHistoryType[] =
@@ -174,31 +174,33 @@ const Home = ({ params }: { params: { id: string } }) => {
       )
     );
   };
-  function shortenAddress(address:string) {
+  function shortenAddress(address: string) {
     // Check if the address is valid
     const regex = /^0x[a-fA-F0-9]{40}$/;
     if (!regex.test(address)) {
-        return 'Invalid Ethereum address';
+      return "Invalid Ethereum address";
     }
 
     // Truncate the address after 6 characters
     return `${address.substring(0, 6)}...${address.substring(38)}`;
-}
-  const getUserName = async (address:string, key:number) => {
-    console.log("key", key) ;
-    if(!key){
-      const result = await api.post("/api/getGroupAddress", {id:address}) ;
-      console.log("here name is ", result.data.name)
-      if(result.data.name) return result.data.name ;
+  }
+  const getUserName = async (address: string, key: number) => {
+    console.log("key", key);
+    if (!key) {
+      const result = await api.post("/api/getGroupAddress", { id: address });
+      console.log("here name is ", result.data.name);
+      if (result.data.name) return result.data.name;
     }
 
-      const result = await api.post("/auth/user/getUserByAddress", {id:address}) ;
-      if(result.data.name) return result.data.name ;
-      else return shortenAddress(address) ;
-  }
+    const result = await api.post("/auth/user/getUserByAddress", {
+      id: address,
+    });
+    if (result.data.name) return result.data.name;
+    else return shortenAddress(address);
+  };
   useEffect(() => {
-    getHistory() ;
-  },[contentContract])
+    getHistory();
+  }, [contentContract]);
 
   const getDutchAuctionPrice = async () => {
     if (
@@ -287,7 +289,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         .post("/api/updateNft", {
           id: data.id,
           owner: user.name,
-          status: "sold",             
+          status: "sold",
           auctionType: data.auctiontype,
           initialPrice: data.initialprice,
           salePeriod: data.saleperiod,
@@ -321,7 +323,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     });
     const _collectionData: ICOLLECTION = result.data;
     console.log("_collectionData", _collectionData);
-    setCollectionData(_collectionData) ;
+    setCollectionData(_collectionData);
     const nfts_in_collection = _collectionData.nft;
     console.log("allNftData", allNftData);
     let _allNftData = allNftData.filter((_nft: INFT) =>
@@ -422,10 +424,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                     </div>
                   </>
                 )}
-                {
-                  data?.status === "sold" &&
+                {data?.status === "sold" && (
                   <div className="text-gray-400 mt-3">Already Finished</div>
-                }
+                )}
                 {Number(data?.auctiontype) !== 2 && data?.status !== "sold" && (
                   <>
                     {remainTime === 0 ? (
@@ -514,26 +515,44 @@ const Home = ({ params }: { params: { id: string } }) => {
               {/* <div>DESCRIPTION</div> */}
               <div className="">
                 <Collapse title="Description">
-                  {
-                    transferHistory && transferHistory.length && 
-                    <p className="text-gray-400">Minted by <span className="text-xl text-chocolate-main">{groupName + " "}</span>
-                     {formatDateWithTimeZone(Number(transferHistory[0].timestamp), "America/New_York")}
+                  {transferHistory && transferHistory.length && (
+                    <p className="text-gray-400">
+                      Minted by{" "}
+                      <span className="text-xl text-chocolate-main">
+                        {groupName + " "}
+                      </span>
+                      {formatDateWithTimeZone(
+                        Number(transferHistory[0].timestamp),
+                        "America/New_York"
+                      )}
                     </p>
-                  }
-                  <br>
-                  </br>
+                  )}
+                  <br></br>
                   <p className="text-gray-400">
                     {collectionData && collectionData.description}
                   </p>
                 </Collapse>
                 <Collapse title="History">
-                  {
-                    transferHistory.length && transferHistory.map((item:transferHistoryType, key:number) =>
-                      <p key={key} className="text-gray-400">
-                         {!key?"Creator":key===transferHistory.length-1?"Owner":"Owned"} <span className="text-xl text-chocolate-main">{ownedName[key]}</span>  { "\t" + formatDateWithTimeZone(Number(item.timestamp), "America/New_York")} 
-                      </p>
-                    )
-                  }
+                  {transferHistory.length &&
+                    transferHistory.map(
+                      (item: transferHistoryType, key: number) => (
+                        <p key={key} className="text-gray-400">
+                          {!key
+                            ? "Creator"
+                            : key === transferHistory.length - 1
+                            ? "Owner"
+                            : "Owned"}{" "}
+                          <span className="text-xl text-chocolate-main">
+                            {ownedName[key]}
+                          </span>{" "}
+                          {"\t" +
+                            formatDateWithTimeZone(
+                              Number(item.timestamp),
+                              "America/New_York"
+                            )}
+                        </p>
+                      )
+                    )}
                 </Collapse>
               </div>
             </div>

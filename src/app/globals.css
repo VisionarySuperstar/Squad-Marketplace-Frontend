@@ -43,7 +43,9 @@ body {
 .Logo {
   position: absolute;
   top: calc(var(--perX) * 132);
-  mix-blend-mode: difference;
+}
+
+.loadingbar {
 }
 
 .LaptopLogo {
