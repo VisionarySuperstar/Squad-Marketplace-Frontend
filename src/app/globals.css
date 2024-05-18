@@ -339,14 +339,14 @@ body {
   margin-top: calc(var(--perX) * -80);
 }
 
-.joinModal {
+.generalModal {
   position: fixed;
   width: max(565px, calc(var(--perX) * 565));
   background-color: white;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 30px;
+  border-radius: 15px;
   animation: pulse 0.3s;
 }
 
@@ -426,8 +426,12 @@ body {
   right: calc(var(--perX) * 40);
 }
 
+.height-handler {
+  max-height: 500px;
+}
+
 @media (max-height: 600px) {
-  .joinModal {
+  .generalModal {
     width: max(565px, calc(var(--perX) * 565));
     background-color: white;
     z-index: 1000;
@@ -436,22 +440,24 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: opacity 0.3s;
     height: 100vh;
-    overflow-y: scroll;
+  }
+  .height-handler {
+    max-height: 80vh;
   }
 }
 
 @media (max-width: 600px) {
-  .joinModal {
+  .height-handler {
+    max-height: 100%;
+  }
+  .generalModal {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: white;
     top: 50%;
     left: 50%;
-    z-index: 1000;
     transform: translate(-50%, -50%);
     border-radius: 0px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   .join_form {

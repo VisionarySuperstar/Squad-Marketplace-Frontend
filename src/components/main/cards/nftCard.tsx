@@ -55,7 +55,7 @@ const NftCard: React.FC<CardProps> = ({
             alt={"nft"}
             width={300}
             height={300}
-            className=" object-fill w-auto h-full"
+            className="object-cover w-auto h-full"
             onLoad={() => setImageLoaded(true)}
           />
         </div>

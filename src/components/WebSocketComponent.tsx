@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useUserStore from "@/store/user_infor/userinfor";
 import useWebSocketStore from "@/store/webSocketStore";
 import useAuth from "@/hooks/useAuth";
@@ -20,22 +20,20 @@ const SocketComponent = () => {
     originalSocket?.close();
     console.log("original connection closed");
   };
-  const handleNotify = () => {
-    <NotificationComponent
-      title="Hello"
-      body="This is a system notification!"
-    />;
-  };
+  const [isConnected, setConnected] = useState<string>("disconnected");
+  const [connectCount, setCount] = useState<number>(0);
   const updateNewMessageStore = useNotificationUIControlStore(
     (state) => state.updateNewMessage
   );
 
   const create_new_connection = () => {
     close_original_connection();
+    setCount((prevCount) => prevCount + 1);
     const _socket = new WebSocket(`${webSocketURL}`);
 
     _socket.onopen = () => {
       _socket.send(JSON.stringify({ type: "userId", userId: userid }));
+      setConnected("connected");
       console.log("connected");
     };
 
@@ -44,13 +42,10 @@ const SocketComponent = () => {
       const messageData = JSON.parse(message.data);
 
       if (Notification.permission === "granted") {
-        new Notification(
-          "New message from " + messageData.name,
-          {
-            body: messageData.message,
-            icon: messageData.avatar,
-          }
-        );
+        new Notification("New message from " + messageData.name, {
+          body: messageData.message,
+          icon: messageData.avatar,
+        });
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
@@ -95,6 +90,10 @@ const SocketComponent = () => {
 
     _socket.onclose = () => {
       console.log("disconnected");
+      setConnected("disconnected");
+      setTimeout(() => {
+        create_new_connection();
+      }, 3000);
     };
 
     setSocket(_socket);
@@ -106,7 +105,11 @@ const SocketComponent = () => {
 
   return (
     <>
-      <div className="hidden"></div>
+      <div className="fixed w-full h-[2px] top-[10px] left-[10px] z-[10000] bg-transparent">
+        WebSocket:{isConnected}
+        <br />
+        ConnectCount:{connectCount}
+      </div>
     </>
   );
 };

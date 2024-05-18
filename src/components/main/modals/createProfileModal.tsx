@@ -20,10 +20,11 @@ import { isAuthenticatedAtom, userAtom } from "@/store/user";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 
-
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
-  const CreateProfileModal = () => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+const CreateProfileModal = () => {
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
 
   const setProfileModalState = useGroupUIControlStore(
     (state) => state.updateProfileModal
@@ -107,7 +108,6 @@ const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
     } finally {
       setIsLoading(false);
       setIsDisplaying(false);
-
     }
   };
   const handleSubmit = () => {
@@ -148,7 +148,7 @@ const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
             setProfileModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] drop-shadow-lg">
+        <div className="generalModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

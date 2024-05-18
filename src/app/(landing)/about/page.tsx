@@ -8,13 +8,13 @@ import Welcome from "@/components/main/modals/landing/welcome";
 import useUIControlStore from "@/store/UI_control/landingpage";
 
 const About = () => {
-  const joinModalState = useUIControlStore((state) => state.joinModal);
+  const generalModalState = useUIControlStore((state) => state.generalModal);
   const welcomeModalState = useUIControlStore((state) => state.welcomeModal);
   const setJoinModalState = useUIControlStore((state) => state.updateJoinModal);
   const router = useRouter();
   return (
     <>
-      {joinModalState && <JoinModal />}
+      {generalModalState && <JoinModal />}
       {welcomeModalState && <Welcome />}
       <div className="head_bar">
         <div
