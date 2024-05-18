@@ -18,6 +18,9 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import NftCard from "../../cards/nftCard";
+
+
 
 interface MintModalInterface {
   groupId: number;
@@ -132,7 +135,7 @@ const MintModal = ({
       .catch((error) => {
         toast.error(error.message);
       });
-    console.log("url", result?.data);
+    console.log("url", result?.data); 
     return result?.data;
   };
   const handleMint = async () => {
@@ -176,7 +179,25 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-    setStepper(2);
+    setStepper(2) ;
+    setPercent(0) ;
+    const _metadata = await uploadToIPFS(
+      new File([
+        JSON.stringify({
+          assetType: "image",
+          image: _avatar,
+        })
+      ], "metadata.json"),  
+      ({ loaded, total }: { loaded: number; total: number }) => {
+        setPercent(Math.floor((loaded * 100) / total));
+        console.log(percent);
+      }
+    ).catch((err) => {
+      console.log(err);
+      throw "Project Data upload failed to IPFS. Please retry.";
+    });
+    console.log("@logoURI: ", _avatar);
+    setStepper(3);
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
@@ -184,7 +205,7 @@ const MintModal = ({
       //setIsLoading(true);
       if (selected === allCollection.length) {
         const tx = await contract.mintNew(
-          _avatar,
+          _metadata,
           newCollectionName,
           newCollectionSymbol,
           newCollectionDescription
@@ -273,6 +294,7 @@ const MintModal = ({
   };
   return (
     <>
+    
       <div className="z-100 font-Maxeville text-chocolate-main">
         <div
           className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
@@ -536,6 +558,7 @@ const MintModal = ({
                     "MINT"
                   )}
                 </button>
+
               </div>
             </div>
           )}
