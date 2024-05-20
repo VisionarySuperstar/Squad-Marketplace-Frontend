@@ -15,7 +15,7 @@ export const Marketplace_ADDRESSES = {
   [NetworkId.SEPOLIA]: "0x10934Cb0c106F4164B0E84663E91ABB2fA0BEf3A", //verified
 };
 export const Factory_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0x56d0a6607ABAbAE8904F6a9AFC21Fecb5cFd2611", //verified
+  [NetworkId.SEPOLIA]: "0x3Df40ecb1bdfd5ffd87D1E1C838bF9C1B3361f89", //verified
 };
 
 export const USDC_ADDRESS = {

@@ -65,6 +65,12 @@
         "internalType": "string",
         "name": "description",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newDeployedAddress",
+        "type": "address"
       }
     ],
     "name": "GroupCreated",
