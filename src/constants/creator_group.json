@@ -702,7 +702,7 @@
         "type": "uint256"
       }
     ],
-    "name": "excuteBurnTransaction",
+    "name": "executeBurnTransaction",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -715,7 +715,7 @@
         "type": "uint256"
       }
     ],
-    "name": "excuteDirectorSettingTransaction",
+    "name": "executeDirectorSettingTransaction",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -728,7 +728,7 @@
         "type": "uint256"
       }
     ],
-    "name": "excuteOfferingSaleTransaction",
+    "name": "executeOfferingSaleTransaction",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1148,25 +1148,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "memberFromNFTId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -1523,30 +1504,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "transactionsConfirmState",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",
