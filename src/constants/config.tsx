@@ -12,19 +12,19 @@ export const supportedChainIds = [
 ];
 
 export const Marketplace_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0x0d7b06E60B1082DA1d4cB546D190CB75763727A5", //verified
+  [NetworkId.SEPOLIA]: "0x6a0754B18030E052C1D67577AcF21a1070173F3F", //verified
 };
 export const Factory_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0xe441A3c77D82a41997B37e3d815f1a9db0c2E79d", //verified
+  [NetworkId.SEPOLIA]: "0xD6676c528D5a5D8f206a52C62af418F5793f14E6", //verified
 };
 
 export const USDC_ADDRESS = {
   [NetworkId.SEPOLIA]: "0x1578876aCc56349FC800B1f8efe624c688f5eF4B", //verified
 };
-// export const baseURL = "http://37.60.229.95:8080/";
+export const baseURL = "http://37.60.229.95:8080/";
 
 export const webSocketURL = "ws://37.60.229.95:8080/";
-export const baseURL = "http://localhost:8080/";
+// export const baseURL = "http://localhost:8080/";
 // export const webSocketURL = "ws://localhost:8080/";
 export const IMGBB_API_KEY = "cef3855d197b6e623e08088e854ed444";
 export const PINATA_KEY =
