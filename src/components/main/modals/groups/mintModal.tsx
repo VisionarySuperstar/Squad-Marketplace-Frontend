@@ -40,7 +40,9 @@ const MintModal = ({
   uploadId,
   getNFTData,
 }: MintModalInterface) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
 
   const [allCollection, setAllCollection] = useState<ICOLLECTION[]>([]);
   const [showProgressModal, setShowProgressModal] =
@@ -162,7 +164,7 @@ const MintModal = ({
     // progress Modal show
     setShowProgressModal(true);
     setIsLoading(true);
-    setIsDisplaying(true) ;
+    setIsDisplaying(true);
     // @step1 upload logo to PINATA
     setStepper(1);
     setPercent(0);
@@ -287,8 +289,7 @@ const MintModal = ({
       }
     } finally {
       setIsLoading(false);
-    setIsDisplaying(false) ;
-
+      setIsDisplaying(false);
     }
   };
   return (
@@ -296,12 +297,12 @@ const MintModal = ({
     
       <div className="z-100 font-Maxeville text-chocolate-main">
         <div
-          className=" bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setMintModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] drop-shadow-lg p-[25px]">
+        <div className="generalModal z-[1300] drop-shadow-lg p-[25px]">
           <div
             className="closeBtn"
             onClick={() => {
@@ -504,21 +505,23 @@ const MintModal = ({
               ) : (
                 <div className="p-1 w-1/4 mt-5 border-2 border-gray-400">
                   <div className="grid grid-cols-2 gap-2">
-                    {allCollection[selected].nft.slice(0,4).map((nfts, key1) => (
-                      <div
-                        key={key1}
-                        className="flex items-center justify-center"
-                      >
-                        <Image
-                          src={avatar[nfts.id]}
-                          className="w-full h-full aspect-square"
-                          width={0}
-                          height={0}
-                          sizes="100vw"
-                          alt="avatar"
-                        />
-                      </div>
-                    ))}
+                    {allCollection[selected].nft
+                      .slice(0, 4)
+                      .map((nfts, key1) => (
+                        <div
+                          key={key1}
+                          className="flex items-center justify-center"
+                        >
+                          <Image
+                            src={avatar[nfts.id]}
+                            className="w-full h-full aspect-square"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            alt="avatar"
+                          />
+                        </div>
+                      ))}
                   </div>
                   <div className="mt-1 bottom-0">
                     {allCollection[selected].name}

@@ -19,7 +19,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 
-
 interface BidGroupModalInterface {
   nftData: INFT;
   groupAddress: string;
@@ -33,7 +32,9 @@ const BidGroupModal = ({
   groupId,
   getData,
 }: BidGroupModalInterface) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
 
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
@@ -82,7 +83,7 @@ const BidGroupModal = ({
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       if (Number(nftData.auctiontype) === 0) {
         if (Number(bidAmount) <= Number(nftData.currentprice))
           throw "You must bid higher than now";
@@ -159,21 +160,20 @@ const BidGroupModal = ({
       }
     } finally {
       setIsLoading(false);
-      setIsDisplaying(false) ;
-
+      setIsDisplaying(false);
     }
 
     setBidModalState(false);
   };
   return (
-    <div className=" font-Maxeville">
+    <div className="font-Maxeville">
       <div
         className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
         onClick={() => {
           setBidModalState(false);
         }}
       ></div>
-      <div className="joinModal z-[1300] drop-shadow-lg">
+      <div className="generalModal z-[1300] px-5 drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {
