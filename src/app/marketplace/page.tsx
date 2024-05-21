@@ -14,7 +14,7 @@ import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 
 export default function Home() {
-  const [scale, setScale] = React.useState<number>(60);
+  const [scale, setScale] = React.useState<number>(65);
 
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>(0);
