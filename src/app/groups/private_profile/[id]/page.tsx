@@ -373,7 +373,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setIsLoading(true);
       setIsDisplaying(true);
 
-      const tx = await contract.excuteOfferingSaleTransaction(
+      const tx = await contract.executeOfferingSaleTransaction(
         BigInt(item.transactionid)
       );
       await tx.wait();
@@ -457,7 +457,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsDisplaying(true);
       setIsLoading(true);
-      const tx = await contract.excuteDirectorSettingTransaction(
+      const tx = await contract.executeDirectorSettingTransaction(
         BigInt(item.transaction_id)
       );
       await tx.wait();
