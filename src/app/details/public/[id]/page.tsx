@@ -28,16 +28,15 @@ import useDisplayingControlStore from "@/store/UI_control/displaying";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
-<<<<<<<<< Temporary merge branch 1
-import Content_ABI from "@/constants/content_nft.json" ;
-type transferHistoryType={
+
+import Content_ABI from "@/constants/content_nft.json";
+type transferHistoryType = {
   from: string;
   to: string;
   timestamp: BigInt;
-}
-=========
+};
+
 import useLoadingControlStore from "@/store/UI_control/loading";
->>>>>>>>> Temporary merge branch 2
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -438,7 +437,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                 )}
                 {Number(data?.auctiontype) !== 2 && data?.status !== "sold" && (
                   <>
-                    {remainTime === 0 ? (
+                    {(remainTime && remainTime <= 0) || remainTime === 0 ? (
                       <div className="text-gray-400 mt-3">Already Finished</div>
                     ) : (
                       <>

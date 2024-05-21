@@ -103,11 +103,11 @@ const NewGroupModal = () => {
       );
       await tx.wait();
       const numberOfCreators = await contract.numberOfCreators();
-      console.log("numberOfCreators", numberOfCreators) ;
+      console.log("numberOfCreators", numberOfCreators);
       const _group_Address = await contract.getCreatorGroupAddress(
         Number(numberOfCreators) - 1
       );
-      console.log("_group_Address", _group_Address) ;
+      console.log("_group_Address", _group_Address);
 
       let _avatar = "";
       if (avatar) {
@@ -236,7 +236,7 @@ const NewGroupModal = () => {
         }}
       ></div>
       <div className="z-[1000] font-Maxeville ">
-        <div className="generalModal z-[1300] drop-shadow-lg xs:h-[100vh]">
+        <div className="generalModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

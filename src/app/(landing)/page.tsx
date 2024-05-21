@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Footer from "@/components/main/footer/footer";
-import JoinModal from "@/components/main/modals/landing/generalModal";
-import Mobile from "@/components/main/poster/mobile_screen";
-import Welcome from "@/components/main/modals/landing/welcome";
-import useLoadingControlStore from "@/store/UI_control/loading";
-import Laptop from "@/components/main/poster/laptop_screen";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/main/footer/footer";
+import Mobile from "@/components/main/poster/mobile_screen";
+import Laptop from "@/components/main/poster/laptop_screen";
+
+import useLoadingControlStore from "@/store/UI_control/loading";
 
 export default function Home() {
   const setLoadingState = useLoadingControlStore(
@@ -78,7 +77,6 @@ export default function Home() {
       <div>
         <Laptop />
         <Mobile />
-
         <div className="main_container tracking-[1px]">
           <div className="section_container">
             <div className="line my-[40px]"></div>

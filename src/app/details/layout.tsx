@@ -11,6 +11,6 @@ export default function Detail({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setNavbarshow(true);
     setNavbarBg(true);
-  }, []);
+  }, [setNavbarBg, setNavbarshow]);
   return <div>{children}</div>;
 }

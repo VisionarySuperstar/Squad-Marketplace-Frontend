@@ -429,7 +429,7 @@ body {
 }
 
 .height-handler {
-  max-height: 500px;
+  max-height: 600px;
 }
 
 @media (max-height: 600px) {

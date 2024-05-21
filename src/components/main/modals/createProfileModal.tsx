@@ -29,6 +29,7 @@ const CreateProfileModal = () => {
   const setProfileModalState = useGroupUIControlStore(
     (state) => state.updateProfileModal
   );
+
   const [name, setName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [preview, setPreview] = React.useState<string>("");
@@ -134,11 +135,7 @@ const CreateProfileModal = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-  React.useEffect(() => {
-    console.log("preview changed!!!");
-    console.log(preview);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preview]);
+
   return (
     <>
       <div className="z-100 font-Maxeville">
@@ -182,7 +179,7 @@ const CreateProfileModal = () => {
                         width={70}
                         height={70}
                         alt=""
-                        className="rounded-full aspect-square bg-[#be6a6a6b] z-[10000]"
+                        className="rounded-full object-cover aspect-square bg-[#be6a6a6b] z-[10000]"
                       />
                     ) : (
                       <Icon

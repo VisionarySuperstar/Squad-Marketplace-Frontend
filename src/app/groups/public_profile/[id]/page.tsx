@@ -182,7 +182,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 xs:flex sm:justify-center xs:justify-center h-[30px] ">
               {!isAvailableRequest && (
                 <button
-                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main transition-all"
+                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
                   onClick={() => requestJoinHandle()}
                 >
                   REQUEST TO JOIN
