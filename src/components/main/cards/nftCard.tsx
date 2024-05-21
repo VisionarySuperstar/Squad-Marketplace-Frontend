@@ -4,17 +4,9 @@ import { useRouter } from "next/navigation";
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import { INFTCard } from "@/types/nft";
 
-interface CardProps {
-  avatar: string;
-  collectionName: string;
-  collectionId: number;
-  price: number;
-  seen: number;
-  favorite: number;
-}
-
-const NftCard: React.FC<CardProps> = ({
+const NftCard: React.FC<INFTCard> = ({
   avatar,
   collectionName,
   collectionId,

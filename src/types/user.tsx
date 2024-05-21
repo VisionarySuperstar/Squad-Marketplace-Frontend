@@ -18,45 +18,7 @@ export type TRegister = {
   email: string, 
   avatar: string
 }
-export interface IGROUP {
-  id: string,
-  name: string,
-  description: string,
-  avatar: string,
-  director: string,
-  requiredconfirmnumber:string,
-  member: [
-    {
-       id: string
-     }
-  ],
-  mintnumber: string,
-  soldnumber:string,
-  earning:string,
-  address:string,
-  is_actively_recruiting:boolean
-}
 
-
-export interface INFT {
-  id: string ;
-  avatar: string;
-  owner: string;
-  status: string;
-  collectionaddress: string;
-  collectionid:string;
-  groupid:string;
-  auctiontype: string;
-  initialprice: string;
-  saleperiod:string;
-  currentprice:string;
-  currentbidder:string;
-  reducingrate:string;
-  collectionname:string;
-  listednumber:string;
-  marketplacenumber:string;
-  created_at: string;
-}
 
 export interface ICOLLECTION {
   id: string;
