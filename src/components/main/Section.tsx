@@ -4,18 +4,30 @@ import Image from "next/image";
 import { useEffect, useState } from "react"
 import ImageWithCaption from "./ImageWithCaption";
 import { IImageWithCaption } from "@/types/images";
+import NftCard from "./cards/nftCard";
+import { INFT, nftToCard } from "@/types";
 
-type Props = {
+type Props<T> = {
   title: string;
   viewAllUrl: string;
   itemsPerRow: number;
-  images: IImageWithCaption[];
+  images: T[];
+  renderCard: (image: T) => JSX.Element;
 };
 
-const Section = ({ title, viewAllUrl, itemsPerRow, images }: Props) => {
-  const fillerElementsCount = (itemsPerRow - (images.length % itemsPerRow)) % itemsPerRow;
+const Section = <T,>({
+  title,
+  viewAllUrl,
+  itemsPerRow,
+  images,
+  renderCard,
+}: Props<T>) => {
+  const fillerElementsCount =
+    (itemsPerRow - (images.length % itemsPerRow)) % itemsPerRow;
   const fillerArray = Array(fillerElementsCount).fill(0);
-  const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${itemsPerRow === 3 ? 'md:basis-[31%]' : 'md:basis-[23%]'}`;
+  const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${
+    itemsPerRow === 3 ? "md:basis-[31%]" : "md:basis-[23%]"
+  }`;
 
   return (
     <div className="my-5">
@@ -28,7 +40,7 @@ const Section = ({ title, viewAllUrl, itemsPerRow, images }: Props) => {
       <div className="flex flex-wrap gap-x-[0.5%] justify-between items-start">
         {images.map((image, index) => (
           <div key={index} className={containerClassName}>
-            <ImageWithCaption height={500} {...image} />
+            {renderCard(image)}
           </div>
         ))}
         {fillerArray.map((_, index) => (
@@ -37,7 +49,6 @@ const Section = ({ title, viewAllUrl, itemsPerRow, images }: Props) => {
       </div>
     </div>
   );
-
 };
 
 export default Section;

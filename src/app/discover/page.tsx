@@ -18,6 +18,9 @@ import {
   getTopNfts,
 } from "@/utils/data-processing";
 import Link from "next/link";
+import NftCard from "@/components/main/cards/nftCard";
+import { groupToCard, nftToCard } from "@/types";
+import GroupCard from "@/components/main/cards/groupCard";
 
 export default function Home() {
   const [enableScale, setEnableScale] = useState<boolean>(true);
@@ -77,11 +80,11 @@ export default function Home() {
   }, [screenWidth]);
 
   const allGroups = useAllGroups();
-  const topGroups = getTopGroups(allGroups).map(imageWithCaptionFromGroup);
+  const topGroups = getTopGroups(allGroups);
 
   const allNfts = useAllNfts();
-  const topNfts = getTopNfts(allNfts).map(imageWithCaptionFromNFT);
-  const newlyMinted = getNewlyMinted(allNfts).map(imageWithCaptionFromNFT);
+  const topNfts = getTopNfts(allNfts);
+  const newlyMinted = getNewlyMinted(allNfts);
 
   return (
     <>
@@ -101,18 +104,21 @@ export default function Home() {
             viewAllUrl="#"
             itemsPerRow={3}
             images={topNfts}
+            renderCard={(nft) => <NftCard {...nftToCard(nft)} />}
           />
           <Section
             title="TOP GROUPS"
             viewAllUrl="#"
             itemsPerRow={3}
             images={topGroups}
+            renderCard={(group) => <GroupCard {...groupToCard(group)} />}
           />
           <Section
             title="NEWLY MINTED"
             viewAllUrl="#"
             itemsPerRow={4}
             images={newlyMinted}
+            renderCard={(nft) => <NftCard {...nftToCard(nft)} />}
           />
         </div>
         <div className="text-center">
