@@ -14,7 +14,11 @@ const LoadingScreen: React.FC = () => {
   return (
     <>
       {isDisplaying ? (
-        <div className="fixed w-full h-[100vh] top-0 z-[9000] bg-black/10"></div>
+        <div className="fixed w-full h-[100vh] top-0 z-[9000] bg-black/20">
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loader"></span>
+          </div>
+        </div>
       ) : (
         ""
       )}

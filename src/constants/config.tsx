@@ -25,9 +25,11 @@ export const USDC_ADDRESS = {
 };
 
 // export const webSocketURL = "ws://localhost:8080/";
-export const baseURL = "http://localhost:8080/";
-export const webSocketURL = "ws://37.60.229.95:8080/";
-// export const baseURL = "http://37.60.229.95:8080/";
+// export const baseURL = "http://localhost:8080/";
+export const webSocketURL =
+  process.env.NEXT_PUBLIC_API_WS_URL || "ws://37.60.229.95:8080/";
+export const baseURL =
+  process.env.NEXT_PUBLIC_API_HTTP_URL || "http://37.60.229.95:8080/";
 
 export const IMGBB_API_KEY = "cef3855d197b6e623e08088e854ed444";
 export const PINATA_KEY =

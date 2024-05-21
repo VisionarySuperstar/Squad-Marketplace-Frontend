@@ -105,7 +105,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
                   .map((_user: IUSER, key) => (
                     <div
                       className={`flex gap-3 items-center mt-3 cursor-pointer hover:bg-indigo-300 p-2 ${
-                        selectedUser === _user && "bg-indigo-300"
+                        selectedUser === _user && "bg-chocolate-main"
                       }`}
                       onClick={() => setSelectedUser(_user)}
                       key={key}
@@ -128,7 +128,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
               }}
             >
               <button
-                className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                className="border bg-chocolate-main text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                 onClick={() => {
                   selectedUser && addSelectedUsers(selectedUser);
                 }}
