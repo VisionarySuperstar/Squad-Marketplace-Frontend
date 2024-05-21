@@ -140,7 +140,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
       .post(`/api/addJoinRequest`, {
         groupId: params.id,
         userId: user?.id,
-        date: formattedDateTime,
       })
       .catch((error) => {
         toast.error(error.message);

@@ -246,17 +246,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       const tx = await contract.endEnglishAuction(nftId);
       await tx.wait();
       await api
-        .post("/api/updateNft", {
+        .post("/api/updateSoldNft", {
           id: nftData?.id,
           owner: nftData?.currentbidder,
           status: "sold",
-          auctionType: nftData?.auctiontype,
-          initialPrice: nftData?.initialprice,
-          salePeriod: nftData?.saleperiod,
           currentPrice: nftData?.currentprice,
-          currentBidder: nftData?.currentbidder,
-          reducingRate: nftData?.reducingrate,
-          listedNumber: nftData?.listednumber,
         })
         .catch((error) => {
           toast.error(error.message);
