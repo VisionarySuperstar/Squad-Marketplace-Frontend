@@ -2,17 +2,9 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import { IGroupCard } from "@/types/group";
 
-interface CardProps {
-  state: string;
-  name: string;
-  membercount: number;
-  groupBio: string;
-  groupId: string;
-  avatar: string;
-}
-
-const GroupCard: React.FC<CardProps> = ({
+const GroupCard: React.FC<IGroupCard> = ({
   state,
   name,
   groupId,
