@@ -294,17 +294,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       );
       await tx.wait();
       await api
-        .post("/api/updateNft", {
+        .post("/api/updateSoldNft", {
           id: data.id,
           owner: user.name,
           status: "sold",
-          auctionType: data.auctiontype,
-          initialPrice: data.initialprice,
-          salePeriod: data.saleperiod,
-          currentPrice: currentDutchPrice,
-          currentBidder: user.name,
-          reducingRate: data.reducingrate ? data.reducingrate : 0,
-          listedNumber: data.listednumber,
+          currentPrice: currentDutchPrice
         })
         .catch((error) => {
           toast.error(error.message);

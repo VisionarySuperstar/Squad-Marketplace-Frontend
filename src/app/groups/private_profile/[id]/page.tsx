@@ -384,17 +384,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         });
 
       await api
-        .post("/api/updateNft", {
+        .post("/api/updateSoldNft", {
           id: item_nft?.id,
           owner: item.buyer,
           status: "sold",
-          auctionType: item_nft?.auctiontype,
-          initialPrice: item_nft?.initialprice,
-          salePeriod: item_nft?.saleperiod,
           currentPrice: item_nft?.currentprice,
-          currentBidder: item_nft?.currentbidder,
-          reducingRate: item_nft?.reducingrate,
-          listedNumber: item_nft.listednumber,
         })
         .catch((error) => {
           toast.error(error.message);
@@ -648,7 +642,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     await api
       .post("/api/addPost", {
         groupId: myGroupData?.id,
-        postTime: formattedDateTime,
         content: newPostMessage,
       })
       .catch((error) => {
