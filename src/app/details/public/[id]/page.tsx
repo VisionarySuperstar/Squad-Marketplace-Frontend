@@ -360,7 +360,10 @@ const Home = ({ params }: { params: { id: string } }) => {
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
             <div className="lg:me-[40px] sm:me-0">
-              <ImageView avatar={data.avatar} />
+              <div>
+                <ImageView avatar={data.avatar} />
+              </div>
+
               <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
