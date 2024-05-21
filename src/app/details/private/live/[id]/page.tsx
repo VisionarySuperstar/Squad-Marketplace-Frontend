@@ -285,7 +285,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <PhotoView src={nftData.avatar}>
                     <Image
                       src={nftData.avatar}
-                      className="md:h-[70vh] object-cover w-auto h-full"
+                      className="md:h-[70vh] object-contain w-auto"
                       alt="group_avatar"
                       width={706}
                       height={706}

@@ -264,15 +264,12 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>POST ({postNews?.length ? postNews?.length : "0"})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL</div>
           </div>
+
           {postNews?.length == 0 && (
             <div className="w-full flex items-center justify-center min-h-[100px]">
               NO RESULT
             </div>
           )}
-          <div
-            style={{ borderBottom: "3px solid #ccc" }}
-            className="mt-5 mb-3 w-[26%]"
-          ></div>
           <div>
             {postNews &&
               postNews?.map((_news, key) => (
@@ -289,8 +286,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                     ))}
                   </div>
                   <div>{_news.post_time.toString()}</div>
-
-                  <Split_line />
                 </div>
               ))}
           </div>

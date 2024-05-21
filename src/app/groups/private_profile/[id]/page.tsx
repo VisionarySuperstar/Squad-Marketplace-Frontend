@@ -116,7 +116,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
 
-  const { signIn, isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const [requiredConfirmNumber, setRequiredConfirmNumber] =
@@ -131,7 +131,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const Data = response?.data;
     setMyGroupData(Data);
     setActiveState(Data?.is_actively_recruiting);
-    console.log("director", Data?.director, "user", user?.id);
+    setRequiredConfirmNumber(Data.requiredconfirmnumber);
     if (Data?.director === user?.id) setIsDirector(true);
   };
   const getNFTData = async () => {
@@ -197,7 +197,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     getMyGroupData();
     getNFTData();
-  }, []);
+  }, [user]);
 
   const getOffer_nfts = async () => {
     // console.log({ _nfts });
@@ -1013,7 +1013,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         item.confirm_member.length <
                           Number(myGroupData?.requiredconfirmnumber) && (
                           <button
-                            className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
                             onClick={() => {
                               offeringConfrimHandle(offerTransactions[key]);
                               setSelectedOfferConfirmBtn(key);
@@ -1036,7 +1036,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       {item.confirm_member.length >=
                         Number(myGroupData?.requiredconfirmnumber) && (
                         <button
-                          className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                          className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
                           onClick={() => {
                             offeringExecuteHandle(
                               offerTransactions[key],
@@ -1128,11 +1128,38 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div>POST</div>
                 <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
               </div>
+              {postNews?.length == 0 && (
+                <div className="w-full flex items-center justify-center min-h-[100px]">
+                  NO RESULT
+                </div>
+              )}
+              <div>
+                {postNews &&
+                  postNews?.map((_news, key) => (
+                    <div
+                      key={key}
+                      className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1 bg-gray-100 p-5 rounded-sm"
+                    >
+                      <div className="">
+                        {_news.content.split("\n").map((line, index) => (
+                          <React.Fragment key={index}>
+                            {line}
+                            <br />
+                          </React.Fragment>
+                        ))}
+                      </div>
+                      <div className="text-right text-gray-500">
+                        {_news.post_time.toString()}
+                      </div>
+                    </div>
+                  ))}
+              </div>
               <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
+                <div></div>
                 <div>
                   <textarea
                     rows={4}
-                    className="p-4 outline-none border w-full border-chocolate-main rounded-lg"
+                    className="p-4 outline-none border w-full border-chocolate-main rounded-lg resize-none"
                     placeholder="Write a message to share with those outside your group."
                     value={newPostMessage}
                     onChange={(e) => setNewPostMessage(e.target.value)}
@@ -1146,38 +1173,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     </button>
                   </div>
                 </div>
-                <div></div>
               </div>
             </>
           )}
-          <div className="flex justify-between text-xl">
-            <div>NEWS</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-          </div>
-          {postNews?.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
-          <div>
-            {postNews &&
-              postNews?.map((_news, key) => (
-                <div
-                  key={key}
-                  className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1"
-                >
-                  <div className="">
-                    {_news.content.split("\n").map((line, index) => (
-                      <React.Fragment key={index}>
-                        {line}
-                        <br />
-                      </React.Fragment>
-                    ))}
-                  </div>
-                  <div>{_news.post_time.toString()}</div>
-                </div>
-              ))}
-          </div>
+
           {isDirector && (
             <>
               <div className="flex items-center text-xl mt-5">
@@ -1378,7 +1377,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                             item.confirm_member.length <=
                               Number(myGroupData?.requiredconfirmnumber) && (
                               <button
-                                className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                                className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
                                 onClick={() => {
                                   directorConfrimHandle(
                                     directorTransactions[key]
@@ -1403,7 +1402,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           {item.confirm_member.length >=
                             Number(myGroupData?.requiredconfirmnumber) && (
                             <button
-                              className="border border-black rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                              className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
                               onClick={() => {
                                 directorExecuteHandle(
                                   directorTransactions[key]
@@ -1480,20 +1479,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </div>
               ))}
           </div>
+          <Split_line />
           {isDirector && (
             <>
               <div className="mt-5 text-xl">
                 <h1>CHANGE REQUIRED CONFIRM NUMBER</h1>
               </div>
               <div className="mt-5 text-lg lg:flex gap-5">
-                <div className="flex items-center h-[32px]">
-                  CURRENT{" "}
-                  <span className="ml-5 text-red-400 text-xl">
-                    {myGroupData?.requiredconfirmnumber}
-                  </span>
-                </div>
+                <div className="flex items-center h-[32px]">CURRENT</div>
                 <input
-                  className="flex border-2 border-black items-center justify-center pl-5 pr-5 rounded-lg "
+                  className="flex border border-chocolate-main items-center justify-center pl-5 pr-5 rounded-lg bg-transparent"
                   placeholder="Type New Confirm Number"
                   value={requiredConfirmNumber}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -1503,7 +1498,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                   <button
                     onClick={changeConfirmNumberHandle}
-                    className="border border-black rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                    className="border border-chocolate-main rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
                   >
                     {isLoadingChangeConfirm ? (
                       <>
@@ -1530,7 +1525,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <div className="mt-5 text-lg lg:flex">
             <div className="flex gap-5">
               <div className="flex items-center h-[32px]">AMOUNT:</div>
-              <div className="flex border border-black items-center justify-center pl-5 pr-5 rounded-lg text-gray-400">
+              <div className="flex border border-chocolate-main items-center justify-center pl-5 pr-5 rounded-lg text-gray-400">
                 {withdrawAmount ? withdrawAmount : "0"}
               </div>
               <div className="flex items-center h-[32px]">USDC</div>
@@ -1538,7 +1533,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button
                 onClick={withdrawFromGroup}
-                className="border border-black rounded-full pl-4 pr-4 w-[190px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                className="border border-chocolate-main rounded-full pl-4 pr-4 w-[190px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
               >
                 {isLoadingWithdrawButton ? (
                   <>
@@ -1559,7 +1554,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 text-lg lg:flex">
               <div className="flex gap-5">
                 <div className="flex items-center h-[32px]">AMOUNT:</div>
-                <div className="flex border border-black items-center justify-center pl-5 pr-5 rounded-lg text-gray-400 ">
+                <div className="flex border border-chocolate-main items-center justify-center pl-5 pr-5 rounded-lg text-gray-400 ">
                   {withdrawFromMarketplaceAmount
                     ? withdrawFromMarketplaceAmount
                     : "0"}
@@ -1570,7 +1565,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                 <button
                   onClick={withdrawFromMarketplace}
-                  className="border border-black rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                  className="border border-chocolate-main rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
                 >
                   {isLoadingWithdrawMarketplaceButton ? (
                     <>
@@ -1612,8 +1607,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
         </div>
         <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-          style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
+          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full"
+          style={{
+            backgroundImage: "url('/assets/bg-1.jpg')",
+          }}
         ></div>
         <Footer />
       </div>

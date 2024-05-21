@@ -370,7 +370,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <PhotoView src={data.avatar}>
                     <Image
                       src={data.avatar}
-                      className="md:h-[70vh] object-cover w-auto h-full"
+                      className="md:h-[70vh] object-contain w-auto"
                       alt="group_avatar"
                       width={706}
                       height={706}
