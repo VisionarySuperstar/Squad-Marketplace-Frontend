@@ -11,7 +11,7 @@ const ViewProgress: React.FC<IProps> = ({ setScale, scale }) => {
       <label className="text-md">VIEW</label>
       <input
         type="range"
-        min="30"
+        min="40"
         max="90"
         value={scale}
         onChange={(e) => setScale(Number(e.target.value))}

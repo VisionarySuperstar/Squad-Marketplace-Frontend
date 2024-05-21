@@ -115,7 +115,7 @@ export default function Home() {
           {enableScale && (
             <div className="page_container_p40 mt-5">
               <div
-                className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+                className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4`}
                 style={{
                   gridTemplateColumns: `repeat(${Math.floor(
                     (100 - scale) / 10 + 1
@@ -147,7 +147,7 @@ export default function Home() {
           {!enableScale && (
             <div className="page_container_p40 mt-5">
               <div
-                className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+                className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2`}
               >
                 {allNftData.map((item, index) => (
                   <div

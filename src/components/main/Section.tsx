@@ -30,6 +30,7 @@ const Section = ({ title, viewAllUrl, itemsPerRow, images }: Props) => {
           <div key={index} className={containerClassName}>
             <ImageWithCaption height={500} {...image} />
           </div>
+          
         ))}
         {fillerArray.map((_, index) => (
           <div key={index} className={`${containerClassName} invisible`} />
