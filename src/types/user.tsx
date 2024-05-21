@@ -55,6 +55,7 @@ export interface INFT {
   collectionname:string;
   listednumber:string;
   marketplacenumber:string;
+  created_at: string;
 }
 
 export interface ICOLLECTION {

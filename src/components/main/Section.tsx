@@ -21,18 +21,22 @@ const Section = ({ title, viewAllUrl, itemsPerRow, images }: Props) => {
     <div className="my-5">
       <div id="top" className="flex justify-between">
         <h2>{title}</h2>
-        <h2><a href={viewAllUrl}>VIEW ALL</a></h2>
+        <h2>
+          <a href={viewAllUrl}>VIEW ALL</a>
+        </h2>
       </div>
-      <div className="flex flex-wrap gap-x-[0.5%] justify-between items-center">
-        {images.map((image, index) =>
+      <div className="flex flex-wrap gap-x-[0.5%] justify-between items-start">
+        {images.map((image, index) => (
           <div key={index} className={containerClassName}>
             <ImageWithCaption height={500} {...image} />
           </div>
-        )}
-        {fillerArray.map((_, index) => <div key={index} className={`${containerClassName} invisible`} />)}
+        ))}
+        {fillerArray.map((_, index) => (
+          <div key={index} className={`${containerClassName} invisible`} />
+        ))}
       </div>
     </div>
-  )
+  );
 
 };
 
