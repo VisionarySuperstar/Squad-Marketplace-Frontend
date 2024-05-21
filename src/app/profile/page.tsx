@@ -12,7 +12,6 @@ import Footer from "@/components/main/footer/footer";
 import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
 import useAuth from "@/hooks/useAuth";
-import CreateProfileModal from "@/components/main/modals/createProfileModal";
 
 export default function Home() {
   const router = useRouter();
@@ -38,7 +37,6 @@ export default function Home() {
 
   return (
     <>
-      
       {user && (
         <div className="font-Maxeville">
           {createGroupModalState && <NewGroupModal />}

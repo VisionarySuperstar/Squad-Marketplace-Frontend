@@ -45,30 +45,27 @@ const Carousel_Component = ({ hasCaption }: Props) => {
         <Slider {...settings}>
           {images.map((image, index) => {
             return (
-              <>
-                <div key={index} className="w-full h-full drop-shadow-xl">
-                  {hasCaption ? (
-                    <ImageWithCaption
-                      src={`/assets/images/slide/marketplace_slide/${image}`}
-                      alt="slide"
-                      caption="Spotlight:
-              Juergen teller for Loewe"
-                      imageStyle="h-[92%] object-cover w-full mb-5"
-                      captionColor="text-white"
-                      captionAlign="text-center"
-                      height={800}
-                    />
-                  ) : (
-                    <Image
-                      alt="slide"
-                      height={1000}
-                      width={1000}
-                      src={`/assets/images/slide/marketplace_slide/${image}`}
-                      className="h-full object-cover w-full mx-auto"
-                    />
-                  )}
-                </div>
-              </>
+              <div key={index} className="w-full h-full drop-shadow-xl">
+                {hasCaption ? (
+                  <ImageWithCaption
+                    src={`/assets/images/slide/marketplace_slide/${image}`}
+                    alt="slide"
+                    caption="Spotlight: Juergen teller for Loewe"
+                    imageStyle="h-[92%] object-cover w-full mb-5"
+                    captionColor="text-white"
+                    captionAlign="text-center"
+                    height={800}
+                  />
+                ) : (
+                  <Image
+                    alt="slide"
+                    height={1000}
+                    width={1000}
+                    src={`/assets/images/slide/marketplace_slide/${image}`}
+                    className="h-full object-cover w-full mx-auto"
+                  />
+                )}
+              </div>
             );
           })}
         </Slider>

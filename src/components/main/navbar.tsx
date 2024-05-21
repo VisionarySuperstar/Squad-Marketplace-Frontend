@@ -1,60 +1,55 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useEffect } from "react";
 import Image from "next/image";
-import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
-import useNotificationUIControlStore from "@/store/UI_control/notification";
+
+import Notification from "@/components/main/News&message/notifications";
+import CreateProfileModal from "@/components/main/modals/createProfileModal";
+
 import { Popover } from "flowbite-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import useActiveWeb3 from "@/hooks/useActiveWeb3";
+import { useConnectModal, useChainModal } from "@rainbow-me/rainbowkit";
+
+import useAuth from "@/hooks/useAuth";
+
+import { useDisconnect } from "wagmi";
+import { useBalance, useAccount, useChainId } from "wagmi";
+
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import useUserStore from "@/store/user_infor/userinfor";
+import useNotificationUIControlStore from "@/store/UI_control/notification";
 import useLoadingControlStore from "@/store/UI_control/loading";
 
-import useUserStore from "@/store/user_infor/userinfor";
-import Notification from "@/components/main/News&message/notifications";
-import {
-  useConnectModal,
-  useAccountModal,
-  useChainModal,
-} from "@rainbow-me/rainbowkit";
-
-import { useBalance, useAccount, useChainId } from "wagmi";
-import useAuth from "@/hooks/useAuth";
-import CreateProfileModal from "@/components/main/modals/createProfileModal";
-import { useDisconnect } from "wagmi";
-
 const NavBar = () => {
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+  const [avatar, setAvatar] = useState<string>("");
+  const isBackbtn = useNavbarUIControlStore((state) => state.isbackbtn);
   const isGroupBtn = useNavbarUIControlStore((state) => state.isgroupbtn);
+  const current = useNavbarUIControlStore((state) => state.url);
+  const isShow = useNavbarUIControlStore((state) => state.isshow);
+  const isBackground = useNavbarUIControlStore((state) => state.isbackground);
+
+  const isLogin = useUserStore((store) => store.isLogin);
+  const account = useAccount();
+  const { data: balance } = useBalance(account);
+  const updateLogin = useUserStore((store) => store.updateIsLogin);
   const profileModalState = useGroupUIControlStore(
     (state) => state.profileModal
   );
   const setProfileModalState = useGroupUIControlStore(
     (state) => state.updateProfileModal
   );
-  const [screenWidth, setScreenWidth] = useState<number>(0);
-  const current = useNavbarUIControlStore((state) => state.url);
-  const isShow = useNavbarUIControlStore((state) => state.isshow);
-  const isLogin = useUserStore((store) => store.isLogin);
-  const updateLogin = useUserStore((store) => store.updateIsLogin);
+
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
-  const setIsGroupBtn = useNavbarUIControlStore(
-    (state) => state.updateIsGroupBtn
-  );
-  const account = useAccount();
-  const { data: balance, error } = useBalance(account);
-  const [avatar, setAvatar] = useState<string>("");
-  const isBackground = useNavbarUIControlStore((state) => state.isbackground);
 
   const notificationModal = useNotificationUIControlStore(
     (state) => state.notificationModal
   );
-  const setIsShow = useNavbarUIControlStore((state) => state.updateIsShow);
   const setNotificationState = useNotificationUIControlStore(
     (state) => state.updateNotificationModal
   );
@@ -65,14 +60,12 @@ const NavBar = () => {
   const setCurrent = useNavbarUIControlStore((state) => state.updateUrl);
 
   const router = useRouter();
+
   const goBack = () => {
     router.back();
   };
+
   useEffect(() => {
-    console.log("test++++++++> ", isLogin);
-    // signIn().then((data: any) => {
-    //   console.log("here:=========> ", data);
-    // })
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
@@ -86,19 +79,7 @@ const NavBar = () => {
     };
   }, []);
   const { openConnectModal } = useConnectModal();
-  const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
-  const {
-    address,
-    chain,
-    signer,
-    isConnected,
-    isConnecting,
-    isReconnecting,
-    connector,
-    isDisconnected,
-    chainId,
-  } = useActiveWeb3();
   const { signIn, isAuthenticated, user } = useAuth();
 
   const chainID = useChainId();
@@ -182,6 +163,16 @@ const NavBar = () => {
     window.localStorage.removeItem("accessToken");
   };
 
+  const handleClick = (item: string) => {
+    setCurrent(item);
+    if (current !== item) setLoadingState(true);
+    if (item !== "logo") {
+      router.push(`/${item}`);
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <>
       {profileModalState && <CreateProfileModal />}
@@ -193,58 +184,51 @@ const NavBar = () => {
               isBackground ? " bg-white" : ""
             }`}
           >
-            <div className="hidden">
-              <div className="min-w-[80px]">
-                {
-                  <button
-                    className="border-2 border-black rounded-full px-5 h-[30px]"
-                    onClick={goBack}
-                  >
-                    Back
-                  </button>
-                }
+            {isBackbtn && (
+              <div className="xs:hidden xl:block">
+                <div className="min-w-[80px]">
+                  {
+                    <button
+                      className="border-[1px] border-chocolate-main rounded-full px-5 h-[30px]"
+                      onClick={goBack}
+                    >
+                      Back
+                    </button>
+                  }
+                </div>
               </div>
-            </div>
+            )}
+
             <div className="flex justify-center w-full z-[10000]">
               <div className="font-Maxeville flex cursor-pointer justify-center">
                 <div
                   className={`bg-chocolate-main text-white font-bold text-[18px] h-[30px] flex items-center lg:pe-[50px] lg:ps-[50px] xs:px-[20px] rounded-l-full transition-all hover:bg-chocolate-main/80 active:bg-chocolate-main/90
-            ${current === "discover" ? "rounded-r-full" : ""}
-            ${current === "wallet" ? "xs:rounded-r-full lg:rounded-r-none" : ""}
+            ${current === "discover" ? "md:rounded-r-full" : ""}
             ${
-              current === "logo"
-                ? "rounded-r-full pe-[48px] ps-[50px] me-[2px]"
-                : "px-[50px]"
+              current === "wallet" ? "xs:rounded-r-full lg:rounded-r-none" : ""
             }`}
                   onClick={() => {
-                    setCurrent("logo");
-                    setIsGroupBtn(false);
-                    setLoadingState(true);
-                    router.push("/");
+                    handleClick("logo");
                   }}
                 >
                   SQUAD
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${
               current === "discover"
                 ? "rounded-full px-[28px] mx-[2px]"
                 : "px-[30px]"
             }
-            ${current === "marketplace" ? "rounded-r-full" : ""}
-            ${current === "logo" ? "rounded-l-full" : ""}`}
+            ${current === "marketplace" ? "rounded-r-full" : ""}`}
                   onClick={() => {
-                    setCurrent("discover");
-                    setIsGroupBtn(false);
-                    setLoadingState(true);
-                    router.push("/discover");
+                    handleClick("discover");
                   }}
                 >
                   Discover
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${current === "discover" ? "rounded-l-full" : ""}
             ${current === "groups" ? "rounded-r-full" : ""}
             ${
@@ -254,16 +238,13 @@ const NavBar = () => {
             }
             `}
                   onClick={() => {
-                    setCurrent("marketplace");
-                    if (current !== "marketplace") setLoadingState(true);
-                    router.push("/marketplace");
-                    setIsGroupBtn(false);
+                    handleClick("marketplace");
                   }}
                 >
                   Marketplace
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${current === "marketplace" ? "rounded-l-full" : ""}
             ${current === "wallet" ? "rounded-r-full" : ""}
             ${
@@ -274,9 +255,7 @@ const NavBar = () => {
 
             `}
                   onClick={() => {
-                    if (current !== "groups") setLoadingState(true);
-                    router.push("/groups");
-                    setIsGroupBtn(true);
+                    handleClick("groups");
                   }}
                 >
                   Groups
@@ -397,13 +376,12 @@ const NavBar = () => {
                           {user && user.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <Image
-                              src={avatar}
                               key={avatar}
                               width={26}
                               height={26}
+                              src={user.avatar}
                               alt={"wallet avatar"}
-                              // priority={true}
-                              className="rounded-full aspect-square"
+                              className="rounded-full aspect-square object-cover"
                             />
                           ) : (
                             <Icon
@@ -422,10 +400,10 @@ const NavBar = () => {
                   <div
                     className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all rounded-r-full hover:bg-chocolate-main/80 active:bg-chocolate-main/90
 
-                  ${current === "groups" ? "rounded-l-full" : ""}
+                  ${current === "groups" ? "md:rounded-l-full" : ""}
                   ${
                     current === "connectWallet"
-                      ? "rounded-full px-[28px] mx-[2px]"
+                      ? "px-[28px] mx-[2px]"
                       : "px-[30px]"
                   }
                   `}

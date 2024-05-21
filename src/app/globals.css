@@ -43,7 +43,9 @@ body {
 .Logo {
   position: absolute;
   top: calc(var(--perX) * 132);
-  mix-blend-mode: difference;
+}
+
+.loadingbar {
 }
 
 .LaptopLogo {
@@ -427,7 +429,7 @@ body {
 }
 
 .height-handler {
-  max-height: 500px;
+  max-height: 600px;
 }
 
 @media (max-height: 600px) {

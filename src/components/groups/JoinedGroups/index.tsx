@@ -18,7 +18,7 @@ const MyGroup = () => {
   //use state
   const [MyGroupData, setMyGroupData] = useState<IGROUP[]>([]);
   //use auth
-  const { signIn, isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   //use api
   const api = useAPI();
   //zustand
@@ -52,7 +52,7 @@ const MyGroup = () => {
       {user && (
         <>
           <Split_line />
-          <h1 className="my-5 text-lg">MY GROUPS</h1>
+          <h1 className="my-5 text-lg">MY GROUPS({MyGroupData?.length})</h1>
           {MyGroupData?.length ? (
             <>
               <div className="gap-3 flex-wrap grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5">

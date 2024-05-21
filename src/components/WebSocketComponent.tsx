@@ -105,10 +105,8 @@ const SocketComponent = () => {
 
   return (
     <>
-      <div className="fixed w-full h-[2px] top-[10px] left-[10px] z-[10000] bg-transparent">
-        WebSocket:{isConnected}
-        <br />
-        ConnectCount:{connectCount}
+      <div className="fixed w-full h-[2px] top-[10px] left-[10px] z-[10000] bg-transparent text-[5px]">
+        WebSocket:{isConnected} ... ConnectCount:{connectCount}
       </div>
     </>
   );

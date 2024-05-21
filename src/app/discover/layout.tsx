@@ -11,12 +11,20 @@ export default function Home({ children }: { children: React.ReactNode }) {
   const setNavbarBackground = useNavbarUIControlStore(
     (state) => state.updateIsBackground
   );
+  const setNavbarBackBtn = useNavbarUIControlStore(
+    (state) => state.updateIsBackbtn
+  );
+  const setNavbarGroupBtn = useNavbarUIControlStore(
+    (state) => state.updateIsGroupBtn
+  );
   const navbarCurrentUrl = useNavbarUIControlStore((state) => state.url);
-  if (navbarCurrentUrl === "") setNavbarCurrent("marketplace");
+  if (navbarCurrentUrl === "") setNavbarCurrent("discover");
   useEffect(() => {
     setNavbarshow(true);
     setNavbarBackground(false);
-  }, [setNavbarBackground, setNavbarshow]);
+    setNavbarBackBtn(false);
+    setNavbarGroupBtn(false);
+  }, [setNavbarBackBtn, setNavbarBackground, setNavbarGroupBtn, setNavbarshow]);
   return (
     <div>
       {children}
