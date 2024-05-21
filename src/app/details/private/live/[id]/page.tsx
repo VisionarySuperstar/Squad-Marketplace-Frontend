@@ -302,12 +302,11 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div className="p-2 flex-col flex justify-between">
             <div className="flex-col">
               <div className="text-[18px] flex gap-4">
-                {nftData?.collectionname}
+                {nftData?.collectionname} #{nftData?.collectionid}
                 <div className="flex items-center">
                   <TrendingIcon />
                 </div>
               </div>
-              <div className="text-[18px] underline">COLLECTION</div>
               <div className="text-gray-400 mt-3">Group</div>
               <div className="text-[18px]">{groupName}</div>
               <div className="text-gray-400 mt-3">Auction Type</div>

@@ -37,6 +37,7 @@ type transferHistoryType = {
 };
 
 import useLoadingControlStore from "@/store/UI_control/loading";
+import ImageView from "@/components/main/imageViewer";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -298,7 +299,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           id: data.id,
           owner: user.name,
           status: "sold",
-          currentPrice: currentDutchPrice
+          currentPrice: currentDutchPrice,
         })
         .catch((error) => {
           toast.error(error.message);
@@ -359,19 +360,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
             <div className="lg:me-[40px] sm:me-0">
-              <div className="flex justify-center">
-                <PhotoProvider bannerVisible={false}>
-                  <PhotoView src={data.avatar}>
-                    <Image
-                      src={data.avatar}
-                      className="md:h-[70vh] object-contain w-auto"
-                      alt="group_avatar"
-                      width={706}
-                      height={706}
-                    />
-                  </PhotoView>
-                </PhotoProvider>
-              </div>
+              <ImageView avatar={data.avatar} />
               <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
@@ -388,12 +377,11 @@ const Home = ({ params }: { params: { id: string } }) => {
             <div className="p-2 flex-col flex justify-between">
               <div className="flex-col">
                 <div className="text-[18px] flex gap-4">
-                  {data.collectionname}
+                  {data.collectionname} #{data.collectionid}
                   <div className="flex items-center">
                     <TrendingIcon />
                   </div>
                 </div>
-                <div className="text-[18px] underline">COLLECTION</div>
                 <div className="text-gray-400 mt-3">Group</div>
                 <div className="text-[18px]">{groupName}</div>
                 <div className="text-gray-400 mt-3">Auction Type</div>
