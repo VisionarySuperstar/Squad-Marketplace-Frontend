@@ -48,7 +48,7 @@ const NftCard: React.FC<Props> = ({
             <div className="absolute right-4 bottom-4 items-center gap-1 sm:gap-2 xs:hidden md:flex">
               <EyeIcon props="white" />
               {seen}
-              <HeartIcon props="white" />
+              <HeartIcon fill="white" />
               {favorite}
             </div>
           </div>
