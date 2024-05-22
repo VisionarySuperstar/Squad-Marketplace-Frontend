@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from "react";
 import Card from "@/components/main/cards/groupCard";
-import groups from "@/data/groups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP } from "@/types";
 import useCreatGroupState from "@/store/createGroupStatus";
@@ -12,7 +11,7 @@ import toast from "react-hot-toast";
 interface IProps {
   scale: number;
   recruitingState: boolean;
-  searchFilter:string;
+  searchFilter: string;
 }
 
 const AllGroup = ({ scale, recruitingState, searchFilter }: IProps) => {
@@ -50,34 +49,36 @@ const AllGroup = ({ scale, recruitingState, searchFilter }: IProps) => {
   };
 
   const filterAllGroupData_state = async () => {
-    if(!allGroupData) return ;
-    if(recruitingState){
-      const _groupdata = allGroupData.filter((_group:IGROUP) => _group.is_actively_recruiting === (recruitingState)) ;
-      setAllGroupData(_groupdata) ;
-    }
-    else{
+    if (!allGroupData) return;
+    if (recruitingState) {
+      const _groupdata = allGroupData.filter(
+        (_group: IGROUP) => _group.is_actively_recruiting === recruitingState
+      );
+      setAllGroupData(_groupdata);
+    } else {
       getAllGroupData();
     }
-  }
+  };
 
   const filterAllGroupData_search = async () => {
-    if(!allGroupData) return ;
-    if(searchFilter){
-      const _groupdata = allGroupData.filter((_group:IGROUP) => (_group.name).toLowerCase().includes(searchFilter.toLowerCase())) ;
-      setAllGroupData(_groupdata) ;
-    }
-    else{
+    if (!allGroupData) return;
+    if (searchFilter) {
+      const _groupdata = allGroupData.filter((_group: IGROUP) =>
+        _group.name.toLowerCase().includes(searchFilter.toLowerCase())
+      );
+      setAllGroupData(_groupdata);
+    } else {
       getAllGroupData();
     }
-  }
+  };
 
   useEffect(() => {
-    filterAllGroupData_state() ;
-  },[recruitingState])
+    filterAllGroupData_state();
+  }, [recruitingState]);
 
   useEffect(() => {
-    filterAllGroupData_search() ;
-  },[searchFilter])
+    filterAllGroupData_search();
+  }, [searchFilter]);
 
   useEffect(() => {
     getAllGroupData();
@@ -103,17 +104,18 @@ const AllGroup = ({ scale, recruitingState, searchFilter }: IProps) => {
               )}, 1fr)`,
             }}
           >
-            {allGroupData?.map((item, index) => (
-              <Card
-                key={index}
-                state={"1"}
-                name={item.name}
-                groupBio={item.description}
-                membercount={item.member.length}
-                groupId={item.id}
-                avatar={item.avatar}
-              />
-            ))}
+            {allGroupData &&
+              allGroupData?.map((item, index) => (
+                <Card
+                  key={index}
+                  state={"1"}
+                  name={item.name}
+                  groupBio={item.description}
+                  membercount={item.member.length}
+                  groupId={item.id}
+                  avatar={item.avatar}
+                />
+              ))}
           </div>
         </div>
       )}
