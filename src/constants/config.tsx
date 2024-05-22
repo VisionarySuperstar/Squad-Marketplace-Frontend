@@ -20,8 +20,6 @@ export const Factory_ADDRESSES = {
 
 export const USDC_ADDRESS = {
   [NetworkId.SEPOLIA]: "0x1578876aCc56349FC800B1f8efe624c688f5eF4B", //verified
-  [NetworkId.ETHEREUM]: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", //verified
-  [NetworkId.POLYGON]: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", //verified
 };
 
 // export const webSocketURL = "ws://localhost:8080/";
