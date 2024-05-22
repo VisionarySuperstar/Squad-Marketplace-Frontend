@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@iconify/react": "^4.1.1",
+    "@moonpay/moonpay-react": "^1.6.2",
     "@moralisweb3/next": "^2.25.2",
     "@rainbow-me/rainbowkit": "^2.0.6",
     "@safe-global/safe-apps-sdk": "^9.0.0",
