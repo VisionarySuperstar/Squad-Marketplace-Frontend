@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import dynamic from 'next/dynamic';
+
 const MoonpayModal = () => {
   const setMoonpayModalState = useNavbarUIControlStore(
     (state) => state.updateMoonpayModalState

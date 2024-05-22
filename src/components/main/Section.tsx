@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import ImageWithCaption from "./ImageWithCaption";
 import { IImageWithCaption } from "@/types/images";
 import NftCard from "./cards/nftCard";
