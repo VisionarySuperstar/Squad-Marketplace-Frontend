@@ -10,7 +10,7 @@ import useDynamicNavbarColor from "@/hooks/ui/useDynamicNavbarColor";
 import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 import useAllGroups from "@/hooks/views/useAllGroups";
 import useAllNfts from "@/hooks/views/useAllNfts";
-import { groupToCard, nftToCard } from "@/types";
+import { INFT, groupToCard, nftToCard } from "@/types";
 import {
   getNewlyMinted,
   getTopGroups,
