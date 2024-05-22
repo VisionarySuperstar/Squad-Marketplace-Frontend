@@ -34,6 +34,46 @@ export default function Home() {
     }
   }
   const { user } = useAuth();
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Create a new Date object
+    const date = new Date(timestampInMilliseconds);
+
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
+  function formatWalletAddress(address: string) {
+    if (!address) return;
+    // Extract the first 6 characters
+    const start = address.substring(0, 6);
+
+    // Extract the last 4 characters
+    const end = address.substring(address.length - 4);
+
+    // Combine the start, middle, and end parts
+    const formattedAddress = `${start}...${end}`;
+
+    return formattedAddress;
+  }
 
   return (
     <>
@@ -65,7 +105,10 @@ export default function Home() {
                 <div className="flex flex-col ">
                   <div>
                     <div className="text-gray-400">JOINED ON</div>
-                    <div>APRIL 3RD, 2024</div>
+                    <div>{formatDateWithTimeZone(
+                        Number(user.join_at),
+                        "America/New_York"
+                      )}</div>
                   </div>
                   <div className="mt-5">
                     <div className="text-gray-400">TOTAL COLLECTED</div>
@@ -78,7 +121,7 @@ export default function Home() {
                     <div className="flex gap-3">
                       <img src="/metamask.svg"></img>
                       <div className=" text-ellipsis max-w-[150px] overflow-hidden">
-                        {user.wallet}
+                      {formatWalletAddress(user?.wallet)}
                       </div>
                     </div>
                   </div>
