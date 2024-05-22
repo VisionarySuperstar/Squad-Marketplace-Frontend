@@ -18,6 +18,19 @@ function clientToSigner(client: any) {
   const signer = provider.getSigner(account.address);
   return signer;
 }
+function clientToProvider(client: any) {
+  const { account, chain, transport } = client;
+  if (!account || !chain || !transport) {
+    return undefined;
+  }
+  const network = {
+    chainId: chain.id,
+    name: chain.name,
+    ensAddress: chain.contracts?.ensRegistry?.address,
+  };
+  const provider = new providers.Web3Provider(transport, network);
+  return provider;
+}
 
 interface IContext {
   chain: Chain | undefined;
@@ -54,7 +67,10 @@ const Web3ContextProvider = ({
     () => (client ? clientToSigner(client) : undefined),
     [client]
   );
-
+  const provider = React.useMemo(
+    () => (client ? clientToProvider(client) : undefined),
+    [client]
+  );
   return (
     <Web3Context.Provider
       value={{
@@ -67,6 +83,7 @@ const Web3ContextProvider = ({
         connector,
         chainId,
         signer,
+        provider,
       }}
     >
       {children}
