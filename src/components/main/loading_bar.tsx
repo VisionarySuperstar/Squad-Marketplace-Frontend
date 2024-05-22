@@ -24,9 +24,9 @@ const LoadingScreen: React.FC = () => {
 
   return (
     <>
-      <div className="fixed w-full h-[2px] top-0 z-[9000] bg-transparent">
+      <div className="fixed w-full h-[2px] top-0 z-[9000] bg-transparent loadingbar">
         <div>
-          <LoadingBar color="#f11946" height={3} ref={ref} />
+          <LoadingBar color="#322a44" height={3} ref={ref} />
         </div>
       </div>
     </>

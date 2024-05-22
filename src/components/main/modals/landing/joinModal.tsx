@@ -7,7 +7,7 @@ import Person from "@/interfaces/person";
 import useUserStore from "@/store/user_infor/userinfor";
 
 const JoinModal = () => {
-  const joinModalState = useUIControlStore((state) => state.joinModal);
+  const generalModalState = useUIControlStore((state) => state.generalModal);
   const setJoinModalState = useUIControlStore((state) => state.updateJoinModal);
   const setWelcomeState = useUIControlStore(
     (state) => state.updateWelcomeModal
@@ -84,7 +84,7 @@ const JoinModal = () => {
             setJoinModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] marker:drop-shadow-lg">
+        <div className="generalModal z-[1300] marker:drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

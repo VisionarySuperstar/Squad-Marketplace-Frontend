@@ -42,7 +42,6 @@ export default function Home() {
       let carouselHeight = 0;
       if (carouselElement) {
         carouselHeight = carouselElement.clientHeight;
-        console.log(carouselElement.clientHeight);
       }
       const currentScrollPosition = window.scrollY;
 
@@ -57,7 +56,6 @@ export default function Home() {
     // Add event listener for window resize
     window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll);
-
     // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -124,7 +122,7 @@ export default function Home() {
                   )}, 1fr)`,
                 }}
               >
-                {allNftData.map((item, index) => (
+                {allNftData?.map((item, index) => (
                   <div
                     key={index}
                     className="relative text-md content-card cursor-pointer drop-shadow-lg"

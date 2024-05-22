@@ -20,27 +20,21 @@ import useAPI from "@/hooks/useAPI";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 
 import toast from "react-hot-toast";
 import Marketplace_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import useLoadingControlStore from "@/store/UI_control/loading";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
-  const setBidModalState = useMarketplaceUIControlStore(
-    (state) => state.updateBidModal
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
   );
-  const setWithdrawModalState = useMarketplaceUIControlStore(
-    (state) => state.updateWithdrawModal
-  );
-  const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
-  const withdrawModalState = useMarketplaceUIControlStore(
-    (state) => state.withdrawModal
-  );
-
   const [nftData, setNftData] = useState<INFT>();
   const [groupName, setGroupName] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
@@ -80,6 +74,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getNftData();
+    setLoadingState(false);
   }, []);
   const convertSecondsToTime = (seconds: number) => {
     const days = Math.floor(seconds / (24 * 60 * 60));
@@ -158,10 +153,10 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsLoading(true);
       setIsDisplaying(true);
 
-      const __director = await contract.director() ;
-      console.log("_director", __director) ;
-      const _name = await contract.name() ;
-      console.log("groupname", _name) ;
+      const __director = await contract.director();
+      console.log("_director", __director);
+      const _name = await contract.name();
+      console.log("groupname", _name);
 
       const nftId = await contract.getNFTId(
         nftData.collectionaddress,
@@ -169,14 +164,13 @@ const Home = ({ params }: { params: { id: string } }) => {
       );
       console.log("nftId", nftId.toString());
       console.log("auctionType", nftData.auctiontype);
-      console.log("currentbidder", nftData.currentbidder) ;
+      console.log("currentbidder", nftData.currentbidder);
       if (Number(nftData.auctiontype) === 0) {
-        if (nftData.currentbidder !== "0x000"){
+        if (nftData.currentbidder !== "0x000") {
           if (remainTime && remainTime > 0) {
             toast.error("Auction is not ended!");
             return;
-          }
-          else{
+          } else {
             toast.error("Already someone made a bid");
             return;
           }
@@ -252,17 +246,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       const tx = await contract.endEnglishAuction(nftId);
       await tx.wait();
       await api
-        .post("/api/updateNft", {
+        .post("/api/updateSoldNft", {
           id: nftData?.id,
           owner: nftData?.currentbidder,
           status: "sold",
-          auctionType: nftData?.auctiontype,
-          initialPrice: nftData?.initialprice,
-          salePeriod: nftData?.saleperiod,
           currentPrice: nftData?.currentprice,
-          currentBidder: nftData?.currentbidder,
-          reducingRate: nftData?.reducingrate,
-          listedNumber: nftData?.listednumber,
         })
         .catch((error) => {
           toast.error(error.message);
@@ -285,32 +273,40 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {nftData && (
-            <div className="drop-shadow-md lg:me-[40px] sm:me-0">
-              <Image
-                src={nftData?.avatar}
-                className="md:h-[70vh] w-full object-cover"
-                alt="group_avatar"
-                width={706}
-                height={706}
-              />
-              <div className="flex items-center gap-3 p-2">
-                <EyeIcon props="#322A44" />
-                <div>200</div>
-                <div>WATCHING</div>
-                <HeartIcon props="#322A44" />
-                <div>20</div>
+            <div className="lg:me-[40px] sm:me-0">
+              <div className="flex justify-center">
+                <PhotoProvider bannerVisible={false}>
+                  <PhotoView src={nftData.avatar}>
+                    <Image
+                      src={nftData.avatar}
+                      className="md:h-[70vh] object-contain w-auto"
+                      alt="group_avatar"
+                      width={706}
+                      height={706}
+                    />
+                  </PhotoView>
+                </PhotoProvider>
+              </div>
+              <Split_line />
+              <div>
+                <div className="flex items-center gap-3 p-2">
+                  <EyeIcon props="#322A44" />
+                  <div>200</div>
+                  <div>WATCHING</div>
+                  <HeartIcon props="#322A44" />
+                  <div>20</div>
+                </div>
               </div>
             </div>
           )}
           <div className="p-2 flex-col flex justify-between">
             <div className="flex-col">
               <div className="text-[18px] flex gap-4">
-                {nftData?.collectionname}
+                {nftData?.collectionname} #{nftData?.collectionid}
                 <div className="flex items-center">
                   <TrendingIcon />
                 </div>
               </div>
-              <div className="text-[18px] underline">COLLECTION</div>
               <div className="text-gray-400 mt-3">Group</div>
               <div className="text-[18px]">{groupName}</div>
               <div className="text-gray-400 mt-3">Auction Type</div>

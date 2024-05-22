@@ -18,6 +18,9 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import NftCard from "../../cards/nftCard";
+
+
 
 interface MintModalInterface {
   groupId: number;
@@ -37,7 +40,9 @@ const MintModal = ({
   uploadId,
   getNFTData,
 }: MintModalInterface) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
 
   const [allCollection, setAllCollection] = useState<ICOLLECTION[]>([]);
   const [showProgressModal, setShowProgressModal] =
@@ -130,7 +135,7 @@ const MintModal = ({
       .catch((error) => {
         toast.error(error.message);
       });
-    console.log("url", result?.data);
+    console.log("url", result?.data); 
     return result?.data;
   };
   const handleMint = async () => {
@@ -159,7 +164,7 @@ const MintModal = ({
     // progress Modal show
     setShowProgressModal(true);
     setIsLoading(true);
-    setIsDisplaying(true) ;
+    setIsDisplaying(true);
     // @step1 upload logo to PINATA
     setStepper(1);
     setPercent(0);
@@ -174,7 +179,25 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-    setStepper(2);
+    setStepper(2) ;
+    setPercent(0) ;
+    const _metadata = await uploadToIPFS(
+      new File([
+        JSON.stringify({
+          assetType: "image",
+          image: _avatar,
+        })
+      ], "metadata.json"),  
+      ({ loaded, total }: { loaded: number; total: number }) => {
+        setPercent(Math.floor((loaded * 100) / total));
+        console.log(percent);
+      }
+    ).catch((err) => {
+      console.log(err);
+      throw "Project Data upload failed to IPFS. Please retry.";
+    });
+    console.log("@logoURI: ", _avatar);
+    setStepper(3);
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
@@ -182,7 +205,7 @@ const MintModal = ({
       //setIsLoading(true);
       if (selected === allCollection.length) {
         const tx = await contract.mintNew(
-          _avatar,
+          _metadata,
           newCollectionName,
           newCollectionSymbol,
           newCollectionDescription
@@ -266,20 +289,20 @@ const MintModal = ({
       }
     } finally {
       setIsLoading(false);
-    setIsDisplaying(false) ;
-
+      setIsDisplaying(false);
     }
   };
   return (
     <>
+    
       <div className="z-100 font-Maxeville text-chocolate-main">
         <div
-          className=" bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setMintModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] drop-shadow-lg p-[25px]">
+        <div className="generalModal z-[1300] drop-shadow-lg p-[25px]">
           <div
             className="closeBtn"
             onClick={() => {
@@ -482,21 +505,23 @@ const MintModal = ({
               ) : (
                 <div className="p-1 w-1/4 mt-5 border-2 border-gray-400">
                   <div className="grid grid-cols-2 gap-2">
-                    {allCollection[selected].nft.slice(0,4).map((nfts, key1) => (
-                      <div
-                        key={key1}
-                        className="flex items-center justify-center"
-                      >
-                        <Image
-                          src={avatar[nfts.id]}
-                          className="w-full h-full aspect-square"
-                          width={0}
-                          height={0}
-                          sizes="100vw"
-                          alt="avatar"
-                        />
-                      </div>
-                    ))}
+                    {allCollection[selected].nft
+                      .slice(0, 4)
+                      .map((nfts, key1) => (
+                        <div
+                          key={key1}
+                          className="flex items-center justify-center"
+                        >
+                          <Image
+                            src={avatar[nfts.id]}
+                            className="w-full h-full aspect-square"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            alt="avatar"
+                          />
+                        </div>
+                      ))}
                   </div>
                   <div className="mt-1 bottom-0">
                     {allCollection[selected].name}
@@ -533,6 +558,7 @@ const MintModal = ({
                     "MINT"
                   )}
                 </button>
+
               </div>
             </div>
           )}

@@ -1,19 +1,19 @@
 import { create } from "zustand";
 
 type State = {
-  joinModal: boolean;
+  generalModal: boolean;
   welcomeModal: boolean;
 };
 
 type Action = {
-  updateJoinModal: (joinModal: State["joinModal"]) => void;
+  updateJoinModal: (generalModal: State["generalModal"]) => void;
   updateWelcomeModal: (welcomeModal: State["welcomeModal"]) => void;
 };
 
 const useLandingUIControlStore = create<State & Action>((set) => ({
-  joinModal: false,
+  generalModal: false,
   welcomeModal: false,
-  updateJoinModal: (value) => set(() => ({ joinModal: value })),
+  updateJoinModal: (value) => set(() => ({ generalModal: value })),
   updateWelcomeModal: (value) => set(() => ({ welcomeModal: value })),
 }));
 

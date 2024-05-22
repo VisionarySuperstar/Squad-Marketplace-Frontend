@@ -17,13 +17,14 @@ import toast from "react-hot-toast";
 import { INFT } from "@/types";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 
-
 interface WithdrawGroupModalInterface {
   nftData: INFT;
 }
 
 const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -48,23 +49,23 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
       signer
     );
     setContract(_market_contract);
-    
-    
   }, [address, chainId, signer, nftData]);
   useEffect(() => {
-    getWithdrawAmounts() ;
-  }, [contract]) ;
+    getWithdrawAmounts();
+  }, [contract]);
   const getWithdrawAmounts = async () => {
-    if(!contract) return ;
+    if (!contract) return;
     if (Number(nftData.auctiontype) === 0) {
       const value = await contract.withdrawBalanceForEnglishAuction(
-        BigInt(nftData.listednumber), user?.wallet
+        BigInt(nftData.listednumber),
+        user?.wallet
       );
       console.log("value ", value);
       setWithdrawAmount((Number(value) / 1e18).toString());
     } else if (Number(nftData.auctiontype) === 2) {
       const value = await contract.withdrawBalanceForOfferingSale(
-        BigInt(nftData.listednumber), user?.wallet
+        BigInt(nftData.listednumber),
+        user?.wallet
       );
       console.log("value ", value);
       setWithdrawAmount((Number(value) / 1e18).toString());
@@ -75,18 +76,21 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawAmount)){
-        toast.error("You don't have any balance to withdraw!") ;
-        return ;
+      if (!Number(withdrawAmount)) {
+        toast.error("You don't have any balance to withdraw!");
+        return;
       }
       setIsLoading(true);
-      setIsDisplaying(true) ;
+      setIsDisplaying(true);
       if (Number(nftData.auctiontype) === 0) {
-        const tx = await contract.withdrawFromEnglishAuction(BigInt(nftData.listednumber));
+        const tx = await contract.withdrawFromEnglishAuction(
+          BigInt(nftData.listednumber)
+        );
         await tx.wait();
-      }
-      else if (Number(nftData.auctiontype) === 2) {
-        const tx = await contract.withdrawFromOfferingSale(BigInt(nftData.listednumber));
+      } else if (Number(nftData.auctiontype) === 2) {
+        const tx = await contract.withdrawFromOfferingSale(
+          BigInt(nftData.listednumber)
+        );
         await tx.wait();
       }
 
@@ -99,8 +103,7 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
       }
     } finally {
       setIsLoading(false);
-      setIsDisplaying(false) ;
-
+      setIsDisplaying(false);
     }
   };
   return (
@@ -111,7 +114,7 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
           setWithdrawModalState(false);
         }}
       ></div>
-      <div className="joinModal z-[1300] drop-shadow-lg">
+      <div className="generalModal px-5 z-[1300] drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {

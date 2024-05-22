@@ -20,14 +20,16 @@ import { isAuthenticatedAtom, userAtom } from "@/store/user";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 
-
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
-  const CreateProfileModal = () => {
-  const setIsDisplaying = useDisplayingControlStore((state) => state.updateDisplayingState);
+const CreateProfileModal = () => {
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
 
   const setProfileModalState = useGroupUIControlStore(
     (state) => state.updateProfileModal
   );
+
   const [name, setName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [preview, setPreview] = React.useState<string>("");
@@ -107,7 +109,6 @@ const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
     } finally {
       setIsLoading(false);
       setIsDisplaying(false);
-
     }
   };
   const handleSubmit = () => {
@@ -134,11 +135,7 @@ const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-  React.useEffect(() => {
-    console.log("preview changed!!!");
-    console.log(preview);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preview]);
+
   return (
     <>
       <div className="z-100 font-Maxeville">
@@ -148,7 +145,7 @@ const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
             setProfileModalState(false);
           }}
         ></div>
-        <div className="joinModal z-[1300] drop-shadow-lg">
+        <div className="generalModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {
@@ -182,7 +179,7 @@ const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
                         width={70}
                         height={70}
                         alt=""
-                        className="rounded-full aspect-square bg-[#be6a6a6b] z-[10000]"
+                        className="rounded-full object-cover aspect-square bg-[#be6a6a6b] z-[10000]"
                       />
                     ) : (
                       <Icon

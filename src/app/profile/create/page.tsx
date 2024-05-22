@@ -10,7 +10,7 @@ import { IMGBB_API_KEY } from "@/constants/config";
 import InputInfo from "@/components/main/infoInput";
 import useAPI from "@/hooks/useAPI";
 import { useAtom } from "jotai";
-import { isAuthenticatedAtom, userAtom } from "@/store/user";
+import { userAtom } from "@/store/user";
 import toast from "react-hot-toast";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];

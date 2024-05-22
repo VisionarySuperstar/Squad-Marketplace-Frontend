@@ -29,17 +29,8 @@ const AuthProvider = ({
   children,
 }: Readonly<{ children: React.ReactNode }>) => {
   //hooks
-  const {
-    address,
-    chain,
-    signer,
-    isConnected,
-    isConnecting,
-    isReconnecting,
-    connector,
-    isDisconnected,
-    chainId,
-  } = useActiveWeb3();
+  const { address, chain, isConnected, isDisconnected, chainId } =
+    useActiveWeb3();
   const { signMessageAsync } = useSignMessage();
 
   const api = useAPI();
@@ -70,7 +61,6 @@ const AuthProvider = ({
     try {
       if (!chain) throw "chain is not defined...";
       if (!address) throw "address is not defined...";
-
       const response = await api
         .post(`/auth/user/request-message`, {
           chain: 1,
@@ -104,8 +94,6 @@ const AuthProvider = ({
       if (signData === "NONE") {
         _setAuth(undefined, undefined);
         setProfileModalState(true);
-        // router.push("/profile/create")
-
         toast.success("Please create your profile.");
       } else {
         window.localStorage.setItem("accessToken", signData);
@@ -182,10 +170,12 @@ const AuthProvider = ({
       if (registerData === "exists") {
         toast.error("User already exists.");
       } else {
+        window.localStorage.setItem("accessToken", registerData);
         const result: any = jwt.decode(registerData);
-        console.log(result?.data);
+        console.log("signupuser:", result?.data);
         _setAuth(result?.data, registerData);
-        toast.success("Profile created Successfully.");
+        setProfileModalState(false);
+        toast.success("Signin Success");
       }
     } catch (err: any) {
       console.log(err);
