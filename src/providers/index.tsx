@@ -17,7 +17,7 @@ const Provider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <ThemeProvider theme={theme}>
       <ToastProvider>
-      <MoonPayProvider apiKey="pk_test_4DFSiqXHV0Dp6xP1y1fvkFFZ6R4wIiGT" debug>
+      <MoonPayProvider apiKey="pk_test_4DFSiqXHV0Dp6xP1y1fvkFFZ6R4wIiGT" >
         <RainbowProvider>
           <ActiveWeb3Provider>
             <AuthProvider>
