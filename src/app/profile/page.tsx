@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import NewGroupModal from "@/components/main/modals/groups/newGroupModal";
@@ -12,6 +12,8 @@ import Footer from "@/components/main/footer/footer";
 import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
 import useAuth from "@/hooks/useAuth";
+import useAllNfts from "@/hooks/views/useAllNfts";
+import { INFT } from "@/types";
 
 export default function Home() {
   const router = useRouter();
@@ -75,6 +77,13 @@ export default function Home() {
     return formattedAddress;
   }
 
+  const allNfts = useAllNfts();
+  const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]) ;
+  useEffect(() =>{
+    if(!allNfts) return ;
+    setCollectedNfts(allNfts.filter((nft) => nft.owner === user?.wallet)) ;
+  }, [allNfts])
+
   return (
     <>
       {user && (
@@ -112,7 +121,7 @@ export default function Home() {
                   </div>
                   <div className="mt-5">
                     <div className="text-gray-400">TOTAL COLLECTED</div>
-                    <div>28</div>
+                    <div>{collectedNfts?collectedNfts.length:"0"}</div>
                   </div>
                 </div>
                 <div className="flex flex-col">
@@ -173,15 +182,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          COLLECTED
-                        </a>
-                        <a
-                          onClick={() => {
-                            scrollToElement("liked");
-                          }}
-                          className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
-                        >
-                          LIKED
+                          COLLECTED ({collectedNfts?collectedNfts.length:"0"})
                         </a>
                         <a
                           onClick={() => {
@@ -258,49 +259,21 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {NFT_DATA.map((item, index) => (
+                {collectedNfts.map((item, index) => (
                   <div
                     key={index}
                     className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                   >
                     <NftCard
                       avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
+                      collectionName={item.collectionname}
+                      collectionId={Number(item.collectionid)}
                       seen={200}
                       favorite={20}
                       price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <Split_line />
-            <div className="mt-5" id="liked">
-              <div className="flex gap-3">
-                <img src="/favorite.svg"></img>
-                <h1 className="text-[18px]">LIKED</h1>
-              </div>
-              <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {NFT_DATA.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
-                      seen={200}
-                      favorite={20}
-                      price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
+                        item.currentprice
+                          ? Number(item.currentprice)
+                          : Number(item.initialprice)
                       }
                     />
                   </div>
