@@ -160,23 +160,18 @@ export default function Home() {
               <h1 className="text-[18px]">ACTIVE BIDS (5)</h1>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {NFT_DATA.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
-                      seen={200}
-                      favorite={20}
-                      price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
-                      }
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionName}
+                    collectionId={1}
+                    seen={200}
+                    favorite={20}
+                    price={
+                      item.currentPrice ? item.currentPrice : item.initialPrice
+                    }
+                  />
                 ))}
               </div>
             </div>
@@ -216,23 +211,18 @@ export default function Home() {
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {NFT_DATA.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
-                      seen={200}
-                      favorite={20}
-                      price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
-                      }
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionName}
+                    collectionId={1}
+                    seen={200}
+                    favorite={20}
+                    price={
+                      item.currentPrice ? item.currentPrice : item.initialPrice
+                    }
+                  />
                 ))}
               </div>
             </div>
@@ -244,23 +234,18 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {NFT_DATA.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
-                      seen={200}
-                      favorite={20}
-                      price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
-                      }
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionName}
+                    collectionId={1}
+                    seen={200}
+                    favorite={20}
+                    price={
+                      item.currentPrice ? item.currentPrice : item.initialPrice
+                    }
+                  />
                 ))}
               </div>
             </div>

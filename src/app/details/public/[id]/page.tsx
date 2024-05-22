@@ -19,7 +19,7 @@ import { INFT, ICOLLECTION } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
-import { Marketplace_ADDRESSES } from "@/constants/config";
+import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
 import useAuth from "@/hooks/useAuth";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
@@ -335,7 +335,12 @@ const Home = ({ params }: { params: { id: string } }) => {
         .includes(String(_nft.id))
     );
     _allNftData = _allNftData.filter(
+<<<<<<< HEAD
       (_nft: INFT) => String(_nft.id) !== String(data.id)
+=======
+      (_nft: INFT) =>
+        String(_nft.id) !== String(data.id) && _nft.status !== "mint"
+>>>>>>> b6932b2afa5126fb08953a0a7f4d93a70359be9a
     );
     console.log("_selected nfts ", _allNftData);
     setSelectedNFTS(_allNftData);
@@ -559,22 +564,16 @@ const Home = ({ params }: { params: { id: string } }) => {
             className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
           >
             {selectedNFTS?.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                onClick={() => {
-                  router.push(`/details/public/${item.id}`);
-                }}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={parseInt(item.collectionid)}
-                  price={parseInt(item.currentprice)}
-                  seen={200}
-                  favorite={20}
-                />
-              </div>
+                id={item.id}
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={parseInt(item.collectionid)}
+                price={parseInt(item.currentprice)}
+                seen={200}
+                favorite={20}
+              />
             ))}
           </div>
         </div>

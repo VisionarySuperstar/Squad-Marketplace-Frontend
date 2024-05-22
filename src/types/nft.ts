@@ -1,4 +1,5 @@
 export interface INFTCard {
+  id: string;
   avatar: string;
   collectionName: string;
   collectionId: number;
@@ -25,10 +26,12 @@ export interface INFT {
   listednumber: string;
   marketplacenumber: string;
   created_at: string;
+  ranking: string;
 }
 
 export function nftToCard(nft: INFT): INFTCard {
   return {
+    id: nft.id,
     avatar: nft.avatar,
     collectionName: nft.collectionname,
     collectionId: Number(nft.collectionid),

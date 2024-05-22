@@ -873,20 +873,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts?.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                onClick={() => router.push(`/details/private/sold/${item.id}`)}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={Number(item.collectionid)}
-                  seen={200}
-                  favorite={20}
-                  price={Number(item.currentprice)}
-                />
-              </div>
+                id={item.id}
+                basePath="/details/private/sold"
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={Number(item.collectionid)}
+                seen={200}
+                favorite={20}
+                price={Number(item.currentprice)}
+              />
             ))}
           </div>
           <Split_line />
@@ -901,20 +898,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {listedNfts.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                onClick={() => router.push(`/details/private/live/${item.id}`)}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={Number(item.collectionid)}
-                  seen={200}
-                  favorite={20}
-                  price={Number(item.currentprice)}
-                />
-              </div>
+                id={item.id}
+                basePath="/details/private/live"
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={Number(item.collectionid)}
+                seen={200}
+                favorite={20}
+                price={Number(item.currentprice)}
+              />
             ))}
           </div>
           <Split_line />
@@ -929,20 +923,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {mintedNfts.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                onClick={() => router.push(`/details/private/mint/${item.id}`)}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={Number(item.collectionid)}
-                  seen={200}
-                  favorite={20}
-                  price={Number(item.currentprice)}
-                />
-              </div>
+                id={item.id}
+                basePath="/details/private/mint"
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={Number(item.collectionid)}
+                seen={200}
+                favorite={20}
+                price={Number(item.currentprice)}
+              />
             ))}
           </div>
           <Split_line />

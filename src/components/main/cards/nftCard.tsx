@@ -6,20 +6,33 @@ import HeartIcon from "@/components/svgs/heart_icon";
 import useLoadingControlStore from "@/store/UI_control/loading";
 import { INFTCard } from "@/types/nft";
 
-const NftCard: React.FC<INFTCard> = ({
+type Props = INFTCard & {
+  basePath?: string;
+};
+
+const NftCard: React.FC<Props> = ({
+  id,
   avatar,
   collectionName,
   collectionId,
   price,
   seen,
   favorite,
+  basePath = "/details/public",
 }) => {
+  const router = useRouter();
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
   const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
   return (
-    <>
+    <div
+      className="relative text-md content-card cursor-pointer drop-shadow-lg"
+      onClick={() => {
+        console.log("clicked");
+        router.push(`${basePath}/${id}`);
+      }}
+    >
       <div
         className="transition-transform duration-200 active:translate-y-1 aspect-square"
         onClick={() => {
@@ -57,7 +70,7 @@ const NftCard: React.FC<INFTCard> = ({
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
