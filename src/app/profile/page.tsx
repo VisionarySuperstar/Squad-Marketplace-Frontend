@@ -13,6 +13,7 @@ import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
 import useAuth from "@/hooks/useAuth";
 import useAllNfts from "@/hooks/views/useAllNfts";
+import useMyGroups from "@/hooks/views/useMyGroups";
 import { INFT } from "@/types";
 
 export default function Home() {
@@ -78,6 +79,7 @@ export default function Home() {
   }
 
   const allNfts = useAllNfts();
+  const myGroups = useMyGroups();
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]) ;
   useEffect(() =>{
     if(!allNfts) return ;
@@ -174,7 +176,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          GROUPS (3)
+                          GROUPS ({myGroups?myGroups.length:"0"})
                         </a>
                         <a
                           onClick={() => {
@@ -221,16 +223,16 @@ export default function Home() {
             </div>
             <Split_line />
             <div className="mt-5" id="groups">
-              <h1 className="text-[18px]">GROUPS (5)</h1>
+              <h1 className="text-[18px]">GROUPS ({myGroups?myGroups.length:"0"})</h1>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {GROUPS_DATA.map((item, index) => (
+                {myGroups.map((item, index) => (
                   <GroupCard
                     key={index}
                     state={"2"}
                     name={item.name}
-                    groupBio={item.bio}
-                    membercount={item.members.length}
-                    groupId={index.toString()}
+                    groupBio={item.description}
+                    membercount={item.member.length}
+                    groupId={item.id}
                     avatar={item.avatar}
                   />
                 ))}
@@ -239,11 +241,11 @@ export default function Home() {
             <Split_line />
             <div className="mt-5" id="collected">
               <div className="flex justify-between">
-                <h1 className="text-[18px]">COLLECTED (28)</h1>
+                <h1 className="text-[18px]">COLLECTED ({collectedNfts?collectedNfts.length:"0"})</h1>
                 <h1 className="text-[18px] underline">VIEW ALL +</h1>
               </div>
 
-              <div className="flex p-[1px] border rounded-[30px] border-black h-[30px] md:w-[472px] xs:w-full mt-5">
+              {/* <div className="flex p-[1px] border rounded-[30px] border-black h-[30px] md:w-[472px] xs:w-full mt-5">
                 <input
                   className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                   placeholder="SEARCH"
@@ -251,7 +253,7 @@ export default function Home() {
                 <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
                   ENTER
                 </button>
-              </div>
+              </div> */}
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {collectedNfts.map((item, index) => (
