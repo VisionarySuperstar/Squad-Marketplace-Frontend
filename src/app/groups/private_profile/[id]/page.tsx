@@ -488,7 +488,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawAmount)) {toast.error("You do not have funds to withdraw!");return;}
       setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
@@ -510,10 +509,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawFromMarketplaceAmount)) {toast.error("You do not have funds to withdraw!"); return;}
       setIsDisplaying(true);
       setIsLoadingWithdrawMarketplaceButton(true);
-
       const tx = await contract.withdrawFromMarketplace();
       await tx.wait();
       getBalancesForWithdraw();
