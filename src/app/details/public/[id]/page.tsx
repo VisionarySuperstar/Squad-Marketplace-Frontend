@@ -335,7 +335,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         .includes(String(_nft.id))
     );
     _allNftData = _allNftData.filter(
-      (_nft: INFT) => (String(_nft.id) !== String(data.id) && _nft.status !== "mint")
+      (_nft: INFT) => String(_nft.id) !== String(data.id)
     );
     console.log("_selected nfts ", _allNftData);
     setSelectedNFTS(_allNftData);

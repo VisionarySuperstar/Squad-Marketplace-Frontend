@@ -7,7 +7,6 @@ import Image from "next/image";
 
 import Notification from "@/components/main/News&message/notifications";
 import CreateProfileModal from "@/components/main/modals/createProfileModal";
-import WalletInforModal from "./modals/walletInforModal";
 
 import { Popover } from "flowbite-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -23,7 +22,6 @@ import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import useUserStore from "@/store/user_infor/userinfor";
 import useNotificationUIControlStore from "@/store/UI_control/notification";
 import useLoadingControlStore from "@/store/UI_control/loading";
-import MoonpayModal from "./modals/moonpayModal";
 
 const NavBar = () => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
@@ -60,19 +58,6 @@ const NavBar = () => {
     (state) => state.updateCreateGroupModal
   );
   const setCurrent = useNavbarUIControlStore((state) => state.updateUrl);
-  const setWalletInforModalState = useNavbarUIControlStore(
-    (state) => state.updateWalletInforModalState
-  );
-  const walletInforModalState = useNavbarUIControlStore(
-    (state) => state.walletInforModalState
-  );
-
-  const moonpayModalState = useNavbarUIControlStore(
-    (state) => state.moonpayModalState
-  );
-  const setMoonpayModalState = useNavbarUIControlStore(
-    (state) => state.updateMoonpayModalState
-  );
 
   const router = useRouter();
 
@@ -191,8 +176,7 @@ const NavBar = () => {
   return (
     <>
       {profileModalState && <CreateProfileModal />}
-      {walletInforModalState && <WalletInforModal />}
-      {moonpayModalState && <MoonpayModal />}
+
       {isShow && (
         <>
           <div
@@ -313,7 +297,7 @@ const NavBar = () => {
                        hover:after:bg-chocolate-main
                     `}
                       onClick={() => {
-                        if (user) setWalletInforModalState(true);
+                        openChainModal();
                       }}
                     >
                       <div>
