@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import MyGroups from "@/data/mygroups.json";
 import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
-import { INFT } from "@/types";
+import { IActive_Bids, INFT } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
@@ -150,7 +150,16 @@ const BidGroupModal = ({
             toast.error(error.message);
           });
       }
-
+      const _active_bids:IActive_Bids[] = await api.post("api/getBidState", {id:user.id});
+      const isExist = _active_bids.find((item:IActive_Bids) => item.nft === nftData.id);
+      if(!isExist) api
+        .post("/api/addBidState", {
+          bidder: user.id,
+          nft: nftData.id
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {

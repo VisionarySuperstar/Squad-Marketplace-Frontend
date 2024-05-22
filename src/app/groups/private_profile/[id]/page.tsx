@@ -393,6 +393,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
+      await api
+        .post("/api/removeBidState", {
+          bidder: user.id,
+          nft: item_nft.id
+        })
       getMyGroupData();
       getNFTData();
     } catch (error: any) {

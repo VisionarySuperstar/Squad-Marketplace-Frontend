@@ -93,7 +93,10 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
         );
         await tx.wait();
       }
-
+      await api.post("/api/removeBidState", {
+        bidder: user.id,
+        nft: nftData.id
+      })
       setWithdrawModalState(false);
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
