@@ -13,7 +13,9 @@ import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
 import useAuth from "@/hooks/useAuth";
 import useAllNfts from "@/hooks/views/useAllNfts";
-import { INFT } from "@/types";
+import useMyGroups from "@/hooks/views/useMyGroups";
+import useActiveBids from "@/hooks/views/useActiveBids";
+import { IGROUP, INFT } from "@/types";
 
 export default function Home() {
   const router = useRouter();
@@ -78,11 +80,20 @@ export default function Home() {
   }
 
   const allNfts = useAllNfts();
+  const myGroups = useMyGroups();
+  const activeBids = useActiveBids();
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]) ;
+  const [bidNfts, setBidNfts] = useState<INFT[]>([]) ;
+
   useEffect(() =>{
     if(!allNfts) return ;
     setCollectedNfts(allNfts.filter((nft) => nft.owner === user?.wallet)) ;
   }, [allNfts])
+
+  useEffect(() => {
+    if(!activeBids || !allNfts) return ;
+    setBidNfts(allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id)))
+  }, [activeBids, allNfts])
 
   return (
     <>
@@ -166,7 +177,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          ACTIVE BIDS (5)
+                          ACTIVE BIDS ({bidNfts?bidNfts.length:"0"})
                         </a>
                         <a
                           onClick={() => {
@@ -174,7 +185,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          GROUPS (3)
+                          GROUPS ({myGroups?myGroups.length:"0"})
                         </a>
                         <a
                           onClick={() => {
@@ -201,19 +212,19 @@ export default function Home() {
           </div>
           <div className="page_container_p40">
             <div className="mt-5" id="active_bid">
-              <h1 className="text-[18px]">ACTIVE BIDS (5)</h1>
+              <h1 className="text-[18px]">ACTIVE BIDS ({bidNfts?bidNfts.length:"0"})</h1>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {NFT_DATA.map((item, index) => (
+                {bidNfts.map((item, index) => (
                   <NftCard
                     key={index}
                     id={item.id}
                     avatar={item.avatar}
-                    collectionName={item.collectionName}
-                    collectionId={1}
+                    collectionName={item.collectionname}
+                    collectionId={Number(item.collectionid)}
                     seen={200}
                     favorite={20}
                     price={
-                      item.currentPrice ? item.currentPrice : item.initialPrice
+                      item.currentprice ? Number(item.currentprice) : Number(item.initialprice)
                     }
                   />
                 ))}
@@ -221,15 +232,15 @@ export default function Home() {
             </div>
             <Split_line />
             <div className="mt-5" id="groups">
-              <h1 className="text-[18px]">GROUPS (5)</h1>
+              <h1 className="text-[18px]">GROUPS ({myGroups?myGroups.length:"0"})</h1>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {GROUPS_DATA.map((item, index) => (
+                {myGroups.map((item, index) => (
                   <GroupCard
                     key={index}
                     state={"2"}
                     name={item.name}
-                    groupBio={item.bio}
-                    membercount={item.members.length}
+                    groupBio={item.description}
+                    membercount={item.member.length}
                     groupId={index.toString()}
                     avatar={item.avatar}
                   />
@@ -239,18 +250,8 @@ export default function Home() {
             <Split_line />
             <div className="mt-5" id="collected">
               <div className="flex justify-between">
-                <h1 className="text-[18px]">COLLECTED (28)</h1>
+                <h1 className="text-[18px]">COLLECTED ({collectedNfts?collectedNfts.length:"0"})</h1>
                 <h1 className="text-[18px] underline">VIEW ALL +</h1>
-              </div>
-
-              <div className="flex p-[1px] border rounded-[30px] border-black h-[30px] md:w-[472px] xs:w-full mt-5">
-                <input
-                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
-                  placeholder="SEARCH"
-                ></input>
-                <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
-                  ENTER
-                </button>
               </div>
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
