@@ -9,10 +9,6 @@ import Carousel_Component from "@/components/main/carousel";
 import useAllGroups from "@/hooks/views/useAllGroups";
 import useAllNfts from "@/hooks/views/useAllNfts";
 import {
-  imageWithCaptionFromGroup,
-  imageWithCaptionFromNFT,
-} from "@/types/images";
-import {
   getNewlyMinted,
   getTopGroups,
   getTopNfts,

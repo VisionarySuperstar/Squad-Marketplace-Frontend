@@ -9,23 +9,35 @@ import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
 import { IImageWithCaption } from "@/types/images";
 
-
 type Props = IImageWithCaption & {
   height: number;
   imageStyle?: string;
   captionColor?: string;
   captionAlign?: string;
-}
+};
 
-const ImageWithCaption = ({ src, alt, caption, height, imageStyle = "", captionColor = "text-black", captionAlign = "text-left" }: Props) => {
+const ImageWithCaption = ({
+  src,
+  alt,
+  caption,
+  height,
+  imageStyle = "",
+  captionColor = "text-black",
+  captionAlign = "text-left",
+}: Props) => {
   return (
     <div className="h-full">
-      <Image className={`mx-auto ${imageStyle}`} src={src} alt={alt} width={500} height={height} />
+      <Image
+        className={`mx-auto ${imageStyle}`}
+        src={src}
+        alt={alt}
+        width={500}
+        height={height}
+        unoptimized
+      />
       <h3 className={`${captionAlign} ${captionColor}`}>{caption}</h3>
     </div>
   );
-
 };
-
 
 export default ImageWithCaption;
