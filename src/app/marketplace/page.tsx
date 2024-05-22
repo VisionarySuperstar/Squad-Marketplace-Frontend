@@ -14,7 +14,7 @@ import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 
 export default function Home() {
-  const [scale, setScale] = React.useState<number>(60);
+  const [scale, setScale] = React.useState<number>(65);
 
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>(0);
@@ -115,7 +115,7 @@ export default function Home() {
           {enableScale && (
             <div className="page_container_p40 mt-5">
               <div
-                className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+                className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4`}
                 style={{
                   gridTemplateColumns: `repeat(${Math.floor(
                     (100 - scale) / 10 + 1
@@ -123,23 +123,16 @@ export default function Home() {
                 }}
               >
                 {allNftData?.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                    onClick={() => {
-                      console.log("clicked");
-                      router.push(`/details/public/${item.id}`);
-                    }}
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={parseInt(item.collectionid)}
-                      price={parseInt(item.currentprice)}
-                      seen={200}
-                      favorite={20}
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
                 ))}
               </div>
             </div>
@@ -147,23 +140,19 @@ export default function Home() {
           {!enableScale && (
             <div className="page_container_p40 mt-5">
               <div
-                className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+                className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2`}
               >
                 {allNftData.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                    onClick={() => router.push(`/details/public/${item.id}`)}
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={parseInt(item.collectionid)}
-                      price={parseInt(item.currentprice)}
-                      seen={200}
-                      favorite={20}
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
                 ))}
               </div>
             </div>

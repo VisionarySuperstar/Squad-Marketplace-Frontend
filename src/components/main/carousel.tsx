@@ -63,6 +63,7 @@ const Carousel_Component = ({ hasCaption }: Props) => {
                     width={1000}
                     src={`/assets/images/slide/marketplace_slide/${image}`}
                     className="h-full object-cover w-full mx-auto"
+                    unoptimized
                   />
                 )}
               </div>
