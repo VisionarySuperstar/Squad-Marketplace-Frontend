@@ -6,6 +6,8 @@ type State = {
   isbackbtn: boolean;
   isbackground: boolean;
   isgroupbtn: boolean;
+  walletInforModalState: boolean;
+  moonpayModalState: boolean;
 };
 
 type Action = {
@@ -14,6 +16,12 @@ type Action = {
   updateIsBackbtn: (isbackbtn: State["isbackbtn"]) => void;
   updateIsBackground: (isbackground: State["isbackground"]) => void;
   updateIsGroupBtn: (isbackground: State["isbackground"]) => void;
+  updateWalletInforModalState: (
+    walletInforModalState: State["walletInforModalState"]
+  ) => void;
+  updateMoonpayModalState: (
+    moonpayModalState: State["moonpayModalState"]
+  ) => void;
 };
 
 const useNavbarUIControlStore = create<State & Action>((set) => ({
@@ -22,6 +30,10 @@ const useNavbarUIControlStore = create<State & Action>((set) => ({
   isbackbtn: false,
   isbackground: false,
   isgroupbtn: false,
+  walletInforModalState: false,
+  moonpayModalState:false,
+  updateMoonpayModalState: (value) => set(() => ({ moonpayModalState: value })),
+  updateWalletInforModalState: (value) => set(() => ({ walletInforModalState: value })),
   updateUrl: (value) => set(() => ({ url: value })),
   updateIsShow: (value) => set(() => ({ isshow: value })),
   updateIsBackbtn: (value) => set(() => ({ isbackbtn: value })),
