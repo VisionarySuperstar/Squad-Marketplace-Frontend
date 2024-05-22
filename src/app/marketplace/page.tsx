@@ -123,23 +123,16 @@ export default function Home() {
                 }}
               >
                 {allNftData?.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                    onClick={() => {
-                      console.log("clicked");
-                      router.push(`/details/public/${item.id}`);
-                    }}
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={parseInt(item.collectionid)}
-                      price={parseInt(item.currentprice)}
-                      seen={200}
-                      favorite={20}
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
                 ))}
               </div>
             </div>
@@ -150,20 +143,16 @@ export default function Home() {
                 className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2`}
               >
                 {allNftData.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                    onClick={() => router.push(`/details/public/${item.id}`)}
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={parseInt(item.collectionid)}
-                      price={parseInt(item.currentprice)}
-                      seen={200}
-                      favorite={20}
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
                 ))}
               </div>
             </div>
