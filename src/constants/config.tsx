@@ -20,16 +20,14 @@ export const Factory_ADDRESSES = {
 
 export const USDC_ADDRESS = {
   [NetworkId.SEPOLIA]: "0x1578876aCc56349FC800B1f8efe624c688f5eF4B", //verified
-  [NetworkId.ETHEREUM]: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", //verified 
+  [NetworkId.ETHEREUM]: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", //verified
   [NetworkId.POLYGON]: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", //verified
 };
 
-export const webSocketURL = "ws://localhost:8080/";
-export const baseURL = "http://localhost:8080/";
-// export const webSocketURL =
-//   process.env.NEXT_PUBLIC_API_WS_URL || "ws://37.60.229.95:8080/";
-// export const baseURL =
-//   process.env.NEXT_PUBLIC_API_HTTP_URL || "http://37.60.229.95:8080/";
+// export const webSocketURL = "ws://localhost:8080/";
+// export const baseURL = "http://localhost:8080/";
+export const webSocketURL = "ws://37.60.229.95:8080/";
+export const baseURL = "http://37.60.229.95:8080/";
 
 export const IMGBB_API_KEY = "cef3855d197b6e623e08088e854ed444";
 export const PINATA_KEY =

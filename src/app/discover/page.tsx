@@ -1,83 +1,27 @@
 "use client";
+
 import ImageHero from "@/components/main/ImageHero";
 import Section from "@/components/main/Section";
-import useLoadingControlStore from "@/store/UI_control/loading";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
-import React, { useEffect, useState } from "react";
 
+import GroupCard from "@/components/main/cards/groupCard";
+import NftCard from "@/components/main/cards/nftCard";
 import Carousel_Component from "@/components/main/carousel";
+import useDynamicNavbarColor from "@/hooks/ui/useDynamicNavbarColor";
+import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 import useAllGroups from "@/hooks/views/useAllGroups";
 import useAllNfts from "@/hooks/views/useAllNfts";
-import {
-  imageWithCaptionFromGroup,
-  imageWithCaptionFromNFT,
-} from "@/types/images";
+import { INFT, groupToCard, nftToCard } from "@/types";
 import {
   getNewlyMinted,
   getTopGroups,
   getTopNfts,
 } from "@/utils/data-processing";
 import Link from "next/link";
-import NftCard from "@/components/main/cards/nftCard";
-import { groupToCard, nftToCard } from "@/types";
-import GroupCard from "@/components/main/cards/groupCard";
 
 export default function Home() {
-  const [enableScale, setEnableScale] = useState<boolean>(true);
-  const [screenWidth, setScreenWidth] = useState<number>(0);
+  const headerRef = useDynamicNavbarColor();
 
-  const updateNavbarBackground = useNavbarUIControlStore(
-    (state) => state.updateIsBackground
-  );
-
-  const setLoadingState = useLoadingControlStore(
-    (state) => state.updateLoadingState
-  );
-
-  useEffect(() => {
-    setLoadingState(false);
-  }, [setLoadingState]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-    };
-    const handleScroll = () => {
-      const carouselElement = document.getElementById("marketplace_carousel");
-      const imageHero = document.getElementById("imagehero");
-      let carouselHeight = 0;
-      let imageHeroHeight = 0;
-      if (carouselElement) {
-        carouselHeight = carouselElement.clientHeight;
-      }
-      if (imageHero) {
-        imageHeroHeight = imageHero.clientHeight;
-      }
-      let limitHeight = 0;
-      limitHeight = Math.max(carouselHeight, imageHeroHeight);
-      const currentScrollPosition = window.scrollY;
-      if (currentScrollPosition >= limitHeight) {
-        updateNavbarBackground(true);
-      } else {
-        updateNavbarBackground(false);
-      }
-    };
-    // Set initial screen width
-    setScreenWidth(window.innerWidth);
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll);
-
-    // Clean up
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.addEventListener("scroll", handleScroll);
-    };
-  }, [updateNavbarBackground]);
-
-  useEffect(() => {
-    setEnableScale(screenWidth > 1000);
-  }, [screenWidth]);
+  useEndLoadingState();
 
   const allGroups = useAllGroups();
   const topGroups = getTopGroups(allGroups);
@@ -88,11 +32,13 @@ export default function Home() {
 
   return (
     <>
-      <div className="hidden lg:block image-hero">
-        <ImageHero />
-      </div>
-      <div className="block lg:hidden carousel">
-        <Carousel_Component hasCaption={true} />
+      <div ref={headerRef}>
+        <div className="hidden lg:block image-hero">
+          <ImageHero />
+        </div>
+        <div className="block lg:hidden carousel">
+          <Carousel_Component hasCaption={true} />
+        </div>
       </div>
       <div
         className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"
