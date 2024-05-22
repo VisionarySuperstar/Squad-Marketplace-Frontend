@@ -67,6 +67,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [contentContract, setContentContract] = useState<Contract | undefined>(
     undefined
   );
+  
   const [data, setData] = useState<INFT | undefined>(undefined);
   const [groupName, setGroupName] = useState<string>("");
   const api = useAPI();

@@ -28,6 +28,7 @@ interface IContext {
   isReconnecting: boolean;
   isDisconnected: boolean;
   connector: any | undefined;
+  provider: any | undefined;
   signer: any | undefined;
 }
 
