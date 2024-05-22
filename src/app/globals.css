@@ -45,8 +45,6 @@ body {
   top: calc(var(--perX) * 132);
 }
 
-.loadingbar {
-}
 
 .LaptopLogo {
   position: absolute;
@@ -344,6 +342,17 @@ body {
 .generalModal {
   position: fixed;
   width: max(565px, calc(var(--perX) * 565));
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 15px;
+  animation: pulse 0.3s;
+}
+
+.generalModal-1 {
+  position: fixed;
+  width: max(400px, calc(var(--perX) * 400));
   background-color: white;
   top: 50%;
   left: 50%;
