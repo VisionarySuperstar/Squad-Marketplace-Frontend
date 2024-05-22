@@ -15,6 +15,7 @@ export interface IGROUP {
   earning: string;
   address: string;
   is_actively_recruiting: boolean;
+  ranking: string;
 }
 
 export interface IGroupCard {
