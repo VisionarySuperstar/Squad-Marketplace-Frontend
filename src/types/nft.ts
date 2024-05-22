@@ -25,6 +25,7 @@ export interface INFT {
   listednumber: string;
   marketplacenumber: string;
   created_at: string;
+  ranking: string;
 }
 
 export function nftToCard(nft: INFT): INFTCard {
