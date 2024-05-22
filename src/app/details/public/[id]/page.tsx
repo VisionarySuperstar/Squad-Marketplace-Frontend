@@ -17,7 +17,7 @@ import "react-photo-view/dist/react-photo-view.css";
 import useAPI from "@/hooks/useAPI";
 import { INFT, ICOLLECTION } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import useAuth from "@/hooks/useAuth";
@@ -59,7 +59,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
-  const { address, chainId, signer, chain } = useActiveWeb3();
+  const { address, chainId, signer, chain, provider } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
     undefined
@@ -87,6 +87,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     []
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
+  const [displayingTime, setDisplayingTime] = useState<string[]>([]);
 
   const getData = async () => {
     const result = await api
@@ -156,6 +157,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if(!contract || !data) return ;
     calcRemainTime();
   }, [contract, data]);
 
@@ -182,6 +184,15 @@ const Home = ({ params }: { params: { id: string } }) => {
         )
       )
     );
+    setDisplayingTime(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await formatDateWithTimeZone(Number(index.timestamp), "America/New_York")
+        )
+      )
+    );
+
   };
   function shortenAddress(address: string) {
     // Check if the address is valid
@@ -208,6 +219,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     else return shortenAddress(address);
   };
   useEffect(() => {
+    if(!contentContract) return ;
     getHistory();
   }, [contentContract]);
 
@@ -224,6 +236,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if(!contract || !data) return ;
     getDutchAuctionPrice();
   }, [contract, data]);
 
@@ -236,16 +249,26 @@ const Home = ({ params }: { params: { id: string } }) => {
     seconds %= 60;
     return [days, hours, minutes, seconds];
   };
-  const formatDateWithTimeZone = (
+
+  const calcTimeFromBlockNumber =  async (blockNumber:number) => {
+    const block = await provider.getBlock(blockNumber);
+    return Number(block.timestamp) * 1000 ;
+  }
+
+  const formatDateWithTimeZone = async (
     timestampInSeconds: number,
     timeZone: string
   ) => {
+
     // Convert the timestamp to milliseconds
     const timestampInMilliseconds = timestampInSeconds * 1000;
 
     // Create a new Date object
-    const date = new Date(timestampInMilliseconds);
-
+    let date = new Date(timestampInMilliseconds);
+    if (date.getFullYear() < 2024) {
+      const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
+      date = new Date(blockTime);
+    }
     // Define options for formatting
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -265,6 +288,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if(!remainTime) return;
     // Set up an interval to decrease the value every second
     const intervalId = setInterval(() => {
       setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
@@ -342,6 +366,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if(!data || !allNftData) return ;
     getCollectionData();
   }, [data, allNftData]);
 
@@ -515,7 +540,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                         {groupName + " "}
                       </span>
                       {formatDateWithTimeZone(
-                        Number(transferHistory[0].timestamp),
+                        Number(data.created_at),
                         "America/New_York"
                       )}
                     </p>
@@ -528,23 +553,21 @@ const Home = ({ params }: { params: { id: string } }) => {
                 <Collapse title="History">
                   {transferHistory.length &&
                     transferHistory.map(
-                      (item: transferHistoryType, key: number) => (
-                        <p key={key} className="text-gray-400">
-                          {!key
-                            ? "Creator"
-                            : key === transferHistory.length - 1
-                            ? "Owner"
-                            : "Owned"}{" "}
-                          <span className="text-xl text-chocolate-main">
-                            {ownedName[key]}
-                          </span>{" "}
-                          {"\t" +
-                            formatDateWithTimeZone(
-                              Number(item.timestamp),
-                              "America/New_York"
-                            )}
-                        </p>
-                      )
+                      (item: transferHistoryType, key: number) => {
+                        return (
+                          <p key={key} className="text-gray-400">
+                            {!key
+                              ? "Creator"
+                              : key === transferHistory.length - 1
+                              ? "Owner"
+                              : "Owned"}{" "}
+                            <span className="text-xl text-chocolate-main">
+                              {ownedName[key]}
+                            </span>{" "}
+                            {displayingTime && "\t" + displayingTime[key]}
+                          </p>
+                        );
+                      }
                     )}
                 </Collapse>
               </div>
