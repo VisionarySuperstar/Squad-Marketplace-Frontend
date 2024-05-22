@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from "react";
 import Card from "@/components/main/cards/groupCard";
-import groups from "@/data/groups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP } from "@/types";
 import useCreatGroupState from "@/store/createGroupStatus";
