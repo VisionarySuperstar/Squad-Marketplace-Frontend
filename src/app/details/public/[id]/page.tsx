@@ -67,7 +67,6 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [contentContract, setContentContract] = useState<Contract | undefined>(
     undefined
   );
-  
   const [data, setData] = useState<INFT | undefined>(undefined);
   const [groupName, setGroupName] = useState<string>("");
   const api = useAPI();
@@ -158,7 +157,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if (!contract || !data) return;
+    if(!contract || !data) return ;
     calcRemainTime();
   }, [contract, data]);
 
@@ -189,13 +188,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       await Promise.all(
         transaction_history.map(
           async (index: transferHistoryType, key: number) =>
-            await formatDateWithTimeZone(
-              Number(index.timestamp),
-              "America/New_York"
-            )
+            await formatDateWithTimeZone(Number(index.timestamp), "America/New_York")
         )
       )
     );
+
   };
   function shortenAddress(address: string) {
     // Check if the address is valid
@@ -222,7 +219,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     else return shortenAddress(address);
   };
   useEffect(() => {
-    if (!contentContract) return;
+    if(!contentContract) return ;
     getHistory();
   }, [contentContract]);
 
@@ -239,7 +236,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if (!contract || !data) return;
+    if(!contract || !data) return ;
     getDutchAuctionPrice();
   }, [contract, data]);
 
@@ -253,15 +250,16 @@ const Home = ({ params }: { params: { id: string } }) => {
     return [days, hours, minutes, seconds];
   };
 
-  const calcTimeFromBlockNumber = async (blockNumber: number) => {
+  const calcTimeFromBlockNumber =  async (blockNumber:number) => {
     const block = await provider.getBlock(blockNumber);
-    return Number(block.timestamp) * 1000;
-  };
+    return Number(block.timestamp) * 1000 ;
+  }
 
   const formatDateWithTimeZone = async (
     timestampInSeconds: number,
     timeZone: string
   ) => {
+
     // Convert the timestamp to milliseconds
     const timestampInMilliseconds = timestampInSeconds * 1000;
 
@@ -290,7 +288,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if (!remainTime) return;
+    if(!remainTime) return;
     // Set up an interval to decrease the value every second
     const intervalId = setInterval(() => {
       setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
@@ -369,7 +367,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if (!data || !allNftData) return;
+    if(!data || !allNftData) return ;
     getCollectionData();
   }, [data, allNftData]);
 

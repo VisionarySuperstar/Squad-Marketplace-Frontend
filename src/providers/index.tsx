@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import dynamic from "next/dynamic";
+import { MoonPayProvider } from "@moonpay/moonpay-react";
+
 
 const JotaiProvider = dynamic(() => import("@/providers/jotaiProvider"), { ssr: false });
 const RainbowProvider = dynamic(() => import("@/providers/rainbowProvider"), { ssr: false });
@@ -15,6 +17,7 @@ const Provider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <ThemeProvider theme={theme}>
       <ToastProvider>
+      <MoonPayProvider apiKey="pk_test_4DFSiqXHV0Dp6xP1y1fvkFFZ6R4wIiGT" >
         <RainbowProvider>
           <ActiveWeb3Provider>
             <AuthProvider>
@@ -24,6 +27,7 @@ const Provider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
             </AuthProvider>
           </ActiveWeb3Provider>
         </RainbowProvider>
+        </MoonPayProvider>
       </ToastProvider>
     </ThemeProvider>
   );
