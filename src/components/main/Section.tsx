@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import ImageWithCaption from "./ImageWithCaption";
 import { IImageWithCaption } from "@/types/images";
 import NftCard from "./cards/nftCard";
@@ -37,12 +37,11 @@ const Section = <T,>({
           <a href={viewAllUrl}>VIEW ALL</a>
         </h2>
       </div>
-      <div className="flex flex-wrap gap-x-[0.5%] justify-between items-start">
+      <div className="flex flex-wrap gap-2 justify-between items-start">
         {images.map((image, index) => (
           <div key={index} className={containerClassName}>
             {renderCard(image)}
           </div>
-          
         ))}
         {fillerArray.map((_, index) => (
           <div key={index} className={`${containerClassName} invisible`} />
