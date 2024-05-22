@@ -488,7 +488,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawAmount)) {toast.error("You do not have funds to withdraw!");return;}
+      if (!Number(withdrawAmount)) {
+        toast.error("You do not have funds to withdraw!");
+        return;
+      }
       setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
@@ -510,7 +513,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawFromMarketplaceAmount)) {toast.error("You do not have funds to withdraw!"); return;}
+      if (!Number(withdrawFromMarketplaceAmount)) {
+        toast.error("You do not have funds to withdraw!");
+        return;
+      }
       setIsDisplaying(true);
       setIsLoadingWithdrawMarketplaceButton(true);
 
@@ -1104,7 +1110,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               htmlFor="avatar"
               className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg cursor-pointer text-center"
             >
-              <input hidden id="avatar" type="file" onChange={onFileChange} />
+              <input
+                hidden
+                id="upload_content"
+                type="file"
+                onChange={onFileChange}
+              />
               UPLOAD NEW
             </label>
           </div>
