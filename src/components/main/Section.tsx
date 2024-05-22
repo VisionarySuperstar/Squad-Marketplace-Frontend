@@ -25,19 +25,18 @@ const Section = <T,>({
   const fillerElementsCount =
     (itemsPerRow - (images.length % itemsPerRow)) % itemsPerRow;
   const fillerArray = Array(fillerElementsCount).fill(0);
-  const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${
-    itemsPerRow === 3 ? "md:basis-[31%]" : "md:basis-[23%]"
-  }`;
+  const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${itemsPerRow === 3 ? "md:basis-[31%]" : "md:basis-[23%]"
+    }`;
 
   return (
     <div className="my-5">
-      <div id="top" className="flex justify-between">
+      <div id="top" className="flex justify-between mb-2">
         <h2>{title}</h2>
         <h2>
           <a href={viewAllUrl}>VIEW ALL</a>
         </h2>
       </div>
-      <div className="flex flex-wrap gap-2 justify-between items-start">
+      <div className="flex flex-wrap gap-x-[0.5%] justify-between items-start gap-y-[1em]">
         {images.map((image, index) => (
           <div key={index} className={containerClassName}>
             {renderCard(image)}
