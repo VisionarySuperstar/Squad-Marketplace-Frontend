@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import NewGroupModal from "@/components/main/modals/groups/newGroupModal";
 import Image from "next/image";
-import NFT_DATA from "@/data/nfts.json";
-import GROUPS_DATA from "@/data/mygroups.json";
 import NftCard from "@/components/main/cards/nftCard";
 import Footer from "@/components/main/footer/footer";
 import GroupCard from "@/components/main/cards/groupCard";
@@ -15,7 +13,8 @@ import useAuth from "@/hooks/useAuth";
 import useAllNfts from "@/hooks/views/useAllNfts";
 import useMyGroups from "@/hooks/views/useMyGroups";
 import useActiveBids from "@/hooks/views/useActiveBids";
-import { IGROUP, INFT } from "@/types";
+import { INFT } from "@/types";
+import Toggle from "@/components/main/toggle";
 
 export default function Home() {
   const router = useRouter();
@@ -307,36 +306,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
-                    </label>
-                  </div>
-                  <div className="p-[10px]">
-                    <div className="text-md flex items-center">SALES</div>
-                    <label className="inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        value=""
-                        className="sr-only peer"
-                      />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
 
@@ -348,16 +318,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
@@ -368,16 +329,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
@@ -388,16 +340,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                 </div>
