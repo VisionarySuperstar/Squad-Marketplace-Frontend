@@ -36,7 +36,7 @@ const Section = <T,>({
           <a href={viewAllUrl}>VIEW ALL</a>
         </h2>
       </div>
-      <div className="flex flex-wrap gap-x-[0.5%] justify-between items-start gap-y-[1em]">
+      <div className="flex flex-wrap gap-x-[0.5%] justify-center md:justify-between items-start gap-y-[1em]">
         {images.map((image, index) => (
           <div key={index} className={containerClassName}>
             {renderCard(image)}
