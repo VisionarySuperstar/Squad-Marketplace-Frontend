@@ -17,3 +17,24 @@ export function getTopGroups(groups: IGROUP[], count: number = 3): IGROUP[] {
   .filter((_group:IGROUP) => _group.ranking)
   .sort((a, b) => Number(a.ranking) - Number(b.ranking));
 }
+
+export function sortNFTSBy(nfts: INFT[], sortBy: string): INFT[] {
+  const sortFunctions: { [key: string]: (a: INFT, b: INFT) => number } = {
+    recent: (a, b) => Number(b.created_at) - Number(a.created_at),
+    trending: (a, b) => Number(a.ranking) - Number(b.ranking), // TODO: revisit this when API is updated
+    top: (a, b) => Number(a.ranking) - Number(b.ranking),
+    priceAsc: (a, b) => Number(a.currentprice) - Number(b.currentprice),
+    priceDesc: (a, b) => Number(b.currentprice) - Number(a.currentprice),
+    likes: (a, b) => Number(a.ranking) - Number(b.ranking), // TODO: replace with likes when API is updated
+  };
+  return [...nfts].sort(sortFunctions[sortBy]);
+}
+
+export function sortGroupsBy(groups: IGROUP[], sortBy: string): IGROUP[] {
+  const sortFunctions: { [key: string]: (a: IGROUP, b: IGROUP) => number } = {
+    recent: (a, b) => Number(b.created_at) - Number(a.created_at),
+    trending: (a, b) => Number(a.ranking) - Number(b.ranking), // TODO: revisit this when API is updated
+    top: (a, b) => Number(a.ranking) - Number(b.ranking),
+  };
+  return [...groups].sort(sortFunctions[sortBy]);
+}

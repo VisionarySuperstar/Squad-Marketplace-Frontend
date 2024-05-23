@@ -53,6 +53,7 @@ export default function Home() {
   const [recruitingState, setRecruitingState] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchFilter, setSearchFilter] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("");
   // console.log("searchInput", searchInput) ;
   const handleKeyDown = (event: any) => {
     if (event.key === "Enter") {
@@ -71,7 +72,7 @@ export default function Home() {
         <Split_line />
         <div className="my-5 lg:flex items-center justify-between sm:grid sm:grid-cols-1">
           <div className="flex justify-between w-[60%] mt-2">
-            <Sort />
+            <Sort onItemSelected={setSortBy} />
             {enableScale && (
               <div className="ps-[15px] w-full max-w-[300px]">
                 <ViewProgress scale={scale} setScale={setScale} />
@@ -111,6 +112,7 @@ export default function Home() {
           scale={scale}
           recruitingState={recruitingState}
           searchFilter={searchFilter}
+          sortBy={sortBy}
         />
         <div className="flex items-center justify-center mt-5">
           <GeneralButton name={"LOAD  MORE"} />
