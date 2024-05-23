@@ -54,6 +54,9 @@ const WalletInforModal = () => {
     getUSDCBalance();
   }, [contract]);
 
+  const walletInforModalState = useNavbarUIControlStore(
+    (state) => state.walletInforModalState
+  );
   const setWalletInforModalState = useNavbarUIControlStore(
     (state) => state.updateWalletInforModalState
   );
@@ -94,6 +97,9 @@ const WalletInforModal = () => {
     window.localStorage.removeItem("accessToken");
     setWalletInforModalState(false);
   };
+  const moonpayModalState = useNavbarUIControlStore(
+    (state) => state.moonpayModalState
+  );
   const setMoonpayModalState = useNavbarUIControlStore(
     (state) => state.updateMoonpayModalState
   );
@@ -101,158 +107,163 @@ const WalletInforModal = () => {
 
   return (
     <>
-      <div className="z-100 font-Maxeville">
-        <div
-          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
-          onClick={() => {
-            setWalletInforModalState(false);
-          }}
-        ></div>
-        <div className="generalModal generalModal-1 z-[1300] drop-shadow-lg w-[400px]">
+      {walletInforModalState && (
+        <div className="z-100 font-Maxeville">
           <div
-            className={`rounded-lg sm:h-[650px] h-[650px] flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
-          >
-            {step !== 1 && (
-              <div className="bg-[#F6F6F6] pb-5 rounded-xl">
-                <div className="flex justify-between gap-2  h-[100px] p-2 pt-4 pb-4">
-                  <div className="flex gap-3 justify-center items-center p-4 hover:bg-[#E3E3E3] rounded-xl hover:cursor-pointer">
-                    <img src="/metamask.svg"></img>
-                    {user && (
-                      <>
-                        <div
-                          className=" text-ellipsis max-w-[150px] overflow-hidden"
-                          onClick={() => handleCopyClick(user?.wallet)}
-                        >
-                          {formatWalletAddress(user?.wallet)}
-                        </div>
-                      </>
+            className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+            onClick={() => {
+              setWalletInforModalState(false);
+            }}
+          ></div>
+          <div className="generalModal generalModal-1 z-[1300] drop-shadow-lg w-[400px]">
+            <div
+              className={`rounded-lg sm:h-[650px] h-[650px] flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
+            >
+              {step !== 1 && (
+                <div className="bg-[#F6F6F6] pb-5 rounded-xl">
+                  <div className="flex justify-between gap-2  h-[100px] p-2 pt-4 pb-4">
+                    <div className="flex gap-3 justify-center items-center p-4 hover:bg-[#E3E3E3] rounded-xl hover:cursor-pointer">
+                      <img src="/metamask.svg"></img>
+                      {user && (
+                        <>
+                          <div
+                            className=" text-ellipsis max-w-[150px] overflow-hidden"
+                            onClick={() => handleCopyClick(user?.wallet)}
+                          >
+                            {formatWalletAddress(user?.wallet)}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {openChainModal && (
+                      <div
+                        className="flex justify-center items-center rounded-xl p-4 hover:bg-[#E3E3E3] hover:cursor-pointer gap-3"
+                        onClick={() => openChainModal()}
+                      >
+                        {chainID !== 137 && (
+                          <Icon
+                            icon="logos:ethereum"
+                            className="w-[24px] h-[24px]"
+                          />
+                        )}
+                        {chainID === 137 && (
+                          <Icon
+                            icon="devicon:polygon"
+                            className="w-[24px] h-[24px]"
+                          />
+                        )}
+                        {chainName}
+                      </div>
                     )}
                   </div>
-                  {openChainModal && (
-                    <div
-                      className="flex justify-center items-center rounded-xl p-4 hover:bg-[#E3E3E3] hover:cursor-pointer gap-3"
-                      onClick={() => openChainModal()}
-                    >
-                      {chainID !== 137 && (
-                        <Icon
-                          icon="logos:ethereum"
-                          className="w-[24px] h-[24px]"
-                        />
-                      )}
-                      {chainID === 137 && (
-                        <Icon
-                          icon="devicon:polygon"
-                          className="w-[24px] h-[24px]"
-                        />
-                      )}
-                      {chainName}
+                  <div className="flex flex-col pl-7 gap-2">
+                    <div className="font-medium text-2xl">
+                      ${usdcBalance ? usdcBalance : "0.00"} USDC
                     </div>
-                  )}
-                </div>
-                <div className="flex flex-col pl-7 gap-2">
-                  <div className="font-medium text-2xl">
-                    ${usdcBalance ? usdcBalance : "0.00"} USDC
+                    <div className="text-xl text-gray-400">Wallet balance</div>
                   </div>
-                  <div className="text-xl text-gray-400">Wallet balance</div>
                 </div>
-              </div>
-            )}
-            {!step && (
-              <>
-                <div className="flex flex-col items-center justify-center p-5 gap-9 mt-5">
-                  <AddFundIcon />
-                  <div className="text-2xl font-medium">
-                    Fund your wallet to purchase NFTs
-                  </div>
-                  <button
-                    className="w-1/2 bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center p-5"
-                    onClick={() => {
-                      setWalletInforModalState(false);
-                      setMoonpayModalState(true);
-                    }}
-                  >
-                    Add Funds with Cards
-                  </button>
-                </div>
-              </>
-            )}
-            {step === 1 &&
-              (chainID !== 11155111 ? (
+              )}
+              {!step && (
                 <>
-                  <div className="flex flex-col items-center justify-center h-[570px]">
-                    <SwapWidget
-                      tokenList={"https://ipfs.io/ipns/tokens.uniswap.org"}
-                      provider={provider}
-                      hideConnectionUI={true}
-                      theme={darkMode ? darkTheme : lightTheme}
-                      defaultOutputTokenAddress={{
-                        [chainID]: USDC_ADDRESS[chainID],
+                  <div className="flex flex-col items-center justify-center p-5 gap-9 mt-5">
+                    <AddFundIcon />
+                    <div className="text-2xl font-medium">
+                      Fund your wallet to purchase NFTs
+                    </div>
+                    <button
+                      className="w-1/2 bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center p-5"
+                      onClick={() => {
+                        setWalletInforModalState(false);
+                        setMoonpayModalState(true);
                       }}
-                      brandedFooter={false}
-                      className="!border-none !w-full !h-full flex items-center justify-center"
-                    />
+                    >
+                      Add Funds with Cards
+                    </button>
                   </div>
                 </>
-              ) : (
-                <div className="text-2xl  font-semibold text-center text-red-400">
-                  Do not support testnet
-                </div>
-              ))}
+              )}
+              {step === 1 &&
+                (chainID !== 11155111 ? (
+                  <>
+                    <div className="flex flex-col items-center justify-center h-[570px]">
+                      <SwapWidget
+                        tokenList={"https://ipfs.io/ipns/tokens.uniswap.org"}
+                        provider={provider}
+                        hideConnectionUI={true}
+                        theme={darkMode ? darkTheme : lightTheme}
+                        defaultOutputTokenAddress={{
+                          [chainID]: USDC_ADDRESS[chainID],
+                        }}
+                        brandedFooter={false}
+                        className="!border-none !w-full !h-full flex items-center justify-center"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-2xl  font-semibold text-center text-red-400">
+                    Do not support testnet
+                  </div>
+                ))}
 
-            <div className="bg-white z-[1000] h-[100px]">
-              <div className="fixed bottom-[80px] w-full ">
-                <Split_line />
-              </div>
-              <div className="flex items-center justify-around bottom-3 fixed w-full">
-                <div
-                  className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer "
-                  onClick={() => setStep(0)}
-                >
-                  {step ? (
-                    <Icon
-                      icon="solar:dollar-line-duotone"
-                      className="w-[32px] h-[32px]"
-                    />
-                  ) : (
-                    <Icon icon="raphael:dollar" className="w-[32px] h-[32px]" />
-                  )}
-                  <h1>Crypto</h1>
+              <div className="bg-white z-[1000] h-[100px]">
+                <div className="fixed bottom-[80px] w-full ">
+                  <Split_line />
                 </div>
-                <div
-                  className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer"
-                  onClick={() => setStep(1)}
-                >
-                  {step === 1 ? (
-                    <Icon
-                      icon="ic:round-swap-horizontal-circle"
-                      className="w-[32px] h-[32px]"
-                    />
-                  ) : (
-                    <Icon
-                      icon="ic:outline-swap-horizontal-circle"
-                      className="w-[32px] h-[32px]"
-                    />
-                  )}
+                <div className="flex items-center justify-around bottom-3 fixed w-full">
+                  <div
+                    className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer "
+                    onClick={() => setStep(0)}
+                  >
+                    {step ? (
+                      <Icon
+                        icon="solar:dollar-line-duotone"
+                        className="w-[32px] h-[32px]"
+                      />
+                    ) : (
+                      <Icon
+                        icon="raphael:dollar"
+                        className="w-[32px] h-[32px]"
+                      />
+                    )}
+                    <h1>Crypto</h1>
+                  </div>
+                  <div
+                    className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer"
+                    onClick={() => setStep(1)}
+                  >
+                    {step === 1 ? (
+                      <Icon
+                        icon="ic:round-swap-horizontal-circle"
+                        className="w-[32px] h-[32px]"
+                      />
+                    ) : (
+                      <Icon
+                        icon="ic:outline-swap-horizontal-circle"
+                        className="w-[32px] h-[32px]"
+                      />
+                    )}
 
-                  <h1>Swap</h1>
-                </div>
-                <div
-                  className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer"
-                  onClick={() => {
-                    handleDisconnect();
-                  }}
-                >
-                  <Icon
-                    icon="material-symbols:logout-sharp"
-                    className="w-[32px] h-[32px]"
-                  />
-                  <h1>Disconnect</h1>
+                    <h1>Swap</h1>
+                  </div>
+                  <div
+                    className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer"
+                    onClick={() => {
+                      handleDisconnect();
+                    }}
+                  >
+                    <Icon
+                      icon="material-symbols:logout-sharp"
+                      className="w-[32px] h-[32px]"
+                    />
+                    <h1>Disconnect</h1>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
