@@ -20,7 +20,6 @@ import { ApiError } from "next/dist/server/api-utils";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 
-
 export default function Home() {
   const api = useAPI();
 
@@ -44,7 +43,6 @@ export default function Home() {
     }
   }
   const { user } = useAuth();
-  console.log(user?.join_at);
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -91,10 +89,10 @@ export default function Home() {
   const activeBids = useActiveBids();
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
   const [bidNfts, setBidNfts] = useState<INFT[]>([]);
-  const [salesState, setSalesState] = useState<boolean>(true);
-  const [offersState, setOffersState] = useState<boolean>(true);
-  const [chatState, setChatState] = useState<boolean>(true);
-  const [requestState, setRequestState] = useState<boolean>(true);
+  const [salesState, setSalesState] = useState<boolean | undefined>(undefined);
+  const [offersState, setOffersState] = useState<boolean | undefined>(undefined);
+  const [chatState, setChatState] = useState<boolean | undefined>(undefined);
+  const [requestState, setRequestState] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     if (!allNfts) return;
@@ -109,31 +107,67 @@ export default function Home() {
       allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id))
     );
   }, [activeBids, allNfts]);
+  let count = 0;
+  const [userSetting, setUserSetting] = useState<
+    [
+      {
+        sales: boolean;
+      },
+      {
+        offers: boolean;
+      },
+      {
+        chat: boolean;
+      },
+      {
+        request: boolean;
+      }
+    ]
+  >();
 
-  useEffect(() => {
-    if(!user) return ;
-    setSalesState(user.setting[0].sales) ;
-    setOffersState(user.setting[1].offers) ;
-    setChatState(user.setting[2].chat) ;
-    setRequestState(user.setting[3].request) ;
-  }, [])
+  const initialUserSetting = () => {
+    if(!userSetting) return ;
+    setSalesState(userSetting[0].sales);
+    setOffersState(userSetting[1].offers);
+    setChatState(userSetting[2].chat);
+    setRequestState(userSetting[3].request);
+  }
 
-  const updateSetting = async () => {
-    if(!user) return ;
-    const settingData = {
-      sales: salesState,
-      offers: offersState,
-      chat: chatState,
-      request: requestState,
-    };
-    await api.post("/auth/user/updateSetting", {setting:JSON.stringify(settingData)}) ;
-    toast.success("Setting updated successfully!") ;
+  useEffect(() =>{
+    initialUserSetting() ;
+    console.log("userSetting after", userSetting) ;
+  }, [userSetting])
+
+  const getUserSetting = async () => {
+    const _userSetting = await api.post(`/auth/user/getUserSetting`, {id:user?.id});
+    console.log("userSetting", _userSetting.data) ;
+    setUserSetting(_userSetting.data);
   }
 
   useEffect(() => {
-    updateSetting() ;
+    if(user) getUserSetting();
+  }, [user]); 
+
+  let countasdf = 0 ;
+  const updateSetting = async () => {
+    if (!user) return;
+    countasdf ++ ;
+    console.log("count", countasdf) ;
+    const settingData = [
+      { sales: salesState },
+      { offers: offersState },
+      { chat: chatState },
+      { request: requestState },
+    ];
+    console.log("seetingData", settingData) ;
+    await api.post("/auth/user/updateSetting", {
+      setting: JSON.stringify(settingData),
+    });
+  };
+
+  useEffect(() => {
+    updateSetting();
   }, [salesState, offersState, chatState, requestState])
-  
 
   return (
     <>
@@ -335,12 +369,14 @@ export default function Home() {
               <div className="mt-5">
                 <div className="grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 w-2/5">
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">SALES</div>
+                    <div className={`text-md flex items-center ${!salesState && "text-gray-400"}`}>SALES</div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         checked={salesState}
-                        onChange={() => {setSalesState(!salesState); }}
+                        onChange={() => {
+                          setSalesState(!salesState);
+                        }}
                         className="sr-only peer"
                       />
                       <Toggle />
@@ -348,36 +384,42 @@ export default function Home() {
                   </div>
 
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">OFFERS</div>
+                    <div className={`text-md flex items-center ${!offersState && "text-gray-400"}`}>OFFERS</div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         checked={offersState}
-                        onChange={() => {setOffersState(!offersState); }}
+                        onChange={() => {
+                          setOffersState(!offersState);
+                        }}
                         className="sr-only peer"
                       />
                       <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">CHAT</div>
+                    <div className={`text-md flex items-center ${!chatState && "text-gray-400"}`}>CHAT</div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         checked={chatState}
-                        onChange={() => {setChatState(!chatState); }}
+                        onChange={() => {
+                          setChatState(!chatState);
+                        }}
                         className="sr-only peer"
                       />
                       <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">REQUEST</div>
+                    <div className={`text-md flex items-center ${!requestState && "text-gray-400"}`}>REQUEST</div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         checked={requestState}
-                        onChange={() => {setRequestState(!requestState);}}
+                        onChange={() => {
+                          setRequestState(!requestState);
+                        }}
                         className="sr-only peer"
                       />
                       <Toggle />

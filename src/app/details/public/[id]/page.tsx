@@ -408,7 +408,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {data && (
             <div className="lg:me-[40px] sm:me-0">
               <div>
-                <ImageView avatar={data.avatar} />
+                {/* <ImageView avatar={data.avatar} /> */}
               </div>
 
               <Split_line />

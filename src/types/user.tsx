@@ -6,15 +6,7 @@ export interface IUSER {
   email: string,
   avatar: string,
   join_at: string,
-  setting:[{
-    sales: boolean
-  }, {
-    offers:boolean
-  }, {
-    chat:boolean
-  }, {
-    request:boolean
-  }],
+  
 };
 
 export type TMsg = { 
