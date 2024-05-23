@@ -20,6 +20,7 @@ import { IGROUP, IUSER, INFT, IPOST_NEWS, IRequest } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
+import ItemLoaderComponent from "@/components/main/itemLoader";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -45,7 +46,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
 
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
 
-  const { signIn, isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
   const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
@@ -234,11 +235,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>NFTs ({nftData?.length ? nftData?.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-          {nftData?.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={nftData} />
           <div className="mb-[50px] grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
             {nftData?.map((item, index) => (
               <NftCard
@@ -260,11 +257,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="border-b-2 border-indigo-500">VIEW ALL</div>
           </div>
 
-          {postNews?.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={postNews} />
           <div>
             {postNews &&
               postNews?.map((_news, key) => (
