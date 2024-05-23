@@ -1,3 +1,5 @@
+"use client";
+
 const Split_line = () => {
   return (
     <>

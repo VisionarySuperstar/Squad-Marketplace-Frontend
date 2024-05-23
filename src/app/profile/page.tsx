@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,7 +13,8 @@ import useAuth from "@/hooks/useAuth";
 import useAllNfts from "@/hooks/views/useAllNfts";
 import useMyGroups from "@/hooks/views/useMyGroups";
 import useActiveBids from "@/hooks/views/useActiveBids";
-import { IGROUP, INFT } from "@/types";
+import { INFT } from "@/types";
+import Toggle from "@/components/main/toggle";
 
 export default function Home() {
   const router = useRouter();
@@ -305,18 +305,10 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
+
                   <div className="p-[10px]">
                     <div className="text-md flex items-center">OFFERS</div>
                     <label className="inline-flex items-center cursor-pointer">
@@ -325,16 +317,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
@@ -345,16 +328,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
@@ -365,16 +339,7 @@ export default function Home() {
                         value=""
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                 </div>
