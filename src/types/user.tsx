@@ -73,3 +73,10 @@ export interface IRequest{
   userid:string;
   date:string;
 }
+
+export interface IActive_Bids{
+  id:string;
+  bidder:string;
+  nft:string;
+  withdraw_amount: string;
+}

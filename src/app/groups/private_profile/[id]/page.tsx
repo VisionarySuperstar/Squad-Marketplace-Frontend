@@ -25,6 +25,7 @@ import {
   IDIRECTOR_TRANSACTION,
   IPOST_NEWS,
   IRequest,
+  IActive_Bids
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -121,6 +122,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const [requiredConfirmNumber, setRequiredConfirmNumber] =
     useState<string>("");
+  const [offeringBuyerName, setOfferingBuyerName] = useState<string[]>([]);
   const api = useAPI();
   const getMyGroupData = async () => {
     const response = await api
@@ -198,6 +200,21 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getMyGroupData();
     getNFTData();
   }, [user]);
+
+  const getOfferingBuyerName = async () => {
+    if(!offerTransactions) return ;
+    const _allUser = await api.post("/auth/user/getAllMembers") ;
+    const allUser = _allUser?.data ;
+    const _offeringBuyerName = offerTransactions.map((item) => {
+      const _user:IUSER = allUser?.find((_item:IUSER) => _item.id === item.buyer) ;
+      return _user?.name ;
+    }) ;
+    setOfferingBuyerName(_offeringBuyerName) ;
+  }
+
+  useEffect(() => {
+    getOfferingBuyerName() ;
+  }, [offerTransactions])
 
   const getOffer_nfts = async () => {
     // console.log({ _nfts });
@@ -393,6 +410,23 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
+        const _bidder_bid_state = await api.post("/api/getBidState", {bidder: item.buyer});
+        const bid_state:IActive_Bids[] = _bidder_bid_state.data;
+        const _withdrawAmount = bid_state.find((_bid:IActive_Bids) => _bid.nft === item.nftid);
+        console.log("_withdrawAmount", _withdrawAmount?.withdraw_amount);
+        if(Number(_withdrawAmount?.withdraw_amount) <= Number(item.price)) await api
+        .post("/api/removeBidState", {
+          bidder: item.buyer,
+          nft: item_nft.id
+        })
+        else{
+          await api
+        .post("/api/updateBidState", {
+          bidder: item.buyer,
+          nft: item_nft.id,
+          withdraw_amount: String(Number(_withdrawAmount?.withdraw_amount) - Number(item.price))
+        })
+        }
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -970,7 +1004,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   </div>
                   <div className="flex flex-col">
                     <div className="mb-[5px]">
-                      {offerTransactions[key].buyer}
+                      {offeringBuyerName[key]}
                     </div>
                     <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
                       <div className="flex me-[5px]">
