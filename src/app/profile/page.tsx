@@ -15,8 +15,15 @@ import useMyGroups from "@/hooks/views/useMyGroups";
 import useActiveBids from "@/hooks/views/useActiveBids";
 import { INFT } from "@/types";
 import Toggle from "@/components/main/toggle";
+import { request } from "http";
+import { ApiError } from "next/dist/server/api-utils";
+import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
+
 
 export default function Home() {
+  const api = useAPI();
+
   const router = useRouter();
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
@@ -37,7 +44,7 @@ export default function Home() {
     }
   }
   const { user } = useAuth();
-  console.log(user?.join_at) ;
+  console.log(user?.join_at);
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -84,6 +91,10 @@ export default function Home() {
   const activeBids = useActiveBids();
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
   const [bidNfts, setBidNfts] = useState<INFT[]>([]);
+  const [salesState, setSalesState] = useState<boolean>(true);
+  const [offersState, setOffersState] = useState<boolean>(true);
+  const [chatState, setChatState] = useState<boolean>(true);
+  const [requestState, setRequestState] = useState<boolean>(true);
 
   useEffect(() => {
     if (!allNfts) return;
@@ -98,6 +109,31 @@ export default function Home() {
       allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id))
     );
   }, [activeBids, allNfts]);
+
+  useEffect(() => {
+    if(!user) return ;
+    setSalesState(user.setting[0].sales) ;
+    setOffersState(user.setting[1].offers) ;
+    setChatState(user.setting[2].chat) ;
+    setRequestState(user.setting[3].request) ;
+  }, [])
+
+  const updateSetting = async () => {
+    if(!user) return ;
+    const settingData = {
+      sales: salesState,
+      offers: offersState,
+      chat: chatState,
+      request: requestState,
+    };
+    await api.post("/auth/user/updateSetting", {setting:JSON.stringify(settingData)}) ;
+    toast.success("Setting updated successfully!") ;
+  }
+
+  useEffect(() => {
+    updateSetting() ;
+  }, [salesState, offersState, chatState, requestState])
+  
 
   return (
     <>
@@ -303,7 +339,8 @@ export default function Home() {
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={salesState}
+                        onChange={() => {setSalesState(!salesState); }}
                         className="sr-only peer"
                       />
                       <Toggle />
@@ -315,7 +352,8 @@ export default function Home() {
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={offersState}
+                        onChange={() => {setOffersState(!offersState); }}
                         className="sr-only peer"
                       />
                       <Toggle />
@@ -326,7 +364,8 @@ export default function Home() {
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={chatState}
+                        onChange={() => {setChatState(!chatState); }}
                         className="sr-only peer"
                       />
                       <Toggle />
@@ -337,7 +376,8 @@ export default function Home() {
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={requestState}
+                        onChange={() => {setRequestState(!requestState);}}
                         className="sr-only peer"
                       />
                       <Toggle />
