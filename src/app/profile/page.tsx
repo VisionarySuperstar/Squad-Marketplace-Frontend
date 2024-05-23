@@ -87,7 +87,7 @@ export default function Home() {
 
   useEffect(() =>{
     if(!allNfts) return ;
-    setCollectedNfts(allNfts.filter((nft) => nft.owner === user?.wallet)) ;
+    setCollectedNfts(allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))) ;
   }, [allNfts])
 
   useEffect(() => {

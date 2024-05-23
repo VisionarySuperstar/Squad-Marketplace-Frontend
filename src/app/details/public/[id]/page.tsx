@@ -57,6 +57,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     (state) => state.withdrawModal
   );
 
+  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
   const { address, chainId, signer, chain, provider } = useActiveWeb3();
@@ -89,6 +90,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [ownedName, setOwnedName] = useState<string[]>([]);
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
 
+  
   const getData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -159,8 +161,27 @@ const Home = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     if(!contract || !data) return ;
     calcRemainTime();
+    getWithdrawAmounts();
   }, [contract, data]);
 
+  const getWithdrawAmounts = async () => {
+    if (!contract || !data) return;
+    if (Number(data.auctiontype) === 0) {
+      const value = await contract.withdrawBalanceForEnglishAuction(
+        BigInt(data.listednumber),
+        user?.wallet
+      );
+      console.log("value ", value);
+      setWithdrawAmount((Number(value) / 1e18).toString());
+    } else if (Number(data.auctiontype) === 2) {
+      const value = await contract.withdrawBalanceForOfferingSale(
+        BigInt(data.listednumber),
+        user?.wallet
+      );
+      console.log("value ", value);
+      setWithdrawAmount((Number(value) / 1e18).toString());
+    }
+  };
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
       return;
@@ -379,9 +400,10 @@ const Home = ({ params }: { params: { id: string } }) => {
           groupAddress={groupAddress}
           groupId={groupId}
           getData={getData}
+          withdrawAmount={withdrawAmount}
         />
       )}
-      {withdrawModalState && data && <WithdrawModal nftData={data} />}
+      {withdrawModalState && data && <WithdrawModal nftData={data} withdrawAmount={withdrawAmount}/>}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (

@@ -19,9 +19,10 @@ import useDisplayingControlStore from "@/store/UI_control/displaying";
 
 interface WithdrawGroupModalInterface {
   nftData: INFT;
+  withdrawAmount: string;
 }
 
-const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
+const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInterface) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
@@ -31,7 +32,6 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
   );
-  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const api = useAPI();
 
   const { address, chainId, signer, chain } = useActiveWeb3();
@@ -50,27 +50,7 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
     );
     setContract(_market_contract);
   }, [address, chainId, signer, nftData]);
-  useEffect(() => {
-    getWithdrawAmounts();
-  }, [contract]);
-  const getWithdrawAmounts = async () => {
-    if (!contract) return;
-    if (Number(nftData.auctiontype) === 0) {
-      const value = await contract.withdrawBalanceForEnglishAuction(
-        BigInt(nftData.listednumber),
-        user?.wallet
-      );
-      console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
-    } else if (Number(nftData.auctiontype) === 2) {
-      const value = await contract.withdrawBalanceForOfferingSale(
-        BigInt(nftData.listednumber),
-        user?.wallet
-      );
-      console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
-    }
-  };
+  
   const handleWithdrawClick = async () => {
     try {
       if (!contract) throw "no contract";
@@ -88,6 +68,7 @@ const WithdrawGroupModal = ({ nftData }: WithdrawGroupModalInterface) => {
         );
         await tx.wait();
       } else if (Number(nftData.auctiontype) === 2) {
+        
         const tx = await contract.withdrawFromOfferingSale(
           BigInt(nftData.listednumber)
         );

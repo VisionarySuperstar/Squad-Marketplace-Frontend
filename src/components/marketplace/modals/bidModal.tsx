@@ -24,6 +24,7 @@ interface BidGroupModalInterface {
   groupAddress: string;
   groupId: string;
   getData: () => void;
+  withdrawAmount: string;
 }
 
 const BidGroupModal = ({
@@ -31,6 +32,7 @@ const BidGroupModal = ({
   groupAddress,
   groupId,
   getData,
+  withdrawAmount
 }: BidGroupModalInterface) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
@@ -140,7 +142,7 @@ const BidGroupModal = ({
         await api
           .post("/api/addOffering", {
             groupId: groupId,
-            buyer: user.name,
+            buyer: user.id,
             nftId: nftData.id,
             confirm_member: JSON.stringify([]),
             price: bidAmount,
@@ -150,12 +152,28 @@ const BidGroupModal = ({
             toast.error(error.message);
           });
       }
-      const _active_bids:IActive_Bids[] = await api.post("api/getBidState", {id:user.id});
-      const isExist = _active_bids.find((item:IActive_Bids) => item.nft === nftData.id);
+      const _active_bids = await api.post("/api/getBidState", {id:user.id});
+      console.log("active bids", _active_bids.data) ;
+      let isExist ;
+      if(_active_bids) isExist = _active_bids.data.find((item:IActive_Bids) => item.nft === nftData.id);
+      console.log("isExist", isExist) ;
+      let bid_amount ;
+      if(nftData.auctiontype === "0") bid_amount = withdrawAmount;
+      else bid_amount = (Number(withdrawAmount) + Number(bidAmount)).toString() ;
       if(!isExist) api
         .post("/api/addBidState", {
           bidder: user.id,
-          nft: nftData.id
+          nft: nftData.id,
+          withdraw_amount: bid_amount
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+      if(isExist) api
+        .post("/api/updateBidState", {
+          bidder: user.id,
+          nft: nftData.id,
+          withdraw_amount: bid_amount
         })
         .catch((error) => {
           toast.error(error.message);
