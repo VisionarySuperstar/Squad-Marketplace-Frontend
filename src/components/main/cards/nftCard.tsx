@@ -27,7 +27,7 @@ const NftCard: React.FC<Props> = ({
   const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
   return (
     <div
-      className="relative text-md content-card cursor-pointer drop-shadow-lg"
+      className="relative text-md content-card cursor-pointer"
       onClick={() => {
         console.log("clicked");
         router.push(`${basePath}/${id}`);
