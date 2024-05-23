@@ -38,6 +38,7 @@ export default function Home() {
     }
   }
   const { user } = useAuth();
+  console.log(user?.join_at) ;
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
