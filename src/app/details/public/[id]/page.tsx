@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
@@ -11,15 +10,14 @@ import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/mar
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
-import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 
 import useAPI from "@/hooks/useAPI";
 import { INFT, ICOLLECTION } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
-import { Marketplace_ADDRESSES } from "@/constants/config";
+import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
 import useAuth from "@/hooks/useAuth";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
@@ -57,9 +55,10 @@ const Home = ({ params }: { params: { id: string } }) => {
     (state) => state.withdrawModal
   );
 
+  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
-  const { address, chainId, signer, chain } = useActiveWeb3();
+  const { address, chainId, signer, chain, provider } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
     undefined
@@ -87,7 +86,9 @@ const Home = ({ params }: { params: { id: string } }) => {
     []
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
+  const [displayingTime, setDisplayingTime] = useState<string[]>([]);
 
+  
   const getData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -156,9 +157,29 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if (!contract || !data) return;
     calcRemainTime();
+    getWithdrawAmounts();
   }, [contract, data]);
 
+  const getWithdrawAmounts = async () => {
+    if (!contract || !data) return;
+    if (Number(data.auctiontype) === 0) {
+      const value = await contract.withdrawBalanceForEnglishAuction(
+        BigInt(data.listednumber),
+        user?.wallet
+      );
+      console.log("value ", value);
+      setWithdrawAmount((Number(value) / 1e18).toString());
+    } else if (Number(data.auctiontype) === 2) {
+      const value = await contract.withdrawBalanceForOfferingSale(
+        BigInt(data.listednumber),
+        user?.wallet
+      );
+      console.log("value ", value);
+      setWithdrawAmount((Number(value) / 1e18).toString());
+    }
+  };
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
       return;
@@ -179,6 +200,17 @@ const Home = ({ params }: { params: { id: string } }) => {
         transaction_history.map(
           async (index: transferHistoryType, key: number) =>
             await getUserName(index.to, key)
+        )
+      )
+    );
+    setDisplayingTime(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await formatDateWithTimeZone(
+              Number(index.timestamp),
+              "America/New_York"
+            )
         )
       )
     );
@@ -208,6 +240,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     else return shortenAddress(address);
   };
   useEffect(() => {
+    if (!contentContract) return;
     getHistory();
   }, [contentContract]);
 
@@ -224,6 +257,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if (!contract || !data) return;
     getDutchAuctionPrice();
   }, [contract, data]);
 
@@ -236,7 +270,13 @@ const Home = ({ params }: { params: { id: string } }) => {
     seconds %= 60;
     return [days, hours, minutes, seconds];
   };
-  const formatDateWithTimeZone = (
+
+  const calcTimeFromBlockNumber = async (blockNumber: number) => {
+    const block = await provider.getBlock(blockNumber);
+    return Number(block.timestamp) * 1000;
+  };
+
+  const formatDateWithTimeZone = async (
     timestampInSeconds: number,
     timeZone: string
   ) => {
@@ -244,8 +284,11 @@ const Home = ({ params }: { params: { id: string } }) => {
     const timestampInMilliseconds = timestampInSeconds * 1000;
 
     // Create a new Date object
-    const date = new Date(timestampInMilliseconds);
-
+    let date = new Date(timestampInMilliseconds);
+    if (date.getFullYear() < 2024) {
+      const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
+      date = new Date(blockTime);
+    }
     // Define options for formatting
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -265,6 +308,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
+    if (!remainTime) return;
     // Set up an interval to decrease the value every second
     const intervalId = setInterval(() => {
       setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
@@ -335,13 +379,15 @@ const Home = ({ params }: { params: { id: string } }) => {
         .includes(String(_nft.id))
     );
     _allNftData = _allNftData.filter(
-      (_nft: INFT) => (String(_nft.id) !== String(data.id) && _nft.status !== "mint")
+      (_nft: INFT) =>
+        String(_nft.id) !== String(data.id) && _nft.status !== "mint"
     );
     console.log("_selected nfts ", _allNftData);
     setSelectedNFTS(_allNftData);
   };
 
   useEffect(() => {
+    if (!data || !allNftData) return;
     getCollectionData();
   }, [data, allNftData]);
 
@@ -353,9 +399,10 @@ const Home = ({ params }: { params: { id: string } }) => {
           groupAddress={groupAddress}
           groupId={groupId}
           getData={getData}
+          withdrawAmount={withdrawAmount}
         />
       )}
-      {withdrawModalState && data && <WithdrawModal nftData={data} />}
+      {withdrawModalState && data && <WithdrawModal nftData={data} withdrawAmount={withdrawAmount}/>}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
@@ -370,7 +417,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <EyeIcon props="#322A44" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon props="#322A44" />
+                  <HeartIcon fill="#322A44" />
                   <div>20</div>
                 </div>
               </div>
@@ -515,7 +562,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                         {groupName + " "}
                       </span>
                       {formatDateWithTimeZone(
-                        Number(transferHistory[0].timestamp),
+                        Number(data.created_at),
                         "America/New_York"
                       )}
                     </p>
@@ -528,23 +575,21 @@ const Home = ({ params }: { params: { id: string } }) => {
                 <Collapse title="History">
                   {transferHistory.length &&
                     transferHistory.map(
-                      (item: transferHistoryType, key: number) => (
-                        <p key={key} className="text-gray-400">
-                          {!key
-                            ? "Creator"
-                            : key === transferHistory.length - 1
-                            ? "Owner"
-                            : "Owned"}{" "}
-                          <span className="text-xl text-chocolate-main">
-                            {ownedName[key]}
-                          </span>{" "}
-                          {"\t" +
-                            formatDateWithTimeZone(
-                              Number(item.timestamp),
-                              "America/New_York"
-                            )}
-                        </p>
-                      )
+                      (item: transferHistoryType, key: number) => {
+                        return (
+                          <p key={key} className="text-gray-400">
+                            {!key
+                              ? "Creator"
+                              : key === transferHistory.length - 1
+                              ? "Owner"
+                              : "Owned"}{" "}
+                            <span className="text-xl text-chocolate-main">
+                              {ownedName[key]}
+                            </span>{" "}
+                            {displayingTime && "\t" + displayingTime[key]}
+                          </p>
+                        );
+                      }
                     )}
                 </Collapse>
               </div>
@@ -559,22 +604,16 @@ const Home = ({ params }: { params: { id: string } }) => {
             className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
           >
             {selectedNFTS?.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                onClick={() => {
-                  router.push(`/details/public/${item.id}`);
-                }}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={parseInt(item.collectionid)}
-                  price={parseInt(item.currentprice)}
-                  seen={200}
-                  favorite={20}
-                />
-              </div>
+                id={item.id}
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={parseInt(item.collectionid)}
+                price={parseInt(item.currentprice)}
+                seen={200}
+                favorite={20}
+              />
             ))}
           </div>
         </div>

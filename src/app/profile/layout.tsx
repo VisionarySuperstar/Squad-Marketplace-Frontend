@@ -14,15 +14,15 @@ export default function Home({ children }: { children: React.ReactNode }) {
   }, [setLoadingState]);
   const setNavbarshow = useNavbarUIControlStore((state) => state.updateIsShow);
   const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
+  const setNavarBackground = useNavbarUIControlStore(
+    (state) => state.updateIsBackground
+  );
   const navbarCurrentUrl = useNavbarUIControlStore((state) => state.url);
 
   if (navbarCurrentUrl === "") setNavbarCurrent("user");
   useEffect(() => {
     setNavbarshow(true);
-  }, [setNavbarshow]);
-  return (
-    <div>
-      {children}
-    </div>
-  );
+    setNavarBackground(true);
+  }, [setNavarBackground, setNavbarshow]);
+  return <div>{children}</div>;
 }

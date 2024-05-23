@@ -25,6 +25,7 @@ import {
   IDIRECTOR_TRANSACTION,
   IPOST_NEWS,
   IRequest,
+  IActive_Bids
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -121,6 +122,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const [requiredConfirmNumber, setRequiredConfirmNumber] =
     useState<string>("");
+  const [offeringBuyerName, setOfferingBuyerName] = useState<string[]>([]);
   const api = useAPI();
   const getMyGroupData = async () => {
     const response = await api
@@ -198,6 +200,21 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getMyGroupData();
     getNFTData();
   }, [user]);
+
+  const getOfferingBuyerName = async () => {
+    if(!offerTransactions) return ;
+    const _allUser = await api.post("/auth/user/getAllMembers") ;
+    const allUser = _allUser?.data ;
+    const _offeringBuyerName = offerTransactions.map((item) => {
+      const _user:IUSER = allUser?.find((_item:IUSER) => _item.id === item.buyer) ;
+      return _user?.name ;
+    }) ;
+    setOfferingBuyerName(_offeringBuyerName) ;
+  }
+
+  useEffect(() => {
+    getOfferingBuyerName() ;
+  }, [offerTransactions])
 
   const getOffer_nfts = async () => {
     // console.log({ _nfts });
@@ -393,6 +410,23 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
+        const _bidder_bid_state = await api.post("/api/getBidState", {bidder: item.buyer});
+        const bid_state:IActive_Bids[] = _bidder_bid_state.data;
+        const _withdrawAmount = bid_state.find((_bid:IActive_Bids) => _bid.nft === item.nftid);
+        console.log("_withdrawAmount", _withdrawAmount?.withdraw_amount);
+        if(Number(_withdrawAmount?.withdraw_amount) <= Number(item.price)) await api
+        .post("/api/removeBidState", {
+          bidder: item.buyer,
+          nft: item_nft.id
+        })
+        else{
+          await api
+        .post("/api/updateBidState", {
+          bidder: item.buyer,
+          nft: item_nft.id,
+          withdraw_amount: String(Number(_withdrawAmount?.withdraw_amount) - Number(item.price))
+        })
+        }
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -488,7 +522,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawAmount)) {toast.error("You do not have funds to withdraw!");return;}
+      if (!Number(withdrawAmount)) {
+        toast.error("You do not have funds to withdraw!");
+        return;
+      }
       setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
       const tx = await contract.withdraw();
@@ -510,7 +547,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if(!Number(withdrawFromMarketplaceAmount)) {toast.error("You do not have funds to withdraw!"); return;}
+      if (!Number(withdrawFromMarketplaceAmount)) {
+        toast.error("You do not have funds to withdraw!");
+        return;
+      }
       setIsDisplaying(true);
       setIsLoadingWithdrawMarketplaceButton(true);
 
@@ -876,20 +916,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts?.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                onClick={() => router.push(`/details/private/sold/${item.id}`)}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={Number(item.collectionid)}
-                  seen={200}
-                  favorite={20}
-                  price={Number(item.currentprice)}
-                />
-              </div>
+                id={item.id}
+                basePath="/details/private/sold"
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={Number(item.collectionid)}
+                seen={200}
+                favorite={20}
+                price={Number(item.currentprice)}
+              />
             ))}
           </div>
           <Split_line />
@@ -904,20 +941,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {listedNfts.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                onClick={() => router.push(`/details/private/live/${item.id}`)}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={Number(item.collectionid)}
-                  seen={200}
-                  favorite={20}
-                  price={Number(item.currentprice)}
-                />
-              </div>
+                id={item.id}
+                basePath="/details/private/live"
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={Number(item.collectionid)}
+                seen={200}
+                favorite={20}
+                price={Number(item.currentprice)}
+              />
             ))}
           </div>
           <Split_line />
@@ -932,20 +966,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {mintedNfts.map((item, index) => (
-              <div
+              <NftCard
                 key={index}
-                className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                onClick={() => router.push(`/details/private/mint/${item.id}`)}
-              >
-                <NftCard
-                  avatar={item.avatar}
-                  collectionName={item.collectionname}
-                  collectionId={Number(item.collectionid)}
-                  seen={200}
-                  favorite={20}
-                  price={Number(item.currentprice)}
-                />
-              </div>
+                id={item.id}
+                basePath="/details/private/mint"
+                avatar={item.avatar}
+                collectionName={item.collectionname}
+                collectionId={Number(item.collectionid)}
+                seen={200}
+                favorite={20}
+                price={Number(item.currentprice)}
+              />
             ))}
           </div>
           <Split_line />
@@ -973,7 +1004,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   </div>
                   <div className="flex flex-col">
                     <div className="mb-[5px]">
-                      {offerTransactions[key].buyer}
+                      {offeringBuyerName[key]}
                     </div>
                     <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
                       <div className="flex me-[5px]">
@@ -1113,7 +1144,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               htmlFor="avatar"
               className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg cursor-pointer text-center"
             >
-              <input hidden id="avatar" type="file" onChange={onFileChange} />
+              <input
+                hidden
+                id="upload_content"
+                type="file"
+                onChange={onFileChange}
+              />
               UPLOAD NEW
             </label>
           </div>

@@ -8,6 +8,9 @@ declare module "styled-components" {
     };
     sizes: {
       mobileNavbarHeight: string;
-    }
+    };
+    fonts: {
+      maxevilleMono: string;
+    };
   }
 }

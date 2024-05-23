@@ -6,20 +6,22 @@ import Section from "@/components/main/Section";
 import GroupCard from "@/components/main/cards/groupCard";
 import NftCard from "@/components/main/cards/nftCard";
 import Carousel_Component from "@/components/main/carousel";
-import useDynamicNavbarColor from "@/hooks/ui/useDynamicNavbarColor";
+// import useDynamicNavbarColor from "@/hooks/ui/useDynamicNavbarColor";
 import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 import useAllGroups from "@/hooks/views/useAllGroups";
 import useAllNfts from "@/hooks/views/useAllNfts";
-import { groupToCard, nftToCard } from "@/types";
+import { INFT, groupToCard, nftToCard } from "@/types";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import {
   getNewlyMinted,
   getTopGroups,
   getTopNfts,
 } from "@/utils/data-processing";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Home() {
-  const headerRef = useDynamicNavbarColor();
+  // const headerRef = useDynamicNavbarColor();
 
   useEndLoadingState();
 
@@ -29,16 +31,47 @@ export default function Home() {
   const allNfts = useAllNfts();
   const topNfts = getTopNfts(allNfts);
   const newlyMinted = getNewlyMinted(allNfts);
+  const updateNavbarBackground = useNavbarUIControlStore(
+    (state) => state.updateIsBackground
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const HeroElement = document.getElementById("imagehero");
+      const carouselElement = document.getElementById("marketplace_carousel");
+      let carouselHeight = 0;
+      let heroHeight = 0;
+      if (carouselElement) {
+        carouselHeight = carouselElement.clientHeight;
+      }
+      if (HeroElement) {
+        heroHeight = HeroElement.clientHeight;
+      }
+
+      const currentScrollPosition = window.scrollY;
+
+      const PosterHeight = Math.max(heroHeight, carouselHeight);
+
+      if (currentScrollPosition >= PosterHeight) {
+        updateNavbarBackground(true);
+      } else {
+        updateNavbarBackground(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    // Clean up
+    return () => {
+      window.addEventListener("scroll", handleScroll);
+    };
+  }, [updateNavbarBackground]);
 
   return (
     <>
-      <div ref={headerRef}>
-        <div className="hidden lg:block image-hero">
-          <ImageHero />
-        </div>
-        <div className="block lg:hidden carousel">
-          <Carousel_Component hasCaption={true} />
-        </div>
+      <div className="hidden lg:block image-hero">
+        <ImageHero />
+      </div>
+      <div className="block lg:hidden carousel">
+        <Carousel_Component hasCaption={true} />
       </div>
       <div
         className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"

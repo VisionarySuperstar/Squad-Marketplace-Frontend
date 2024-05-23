@@ -25,8 +25,9 @@ const Section = <T,>({
   const fillerElementsCount =
     (itemsPerRow - (images.length % itemsPerRow)) % itemsPerRow;
   const fillerArray = Array(fillerElementsCount).fill(0);
-  const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${itemsPerRow === 3 ? "md:basis-[31%]" : "md:basis-[23%]"
-    }`;
+  const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${
+    itemsPerRow === 3 ? "md:basis-[31%]" : "md:basis-[23%]"
+  }`;
 
   return (
     <div className="my-5">
@@ -36,7 +37,7 @@ const Section = <T,>({
           <a href={viewAllUrl}>VIEW ALL</a>
         </h2>
       </div>
-      <div className="flex flex-wrap gap-x-[0.5%] justify-between items-start gap-y-[1em]">
+      {/* <div className="flex flex-wrap gap-x-[0.5%] justify-center md:justify-between items-start gap-y-[1em]">
         {images.map((image, index) => (
           <div key={index} className={containerClassName}>
             {renderCard(image)}
@@ -45,7 +46,30 @@ const Section = <T,>({
         {fillerArray.map((_, index) => (
           <div key={index} className={`${containerClassName} invisible`} />
         ))}
-      </div>
+      </div> */}
+      {title === "TOP NFTS" || title === "TOP GROUPS" ? (
+        <div className="grid gap-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+          {images.map((image, index) => (
+            <div key={index} className={containerClassName}>
+              {renderCard(image)}
+            </div>
+          ))}
+          {fillerArray.map((_, index) => (
+            <div key={index} className={`${containerClassName} invisible`} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {images.map((image, index) => (
+            <div key={index} className={containerClassName}>
+              {renderCard(image)}
+            </div>
+          ))}
+          {fillerArray.map((_, index) => (
+            <div key={index} className={`${containerClassName} invisible`} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

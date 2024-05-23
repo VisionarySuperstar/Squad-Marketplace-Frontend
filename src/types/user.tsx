@@ -5,6 +5,7 @@ export interface IUSER {
   name: string,
   email: string,
   avatar: string,
+  join_at: string
 };
 
 export type TMsg = { 
@@ -71,4 +72,11 @@ export interface IRequest{
   groupid:string;
   userid:string;
   date:string;
+}
+
+export interface IActive_Bids{
+  id:string;
+  bidder:string;
+  nft:string;
+  withdraw_amount: string;
 }

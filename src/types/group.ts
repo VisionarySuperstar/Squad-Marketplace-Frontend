@@ -16,6 +16,7 @@ export interface IGROUP {
   address: string;
   is_actively_recruiting: boolean;
   ranking: string;
+  created_at: string;
 }
 
 export interface IGroupCard {

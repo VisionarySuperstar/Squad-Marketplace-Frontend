@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
-import Sort from "@/components/groups/groupSearch/sort";
+import Sort from "@/components/marketplace/Sort";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
 import Recruiting from "@/components/groups/groupSearch/recruiting";
 import useLoadingControlStore from "@/store/UI_control/loading";
@@ -12,6 +12,7 @@ import NftCard from "@/components/main/cards/nftCard";
 import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
+import { sortNFTSBy } from "@/utils/data-processing";
 
 export default function Home() {
   const [scale, setScale] = React.useState<number>(65);
@@ -27,6 +28,10 @@ export default function Home() {
 
   const [allNftData, setAllNftData] = useState<INFT[]>([]);
   const api = useAPI();
+
+  const onSortItemSelected = (sortBy: string) => {
+    setAllNftData(sortNFTSBy(allNftData, sortBy));
+  };
 
   useEffect(() => {
     document.body.style.overflow = "auto";
@@ -85,9 +90,9 @@ export default function Home() {
     <>
       <Carousel hasCaption={false} />
       <div className="font-Maxeville">
-        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
+        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px] z-20">
           <div className="flex justify-between w-[60%] mt-2">
-            <Sort />
+            <Sort onItemSelected={onSortItemSelected} />
             {enableScale && (
               <div className="ps-[15px] w-full max-w-[300px]">
                 <ViewProgress scale={scale} setScale={setScale} />
@@ -123,23 +128,16 @@ export default function Home() {
                 }}
               >
                 {allNftData?.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                    onClick={() => {
-                      console.log("clicked");
-                      router.push(`/details/public/${item.id}`);
-                    }}
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={parseInt(item.collectionid)}
-                      price={parseInt(item.currentprice)}
-                      seen={200}
-                      favorite={20}
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
                 ))}
               </div>
             </div>
@@ -150,20 +148,16 @@ export default function Home() {
                 className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2`}
               >
                 {allNftData.map((item, index) => (
-                  <div
+                  <NftCard
                     key={index}
-                    className="relative text-md content-card cursor-pointer drop-shadow-lg"
-                    onClick={() => router.push(`/details/public/${item.id}`)}
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={parseInt(item.collectionid)}
-                      price={parseInt(item.currentprice)}
-                      seen={200}
-                      favorite={20}
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
                 ))}
               </div>
             </div>

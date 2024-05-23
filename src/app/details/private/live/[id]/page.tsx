@@ -14,7 +14,7 @@ import Split_line from "@/components/main/split_line";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import NFTs from "@/data/nfts.json";
-import { INFT, IGROUP, IUSER, IOFFER_TRANSACTION } from "@/types";
+import { INFT, IGROUP, IUSER, IOFFER_TRANSACTION, IActive_Bids } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -255,6 +255,15 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
+      
+      const _bidder_bid_state = await api.post("/api/getBidState", {bidder: nftData.currentbidder});
+      const bid_state:IActive_Bids[] = _bidder_bid_state.data;
+      const withdrawAmount = bid_state.find((_bid:IActive_Bids) => _bid.nft === nftData.id)?.withdraw_amount;
+      console.log("withdrawAmount", withdrawAmount);
+      if(Number(withdrawAmount) <= 0) await api.post("/api/removeBidState", {
+        bidder: nftData.currentbidder,
+        nft: nftData.id,
+      });
       router.back();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -293,7 +302,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <EyeIcon props="#322A44" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon props="#322A44" />
+                  <HeartIcon fill="#322A44" />
                   <div>20</div>
                 </div>
               </div>
