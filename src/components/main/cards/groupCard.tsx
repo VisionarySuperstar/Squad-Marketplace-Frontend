@@ -25,6 +25,7 @@ const GroupCard: React.FC<IGroupCard> = ({
       router.push(`groups/private_profile/${groupId}`);
     }
   };
+  const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
 
   return (
     <>
@@ -49,12 +50,18 @@ const GroupCard: React.FC<IGroupCard> = ({
                   {membercount} MEMEBERS
                 </div>
               </div>
+              {!imageLoaded && (
+                <div className="w-full h-full absolute top-0 left-0 bg-white">
+                  <div className="animated-background"></div>
+                </div>
+              )}
               <Image
                 src={avatar}
                 className="w-full h-full object-cover aspect-square"
                 alt="avatar"
                 width={500}
                 height={500}
+                onLoad={() => setImageLoaded(true)}
               />
             </div>
           )}
