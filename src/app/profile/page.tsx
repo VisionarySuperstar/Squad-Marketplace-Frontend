@@ -82,18 +82,22 @@ export default function Home() {
   const allNfts = useAllNfts();
   const myGroups = useMyGroups();
   const activeBids = useActiveBids();
-  const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]) ;
-  const [bidNfts, setBidNfts] = useState<INFT[]>([]) ;
-
-  useEffect(() =>{
-    if(!allNfts) return ;
-    setCollectedNfts(allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))) ;
-  }, [allNfts])
+  const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
+  const [bidNfts, setBidNfts] = useState<INFT[]>([]);
 
   useEffect(() => {
-    if(!activeBids || !allNfts) return ;
-    setBidNfts(allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id)))
-  }, [activeBids, allNfts])
+    if (!allNfts) return;
+    setCollectedNfts(
+      allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))
+    );
+  }, [allNfts]);
+
+  useEffect(() => {
+    if (!activeBids || !allNfts) return;
+    setBidNfts(
+      allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id))
+    );
+  }, [activeBids, allNfts]);
 
   return (
     <>
@@ -125,14 +129,16 @@ export default function Home() {
                 <div className="flex flex-col ">
                   <div>
                     <div className="text-gray-400">JOINED ON</div>
-                    <div>{formatDateWithTimeZone(
+                    <div>
+                      {formatDateWithTimeZone(
                         Number(user.join_at),
                         "America/New_York"
-                      )}</div>
+                      )}
+                    </div>
                   </div>
                   <div className="mt-5">
                     <div className="text-gray-400">TOTAL COLLECTED</div>
-                    <div>{collectedNfts?collectedNfts.length:"0"}</div>
+                    <div>{collectedNfts ? collectedNfts.length : "0"}</div>
                   </div>
                 </div>
                 <div className="flex flex-col">
@@ -141,7 +147,7 @@ export default function Home() {
                     <div className="flex gap-3">
                       <img src="/metamask.svg"></img>
                       <div className=" text-ellipsis max-w-[150px] overflow-hidden">
-                      {formatWalletAddress(user?.wallet)}
+                        {formatWalletAddress(user?.wallet)}
                       </div>
                     </div>
                   </div>
@@ -177,7 +183,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          ACTIVE BIDS ({bidNfts?bidNfts.length:"0"})
+                          ACTIVE BIDS ({bidNfts ? bidNfts.length : "0"})
                         </a>
                         <a
                           onClick={() => {
@@ -185,7 +191,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          GROUPS ({myGroups?myGroups.length:"0"})
+                          GROUPS ({myGroups ? myGroups.length : "0"})
                         </a>
                         <a
                           onClick={() => {
@@ -193,7 +199,8 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          COLLECTED ({collectedNfts?collectedNfts.length:"0"})
+                          COLLECTED (
+                          {collectedNfts ? collectedNfts.length : "0"})
                         </a>
                         <a
                           onClick={() => {
@@ -212,7 +219,9 @@ export default function Home() {
           </div>
           <div className="page_container_p40">
             <div className="mt-5" id="active_bid">
-              <h1 className="text-[18px]">ACTIVE BIDS ({bidNfts?bidNfts.length:"0"})</h1>
+              <h1 className="text-[18px]">
+                ACTIVE BIDS ({bidNfts ? bidNfts.length : "0"})
+              </h1>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {bidNfts.map((item, index) => (
                   <NftCard
@@ -224,7 +233,9 @@ export default function Home() {
                     seen={200}
                     favorite={20}
                     price={
-                      item.currentprice ? Number(item.currentprice) : Number(item.initialprice)
+                      item.currentprice
+                        ? Number(item.currentprice)
+                        : Number(item.initialprice)
                     }
                   />
                 ))}
@@ -232,7 +243,9 @@ export default function Home() {
             </div>
             <Split_line />
             <div className="mt-5" id="groups">
-              <h1 className="text-[18px]">GROUPS ({myGroups?myGroups.length:"0"})</h1>
+              <h1 className="text-[18px]">
+                GROUPS ({myGroups ? myGroups.length : "0"})
+              </h1>
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {myGroups.map((item, index) => (
                   <GroupCard
@@ -250,8 +263,9 @@ export default function Home() {
             <Split_line />
             <div className="mt-5" id="collected">
               <div className="flex justify-between">
-                <h1 className="text-[18px]">COLLECTED ({collectedNfts?collectedNfts.length:"0"})</h1>
-                <h1 className="text-[18px] underline">VIEW ALL +</h1>
+                <h1 className="text-[18px]">
+                  COLLECTED ({collectedNfts ? collectedNfts.length : "0"})
+                </h1>
               </div>
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
@@ -280,10 +294,9 @@ export default function Home() {
             <Split_line />
             <div className="mt-5 mb-5" id="setting">
               <div className="">
-                <h1 className="text-[18px]">SETTINGS</h1>
+                <h1 className="text-[18px]">NOTIFICATION SETTING</h1>
               </div>
               <div className="mt-5">
-                <div className=" text-gray-400">NOTIFICATIONS</div>
                 <div className="grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 w-2/5">
                   <div className="p-[10px]">
                     <div className="text-md flex items-center">SALES</div>
@@ -387,48 +400,6 @@ export default function Home() {
                     </label>
                   </div>
                 </div>
-              </div>
-              <div className="mt-5">
-                <div className="text-gray-400">WALLETS</div>
-                <div className="flex flex-col mt-2">
-                  <div className="text-[12px] text-gray-400">NEWS</div>
-                  <div className="flex gap-5 items-center mt-2">
-                    <img src="/metamask.svg"></img>
-                    <div>0X111...222</div>
-                    <div className="underline text-[12px]">REMOVE</div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-5">
-                <div className="text-gray-400">PRIVACY</div>
-                <div className="flex items-center text-xl">
-                  <input
-                    id="default-radio"
-                    type="checkbox"
-                    value=""
-                    name="default-radio"
-                    className="appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
-                  />
-                  <label
-                    htmlFor="default-radio"
-                    className="ms-2 text-chocolate-main text-[18px] dark:text-gray-300"
-                  >
-                    MAKE MY PROFILE PRIVATE
-                  </label>
-                </div>
-                <div className="text-[18px] text-gray-400 mt-2">
-                  on `private`other users can only see your name and when you
-                  joined.
-                </div>
-              </div>
-              <div className="mt-5">
-                <div className="text-gray-400">ACCOUNT</div>
-                <div className="text-[12px] text-gray-400 mt-3">EMAIL</div>
-                <div className="flex gap-3 mt-2">
-                  <div>Z@ZAK.LLC</div>
-                  <div className="underline text-[12px]">CHANGE</div>
-                </div>
-                <div className="text-[12px] underline mt-2">DELETE ACCOUNT</div>
               </div>
             </div>
           </div>

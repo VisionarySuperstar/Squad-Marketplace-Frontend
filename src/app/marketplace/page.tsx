@@ -90,7 +90,7 @@ export default function Home() {
     <>
       <Carousel hasCaption={false} />
       <div className="font-Maxeville">
-        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px]">
+        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] z-10 bg-white/95 border-b-[1px] z-20">
           <div className="flex justify-between w-[60%] mt-2">
             <Sort onItemSelected={onSortItemSelected} />
             {enableScale && (
