@@ -2,9 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import MyGroups from "@/data/mygroups.json";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import newgroups from "@/data/newgroups.json";
 import { IUSER } from "@/types";
 import AddMemberModal from "@/components/main/modals/groups/addMemberModal";
 
@@ -315,7 +313,7 @@ const NewGroupModal = () => {
                   <div key={key}>
                     <Image
                       src={index.avatar}
-                      className="rounded-full object-cover"
+                      className="rounded-full object-cover aspect-square"
                       width={60}
                       height={60}
                       alt="avatar"

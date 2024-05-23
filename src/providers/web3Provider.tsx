@@ -41,8 +41,8 @@ interface IContext {
   isReconnecting: boolean;
   isDisconnected: boolean;
   connector: any | undefined;
-  provider: any | undefined;
   signer: any | undefined;
+  provider:any | undefined;
 }
 
 export const Web3Context = React.createContext<IContext | undefined>(undefined);
@@ -63,14 +63,16 @@ const Web3ContextProvider = ({
   const { data } = useWalletClient({ chainId });
   const client: Client = data as Client;
 
-  const signer = React.useMemo(
-    () => (client ? clientToSigner(client) : undefined),
-    [client]
-  );
   const provider = React.useMemo(
     () => (client ? clientToProvider(client) : undefined),
     [client]
   );
+  const signer = React.useMemo(
+    () => (client ? clientToSigner(client) : undefined),
+    [client]
+  );
+  
+
   return (
     <Web3Context.Provider
       value={{
@@ -83,7 +85,7 @@ const Web3ContextProvider = ({
         connector,
         chainId,
         signer,
-        provider,
+        provider
       }}
     >
       {children}

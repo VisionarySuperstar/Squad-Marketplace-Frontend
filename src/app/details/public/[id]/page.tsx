@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
@@ -11,7 +10,6 @@ import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/mar
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
-import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 
 import useAPI from "@/hooks/useAPI";
@@ -67,7 +65,6 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [contentContract, setContentContract] = useState<Contract | undefined>(
     undefined
   );
-  
   const [data, setData] = useState<INFT | undefined>(undefined);
   const [groupName, setGroupName] = useState<string>("");
   const api = useAPI();
