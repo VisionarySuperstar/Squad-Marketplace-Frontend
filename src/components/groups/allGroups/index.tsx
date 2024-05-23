@@ -8,14 +8,16 @@ import useAPI from "@/hooks/useAPI";
 import { IGROUP } from "@/types";
 import useCreatGroupState from "@/store/createGroupStatus";
 import toast from "react-hot-toast";
+import { sortGroupsBy } from "@/utils/data-processing";
 
 interface IProps {
   scale: number;
   recruitingState: boolean;
-  searchFilter:string;
+  searchFilter: string;
+  sortBy?: string;
 }
 
-const AllGroup = ({ scale, recruitingState, searchFilter }: IProps) => {
+const AllGroup = ({ scale, recruitingState, searchFilter, sortBy }: IProps) => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [allGroupData, setAllGroupData] = useState<IGROUP[]>();
@@ -72,8 +74,14 @@ const AllGroup = ({ scale, recruitingState, searchFilter }: IProps) => {
   }
 
   useEffect(() => {
-    filterAllGroupData_state() ;
-  },[recruitingState])
+    if (allGroupData && sortBy) {
+      setAllGroupData(sortGroupsBy(allGroupData, sortBy));
+    }
+  }, [sortBy]);
+
+  useEffect(() => {
+    filterAllGroupData_state();
+  }, [recruitingState]);
 
   useEffect(() => {
     filterAllGroupData_search() ;

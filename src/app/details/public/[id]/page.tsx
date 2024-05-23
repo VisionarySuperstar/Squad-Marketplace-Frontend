@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
@@ -11,7 +10,6 @@ import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/mar
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
-import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 
 import useAPI from "@/hooks/useAPI";
@@ -159,7 +157,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if(!contract || !data) return ;
+    if (!contract || !data) return;
     calcRemainTime();
     getWithdrawAmounts();
   }, [contract, data]);
@@ -209,11 +207,13 @@ const Home = ({ params }: { params: { id: string } }) => {
       await Promise.all(
         transaction_history.map(
           async (index: transferHistoryType, key: number) =>
-            await formatDateWithTimeZone(Number(index.timestamp), "America/New_York")
+            await formatDateWithTimeZone(
+              Number(index.timestamp),
+              "America/New_York"
+            )
         )
       )
     );
-
   };
   function shortenAddress(address: string) {
     // Check if the address is valid
@@ -240,7 +240,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     else return shortenAddress(address);
   };
   useEffect(() => {
-    if(!contentContract) return ;
+    if (!contentContract) return;
     getHistory();
   }, [contentContract]);
 
@@ -257,7 +257,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if(!contract || !data) return ;
+    if (!contract || !data) return;
     getDutchAuctionPrice();
   }, [contract, data]);
 
@@ -271,16 +271,15 @@ const Home = ({ params }: { params: { id: string } }) => {
     return [days, hours, minutes, seconds];
   };
 
-  const calcTimeFromBlockNumber =  async (blockNumber:number) => {
+  const calcTimeFromBlockNumber = async (blockNumber: number) => {
     const block = await provider.getBlock(blockNumber);
-    return Number(block.timestamp) * 1000 ;
-  }
+    return Number(block.timestamp) * 1000;
+  };
 
   const formatDateWithTimeZone = async (
     timestampInSeconds: number,
     timeZone: string
   ) => {
-
     // Convert the timestamp to milliseconds
     const timestampInMilliseconds = timestampInSeconds * 1000;
 
@@ -309,7 +308,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if(!remainTime) return;
+    if (!remainTime) return;
     // Set up an interval to decrease the value every second
     const intervalId = setInterval(() => {
       setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
@@ -388,7 +387,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if(!data || !allNftData) return ;
+    if (!data || !allNftData) return;
     getCollectionData();
   }, [data, allNftData]);
 
@@ -418,7 +417,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <EyeIcon props="#322A44" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon props="#322A44" />
+                  <HeartIcon fill="#322A44" />
                   <div>20</div>
                 </div>
               </div>

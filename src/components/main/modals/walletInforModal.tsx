@@ -199,11 +199,10 @@ const WalletInforModal = () => {
                 </div>
               ))}
 
-            
             <div className="bg-white z-[1000] h-[100px]">
-            <div className="fixed bottom-[80px] w-full ">
-              <Split_line />
-            </div>
+              <div className="fixed bottom-[80px] w-full ">
+                <Split_line />
+              </div>
               <div className="flex items-center justify-around bottom-3 fixed w-full">
                 <div
                   className="flex flex-col gap-2 items-center justify-center hover:cursor-pointer "

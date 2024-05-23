@@ -101,7 +101,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <EyeIcon props="#322A44" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon props="#322A44" />
+                  <HeartIcon fill="#322A44" />
                   <div>20</div>
                 </div>
               </div>
