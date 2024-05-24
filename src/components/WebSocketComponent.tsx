@@ -29,9 +29,8 @@ const SocketComponent = () => {
   const create_new_connection = () => {
     close_original_connection();
     setCount((prevCount) => prevCount + 1);
-    if (userid) {
+    if (userid !== undefined) {
       const _socket = new WebSocket(`${webSocketURL}`);
-
       _socket.onopen = () => {
         _socket.send(JSON.stringify({ type: "userId", userId: userid }));
 
