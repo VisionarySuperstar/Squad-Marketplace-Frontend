@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
 
-const useScrollHandler = () => {
+export const useScrollHandler = () => {
   const updateNavbarBackground = useNavbarUIControlStore(
     (state) => state.updateIsBackground
   );
@@ -39,5 +39,3 @@ const useScrollHandler = () => {
     };
   }, [updateNavbarBackground]);
 };
-
-export default useScrollHandler;

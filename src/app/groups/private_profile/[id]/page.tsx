@@ -11,7 +11,6 @@ import MintModal from "@/components/main/modals/groups/mintModal";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import { useRouter } from "next/navigation";
 import renderAvatar from "@/components/utils/renderAvatar";
-import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ItemLoaderComponent from "@/components/main/itemLoader";
@@ -20,7 +19,6 @@ import NftCard from "@/components/main/cards/nftCard";
 //import data
 
 import {
-  IGROUP,
   IUSER,
   INFT,
   IOFFER_TRANSACTION,
@@ -36,7 +34,9 @@ import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
+import { scrollToElement } from "@/components/utils/scrollToElement";
 import FooterBG from "@/components/main/footerbg";
+import { useGroupInforById } from "@/hooks/views/useGroupInforById";
 
 const acceptables = [
   "image/png",
@@ -50,13 +50,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
-  const setLoadingState = useLoadingControlStore(
-    (state) => state.updateLoadingState
-  );
-  useEffect(() => {
-    document.body.style.overflow = "auto";
-    setLoadingState(false);
-  }, [setLoadingState]);
+
   const router = useRouter();
   const mintModalState = useGroupUIControlStore((state) => state.mintModal);
   const setMintModalState = useGroupUIControlStore(
@@ -86,18 +80,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [isLoadingChangeConfirm, setIsLoadingChangeConfirm] =
     useState<boolean>(false);
 
-  function scrollToElement(elementId: string) {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const elementTop = element.getBoundingClientRect().top;
-      const windowScrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      window.scrollTo({
-        top: elementTop - 180 + windowScrollTop,
-        behavior: "smooth",
-      });
-    }
-  }
   const [soldNfts, setSoldNfts] = useState<INFT[]>([]);
   const [isDirector, setIsDirector] = useState<boolean>(false);
   const [activeState, setActiveState] = useState<boolean>(false);
@@ -114,29 +96,18 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   >([]);
 
   const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
-
   const [offerNfts, setOfferNfts] = useState<INFT[]>([]);
-
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
 
   const { user } = useAuth();
-  const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
+  // const [groupInfor, setgroupInfor] = useState<IGROUP | undefined>(undefined);
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const [requiredConfirmNumber, setRequiredConfirmNumber] =
     useState<string>("");
   const api = useAPI();
-  const getMyGroupData = async () => {
-    const response = await api
-      .post(`/api/getGroupId`, { id: params.id })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    const Data = response?.data;
-    setMyGroupData(Data);
-    setActiveState(Data?.is_actively_recruiting);
-    setRequiredConfirmNumber(Data.requiredconfirmnumber);
-    if (Data?.director === user?.id) setIsDirector(true);
-  };
+
+  const { groupInfor, getGroupInforById } = useGroupInforById(params.id);
+
   const getNFTData = async () => {
     const result1 = await api
       .post("/api/getNftByGroupAndStatus", {
@@ -197,9 +168,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     });
     setRequests(result_requests?.data);
   };
+
   useEffect(() => {
-    getMyGroupData();
+    getGroupInforById();
     getNFTData();
+    if (groupInfor?.director === user?.id) setIsDirector(true);
   }, [user]);
 
   const getOffer_nfts = async () => {
@@ -224,16 +197,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     return data;
   };
   useEffect(() => {
-    if (!myGroupData) return;
+    if (!groupInfor) return;
     (async () => {
       const _members = await Promise.all(
-        myGroupData?.member.map(
+        groupInfor?.member.map(
           async (_member: any) => await getMembersData(_member.id)
         )
       );
       setMembers(_members);
     })();
-  }, [myGroupData]);
+  }, [groupInfor]);
 
   const getRequestMembers = async () => {
     if (requests) {
@@ -243,8 +216,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           toast.error(error.message);
         });
       const _all_members = _members?.data;
-      console.log("_all_members", _all_members);
-      console.log("_requests", requests);
       const _request_members = _all_members.filter((_user: IUSER) =>
         requests
           .map((_request: IRequest) => _request.userid.toString())
@@ -307,8 +278,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     if (!address || !chainId || !signer) {
       return;
     }
-    if (myGroupData) {
-      const _contract = new Contract(myGroupData?.address, GROUP_ABI, signer);
+    if (groupInfor) {
+      const _contract = new Contract(groupInfor?.address, GROUP_ABI, signer);
       setContract(_contract);
       const _market_contract = new Contract(
         Marketplace_ADDRESSES[chainId],
@@ -317,7 +288,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       );
       setMarketplaceContract(_market_contract);
     }
-  }, [address, chainId, signer, myGroupData]);
+  }, [address, chainId, signer, groupInfor]);
 
   const dsiplayMembers = async () => {
     if (!contract) return;
@@ -396,7 +367,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-      getMyGroupData();
+      // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -465,13 +436,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         });
       await api
         .post("/api/updateGroupDirector", {
-          id: myGroupData?.id,
+          id: groupInfor?.id,
           director: item.new_director,
         })
         .catch((error) => {
           toast.error(error.message);
         });
-      getMyGroupData();
+      // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -547,13 +518,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setIsLoadingLeaveButton(true);
       const tx = await contract.removeMember(address);
       await tx.wait();
-      const _member = myGroupData?.member.filter(
+      const _member = groupInfor?.member.filter(
         (_user) => _user.id !== user.id
       );
 
       await api
         .post("/api/updateGroupMember", {
-          id: myGroupData?.id,
+          id: groupInfor?.id,
           member: JSON.stringify(_member),
         })
         .catch((error) => {
@@ -589,7 +560,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
     await api
       .post("/api/updateEarning", {
-        id: myGroupData?.id,
+        id: groupInfor?.id,
         earning: Number(Number(totalEarningAmount) / 1e18).toString(),
       })
       .catch((error) => {
@@ -597,7 +568,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       });
     if (!marketplaceContract) return;
     const withdrawMarketplaceBalance =
-      await marketplaceContract.balanceOfSeller(myGroupData?.address);
+      await marketplaceContract.balanceOfSeller(groupInfor?.address);
     setWithdrawFromMarketplace(
       Number(Number(withdrawMarketplaceBalance) / 1e18).toString()
     );
@@ -624,7 +595,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       const transaction_id = await contract.getNumberOfCandidateTransaction();
       await api
         .post("/api/addDirector", {
-          groupid: myGroupData?.id,
+          groupid: groupInfor?.id,
           new_director: members[_num].id,
           suggester: user?.id,
           confirm_member: JSON.stringify([]),
@@ -653,7 +624,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     // console.log("currentTime--->", formattedDateTime);
     await api
       .post("/api/addPost", {
-        groupId: myGroupData?.id,
+        groupId: groupInfor?.id,
         content: newPostMessage,
       })
       .catch((error) => {
@@ -682,14 +653,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if (!myGroupData) throw "No groupdata";
+      if (!groupInfor) throw "No groupdata";
 
       setIsDisplaying(true);
       setIsLoading(true);
       const tx = await contract.addMember(requestMembers[index].wallet);
       await tx.wait();
       console.log("asdf");
-      const _members = myGroupData?.member;
+      const _members = groupInfor?.member;
       console.log("_members", _members);
       console.log("userid", requests[index]);
       _members?.push({ id: requests[index].userid.toString() });
@@ -711,7 +682,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           toast.error(error.message);
         });
       console.log("here2");
-      getMyGroupData();
+      // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -730,10 +701,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if (!myGroupData) throw "No groupdata";
+      if (!groupInfor) throw "No groupdata";
 
       if (
-        Number(requiredConfirmNumber) > myGroupData.member.length ||
+        Number(requiredConfirmNumber) > groupInfor.member.length ||
         Number(requiredConfirmNumber) < 0
       ) {
         toast.error("Invalid confirm number");
@@ -748,13 +719,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       await tx.wait();
       const result = await api
         .post("/api/updateGroupConfirmNumber", {
-          id: myGroupData.id,
+          id: groupInfor.id,
           confirmNumber: Number(requiredConfirmNumber).toString(),
         })
         .catch((error) => {
           toast.error(error.message);
         });
-      getMyGroupData();
+      // getJoinedGroupData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
         toast.error("User rejected transaction.");
@@ -798,7 +769,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     <>
       {mintModalState && avatar && (
         <MintModal
-          groupAddress={myGroupData ? myGroupData.address : ""}
+          groupAddress={groupInfor ? groupInfor.address : ""}
           groupId={parseInt(params.id)}
           mintAvatar={mintAvatar}
           avatarFile={avatar}
@@ -812,9 +783,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <div>
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:w-full xs:h-full">
               <div className="mt-5 xs:w-full xs:h-full">
-                {myGroupData && (
+                {groupInfor && (
                   <Image
-                    src={myGroupData?.avatar}
+                    src={groupInfor?.avatar}
                     className="w-full aspect-square object-cover"
                     alt="group_avatar"
                     width={500}
@@ -823,10 +794,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 )}
               </div>
               <div className="group_info mt-5">
-                {members && myGroupData && (
+                {members && groupInfor && (
                   <GroupDescription
                     users={members}
-                    myGroupData={myGroupData}
+                    myGroupData={groupInfor}
                     totalEarning={totalEarning}
                   />
                 )}
@@ -857,10 +828,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
                         NFTS (
-                        {myGroupData?.mintnumber
-                          ? myGroupData?.mintnumber
-                          : "0"}
-                        )
+                        {groupInfor?.mintnumber ? groupInfor?.mintnumber : "0"})
                       </a>
                       <a
                         onClick={() => {
@@ -897,7 +865,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         <div className="page_container_p40 font-Maxeville">
           <div className="flex justify-between text-xl mt-5" id="nfts">
             <div>
-              NFTs ({myGroupData?.mintnumber ? myGroupData?.mintnumber : "0"})
+              NFTs ({groupInfor?.mintnumber ? groupInfor?.mintnumber : "0"})
             </div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
@@ -1001,7 +969,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     <div className="text-gray-400 mt-5 text-md">
                       CONFIRMED BY{" "}
                       {offerTransactions[key].confirm_member.length}/
-                      {myGroupData?.member.length}
+                      {groupInfor?.member.length}
                     </div>
                     <div className="my-[20px]">
                       {members &&
@@ -1018,7 +986,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         (_item: any) => _item.id === user?.id
                       ).length === 0 &&
                         item.confirm_member.length <
-                          Number(myGroupData?.requiredconfirmnumber) && (
+                          Number(groupInfor?.requiredconfirmnumber) && (
                           <button
                             className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
                             onClick={() => {
@@ -1041,7 +1009,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           </button>
                         )}
                       {item.confirm_member.length >=
-                        Number(myGroupData?.requiredconfirmnumber) && (
+                        Number(groupInfor?.requiredconfirmnumber) && (
                         <button
                           className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
                           onClick={() => {
@@ -1152,7 +1120,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           </React.Fragment>
                         ))}
                       </div>
-                      <div className="text-right text-gray-500">                
+                      <div className="text-right text-gray-500">
                         {formatDateWithTimeZone(
                           Number(_news.post_time),
                           "America/New_York"
@@ -1190,7 +1158,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <input
                   id="default-radio"
                   type="checkbox"
-                  checked={activeState}
+                  checked={groupInfor?.is_actively_recruiting}
                   onChange={(e) => changeActiveState(e.target.checked)}
                   name="default-radio"
                   className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
@@ -1217,17 +1185,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <h1>SET A NEW DIRECTOR</h1>
           </div>
           <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
-            {members && myGroupData && (
+            {members && groupInfor && (
               <div
                 className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2`}
               >
-                {members && myGroupData && (
+                {members && groupInfor && (
                   <>
                     <div className="aspect-square rounded-full">
                       <Image
                         src={
                           members?.filter(
-                            (_user: IUSER) => _user.id === myGroupData?.director
+                            (_user: IUSER) => _user.id === groupInfor?.director
                           )[0].avatar
                         }
                         className="rounded-full aspect-square object-cover"
@@ -1240,7 +1208,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       <p className="flex justify-center">
                         {
                           members?.filter((_user: IUSER) =>
-                            _user.id.includes(myGroupData?.director)
+                            _user.id.includes(groupInfor?.director)
                           )[0].name
                         }
                         (Current Director)
@@ -1256,7 +1224,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   <div
                     key={index}
                     className={`flex flex-col ${
-                      (item.id === myGroupData?.director ||
+                      (item.id === groupInfor?.director ||
                         directorTransactions?.filter(
                           (_item: IDIRECTOR_TRANSACTION) =>
                             _item.new_director === item.id
@@ -1288,7 +1256,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     {index === selected && (
                       <button
                         className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
-                          item.id === myGroupData?.director ? "hidden" : ""
+                          item.id === groupInfor?.director ? "hidden" : ""
                         } `}
                         onClick={() => {
                           suggestDirectorSetting(index);
@@ -1323,7 +1291,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
           {directorTransactions &&
             directorTransactions.length &&
-            myGroupData &&
+            groupInfor &&
             members?.length &&
             members && (
               <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
@@ -1365,7 +1333,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                             {directorTransactions[key].confirm_member.length
                               ? directorTransactions[key].confirm_member.length
                               : "0"}
-                            /{myGroupData.member.length}
+                            /{groupInfor.member.length}
                           </div>
                         )}
                         <div className="my-[20px]">
@@ -1382,7 +1350,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                             (_item: any) => _item.id === user?.id
                           ).length === 0 &&
                             item.confirm_member.length <=
-                              Number(myGroupData?.requiredconfirmnumber) && (
+                              Number(groupInfor?.requiredconfirmnumber) && (
                               <button
                                 className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
                                 onClick={() => {
@@ -1407,7 +1375,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                               </button>
                             )}
                           {item.confirm_member.length >=
-                            Number(myGroupData?.requiredconfirmnumber) && (
+                            Number(groupInfor?.requiredconfirmnumber) && (
                             <button
                               className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
                               onClick={() => {

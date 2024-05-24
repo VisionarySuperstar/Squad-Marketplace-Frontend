@@ -7,8 +7,6 @@ import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
-import { useRouter } from "next/navigation";
-import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
 import useAPI from "@/hooks/useAPI";
@@ -18,31 +16,10 @@ import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import ItemLoaderComponent from "@/components/main/itemLoader";
 import FooterBG from "@/components/main/footerbg";
+import { scrollToElement } from "@/components/utils/scrollToElement";
 
-const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
-  const setLoadingState = useLoadingControlStore(
-    (state) => state.updateLoadingState
-  );
-  useEffect(() => {
-    document.body.style.overflow = "auto";
-    setLoadingState(false);
-  }, [setLoadingState]);
-  const router = useRouter();
-  function scrollToElement(elementId: string) {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const elementTop = element.getBoundingClientRect().top;
-      const windowScrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      window.scrollTo({
-        top: elementTop - 180 + windowScrollTop,
-        behavior: "smooth",
-      });
-    }
-  }
-
+const PublicGroupPage = ({ params }: { params: { id: string } }) => {
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
-
   const { user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
@@ -50,7 +27,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [isAvailableRequest, setIsAvailableRequest] = useState<boolean>(true);
   const api = useAPI();
 
-  const getMyGroupData = async () => {
+  const getJoinedGroupData = async () => {
     const response = await api
       .post(`/api/getGroupId`, { id: params.id })
       .catch((error) => {
@@ -74,7 +51,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    getMyGroupData();
+    getJoinedGroupData();
     getNftData();
   }, []);
 
@@ -130,7 +107,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    console.log("here");
     usersInfor();
     checkIsAvailableRequest();
   }, [myGroupData]);
@@ -149,6 +125,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     toast.success("Successfully submitted join request!");
     checkIsAvailableRequest();
   };
+  
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -301,10 +278,12 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                       </React.Fragment>
                     ))}
                   </div>
-                  <div>{formatDateWithTimeZone(
-                          Number(_news.post_time),
-                          "America/New_York"
-                        )}</div>
+                  <div>
+                    {formatDateWithTimeZone(
+                      Number(_news.post_time),
+                      "America/New_York"
+                    )}
+                  </div>
                 </div>
               ))}
           </div>
@@ -317,4 +296,4 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default ShareGroupProfile;
+export default PublicGroupPage;

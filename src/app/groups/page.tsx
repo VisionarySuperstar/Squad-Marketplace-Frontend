@@ -11,27 +11,13 @@ import AllGroup from "@/components/groups/allGroups";
 import GeneralButton from "@/components/groups/share/generalButton";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
-//import store
-import useLoadingControlStore from "@/store/UI_control/loading";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import FooterBG from "@/components/main/footerbg";
 
-export default function Home() {
+export default function GroupsPage() {
   //use state
   const [scale, setScale] = React.useState<number>(60);
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
-  //zustand
-  const setLoadingState = useLoadingControlStore(
-    (state) => state.updateLoadingState
-  );
-  const setIsGroupBtn = useNavbarUIControlStore(
-    (state) => state.updateIsGroupBtn
-  );
-  //useEffect
-  useEffect(() => {
-    setIsGroupBtn(true);
-  }, [setLoadingState, setIsGroupBtn]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,7 +38,6 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
-  // console.log("searchInput", searchInput) ;
   const handleKeyDown = (event: any) => {
     if (event.key === "Enter") {
       setSearchFilter(searchInput);
