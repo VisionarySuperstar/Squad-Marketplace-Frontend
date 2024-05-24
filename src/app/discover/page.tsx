@@ -7,21 +7,21 @@ import GroupCard from "@/components/main/cards/groupCard";
 import NftCard from "@/components/main/cards/nftCard";
 import Carousel_Component from "@/components/main/carousel";
 
-import useAllGroups from "@/hooks/views/useAllGroups";
 import useAllNfts from "@/hooks/views/useAllNfts";
 
+import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
+import useTopGroups from "@/hooks/views/useTopGroups";
 import { groupToCard, nftToCard } from "@/types";
 import {
   getNewlyMinted,
-  getTopGroups,
-  getTopNfts,
+  getTopNfts
 } from "@/utils/data-processing";
 import Link from "next/link";
 
 export default function DiscoverPage() {
-  const allGroups = useAllGroups();
+  const topGroups = useTopGroups();
+
   const allNfts = useAllNfts();
-  const topGroups = getTopGroups(allGroups);
   const topNfts = getTopNfts(allNfts);
   const newlyMinted = getNewlyMinted(allNfts);
 
