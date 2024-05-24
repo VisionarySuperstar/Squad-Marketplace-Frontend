@@ -767,6 +767,33 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Create a new Date object
+    const date = new Date(timestampInMilliseconds);
+
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
   return (
     <>
       {mintModalState && avatar && (
@@ -1125,8 +1152,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                           </React.Fragment>
                         ))}
                       </div>
-                      <div className="text-right text-gray-500">
-                        {_news.post_time.toString()}
+                      <div className="text-right text-gray-500">                
+                        {formatDateWithTimeZone(
+                          Number(_news.post_time),
+                          "America/New_York"
+                        )}
                       </div>
                     </div>
                   ))}

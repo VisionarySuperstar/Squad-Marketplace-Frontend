@@ -149,6 +149,33 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     toast.success("Successfully submitted join request!");
     checkIsAvailableRequest();
   };
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Create a new Date object
+    const date = new Date(timestampInMilliseconds);
+
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
 
   return (
     <>
@@ -274,7 +301,10 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                       </React.Fragment>
                     ))}
                   </div>
-                  <div>{_news.post_time.toString()}</div>
+                  <div>{formatDateWithTimeZone(
+                          Number(_news.post_time),
+                          "America/New_York"
+                        )}</div>
                 </div>
               ))}
           </div>

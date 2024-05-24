@@ -18,6 +18,12 @@ import ImageView from "@/components/main/imageViewer";
 import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
+
+  const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
+    []
+  );
+  const [ownedName, setOwnedName] = useState<string[]>([]);
+  const [displayingTime, setDisplayingTime] = useState<string[]>([]); 
   const [nftData, setNftData] = useState<INFT>();
   const [groupName, setGroupName] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
@@ -25,7 +31,6 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
-
   const getNftData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -43,12 +48,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       });
     setGroupName(result1?.data.name);
     const result2 = await api
-      .post("/auth/user/getUserByAddress", {
-        id: result?.data.owner,
-      })
+      .get(`/auth/user/${result?.data.owner}`)
       .catch((error) => {
         toast.error(error.message);
       });
+    
     setOwnerName(result2?.data.name);
   };
 
@@ -56,6 +60,128 @@ const Home = ({ params }: { params: { id: string } }) => {
     getNftData();
     setLoadingState(false);
   }, []);
+  
+  function shortenAddress(address: string) {
+    // Check if the address is valid
+    const regex = /^0x[a-fA-F0-9]{40}$/;
+    if (!regex.test(address)) {
+      return "Invalid Ethereum address";
+    }
+
+    // Truncate the address after 6 characters
+    return `${address.substring(0, 6)}...${address.substring(38)}`;
+  }
+ 
+  
+  const { address, chainId, signer, chain, provider } = useActiveWeb3();
+  const [contract, setContract] = useState<Contract | undefined>(undefined);
+  const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
+    undefined
+  );
+  const [contentContract, setContentContract] = useState<Contract | undefined>(
+    undefined
+  );
+
+  const calcTimeFromBlockNumber = async (blockNumber: number) => {
+    const block = await provider.getBlock(blockNumber);
+    return Number(block.timestamp) * 1000;
+  };
+  const formatDateWithTimeZone = async (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Create a new Date object
+    let date = new Date(timestampInMilliseconds);
+    if (date.getFullYear() < 2024) {
+      const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
+      date = new Date(blockTime);
+    }
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
+  useEffect(() => {
+    if (!address || !chainId || !signer) {
+      return;
+    }
+    const _contract = new Contract(
+      Marketplace_ADDRESSES[chainId],
+      Marketplace_ABI,
+      signer
+    );
+    setContract(_contract);
+    const _usdc_contract = new Contract(
+      USDC_ADDRESS[chainId],
+      USDC_ABI,
+      signer
+    );
+    setUsdc_Contract(_usdc_contract);
+  }, [address, chainId, signer]);
+
+  const getUserName = async (address: string, key: number) => {
+    console.log("key", key);
+    if (!key) {
+      const result = await api.post("/api/getGroupAddress", { id: address });
+      console.log("here name is ", result.data.name);
+      if (result.data.name) return result.data.name;
+    }
+    const result = await api.post("/auth/user/getUserByAddress", {
+      id: address,
+    });
+    if (result.data.name) return result.data.name;
+    else return shortenAddress(address);
+  };
+  useEffect(() => {
+    if (!address || !chainId || !signer || !nftData) {
+      return;
+    }
+    const _contract = new Contract(nftData.collectionaddress, Content_ABI, signer);
+    setContentContract(_contract);
+  }, [address, chainId, signer, nftData]);
+  const getHistory = async () => {
+    if (!contentContract) return;
+    const transaction_history: transferHistoryType[] =
+      await contentContract.getTransferHistory(
+        BigInt(String(nftData?.collectionid))
+      );
+    console.log("transaction_history", transaction_history);
+    setTransferHistory(transaction_history);
+    setOwnedName(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await getUserName(index.to, key)
+        )
+      )
+    );
+    setDisplayingTime(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await formatDateWithTimeZone(
+              Number(index.timestamp),
+              "America/New_York"
+            )
+        )
+      )
+    );
+  };
 
   return (
     <>
@@ -92,6 +218,19 @@ const Home = ({ params }: { params: { id: string } }) => {
               <div className="text-[18px]">
                 {ownerName ? ownerName : nftData?.owner}
               </div>
+              <div className="text-gray-400 mt-3">Auction Type</div>
+
+              <div className="text-[18px]">
+                {Number(nftData?.auctiontype) === 0
+                  ? "English Auction"
+                  : Number(nftData?.auctiontype) === 1
+                  ? "Dutch Auction"
+                  : "Offering"}
+              </div>
+              <div className="text-gray-400 mt-3">Sold Price</div>
+              <div className="text-[18px]">
+                {nftData?.currentprice}
+              </div>
             </div>
             <div className="flex flex-col mb-[35px]">
               <Split_line />
@@ -100,7 +239,24 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <p>This is the content of the first collapsible section.</p>
                 </Collapse>
                 <Collapse title="History">
-                  <p>This is the content of the second collapsible section.</p>
+                {transferHistory.length &&
+                    transferHistory.map(
+                      (item: transferHistoryType, key: number) => {
+                        return (
+                          <p key={key} className="text-gray-400">
+                            {!key
+                              ? "Creator"
+                              : key === transferHistory.length - 1
+                              ? "Owner"
+                              : "Owned"}{" "}
+                            <span className="text-xl text-chocolate-main">
+                              {ownedName[key]}
+                            </span>{" "}
+                            {displayingTime && "\t" + displayingTime[key]}
+                          </p>
+                        );
+                      }
+                    )}
                 </Collapse>
               </div>
             </div>
