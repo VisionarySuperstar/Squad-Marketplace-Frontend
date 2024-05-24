@@ -14,16 +14,26 @@ import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 import useLoadingControlStore from "@/store/UI_control/loading";
-import ImageView from "@/components/main/imageViewer";
-import FooterBG from "@/components/main/footerbg";
+import useActiveWeb3 from "@/hooks/useActiveWeb3";
+import { Contract, ethers } from "ethers";
+import USDC_ABI from "@/constants/usdc.json";
+import { USDC_ADDRESS } from "@/constants/config";
+import Content_ABI from "@/constants/content_nft.json";
+
+type transferHistoryType = {
+  from: string;
+  to: string;
+  timestamp: BigInt;
+};
+import Marketplace_ABI from "@/constants/marketplace.json";
+import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
 
 const Home = ({ params }: { params: { id: string } }) => {
-
   const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
     []
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
-  const [displayingTime, setDisplayingTime] = useState<string[]>([]); 
+  const [displayingTime, setDisplayingTime] = useState<string[]>([]);
   const [nftData, setNftData] = useState<INFT>();
   const [groupName, setGroupName] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
@@ -52,7 +62,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
-    
+
     setOwnerName(result2?.data.name);
   };
 
@@ -60,7 +70,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     getNftData();
     setLoadingState(false);
   }, []);
-  
+
   function shortenAddress(address: string) {
     // Check if the address is valid
     const regex = /^0x[a-fA-F0-9]{40}$/;
@@ -71,8 +81,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     // Truncate the address after 6 characters
     return `${address.substring(0, 6)}...${address.substring(38)}`;
   }
- 
-  
+
   const { address, chainId, signer, chain, provider } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
@@ -151,7 +160,11 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (!address || !chainId || !signer || !nftData) {
       return;
     }
-    const _contract = new Contract(nftData.collectionaddress, Content_ABI, signer);
+    const _contract = new Contract(
+      nftData.collectionaddress,
+      Content_ABI,
+      signer
+    );
     setContentContract(_contract);
   }, [address, chainId, signer, nftData]);
   const getHistory = async () => {
@@ -190,7 +203,17 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <ImageView avatar={nftData.avatar} />
+                <PhotoProvider bannerVisible={false}>
+                  <PhotoView src={nftData.avatar}>
+                    <Image
+                      src={nftData.avatar}
+                      className="md:h-[70vh] object-contain w-auto"
+                      alt="group_avatar"
+                      width={706}
+                      height={706}
+                    />
+                  </PhotoView>
+                </PhotoProvider>
               </div>
               <Split_line />
               <div>
@@ -228,18 +251,17 @@ const Home = ({ params }: { params: { id: string } }) => {
                   : "Offering"}
               </div>
               <div className="text-gray-400 mt-3">Sold Price</div>
-              <div className="text-[18px]">
-                {nftData?.currentprice}
-              </div>
+              <div className="text-[18px]">{nftData?.currentprice}</div>
             </div>
             <div className="flex flex-col mb-[35px]">
               <Split_line />
+              {/* <div>DESCRIPTION</div> */}
               <div className="">
                 <Collapse title="Description">
                   <p>This is the content of the first collapsible section.</p>
                 </Collapse>
                 <Collapse title="History">
-                {transferHistory.length &&
+                  {transferHistory.length &&
                     transferHistory.map(
                       (item: transferHistoryType, key: number) => {
                         return (
@@ -263,7 +285,10 @@ const Home = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <FooterBG />
+      <div
+        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
+        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
+      ></div>
     </>
   );
 };
