@@ -36,6 +36,7 @@ import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
+import FooterBG from "@/components/main/footerbg";
 
 const acceptables = [
   "image/png",
@@ -1089,7 +1090,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
           <div className="flex justify-center items-center mt-5">
             <label
-              htmlFor="avatar"
+              htmlFor="upload_content"
               className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg cursor-pointer text-center"
             >
               <input
@@ -1582,12 +1583,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <Split_line />
         </div>
-        <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full"
-          style={{
-            backgroundImage: "url('/assets/bg-1.jpg')",
-          }}
-        ></div>
+        <FooterBG />
         <Footer />
       </div>
     </>

@@ -14,6 +14,7 @@ import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import ImageView from "@/components/main/imageViewer";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const [nftData, setNftData] = useState<INFT>();
@@ -62,17 +63,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <PhotoProvider bannerVisible={false}>
-                  <PhotoView src={nftData.avatar}>
-                    <Image
-                      src={nftData.avatar}
-                      className="md:h-[70vh] object-contain w-auto"
-                      alt="group_avatar"
-                      width={706}
-                      height={706}
-                    />
-                  </PhotoView>
-                </PhotoProvider>
+                <ImageView avatar={nftData.avatar} />
               </div>
               <Split_line />
               <div>

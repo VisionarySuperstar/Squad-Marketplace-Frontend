@@ -1,30 +1,30 @@
 "use client";
 
-import React, { useEffect } from "react";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import React from "react";
 
 import Footer from "@/components/main/footer/footer";
-export default function Home({ children }: { children: React.ReactNode }) {
-  const setNavbarshow = useNavbarUIControlStore((state) => state.updateIsShow);
-  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
-  const setNavbarBackBtn = useNavbarUIControlStore(
-    (state) => state.updateIsBackbtn
-  );
-  const setNavbarGroupBtn = useNavbarUIControlStore(
-    (state) => state.updateIsGroupBtn
-  );
-  const setNavbarBackground = useNavbarUIControlStore(
-    (state) => state.updateIsBackground
-  );
-  const navbarCurrentUrl = useNavbarUIControlStore((state) => state.url);
-  if (navbarCurrentUrl === "") setNavbarCurrent("marketplace");
+import useScrollHandler from "@/hooks/ui/useScrollHandler";
+import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
+import {
+  useNavbarCurrent,
+  useNavbarShow,
+  useNavbarBackgound,
+  useNavbarBackBtn,
+  useNavbarGroupBtn,
+} from "@/hooks/ui/useNavbar";
 
-  useEffect(() => {
-    setNavbarshow(true);
-    setNavbarBackground(false);
-    setNavbarBackBtn(false);
-    setNavbarGroupBtn(false);
-  }, [setNavbarBackBtn, setNavbarBackground, setNavbarGroupBtn, setNavbarshow]);
+export default function MarketplaceLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  useNavbarCurrent("marketplace");
+  useNavbarShow(true);
+  useNavbarBackgound(false);
+  useNavbarBackBtn(false);
+  useNavbarGroupBtn(false);
+  useEndLoadingState();
+  useScrollHandler();
   return (
     <div>
       {children}

@@ -16,10 +16,9 @@ import useActiveBids from "@/hooks/views/useActiveBids";
 import { INFT } from "@/types";
 import Toggle from "@/components/main/toggle";
 import ItemLoaderComponent from "@/components/main/itemLoader";
-import { request } from "http";
-import { ApiError } from "next/dist/server/api-utils";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
+import FooterBG from "@/components/main/footerbg";
 
 export default function Home() {
   const api = useAPI();
@@ -44,7 +43,8 @@ export default function Home() {
     }
   }
   const { user } = useAuth();
-  console.log(user?.join_at);
+
+  console.log("login at ", user?.join_at);
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -101,22 +101,24 @@ export default function Home() {
     setCollectedNfts(
       allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))
     );
-  }, [allNfts]);
+  }, [allNfts, user]);
 
   useEffect(() => {
     if (!activeBids || !allNfts) return;
     setBidNfts(
       allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id))
     );
-  }, [activeBids, allNfts]);
+  }, [activeBids, allNfts, user]);
 
   useEffect(() => {
-    if (!user) return;
-    setSalesState(user.setting[0].sales);
-    setOffersState(user.setting[1].offers);
-    setChatState(user.setting[2].chat);
-    setRequestState(user.setting[3].request);
-  }, []);
+    console.log("profile user", user);
+    // if (user) {
+    //   setSalesState(user?.setting[0].sales);
+    //   setOffersState(user?.setting[1].offers);
+    //   setChatState(user?.setting[2].chat);
+    //   setRequestState(user?.setting[3].request);
+    // }
+  }, [user]);
 
   const updateSetting = async () => {
     if (!user) return;
@@ -398,10 +400,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div
-            className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-            style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-          ></div>
+          <FooterBG />
           <Footer />
         </div>
       )}

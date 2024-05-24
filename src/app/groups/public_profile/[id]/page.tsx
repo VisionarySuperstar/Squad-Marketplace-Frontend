@@ -2,15 +2,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import { Contract } from "ethers";
 
 import GroupDescription from "@/components/groups/share/groupDescription";
 import Image from "next/image";
 import Split_line from "@/components/main/split_line";
 import Footer from "@/components/main/footer/footer";
-import EyeIcon from "@/components/svgs/eye_icon";
-import HeartIcon from "@/components/svgs/heart_icon";
 import { useRouter } from "next/navigation";
 import useLoadingControlStore from "@/store/UI_control/loading";
 
@@ -21,6 +17,7 @@ import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import ItemLoaderComponent from "@/components/main/itemLoader";
+import FooterBG from "@/components/main/footerbg";
 
 const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const setLoadingState = useLoadingControlStore(
@@ -52,6 +49,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
   const [isAvailableRequest, setIsAvailableRequest] = useState<boolean>(true);
   const api = useAPI();
+
   const getMyGroupData = async () => {
     const response = await api
       .post(`/api/getGroupId`, { id: params.id })
@@ -70,6 +68,8 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
+    console.log(response?.data);
+
     setNftData(response?.data);
   };
 
@@ -81,6 +81,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const usersInfor = async () => {
     if (!myGroupData) return;
     console.log("myGroupData", myGroupData);
+    console.log("myNft", nftData);
     const response = await api
       .post(`/auth/user/getAllMembers`)
       .catch((error) => {
@@ -279,10 +280,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
 
-        <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-          style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-        ></div>
+        <FooterBG />
         <Footer />
       </div>
     </>
