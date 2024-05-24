@@ -18,7 +18,7 @@ export default function useListedNfts() {
 
   useEffect(() => {
     getListedNftData();
-  });
+  }, []);
 
   return ListedNftData;
 }
