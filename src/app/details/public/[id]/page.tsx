@@ -1,54 +1,59 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Contract } from "ethers";
-import { useRouter } from "next/navigation";
-
-//import components
-
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
 import Collapse from "@/components/main/collapse";
+import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
-import ImageView from "@/components/main/imageViewer";
-import NftCard from "@/components/main/cards/nftCard";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import "react-photo-view/dist/react-photo-view.css";
-import FooterBG from "@/components/main/footerbg";
-import toast from "react-hot-toast";
 
-//constants
+import useAPI from "@/hooks/useAPI";
+import { INFT, ICOLLECTION } from "@/types";
+import useActiveWeb3 from "@/hooks/useActiveWeb3";
+import { Contract, ethers } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
-import Content_ABI from "@/constants/content_nft.json";
 import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
+import useAuth from "@/hooks/useAuth";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
-
-//hook
-import useAPI from "@/hooks/useAPI";
-import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import useAuth from "@/hooks/useAuth";
-
-//store
+import { Icon } from "@iconify/react/dist/iconify.js";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
-import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
-import useLoadingControlStore from "@/store/UI_control/loading";
+import toast from "react-hot-toast";
+import NftCard from "@/components/main/cards/nftCard";
+import { useRouter } from "next/navigation";
 
-//type
-import { INFT, ICOLLECTION } from "@/types";
+import Content_ABI from "@/constants/content_nft.json";
 type transferHistoryType = {
   from: string;
   to: string;
   timestamp: BigInt;
 };
-//import css
 
-const DetailPublic = ({ params }: { params: { id: string } }) => {
-  //use state
+import useLoadingControlStore from "@/store/UI_control/loading";
+import ImageView from "@/components/main/imageViewer";
+
+const Home = ({ params }: { params: { id: string } }) => {
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
+  const setBidModalState = useMarketplaceUIControlStore(
+    (state) => state.updateBidModal
+  );
+  const setWithdrawModalState = useMarketplaceUIControlStore(
+    (state) => state.updateWithdrawModal
+  );
+  // const setLoadingState = useLoadingControlStore(
+  //   (state) => state.updateLoadingState
+  // );
+  const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
+  const withdrawModalState = useMarketplaceUIControlStore(
+    (state) => state.withdrawModal
+  );
+
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
@@ -81,8 +86,8 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
-  const [createdTime, setCreatedTime] = useState<string>("") ;
-  
+  const [createdTime, setCreatedTime] = useState<string>("");
+
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -114,16 +119,16 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     return dateString;
   };
   const getData = async () => {
-    console.log("getData") ;
+    console.log("getData");
     const result = await api
       .post("/api/getNftById", { id: params.id })
       .catch((error) => {
         toast.error(error.message);
       });
-     const _created_time = formatDateWithTimeZone(
+    const _created_time = formatDateWithTimeZone(
       Number(result?.data.created_at),
       "America/New_York"
-    ) ;
+    );
     setCreatedTime(_created_time);
     setData(result?.data);
     console.log("data", result?.data);
@@ -141,6 +146,7 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     const _allNft = await api.get("/api/getAllNft").catch((error) => {
       toast.error(error.message);
     });
+    console.log("list nfts", _allNft?.data);
     setAllNftData(_allNft?.data);
   };
 
@@ -195,14 +201,14 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     if (!contract || !data) return;
     if (Number(data.auctiontype) === 0) {
       const value = await contract.withdrawBalanceForEnglishAuction(
-        BigInt(data.listednumber ? data.listednumber : 0),
+        BigInt(data.listednumber),
         user?.wallet
       );
       console.log("value ", value);
       setWithdrawAmount((Number(value) / 1e18).toString());
     } else if (Number(data.auctiontype) === 2) {
       const value = await contract.withdrawBalanceForOfferingSale(
-        BigInt(data.listednumber ? data.listednumber : 0),
+        BigInt(data.listednumber),
         user?.wallet
       );
       console.log("value ", value);
@@ -226,13 +232,18 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     getDutchAuctionPrice();
   }, [contract, data]);
 
-  
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
       return;
     }
-    if(data.collectionaddress){const _contract = new Contract(data.collectionaddress, Content_ABI, signer);
-      setContentContract(_contract);}
+    if (data.collectionaddress) {
+      const _contract = new Contract(
+        data.collectionaddress,
+        Content_ABI,
+        signer
+      );
+      setContentContract(_contract);
+    }
   }, [address, chainId, signer, data]);
   const getHistory = async () => {
     if (!contentContract) return;
@@ -250,7 +261,6 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
         )
       )
     );
-
     setDisplayingTime(
       await Promise.all(
         transaction_history.map(
@@ -263,7 +273,6 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
       )
     );
   };
-
   function shortenAddress(address: string) {
     // Check if the address is valid
     const regex = /^0x[a-fA-F0-9]{40}$/;
@@ -274,7 +283,6 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     // Truncate the address after 6 characters
     return `${address.substring(0, 6)}...${address.substring(38)}`;
   }
-
   const getUserName = async (address: string, key: number) => {
     console.log("key", key);
     if (!key) {
@@ -289,6 +297,10 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     if (result.data.name) return result.data.name;
     else return shortenAddress(address);
   };
+  useEffect(() => {
+    if (!contentContract) return;
+    getHistory();
+  }, [contentContract]);
 
   const convertSecondsToTime = (seconds: number) => {
     const days = Math.floor(seconds / (24 * 60 * 60));
@@ -299,9 +311,6 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     seconds %= 60;
     return [days, hours, minutes, seconds];
   };
-
-
-  
 
   const buyClick = async () => {
     try {
@@ -371,65 +380,6 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
     setSelectedNFTS(_allNftData);
   };
 
-  //use Effect
-  useEffect(() => {
-    getData();
-    setLoadingState(false);
-  }, []);
-
-  useEffect(() => {
-    if (!address || !chainId || !signer) {
-      return;
-    }
-    const _contract = new Contract(
-      Marketplace_ADDRESSES[chainId],
-      Marketplace_ABI,
-      signer
-    );
-    setContract(_contract);
-    const _usdc_contract = new Contract(
-      USDC_ADDRESS[chainId],
-      USDC_ABI,
-      signer
-    );
-    setUsdc_Contract(_usdc_contract);
-  }, [address, chainId, signer]);
-
-  useEffect(() => {
-    if (!contract || !data) return;
-    calcRemainTime();
-    getWithdrawAmounts();
-  }, [contract, data]);
-
-  useEffect(() => {
-    if (!address || !chainId || !signer || !data) {
-      return;
-    }
-    const _contract = new Contract(data.collectionaddress, Content_ABI, signer);
-    setContentContract(_contract);
-  }, [address, chainId, signer, data]);
-
-  useEffect(() => {
-    if (!contentContract) return;
-    getHistory();
-  }, [contentContract]);
-
-  useEffect(() => {
-    if (!contract || !data) return;
-    getDutchAuctionPrice();
-  }, [contract, data]);
-
-  useEffect(() => {
-    if (!remainTime) return;
-    // Set up an interval to decrease the value every second
-    const intervalId = setInterval(() => {
-      setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
-    }, 1000);
-
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, []);
-
   useEffect(() => {
     if (!data || !allNftData) return;
     getCollectionData();
@@ -456,6 +406,7 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
               <div>
                 <ImageView avatar={data.avatar} />
               </div>
+
               <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
@@ -538,7 +489,7 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
                     )}
                   </>
                 )}
-                
+
                 {Number(data?.auctiontype) === 0 &&
                   data?.currentbidder !== "0x000" && (
                     <>
@@ -586,14 +537,14 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
                         BID
                       </button>
                     )}
-                    { Number(withdrawAmount) > 0 && 
+                    {Number(withdrawAmount) > 0 && (
                       <button
                         className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
                         onClick={() => setWithdrawModalState(true)}
                       >
                         WITHDRAW
                       </button>
-                    }
+                    )}
                   </div>
                 )}
               </div>
@@ -661,9 +612,12 @@ const DetailPublic = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <FooterBG />
+      <div
+        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
+        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
+      ></div>
     </>
   );
 };
 
-export default DetailPublic;
+export default Home;
