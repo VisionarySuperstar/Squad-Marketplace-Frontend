@@ -1,9 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import NewGroupModal from "@/components/main/modals/groups/newGroupModal";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import {
+  useNavbarCurrent,
+  useNavbarShow,
+  useNavbarBackgound,
+  useNavbarBackBtn,
+  useNavbarGroupBtn,
+} from "@/hooks/ui/useNavbar";
+import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 export default function GroupsLayout({
   children,
 }: {
@@ -12,18 +19,12 @@ export default function GroupsLayout({
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
   );
-  const setNavbarshow = useNavbarUIControlStore((state) => state.updateIsShow);
-  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
-  const setNavbarBackground = useNavbarUIControlStore(
-    (state) => state.updateIsBackground
-  );
-  const navbarCurrentUrl = useNavbarUIControlStore((state) => state.url);
-
-  if (navbarCurrentUrl === "") setNavbarCurrent("groups");
-  useEffect(() => {
-    setNavbarshow(true);
-    setNavbarBackground(true);
-  }, [setNavbarBackground, setNavbarshow]);
+  useNavbarCurrent("groups");
+  useNavbarShow(true);
+  useNavbarBackgound(true);
+  useNavbarBackBtn(false);
+  useNavbarGroupBtn(true);
+  useEndLoadingState();
   return (
     <div>
       {children}

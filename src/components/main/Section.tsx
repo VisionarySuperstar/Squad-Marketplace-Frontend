@@ -1,12 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import ImageWithCaption from "./ImageWithCaption";
-import { IImageWithCaption } from "@/types/images";
-import NftCard from "./cards/nftCard";
-import { INFT, nftToCard } from "@/types";
-
 type Props<T> = {
   title: string;
   viewAllUrl: string;
@@ -37,16 +30,7 @@ const Section = <T,>({
           <a href={viewAllUrl}>VIEW ALL</a>
         </h2>
       </div>
-      {/* <div className="flex flex-wrap gap-x-[0.5%] justify-center md:justify-between items-start gap-y-[1em]">
-        {images.map((image, index) => (
-          <div key={index} className={containerClassName}>
-            {renderCard(image)}
-          </div>
-        ))}
-        {fillerArray.map((_, index) => (
-          <div key={index} className={`${containerClassName} invisible`} />
-        ))}
-      </div> */}
+
       {title === "TOP NFTS" || title === "TOP GROUPS" ? (
         <div className="grid gap-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
           {images.map((image, index) => (

@@ -14,9 +14,11 @@ import renderAvatar from "@/components/utils/renderAvatar";
 import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import ItemLoaderComponent from "@/components/main/itemLoader";
+import NftCard from "@/components/main/cards/nftCard";
 
 //import data
-import NftCard from "@/components/main/cards/nftCard";
+
 import {
   IGROUP,
   IUSER,
@@ -25,7 +27,6 @@ import {
   IDIRECTOR_TRANSACTION,
   IPOST_NEWS,
   IRequest,
-  IActive_Bids
 } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -35,6 +36,7 @@ import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
+import FooterBG from "@/components/main/footerbg";
 
 const acceptables = [
   "image/png",
@@ -122,7 +124,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const [requiredConfirmNumber, setRequiredConfirmNumber] =
     useState<string>("");
-  const [offeringBuyerName, setOfferingBuyerName] = useState<string[]>([]);
   const api = useAPI();
   const getMyGroupData = async () => {
     const response = await api
@@ -200,21 +201,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getMyGroupData();
     getNFTData();
   }, [user]);
-
-  const getOfferingBuyerName = async () => {
-    if(!offerTransactions) return ;
-    const _allUser = await api.post("/auth/user/getAllMembers") ;
-    const allUser = _allUser?.data ;
-    const _offeringBuyerName = offerTransactions.map((item) => {
-      const _user:IUSER = allUser?.find((_item:IUSER) => _item.id === item.buyer) ;
-      return _user?.name ;
-    }) ;
-    setOfferingBuyerName(_offeringBuyerName) ;
-  }
-
-  useEffect(() => {
-    getOfferingBuyerName() ;
-  }, [offerTransactions])
 
   const getOffer_nfts = async () => {
     // console.log({ _nfts });
@@ -410,23 +396,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-        const _bidder_bid_state = await api.post("/api/getBidState", {bidder: item.buyer});
-        const bid_state:IActive_Bids[] = _bidder_bid_state.data;
-        const _withdrawAmount = bid_state.find((_bid:IActive_Bids) => _bid.nft === item.nftid);
-        console.log("_withdrawAmount", _withdrawAmount?.withdraw_amount);
-        if(Number(_withdrawAmount?.withdraw_amount) <= Number(item.price)) await api
-        .post("/api/removeBidState", {
-          bidder: item.buyer,
-          nft: item_nft.id
-        })
-        else{
-          await api
-        .post("/api/updateBidState", {
-          bidder: item.buyer,
-          nft: item_nft.id,
-          withdraw_amount: String(Number(_withdrawAmount?.withdraw_amount) - Number(item.price))
-        })
-        }
       getMyGroupData();
       getNFTData();
     } catch (error: any) {
@@ -936,11 +905,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>SOLD ({soldNfts?.length ? soldNfts.length : "0"})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-          {soldNfts?.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={soldNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts?.map((item, index) => (
               <NftCard
@@ -961,11 +926,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>LISTED ({listedNfts?.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
-          {listedNfts.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={listedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {listedNfts.map((item, index) => (
               <NftCard
@@ -986,11 +947,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>NOT LISTED ({mintedNfts.length})</div>
             <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
           </div>
-          {mintedNfts.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={mintedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {mintedNfts.map((item, index) => (
               <NftCard
@@ -1011,11 +968,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>OFFERS ({offerTransactions.length})</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-          {offerTransactions.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={offerTransactions} />
           <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
             {offerTransactions?.map((item, key) => (
               <div key={key}>
@@ -1031,7 +984,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   </div>
                   <div className="flex flex-col">
                     <div className="mb-[5px]">
-                      {offeringBuyerName[key]}
+                      {offerTransactions[key].buyer}
                     </div>
                     <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
                       <div className="flex me-[5px]">
@@ -1124,11 +1077,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div>UPLOADED CONTENT (0)</div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
-          {uploadedContent.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
+          <ItemLoaderComponent data={uploadedContent} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
             {uploadedContent.map((_content: string, item: number) => (
               <div key={item} className="flex flex-col">
@@ -1187,11 +1136,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div>POST</div>
                 <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
               </div>
-              {postNews?.length == 0 && (
-                <div className="w-full flex items-center justify-center min-h-[100px]">
-                  NO RESULT
-                </div>
-              )}
+              <ItemLoaderComponent data={postNews} />
               <div>
                 {postNews &&
                   postNews?.map((_news, key) => (
@@ -1668,12 +1613,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <Split_line />
         </div>
-        <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full"
-          style={{
-            backgroundImage: "url('/assets/bg-1.jpg')",
-          }}
-        ></div>
+        <FooterBG />
         <Footer />
       </div>
     </>

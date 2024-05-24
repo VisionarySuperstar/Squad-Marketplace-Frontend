@@ -14,6 +14,7 @@ import Footer from "@/components/main/footer/footer";
 //import store
 import useLoadingControlStore from "@/store/UI_control/loading";
 import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import FooterBG from "@/components/main/footerbg";
 
 export default function Home() {
   //use state
@@ -21,7 +22,6 @@ export default function Home() {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
   //zustand
-  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
@@ -30,10 +30,8 @@ export default function Home() {
   );
   //useEffect
   useEffect(() => {
-    setLoadingState(false);
-    setNavbarCurrent("groups");
     setIsGroupBtn(true);
-  }, [setLoadingState, setNavbarCurrent, setIsGroupBtn]);
+  }, [setLoadingState, setIsGroupBtn]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -118,10 +116,7 @@ export default function Home() {
           <GeneralButton name={"LOAD  MORE"} />
         </div>
       </div>
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
       <Footer />
     </>
   );

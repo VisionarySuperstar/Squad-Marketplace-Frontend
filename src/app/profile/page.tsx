@@ -15,10 +15,10 @@ import useMyGroups from "@/hooks/views/useMyGroups";
 import useActiveBids from "@/hooks/views/useActiveBids";
 import { INFT } from "@/types";
 import Toggle from "@/components/main/toggle";
-import { request } from "http";
-import { ApiError } from "next/dist/server/api-utils";
+import ItemLoaderComponent from "@/components/main/itemLoader";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
+import FooterBG from "@/components/main/footerbg";
 
 export default function Home() {
   const api = useAPI();
@@ -99,7 +99,7 @@ export default function Home() {
     setCollectedNfts(
       allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))
     );
-  }, [allNfts]);
+  }, [allNfts, user]);
 
   useEffect(() => {
     if (!activeBids || !allNfts) return;
@@ -292,6 +292,7 @@ export default function Home() {
               <h1 className="text-[18px]">
                 ACTIVE BIDS ({bidNfts ? bidNfts.length : "0"})
               </h1>
+              <ItemLoaderComponent data={bidNfts} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {bidNfts.map((item, index) => (
                   <NftCard
@@ -314,8 +315,9 @@ export default function Home() {
             <Split_line />
             <div className="mt-5" id="groups">
               <h1 className="text-[18px]">
-                GROUPS ({myGroups ? myGroups.length : "0"})
+                JOINED GROUPS ({myGroups ? myGroups.length : "0"})
               </h1>
+              <ItemLoaderComponent data={myGroups} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {myGroups.map((item, index) => (
                   <GroupCard
@@ -337,7 +339,7 @@ export default function Home() {
                   COLLECTED ({collectedNfts ? collectedNfts.length : "0"})
                 </h1>
               </div>
-
+              <ItemLoaderComponent data={collectedNfts} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {collectedNfts.map((item, index) => (
                   <div
@@ -429,10 +431,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div
-            className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-            style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-          ></div>
+          <FooterBG />
           <Footer />
         </div>
       )}

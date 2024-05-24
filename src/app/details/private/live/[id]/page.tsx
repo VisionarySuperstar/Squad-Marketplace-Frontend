@@ -7,13 +7,11 @@ import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
 import Collapse from "@/components/main/collapse";
-import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
-import BidModal from "@/components/marketplace/modals/bidModal";
-import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
+
 import Split_line from "@/components/main/split_line";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import NFTs from "@/data/nfts.json";
+
 import { INFT, IGROUP, IUSER, IOFFER_TRANSACTION, IActive_Bids } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
@@ -27,6 +25,7 @@ import Marketplace_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useLoadingControlStore from "@/store/UI_control/loading";
 import { Marketplace_ADDRESSES } from "@/constants/config";
+import ImageView from "@/components/main/imageViewer";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -255,15 +254,20 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-      
-      const _bidder_bid_state = await api.post("/api/getBidState", {bidder: nftData.currentbidder});
-      const bid_state:IActive_Bids[] = _bidder_bid_state.data;
-      const withdrawAmount = bid_state.find((_bid:IActive_Bids) => _bid.nft === nftData.id)?.withdraw_amount;
-      console.log("withdrawAmount", withdrawAmount);
-      if(Number(withdrawAmount) <= 0) await api.post("/api/removeBidState", {
+
+      const _bidder_bid_state = await api.post("/api/getBidState", {
         bidder: nftData.currentbidder,
-        nft: nftData.id,
       });
+      const bid_state: IActive_Bids[] = _bidder_bid_state.data;
+      const withdrawAmount = bid_state.find(
+        (_bid: IActive_Bids) => _bid.nft === nftData.id
+      )?.withdraw_amount;
+      console.log("withdrawAmount", withdrawAmount);
+      if (Number(withdrawAmount) <= 0)
+        await api.post("/api/removeBidState", {
+          bidder: nftData.currentbidder,
+          nft: nftData.id,
+        });
       router.back();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -284,17 +288,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <PhotoProvider bannerVisible={false}>
-                  <PhotoView src={nftData.avatar}>
-                    <Image
-                      src={nftData.avatar}
-                      className="md:h-[70vh] object-contain w-auto"
-                      alt="group_avatar"
-                      width={706}
-                      height={706}
-                    />
-                  </PhotoView>
-                </PhotoProvider>
+                <ImageView avatar={nftData.avatar} />
               </div>
               <Split_line />
               <div>

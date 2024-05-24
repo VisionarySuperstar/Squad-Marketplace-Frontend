@@ -2,59 +2,53 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Contract } from "ethers";
+import { useRouter } from "next/navigation";
+
+//import components
+
 import TrendingIcon from "@/components/svgs/trending_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import EyeIcon from "@/components/svgs/eye_icon";
 import Collapse from "@/components/main/collapse";
-import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
 import BidModal from "@/components/marketplace/modals/bidModal";
 import WithdrawModal from "@/components/marketplace/modals/withdrawModal";
 import Split_line from "@/components/main/split_line";
+import ImageView from "@/components/main/imageViewer";
+import NftCard from "@/components/main/cards/nftCard";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import "react-photo-view/dist/react-photo-view.css";
+import FooterBG from "@/components/main/footerbg";
+import toast from "react-hot-toast";
 
-import useAPI from "@/hooks/useAPI";
-import { INFT, ICOLLECTION } from "@/types";
-import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import { Contract, ethers } from "ethers";
+//constants
 import Marketplace_ABI from "@/constants/marketplace.json";
+import Content_ABI from "@/constants/content_nft.json";
 import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
-import useAuth from "@/hooks/useAuth";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import useDisplayingControlStore from "@/store/UI_control/displaying";
-import toast from "react-hot-toast";
-import NftCard from "@/components/main/cards/nftCard";
-import { useRouter } from "next/navigation";
 
-import Content_ABI from "@/constants/content_nft.json";
+//hook
+import useAPI from "@/hooks/useAPI";
+import useActiveWeb3 from "@/hooks/useActiveWeb3";
+import useAuth from "@/hooks/useAuth";
+
+//store
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
+import useLoadingControlStore from "@/store/UI_control/loading";
+
+//type
+import { INFT, ICOLLECTION } from "@/types";
 type transferHistoryType = {
   from: string;
   to: string;
   timestamp: BigInt;
 };
+//import css
 
-import useLoadingControlStore from "@/store/UI_control/loading";
-import ImageView from "@/components/main/imageViewer";
-
-const Home = ({ params }: { params: { id: string } }) => {
-  const setIsDisplaying = useDisplayingControlStore(
-    (state) => state.updateDisplayingState
-  );
-  const setBidModalState = useMarketplaceUIControlStore(
-    (state) => state.updateBidModal
-  );
-  const setWithdrawModalState = useMarketplaceUIControlStore(
-    (state) => state.updateWithdrawModal
-  );
-  // const setLoadingState = useLoadingControlStore(
-  //   (state) => state.updateLoadingState
-  // );
-  const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
-  const withdrawModalState = useMarketplaceUIControlStore(
-    (state) => state.withdrawModal
-  );
-
+const DetailPublic = ({ params }: { params: { id: string } }) => {
+  //use state
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
@@ -147,7 +141,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     const _allNft = await api.get("/api/getAllNft").catch((error) => {
       toast.error(error.message);
     });
-    console.log("list nfts", _allNft?.data);
     setAllNftData(_allNft?.data);
   };
 
@@ -202,14 +195,14 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (!contract || !data) return;
     if (Number(data.auctiontype) === 0) {
       const value = await contract.withdrawBalanceForEnglishAuction(
-        BigInt(data.listednumber),
+        BigInt(data.listednumber ? data.listednumber : 0),
         user?.wallet
       );
       console.log("value ", value);
       setWithdrawAmount((Number(value) / 1e18).toString());
     } else if (Number(data.auctiontype) === 2) {
       const value = await contract.withdrawBalanceForOfferingSale(
-        BigInt(data.listednumber),
+        BigInt(data.listednumber ? data.listednumber : 0),
         user?.wallet
       );
       console.log("value ", value);
@@ -257,6 +250,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         )
       )
     );
+
     setDisplayingTime(
       await Promise.all(
         transaction_history.map(
@@ -269,6 +263,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       )
     );
   };
+
   function shortenAddress(address: string) {
     // Check if the address is valid
     const regex = /^0x[a-fA-F0-9]{40}$/;
@@ -279,6 +274,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     // Truncate the address after 6 characters
     return `${address.substring(0, 6)}...${address.substring(38)}`;
   }
+
   const getUserName = async (address: string, key: number) => {
     console.log("key", key);
     if (!key) {
@@ -293,10 +289,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (result.data.name) return result.data.name;
     else return shortenAddress(address);
   };
-  useEffect(() => {
-    if (!contentContract) return;
-    getHistory();
-  }, [contentContract]);
 
   const convertSecondsToTime = (seconds: number) => {
     const days = Math.floor(seconds / (24 * 60 * 60));
@@ -379,6 +371,65 @@ const Home = ({ params }: { params: { id: string } }) => {
     setSelectedNFTS(_allNftData);
   };
 
+  //use Effect
+  useEffect(() => {
+    getData();
+    setLoadingState(false);
+  }, []);
+
+  useEffect(() => {
+    if (!address || !chainId || !signer) {
+      return;
+    }
+    const _contract = new Contract(
+      Marketplace_ADDRESSES[chainId],
+      Marketplace_ABI,
+      signer
+    );
+    setContract(_contract);
+    const _usdc_contract = new Contract(
+      USDC_ADDRESS[chainId],
+      USDC_ABI,
+      signer
+    );
+    setUsdc_Contract(_usdc_contract);
+  }, [address, chainId, signer]);
+
+  useEffect(() => {
+    if (!contract || !data) return;
+    calcRemainTime();
+    getWithdrawAmounts();
+  }, [contract, data]);
+
+  useEffect(() => {
+    if (!address || !chainId || !signer || !data) {
+      return;
+    }
+    const _contract = new Contract(data.collectionaddress, Content_ABI, signer);
+    setContentContract(_contract);
+  }, [address, chainId, signer, data]);
+
+  useEffect(() => {
+    if (!contentContract) return;
+    getHistory();
+  }, [contentContract]);
+
+  useEffect(() => {
+    if (!contract || !data) return;
+    getDutchAuctionPrice();
+  }, [contract, data]);
+
+  useEffect(() => {
+    if (!remainTime) return;
+    // Set up an interval to decrease the value every second
+    const intervalId = setInterval(() => {
+      setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
+    }, 1000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
   useEffect(() => {
     if (!data || !allNftData) return;
     getCollectionData();
@@ -395,7 +446,9 @@ const Home = ({ params }: { params: { id: string } }) => {
           withdrawAmount={withdrawAmount}
         />
       )}
-      {withdrawModalState && data && <WithdrawModal nftData={data} withdrawAmount={withdrawAmount}/>}
+      {withdrawModalState && data && (
+        <WithdrawModal nftData={data} withdrawAmount={withdrawAmount} />
+      )}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
@@ -403,7 +456,6 @@ const Home = ({ params }: { params: { id: string } }) => {
               <div>
                 <ImageView avatar={data.avatar} />
               </div>
-
               <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
@@ -609,12 +661,9 @@ const Home = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
     </>
   );
 };
 
-export default Home;
+export default DetailPublic;

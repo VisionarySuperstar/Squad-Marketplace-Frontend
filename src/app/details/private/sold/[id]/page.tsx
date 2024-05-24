@@ -14,20 +14,8 @@ import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 import useLoadingControlStore from "@/store/UI_control/loading";
-import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import { Contract, ethers } from "ethers";
-import USDC_ABI from "@/constants/usdc.json";
-import { USDC_ADDRESS } from "@/constants/config";
-import Content_ABI from "@/constants/content_nft.json";
-
-type transferHistoryType = {
-  from: string;
-  to: string;
-  timestamp: BigInt;
-};
-import Marketplace_ABI from "@/constants/marketplace.json";
-import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
-
+import ImageView from "@/components/main/imageViewer";
+import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
 
@@ -202,17 +190,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <PhotoProvider bannerVisible={false}>
-                  <PhotoView src={nftData.avatar}>
-                    <Image
-                      src={nftData.avatar}
-                      className="md:h-[70vh] object-contain w-auto"
-                      alt="group_avatar"
-                      width={706}
-                      height={706}
-                    />
-                  </PhotoView>
-                </PhotoProvider>
+                <ImageView avatar={nftData.avatar} />
               </div>
               <Split_line />
               <div>
@@ -256,7 +234,6 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
             <div className="flex flex-col mb-[35px]">
               <Split_line />
-              {/* <div>DESCRIPTION</div> */}
               <div className="">
                 <Collapse title="Description">
                   <p>This is the content of the first collapsible section.</p>
@@ -286,10 +263,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
     </>
   );
 };

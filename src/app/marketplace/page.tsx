@@ -1,90 +1,42 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import Sort from "@/components/marketplace/Sort";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
 import Recruiting from "@/components/groups/groupSearch/recruiting";
-import useLoadingControlStore from "@/store/UI_control/loading";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
 import Carousel from "@/components/main/carousel";
-import { useRouter } from "next/navigation";
 import NftCard from "@/components/main/cards/nftCard";
-import { INFT } from "@/types";
-import useAPI from "@/hooks/useAPI";
-import toast from "react-hot-toast";
 import { sortNFTSBy } from "@/utils/data-processing";
+import useListedNfts from "@/hooks/views/useListedNfts";
+import FooterBG from "@/components/main/footerbg";
 
-export default function Home() {
+export default function MarketplacePage() {
   const [scale, setScale] = React.useState<number>(65);
-
   const [enableScale, setEnableScale] = useState<boolean>(true);
-  const [screenWidth, setScreenWidth] = useState<number>(0);
-  const setLoadingState = useLoadingControlStore(
-    (state) => state.updateLoadingState
-  );
-  const updateNavbarBackground = useNavbarUIControlStore(
-    (state) => state.updateIsBackground
-  );
 
-  const [allNftData, setAllNftData] = useState<INFT[]>([]);
-  const api = useAPI();
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+  const [availableState, setAvailableState] = useState<boolean>(false);
+
+  let ListedNftData = useListedNfts();
 
   const onSortItemSelected = (sortBy: string) => {
-    setAllNftData(sortNFTSBy(allNftData, sortBy));
+    ListedNftData = sortNFTSBy(ListedNftData, sortBy);
   };
-
-  useEffect(() => {
-    document.body.style.overflow = "auto";
-    setLoadingState(false);
-  }, [setLoadingState]);
 
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
-    const handleScroll = () => {
-      const carouselElement = document.getElementById("marketplace_carousel");
-      let carouselHeight = 0;
-      if (carouselElement) {
-        carouselHeight = carouselElement.clientHeight;
-      }
-      const currentScrollPosition = window.scrollY;
-
-      if (currentScrollPosition >= carouselHeight) {
-        updateNavbarBackground(true);
-      } else {
-        updateNavbarBackground(false);
-      }
-    };
-    // Set initial screen width
     setScreenWidth(window.innerWidth);
-    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll);
-    // Clean up
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [updateNavbarBackground]);
-
-  const getAllNftData = async () => {
-    const result1 = await api
-      .post("/api/getListedNft", { id: "mint" })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setAllNftData(result1?.data);
-    console.log("nftData ", result1?.data);
-  };
-  useEffect(() => {
-    getAllNftData();
   }, []);
 
   useEffect(() => {
     setEnableScale(screenWidth > 1000);
   }, [screenWidth]);
-  const router = useRouter();
-  const [availableState, setAvailableState] = useState<boolean>(false);
 
   return (
     <>
@@ -127,7 +79,7 @@ export default function Home() {
                   )}, 1fr)`,
                 }}
               >
-                {allNftData?.map((item, index) => (
+                {ListedNftData?.map((item, index) => (
                   <NftCard
                     key={index}
                     id={item.id}
@@ -147,7 +99,7 @@ export default function Home() {
               <div
                 className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2`}
               >
-                {allNftData.map((item, index) => (
+                {ListedNftData.map((item, index) => (
                   <NftCard
                     key={index}
                     id={item.id}
@@ -163,10 +115,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-          style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-        ></div>
+        <FooterBG />
       </div>
     </>
   );
