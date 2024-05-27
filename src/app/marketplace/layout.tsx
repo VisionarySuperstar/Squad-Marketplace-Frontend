@@ -3,7 +3,7 @@
 import React from "react";
 
 import Footer from "@/components/main/footer/footer";
-import useScrollHandler from "@/hooks/ui/useScrollHandler";
+import { useScrollHandler } from "@/hooks/ui/useScreenHandler";
 import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 import {
   useNavbarCurrent,

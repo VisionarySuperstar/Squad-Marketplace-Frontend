@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -33,7 +34,6 @@ type transferHistoryType = {
   timestamp: BigInt;
 };
 
-import useLoadingControlStore from "@/store/UI_control/loading";
 import ImageView from "@/components/main/imageViewer";
 
 const Home = ({ params }: { params: { id: string } }) => {
@@ -46,9 +46,6 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
   );
-  // const setLoadingState = useLoadingControlStore(
-  //   (state) => state.updateLoadingState
-  // );
   const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
   const withdrawModalState = useMarketplaceUIControlStore(
     (state) => state.withdrawModal
@@ -402,12 +399,10 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="lg:me-[40px] sm:me-0">
+            <div className="lg:me-[40px] sm:me-0 border">
               <div>
                 <ImageView avatar={data.avatar} />
               </div>
-
-              <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
                   <EyeIcon props="#322A44" />
@@ -548,8 +543,6 @@ const Home = ({ params }: { params: { id: string } }) => {
                   </div>
                 )}
               </div>
-              <Split_line />
-              {/* <div>DESCRIPTION</div> */}
               <div className="">
                 <Collapse title="Description">
                   {transferHistory && transferHistory.length && (
@@ -591,11 +584,15 @@ const Home = ({ params }: { params: { id: string } }) => {
           )}
         </div>
       </div>
+
       <div>
-        <h1 className="text-xl p-10">MORE FROM THIS COLLECTION</h1>
         <div className="page_container_p40 mt-5">
+          <Split_line />
+          <h1 className="text-xl my-[30px] font-Maxeville">
+            MORE FROM THIS COLLECTION
+          </h1>
           <div
-            className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+            className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
           >
             {selectedNFTS?.map((item, index) => (
               <NftCard
