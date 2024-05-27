@@ -167,15 +167,14 @@ const MintModal = ({
     // progress Modal show
     setIsLoading(true);
     setIsDisplaying(true);
-    setMainText("Now uploading content to IPFS...");
     // @step1 upload logo to PINATA
     setStepper(1);
-    setPercent(0);
     const _avatar = await uploadToIPFS(
       new File([avatarFile], "metadata.json"),
       ({ loaded, total }: { loaded: number; total: number }) => {
-        setPercent(Math.floor((loaded * 100) / total));
-        console.log(percent);
+        const value = Math.floor((Number(loaded) * 100) / Number(total));
+        console.log("loaded: ", loaded, "total: ", total, "value: ", value);
+        setMainText("Uploading content to IPFS... " + value + "%");
       }
     ).catch((err) => {
       console.log(err);
@@ -183,7 +182,6 @@ const MintModal = ({
     });
     console.log("@logoURI: ", _avatar);
     setStepper(2) ;
-    setPercent(0) ;
     setMainText("Now uploading metadata to IPFS...");
     const _metadata = await uploadToIPFS(
       new File([
@@ -193,8 +191,8 @@ const MintModal = ({
         })
       ], "metadata.json"),  
       ({ loaded, total }: { loaded: number; total: number }) => {
-        setPercent(Math.floor((loaded * 100) / total));
-        console.log(percent);
+        // setPercent(Math.floor((loaded * 100) / total));
+        // console.log(percent);
       }
     ).catch((err) => {
       console.log(err);
