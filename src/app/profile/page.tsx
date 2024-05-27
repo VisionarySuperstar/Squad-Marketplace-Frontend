@@ -350,7 +350,7 @@ export default function Home() {
                       id={item.id}
                       avatar={item.avatar}
                       collectionName={item.collectionname}
-                      collectionId={Number(item.collectionid)}
+                      collectionId={Number(item.collectionid)} 
                       seen={200}
                       favorite={20}
                       price={

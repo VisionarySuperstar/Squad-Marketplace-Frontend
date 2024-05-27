@@ -48,6 +48,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
   const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
   const [isAvailableRequest, setIsAvailableRequest] = useState<boolean>(true);
+  const [isMemberOfGroup, setIsMemberOfGroup] = useState<boolean>(false);
   const api = useAPI();
 
   const getMyGroupData = async () => {
@@ -110,8 +111,9 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     if (!myGroupData) return;
     if (!user) return;
     let flg = false;
-
+    
     flg = myGroupData.member.map((_user: any) => _user.id).includes(user.id);
+    if(flg) setIsMemberOfGroup(true) ;
     if (!flg) {
       const result = await api
         .post("/api/getJoinRequestByGroupId", { id: params.id })
@@ -126,6 +128,7 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
         .includes(user.id);
     }
 
+
     setIsAvailableRequest(flg);
   };
 
@@ -136,8 +139,6 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
   }, [myGroupData]);
 
   const requestJoinHandle = async () => {
-    const now = new Date();
-    const formattedDateTime = now.toISOString();
     const response = await api
       .post(`/api/addJoinRequest`, {
         groupId: params.id,
@@ -149,6 +150,19 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
     toast.success("Successfully submitted join request!");
     checkIsAvailableRequest();
   };
+  const cancelRequestHandle = async () => {
+
+    const response = await api
+    .post(`/api/removeJoinRequest`, {
+      groupId: params.id,
+      userId: user?.id,
+    })
+    .catch((error) => {
+      toast.error(error.message);
+    });
+  toast.success("Successfully canceled request!");
+  checkIsAvailableRequest();
+  }
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -216,6 +230,16 @@ const ShareGroupProfile = ({ params }: { params: { id: string } }) => {
                   REQUEST TO JOIN
                 </button>
               )}
+              {
+                isAvailableRequest && !isMemberOfGroup && (
+                  <button
+                    className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
+                    onClick={() => cancelRequestHandle()}
+                  >
+                    CANCEL REQUEST
+                  </button>
+                )
+              }
             </div>
           </div>
         </div>

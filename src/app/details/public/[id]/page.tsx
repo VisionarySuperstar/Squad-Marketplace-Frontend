@@ -46,9 +46,9 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
   );
-  // const setLoadingState = useLoadingControlStore(
-  //   (state) => state.updateLoadingState
-  // );
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
   const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
   const withdrawModalState = useMarketplaceUIControlStore(
     (state) => state.withdrawModal
@@ -152,7 +152,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getData();
-    // setLoadingState(false);
+    setLoadingState(false);
     // Set up an interval to decrease the value every second
     const intervalId = setInterval(() => {
       setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
