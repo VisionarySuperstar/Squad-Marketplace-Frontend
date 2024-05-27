@@ -115,9 +115,9 @@ const WalletInforModal = () => {
               setWalletInforModalState(false);
             }}
           ></div>
-          <div className="generalModal generalModal-1 z-[1300] drop-shadow-lg w-[400px]">
+          <div className="generalModal1 z-[1300] drop-shadow-lg rounded-xl  ">
             <div
-              className={`rounded-lg sm:h-[650px] h-[650px] flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
+              className={`rounded-xl flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
             >
               {step !== 1 && (
                 <div className="bg-[#F6F6F6] pb-5 rounded-xl">
@@ -157,22 +157,25 @@ const WalletInforModal = () => {
                     )}
                   </div>
                   <div className="flex flex-col pl-7 gap-2">
-                    <div className="font-medium text-2xl">
+                    <div className="font-medium text-xl">
                       ${usdcBalance ? usdcBalance : "0.00"} USDC
                     </div>
-                    <div className="text-xl text-gray-400">Wallet balance</div>
+                    <div className="text-lg text-gray-400">Wallet balance</div>
                   </div>
                 </div>
               )}
               {!step && (
                 <>
-                  <div className="flex flex-col items-center justify-center p-5 gap-9 mt-5">
+                  <div className="flex flex-col items-center justify-center p-5 gap-5">
                     <AddFundIcon />
-                    <div className="text-2xl font-medium">
-                      Fund your wallet to purchase NFTs
+                    <div className="text-xl font-medium text-center">
+                      Fund your wallet
+                    </div>
+                    <div className="text-xl font-medium text-center -mt-5">
+                      to Purchase NFT
                     </div>
                     <button
-                      className="w-1/2 bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center p-5"
+                      className="w-2/3 bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center p-5"
                       onClick={() => {
                         setWalletInforModalState(false);
                         setMoonpayModalState(true);
@@ -201,7 +204,7 @@ const WalletInforModal = () => {
                     </div>
                   </>
                 ) : (
-                  <div className="text-2xl  font-semibold text-center text-red-400">
+                  <div className="text-xl  font-semibold text-center text-red-400">
                     Do not support testnet
                   </div>
                 ))}
