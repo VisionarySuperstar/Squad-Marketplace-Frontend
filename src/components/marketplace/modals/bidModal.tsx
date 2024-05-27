@@ -37,6 +37,9 @@ const BidGroupModal = ({
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
 
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
@@ -86,6 +89,7 @@ const BidGroupModal = ({
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       if (Number(nftData.auctiontype) === 0) {
         if (Number(bidAmount) <= Number(nftData.currentprice))
           throw "You must bid higher than now";
@@ -93,11 +97,14 @@ const BidGroupModal = ({
           Marketplace_ADDRESSES[chainId],
           BigInt(Number(bidAmount) * 1e18)
         );
+        setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
+        setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToEnglishAuction(
           BigInt(nftData.listednumber),
           BigInt(Number(bidAmount) * 1e18)
         );
+        setMainText("Waiting for transaction confirmation...");
         await tx.wait();
         const auction_data = await contract.englishAuctions(
           BigInt(nftData.listednumber)
@@ -106,7 +113,7 @@ const BidGroupModal = ({
         const current_winner = auction_data.currentWinner;
         const current_price = auction_data.currentPrice;
         const currentPrice = Number(Number(current_price) / 1e18).toString();
-
+        setMainText("Waiting for backend process...");
         await api
           .post("/api/updateNft", {
             id: nftData.id,
@@ -129,16 +136,20 @@ const BidGroupModal = ({
           Marketplace_ADDRESSES[chainId],
           BigInt(Number(bidAmount) * 1e18)
         );
+      setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
+      setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToOfferingSale(
           BigInt(nftData.listednumber),
           BigInt(Number(bidAmount) * 1e18)
         );
+      setMainText("Waiting for transaction confirmation...");
         await tx.wait();
         // const list_number = await contract.offeringSale_listedNumber(BigInt(nftData.listednumber)) ;
         const _group_contract = new Contract(groupAddress, GROUP_ABI, signer);
         const offering_number =
           await _group_contract.getNumberOfSaleOfferingTransaction();
+      setMainText("Waiting for backend process...");
         await api
           .post("/api/addOffering", {
             groupId: groupId,

@@ -26,6 +26,9 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -62,18 +65,22 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
       }
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       if (Number(nftData.auctiontype) === 0) {
         const tx = await contract.withdrawFromEnglishAuction(
           BigInt(nftData.listednumber)
         );
+      setMainText("Waiting for transaction confirmation...");
         await tx.wait();
       } else if (Number(nftData.auctiontype) === 2) {
         
         const tx = await contract.withdrawFromOfferingSale(
           BigInt(nftData.listednumber)
         );
+      setMainText("Waiting for transaction confirmation...");
         await tx.wait();
       }
+      setMainText("Waiting for backend process...");
       await api.post("/api/removeBidState", {
         bidder: user.id,
         nft: nftData.id

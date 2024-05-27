@@ -27,6 +27,9 @@ const NewGroupModal = () => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
 
   const setCreateGroupModalState = useGroupUIControlStore(
     (state) => state.updateCreateGroupModal
@@ -92,6 +95,7 @@ const NewGroupModal = () => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const memberAddresses = selectedUsers.map((item: IUSER) => item.wallet);
       const tx = await contract.createGroup(
         groupName,
@@ -99,7 +103,9 @@ const NewGroupModal = () => {
         memberAddresses,
         Number(groupConfirmNumber)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       const numberOfCreators = await contract.numberOfCreators();
       console.log("numberOfCreators", numberOfCreators);
       const _group_Address = await contract.getCreatorGroupAddress(
