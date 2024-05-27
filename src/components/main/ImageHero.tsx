@@ -44,7 +44,7 @@ const ImageHero = () => {
 
   return (
     <div
-      className="grid grid-cols-4 grid-rows-2 gap-5 w-full bg-black h-[100vh] py-10"
+      className="grid grid-cols-4 grid-rows-2 gap-5 w-full bg-black h-[100vh] py-10 transition-all"
       id="imagehero"
     >
       {displayed.map((image, index) => {
@@ -55,7 +55,7 @@ const ImageHero = () => {
               height={1000}
               width={1000}
               src={`/assets/images/slide/${image}`}
-              className="object-contain mx-auto max-h-[95%]"
+              className="object-contain mx-auto max-h-[95%] transition-all"
             />
             <h3 className="text-white text-center pt-4">
               Spotlight: Juergen teller for Loewe
