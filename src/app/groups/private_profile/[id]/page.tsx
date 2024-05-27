@@ -50,6 +50,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
@@ -336,13 +339,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.confirmOfferingSaleTransaction(
         BigInt(item.transactionid),
         true
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const confirm_member = item.confirm_member;
       confirm_member.push({ id: user.id });
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateOffering", {
           id: item.id,
@@ -375,11 +381,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
-
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.executeOfferingSaleTransaction(
         BigInt(item.transactionid)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/removeOffering", { id: item.nftid })
         .catch((error) => {
@@ -418,13 +426,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.confirmDirectorSettingTransaction(
         BigInt(item.transaction_id),
         true
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const confirm_member = item.confirm_member;
       confirm_member.push({ id: user.id });
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateDirector", {
           id: item.id,
@@ -454,10 +465,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsDisplaying(true);
       setIsLoading(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.executeDirectorSettingTransaction(
         BigInt(item.transaction_id)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/removeDirector", { id: item.new_director })
         .catch((error) => {
@@ -497,7 +511,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
       setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.withdraw();
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       getBalancesForWithdraw();
     } catch (error: any) {
@@ -521,9 +537,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         return;
       }
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       setIsLoadingWithdrawMarketplaceButton(true);
 
       const tx = await contract.withdrawFromMarketplace();
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       getBalancesForWithdraw();
     } catch (error: any) {
@@ -545,12 +563,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsDisplaying(true);
       setIsLoadingLeaveButton(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.removeMember(address);
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const _member = myGroupData?.member.filter(
         (_user) => _user.id !== user.id
       );
-
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateGroupMember", {
           id: myGroupData?.id,
@@ -614,14 +634,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) return;
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const members_in_group = await contract.members(0);
       const members_in_group1 = await contract.members(1);
       const currentDirector = await contract.director();
       const tx = await contract.submitDirectorSettingTransaction(
         members[_num].wallet
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const transaction_id = await contract.getNumberOfCandidateTransaction();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/addDirector", {
           groupid: myGroupData?.id,
@@ -686,7 +709,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
       setIsDisplaying(true);
       setIsLoading(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.addMember(requestMembers[index].wallet);
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       console.log("asdf");
       const _members = myGroupData?.member;
@@ -694,6 +719,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       console.log("userid", requests[index]);
       _members?.push({ id: requests[index].userid.toString() });
       console.log("_members again", _members);
+      setMainText("Waiting for backend process...");
       const result1 = await api
         .post("/api/removeJoinRequest", {
           id: requests[index].id,
@@ -741,11 +767,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
       setIsDisplaying(true);
       setIsLoadingChangeConfirm(true);
+      setMainText("Waiting for user confirmation...");
 
       const tx = await contract.setConfirmationRequiredNumber(
         BigInt(requiredConfirmNumber)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       const result = await api
         .post("/api/updateGroupConfirmNumber", {
           id: myGroupData.id,

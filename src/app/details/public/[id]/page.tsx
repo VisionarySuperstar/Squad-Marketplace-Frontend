@@ -40,6 +40,10 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
+
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -321,17 +325,21 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!data) throw "no data";
       setIsLoading(true);
       setIsDisplaying(true);
-
+      setMainText("Waiting for user confirmation...");
       const tx1 = await usdc_contract.approve(
         Marketplace_ADDRESSES[chainId],
         BigInt(Number(currentDutchPrice) * 1e18)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx1.wait();
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.buyDutchAuction(
         BigInt(data.listednumber),
         BigInt(Number(currentDutchPrice) * 1e18)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateSoldNft", {
           id: data.id,

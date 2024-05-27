@@ -31,6 +31,9 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
 
   const setListModalState = useGroupUIControlStore(
     (state) => state.updateListModal
@@ -112,6 +115,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (!user) throw "You must sign in";
         setIsLoading(true);
         setIsDisplaying(true);
+        setMainText("Waiting for user confirmation...");
         console.log("groupAddress", groupAddress);
         console.log("listNft.collectionaddress ", listNft.collectionaddress);
         console.log("listNft.collectionid ", listNft.collectionid);
@@ -133,6 +137,8 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
             BigInt(Number(auctionQuery.initialPrice) * 1e18),
             BigInt(_salePeriod)
           );
+        setMainText("Waiting for transaction confirmation...");
+
           await tx.wait();
           listed_number =
             await _market_contract.getListedEnglishAuctionNumber();
@@ -143,6 +149,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
             BigInt(Number(auctionQuery.reducingRate) * 1e18),
             BigInt(_salePeriod)
           );
+        setMainText("Waiting for transaction confirmation...");
           await tx.wait();
           listed_number = await _market_contract.getListedDutchAuctionNumber();
         } else {
@@ -150,6 +157,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
             nftId,
             BigInt(Number(auctionQuery.initialPrice) * 1e18)
           );
+          setMainText("Waiting for transaction confirmation...");
           await tx.wait();
           listed_number = await _market_contract.getOfferingSaleAuctionNumber();
         }
@@ -162,6 +170,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         console.log("listed_number", listed_number);
         const listNumber = Number(Number(listed_number) - 1).toString();
         console.log("listed_number", listNumber);
+        setMainText("Waiting for backend process...");
         await api
           .post("/api/updateNft", {
             id: listNft.id,
