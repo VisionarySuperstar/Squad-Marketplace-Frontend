@@ -15,7 +15,7 @@ const Recruiting = ({
   return (
     <div className="flex gap-3 px-[10px]">
       <label className="inline-flex items-center cursor-pointer">
-        <div className="text-md min-w-[180px] me-[10px] flex items-center justify-end">
+        <div className="text-md lg:min-w-[180px] me-[10px] flex items-center justify-end">
           {name}
         </div>
         <input

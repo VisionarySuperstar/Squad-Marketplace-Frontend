@@ -90,9 +90,13 @@ export default function Home() {
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
   const [bidNfts, setBidNfts] = useState<INFT[]>([]);
   const [salesState, setSalesState] = useState<boolean | undefined>(undefined);
-  const [offersState, setOffersState] = useState<boolean | undefined>(undefined);
+  const [offersState, setOffersState] = useState<boolean | undefined>(
+    undefined
+  );
   const [chatState, setChatState] = useState<boolean | undefined>(undefined);
-  const [requestState, setRequestState] = useState<boolean | undefined>(undefined);
+  const [requestState, setRequestState] = useState<boolean | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (!allNfts) return;
@@ -126,40 +130,42 @@ export default function Home() {
   >();
 
   const initialUserSetting = () => {
-    if(!userSetting) return ;
+    if (!userSetting) return;
     setSalesState(userSetting[0].sales);
     setOffersState(userSetting[1].offers);
     setChatState(userSetting[2].chat);
     setRequestState(userSetting[3].request);
-  }
-
-  useEffect(() =>{
-    initialUserSetting() ;
-    console.log("userSetting after", userSetting) ;
-  }, [userSetting])
-
-  const getUserSetting = async () => {
-    const _userSetting = await api.post(`/auth/user/getUserSetting`, {id:user?.id});
-    console.log("userSetting", _userSetting.data) ;
-    setUserSetting(_userSetting.data);
-  }
+  };
 
   useEffect(() => {
-    if(user) getUserSetting();
-  }, [user]); 
+    initialUserSetting();
+    console.log("userSetting after", userSetting);
+  }, [userSetting]);
 
-  let countasdf = 0 ;
+  const getUserSetting = async () => {
+    const _userSetting = await api.post(`/auth/user/getUserSetting`, {
+      id: user?.id,
+    });
+    console.log("userSetting", _userSetting.data);
+    setUserSetting(_userSetting.data);
+  };
+
+  useEffect(() => {
+    if (user) getUserSetting();
+  }, [user]);
+
+  let countasdf = 0;
   const updateSetting = async () => {
     if (!user) return;
-    countasdf ++ ;
-    console.log("count", countasdf) ;
+    countasdf++;
+    console.log("count", countasdf);
     const settingData = [
       { sales: salesState },
       { offers: offersState },
       { chat: chatState },
       { request: requestState },
     ];
-    console.log("seetingData", settingData) ;
+    console.log("seetingData", settingData);
     await api.post("/auth/user/updateSetting", {
       setting: JSON.stringify(settingData),
     });
@@ -167,7 +173,7 @@ export default function Home() {
 
   useEffect(() => {
     updateSetting();
-  }, [salesState, offersState, chatState, requestState])
+  }, [salesState, offersState, chatState, requestState]);
 
   return (
     <>
@@ -215,7 +221,12 @@ export default function Home() {
                   <div>
                     <div className="text-gray-400">SMART WALLETS</div>
                     <div className="flex gap-3">
-                      <img src="/metamask.svg"></img>
+                      <Image
+                        src="/metamask.svg"
+                        alt={"metamask icon"}
+                        width={100}
+                        height={100}
+                      />
                       <div className=" text-ellipsis max-w-[150px] overflow-hidden">
                         {formatWalletAddress(user?.wallet)}
                       </div>
@@ -326,7 +337,7 @@ export default function Home() {
                     name={item.name}
                     groupBio={item.description}
                     membercount={item.member.length}
-                    groupId={index.toString()}
+                    groupId={item.id}
                     avatar={item.avatar}
                   />
                 ))}
@@ -371,7 +382,13 @@ export default function Home() {
               <div className="mt-5">
                 <div className="grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 w-2/5">
                   <div className="p-[10px]">
-                    <div className={`text-md flex items-center ${!salesState && "text-gray-400"}`}>SALES</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !salesState && "text-gray-400"
+                      }`}
+                    >
+                      SALES
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -386,7 +403,13 @@ export default function Home() {
                   </div>
 
                   <div className="p-[10px]">
-                    <div className={`text-md flex items-center ${!offersState && "text-gray-400"}`}>OFFERS</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !offersState && "text-gray-400"
+                      }`}
+                    >
+                      OFFERS
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -400,7 +423,13 @@ export default function Home() {
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className={`text-md flex items-center ${!chatState && "text-gray-400"}`}>CHAT</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !chatState && "text-gray-400"
+                      }`}
+                    >
+                      CHAT
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -414,7 +443,13 @@ export default function Home() {
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className={`text-md flex items-center ${!requestState && "text-gray-400"}`}>REQUEST</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !requestState && "text-gray-400"
+                      }`}
+                    >
+                      REQUEST
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"

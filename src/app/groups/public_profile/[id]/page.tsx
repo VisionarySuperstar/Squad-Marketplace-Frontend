@@ -125,7 +125,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
     toast.success("Successfully submitted join request!");
     checkIsAvailableRequest();
   };
-  
+
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -157,10 +157,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
   return (
     <>
       <div className="pt-[100px] h-full">
-        <div
-          className="page_container_p40 flex font-Maxeville bg-white"
-          id="profile"
-        >
+        <div className="page_container_p40 flex font-Maxeville" id="profile">
           <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row  md:justify-between w-full">
             <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:p-0">
               <div className="mt-5">
@@ -187,7 +184,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 xs:flex sm:justify-center xs:justify-center h-[30px] ">
               {!isAvailableRequest && (
                 <button
-                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
+                  className="border border-chocolate-main bg-white p-1 text-chocolate-main rounded-full flex items-center pl-6 pr-6 text-md hover:bg-chocolate-main hover:text-white active:translate-y-[1px] transition-all"
                   onClick={() => requestJoinHandle()}
                 >
                   REQUEST TO JOIN
@@ -196,48 +193,12 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
             </div>
           </div>
         </div>
-        <div className="sticky top-[100px] z-10 hidden md:block">
-          <nav className="bg-white bg-opacity-95 border-b-[1px] page_container_p40 font-Maxeville">
-            <div>
-              <div className="flex items-center h-16">
-                <div className="flex items-center cursor-pointer">
-                  <div className="flex-shrink-0">{/* Logo */}</div>
-                  <div className="">
-                    <div className="flex items-baseline space-x-4">
-                      <a
-                        onClick={() => {
-                          scrollToElement("profile");
-                        }}
-                        className="border-b-2 border-transparent hover:border-gray-400 py-2 text-lg"
-                      >
-                        PROFILE
-                      </a>
-                      <a
-                        onClick={() => {
-                          scrollToElement("nfts");
-                        }}
-                        className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
-                      >
-                        NFTs
-                      </a>
-                      <a
-                        onClick={() => {
-                          scrollToElement("post");
-                        }}
-                        className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
-                      >
-                        POST
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </div>
+
         <div className="page_container_p40 font-Maxeville">
           <div className="flex justify-between text-xl mt-5" id="nfts">
-            <div>NFTs ({nftData?.length ? nftData?.length : "0"})</div>
+            <div>
+              NFTS BY THIS GROUP ({nftData?.length ? nftData?.length : "0"})
+            </div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
           <ItemLoaderComponent data={nftData} />
@@ -256,37 +217,6 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
             ))}
           </div>
           <Split_line />
-
-          <div className="flex justify-between text-lg mt-5" id="post">
-            <div>POST ({postNews?.length ? postNews?.length : "0"})</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL</div>
-          </div>
-
-          <ItemLoaderComponent data={postNews} />
-          <div>
-            {postNews &&
-              postNews?.map((_news, key) => (
-                <div
-                  key={key}
-                  className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1"
-                >
-                  <div>
-                    {_news.content.split("\n").map((line, index) => (
-                      <React.Fragment key={index}>
-                        {line}
-                        <br />
-                      </React.Fragment>
-                    ))}
-                  </div>
-                  <div>
-                    {formatDateWithTimeZone(
-                      Number(_news.post_time),
-                      "America/New_York"
-                    )}
-                  </div>
-                </div>
-              ))}
-          </div>
         </div>
 
         <FooterBG />

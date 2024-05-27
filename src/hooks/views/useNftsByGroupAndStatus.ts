@@ -23,7 +23,6 @@ export function useNftsByGroupAndStatus(id: string) {
       id,
       status: "mint",
     });
-
     setMintedNfts(mintNftResponse?.data);
   };
 

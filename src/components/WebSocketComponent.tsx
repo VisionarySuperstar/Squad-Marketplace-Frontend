@@ -105,14 +105,7 @@ const SocketComponent = () => {
     create_new_connection();
   }, [userid]);
 
-  return (
-    <>
-      <div className="fixed w-full h-[2px] top-[10px] left-[10px] z-[10000] bg-transparent text-[15px]">
-        WS:{isConnected} <br />
-        Try:{connectCount}
-      </div>
-    </>
-  );
+  return <></>;
 };
 
 export default SocketComponent;
