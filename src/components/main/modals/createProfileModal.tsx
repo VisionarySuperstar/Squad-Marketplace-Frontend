@@ -25,6 +25,9 @@ const CreateProfileModal = () => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
 
   const setProfileModalState = useGroupUIControlStore(
     (state) => state.updateProfileModal
@@ -68,6 +71,7 @@ const CreateProfileModal = () => {
     try {
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for uploading avatar...");
       let _avatar = "";
       if (avatar) {
         const formData = new FormData();
@@ -81,6 +85,7 @@ const CreateProfileModal = () => {
         _avatar = _newAvatar;
       }
       const data = { name, email, avatar: _avatar };
+      setMainText("Waiting for updating profile...");
       if (user1) {
         console.log("update process");
         const response = await api

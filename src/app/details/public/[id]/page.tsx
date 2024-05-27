@@ -23,6 +23,7 @@ import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
@@ -40,11 +41,18 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
+
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
+  );
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
   );
   const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
   const withdrawModalState = useMarketplaceUIControlStore(
@@ -149,7 +157,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getData();
-    // setLoadingState(false);
+    setLoadingState(false);
     // Set up an interval to decrease the value every second
     const intervalId = setInterval(() => {
       setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
@@ -318,17 +326,21 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!data) throw "no data";
       setIsLoading(true);
       setIsDisplaying(true);
-
+      setMainText("Waiting for user confirmation...");
       const tx1 = await usdc_contract.approve(
         Marketplace_ADDRESSES[chainId],
         BigInt(Number(currentDutchPrice) * 1e18)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx1.wait();
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.buyDutchAuction(
         BigInt(data.listednumber),
         BigInt(Number(currentDutchPrice) * 1e18)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateSoldNft", {
           id: data.id,

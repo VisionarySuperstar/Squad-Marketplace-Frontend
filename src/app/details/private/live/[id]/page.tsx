@@ -31,6 +31,9 @@ const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
@@ -151,6 +154,8 @@ const Home = ({ params }: { params: { id: string } }) => {
       // if (!remainTime) throw "wait reaminTime not registered";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
+
 
       const __director = await contract.director();
       console.log("_director", __director);
@@ -193,7 +198,9 @@ const Home = ({ params }: { params: { id: string } }) => {
       }
 
       const tx = await contract.cancelListing(nftId);
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateNft", {
           id: nftData?.id,
@@ -230,6 +237,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       setIsLoading1(true);
       console.log("groupAddress", groupAddress);
       console.log("name", name);
@@ -243,6 +251,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       );
       console.log("nftId", nftId.toString());
       const tx = await contract.endEnglishAuction(nftId);
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       await api
         .post("/api/updateSoldNft", {
