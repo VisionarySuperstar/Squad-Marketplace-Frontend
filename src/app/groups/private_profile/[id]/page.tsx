@@ -642,7 +642,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setMainText("Waiting for backend process...");
       const result1 = await api
         .post("/api/removeJoinRequest", {
-          id: joinRequestsTransactions[index].id,
+          groupId: params.id,
+          userId: requestMembers[index].id,
         })
         .catch((error) => {
           toast.error(error.message);
