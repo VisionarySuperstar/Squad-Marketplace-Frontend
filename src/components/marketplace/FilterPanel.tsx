@@ -18,10 +18,12 @@ const ListItem = ({ text, selected, onClick }: ListItemProps) => {
   return (
     <div className="flex gap-2.5 mt-5 items-center">
       <button
-        onClick={() => onClick && onClick()}
+        onClick={onClick}
         className={`shrink-0 rounded-full border border-solid border-slate-800 h-[13px] stroke-[1px] w-[13px] mb-[3px] ${selectedClass}`}
       ></button>
-      <span>{text}</span>
+      <label className="select-none cursor-pointer" onClick={onClick}>
+        {text}
+      </label>
     </div>
   );
 };
@@ -146,7 +148,7 @@ const FilterPanel = ({
 
       <section className="flex flex-col px-5 max-md:max-w-full">
         <h2 className="max-md:max-w-full">SALE METHOD</h2>
-        <div className="flex gap-5 justify-between mt-14 max-md:flex-wrap max-md:mt-10">
+        <div className="flex gap-5 justify-between mt-10 max-md:flex-wrap max-md:mt-10">
           <Section
             title=""
             items={auctionItems.slice(0, 3)}
@@ -170,7 +172,7 @@ const FilterPanel = ({
 
       <section className="flex flex-col px-5 text-xs">
         <h2 className="text-lg">PRICE range</h2>
-        <div className="flex gap-5 justify-between mt-8 max-md:flex-wrap max-md:mt-10">
+        <div className="flex gap-5 justify-between mt-5 max-md:flex-wrap max-md:mt-10">
           ETH
         </div>
         <form className="mt-5">
@@ -204,7 +206,7 @@ const FilterPanel = ({
 
       <section className="flex flex-col self-stretch px-5">
         <h2>Blockchain</h2>
-        <div className="flex gap-5 justify-between mt-14 max-md:flex-wrap max-md:mt-10">
+        <div className="flex gap-5 justify-between mt-10 max-md:flex-wrap max-md:mt-10">
           <Section
             title=""
             items={blockchainItems}
