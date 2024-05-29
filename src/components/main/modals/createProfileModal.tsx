@@ -150,7 +150,7 @@ const CreateProfileModal = () => {
             setProfileModalState(false);
           }}
         ></div>
-        <div className="generalModal z-[1300] drop-shadow-lg">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

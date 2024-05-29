@@ -105,7 +105,7 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
           setWithdrawModalState(false);
         }}
       ></div>
-      <div className="generalModal px-5 z-[1300] drop-shadow-lg">
+      <div className="generalModal w-[565px] px-5 z-[1300] drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {

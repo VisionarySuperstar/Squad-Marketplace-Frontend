@@ -1074,7 +1074,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             ))}
-            {requestMembers &&
+            {requestMembers && isDirector &&
               requestMembers.map((item, index) => (
                 <div
                   key={index}

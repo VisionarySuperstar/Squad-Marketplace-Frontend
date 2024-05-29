@@ -310,7 +310,7 @@ const MintModal = ({
             setMintModalState(false);
           }}
         ></div>
-        <div className="generalModal z-[1300] drop-shadow-lg p-[25px]">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg p-[25px]">
           <div
             className="closeBtn"
             onClick={() => {

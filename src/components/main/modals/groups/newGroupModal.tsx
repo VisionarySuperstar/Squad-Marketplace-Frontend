@@ -240,7 +240,7 @@ const NewGroupModal = () => {
         }}
       ></div>
       <div className="z-[1000] font-Maxeville ">
-        <div className="generalModal z-[1300] drop-shadow-lg">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

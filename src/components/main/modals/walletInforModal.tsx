@@ -115,7 +115,7 @@ const WalletInforModal = () => {
               setWalletInforModalState(false);
             }}
           ></div>
-          <div className="generalModal1 z-[1300] drop-shadow-lg rounded-xl  ">
+          <div className="generalModal w-[400px] z-[1300] drop-shadow-lg rounded-xl  ">
             <div
               className={`rounded-xl flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
             >
