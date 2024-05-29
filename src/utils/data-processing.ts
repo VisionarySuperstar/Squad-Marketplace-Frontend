@@ -1,6 +1,6 @@
 import { IGROUP, INFT, NFTFilter } from "@/types";
 
-export function getTopNfts(nfts: INFT[], count: number = 3): INFT[] {
+export function getTopNfts(nfts: INFT[], count: number = 10): INFT[] {
   return nfts
     .filter((_nft: INFT) => _nft.ranking)
     .sort((a, b) => Number(a.ranking) - Number(b.ranking))
@@ -13,7 +13,7 @@ export function getNewlyMinted(nfts: INFT[], count: number = 30): INFT[] {
     .slice(0, count);
 }
 
-export function getTopGroups(groups: IGROUP[], count: number = 3): IGROUP[] {
+export function getTopGroups(groups: IGROUP[], count: number = 10): IGROUP[] {
   return groups
     .filter((_group: IGROUP) => _group.ranking)
     .sort((a, b) => Number(a.ranking) - Number(b.ranking))
