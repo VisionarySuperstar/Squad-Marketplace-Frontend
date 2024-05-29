@@ -18,7 +18,7 @@ const AddFundIcon = () => {
         clipRule="evenodd"
         d="M7 36V28C7 32.4183 10.5817 36 15 36H85C89.4183 36 93 39.5817 93 44V92C93 96.4183 89.4183 100 85 100H15C10.5817 100 7 96.4183 7 92V36Z"
         fill="url(#paint1_linear_6146_5380)"
-        fill-rule="evenodd"
+        fillRule="evenodd"
       ></path>
       <circle cx="81" cy="68" fill="white" r="4"></circle>
       <rect

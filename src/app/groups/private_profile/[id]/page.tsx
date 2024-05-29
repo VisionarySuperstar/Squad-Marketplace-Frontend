@@ -11,22 +11,23 @@ import MintModal from "@/components/main/modals/groups/mintModal";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import { useRouter } from "next/navigation";
 import renderAvatar from "@/components/utils/renderAvatar";
-import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import ItemLoaderComponent from "@/components/main/itemLoader";
+import NftCard from "@/components/main/cards/nftCard";
+import useLoadingControlStore from "@/store/UI_control/loading";
+
 
 //import data
-import NftCard from "@/components/main/cards/nftCard";
+
 import {
-  IGROUP,
   IUSER,
   INFT,
   IOFFER_TRANSACTION,
   IDIRECTOR_TRANSACTION,
-  IPOST_NEWS,
   IRequest,
-  IActive_Bids
 } from "@/types";
+
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract, ContractFactory } from "ethers";
@@ -35,6 +36,11 @@ import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useAPI from "@/hooks/useAPI";
+import { scrollToElement } from "@/components/utils/scrollToElement";
+import FooterBG from "@/components/main/footerbg";
+import { useGroupInforById } from "@/hooks/views/useGroupInforById";
+import { useNftsByGroupAndStatus } from "@/hooks/views/useNftsByGroupAndStatus";
+import { useConfirmTransaction } from "@/hooks/views/useConfirmTransaction";
 
 const acceptables = [
   "image/png",
@@ -47,6 +53,9 @@ const acceptables = [
 const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
+  );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
   );
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
@@ -84,140 +93,42 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const [isLoadingChangeConfirm, setIsLoadingChangeConfirm] =
     useState<boolean>(false);
 
-  function scrollToElement(elementId: string) {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const elementTop = element.getBoundingClientRect().top;
-      const windowScrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      window.scrollTo({
-        top: elementTop - 180 + windowScrollTop,
-        behavior: "smooth",
-      });
-    }
-  }
-  const [soldNfts, setSoldNfts] = useState<INFT[]>([]);
-  const [isDirector, setIsDirector] = useState<boolean>(false);
   const [activeState, setActiveState] = useState<boolean>(false);
-  const [listedNfts, setListedNfts] = useState<INFT[]>([]);
-  const [mintedNfts, setMintedNfts] = useState<INFT[]>([]);
-  const [requests, setRequests] = useState<IRequest[]>([]);
   const [requestMembers, setRequestMembers] = useState<IUSER[]>([]);
 
-  const [offerTransactions, setOfferTransactions] = useState<
-    IOFFER_TRANSACTION[]
-  >([]);
-  const [directorTransactions, setDirectorTransactions] = useState<
-    IDIRECTOR_TRANSACTION[]
-  >([]);
-
-  const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
-
   const [offerNfts, setOfferNfts] = useState<INFT[]>([]);
-
   const [members, setMembers] = useState<IUSER[] | undefined>(undefined);
 
   const { user } = useAuth();
-  const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [newPostMessage, setNewPostMessage] = useState<string>("");
   const [requiredConfirmNumber, setRequiredConfirmNumber] =
     useState<string>("");
-  const [offeringBuyerName, setOfferingBuyerName] = useState<string[]>([]);
+
   const api = useAPI();
-  const getMyGroupData = async () => {
-    const response = await api
-      .post(`/api/getGroupId`, { id: params.id })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    const Data = response?.data;
-    setMyGroupData(Data);
-    setActiveState(Data?.is_actively_recruiting);
-    setRequiredConfirmNumber(Data.requiredconfirmnumber);
-    if (Data?.director === user?.id) setIsDirector(true);
-  };
-  const getNFTData = async () => {
-    const result1 = await api
-      .post("/api/getNftByGroupAndStatus", {
-        id: params.id,
-        status: "sold",
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setSoldNfts(result1?.data);
-    const result2 = await api
-      .post("/api/getNftByGroupAndStatus", {
-        id: params.id,
-        status: "list",
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setListedNfts(result2?.data);
-    const result3 = await api
-      .post("/api/getNftByGroupAndStatus", {
-        id: params.id,
-        status: "mint",
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setMintedNfts(result3?.data);
 
-    const result4 = await api
-      .post("/api/getOffering", { id: params.id })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setOfferTransactions(result4?.data);
-    // console.log("result4", result4?.data);
+  const { groupInfor, isDirector, getGroupInforById } = useGroupInforById(
+    params.id
+  );
+  const { soldNfts, listedNfts, mintedNfts, getNFTData } =
+    useNftsByGroupAndStatus(params.id);
+  const {
+    offerTransactions,
+    directorTransactions,
+    joinRequestsTransactions,
+    getOfferingTransaction,
+    getDerectorSettingTransaction,
+    getJoinRequestTransaction,
+  } = useConfirmTransaction(params.id);
 
-    const result5 = await api
-      .post("/api/getDirector", { id: params.id })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setDirectorTransactions(result5?.data);
-    // console.log("result5", result5?.data);
-
-    const result_postNews = await api
-      .post("/api/getPostByGroupId", {
-        id: params.id,
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setPostNews(result_postNews?.data);
-    // console.log("result5 postnews", result_postNews?.data);
-
-    const result_requests = await api.post("/api/getJoinRequestByGroupId", {
-      id: params.id,
-    });
-    setRequests(result_requests?.data);
-  };
   useEffect(() => {
-    getMyGroupData();
+    getGroupInforById();
     getNFTData();
+    getOfferingTransaction();
+    getDerectorSettingTransaction();
+    getJoinRequestTransaction();
   }, [user]);
 
-  const getOfferingBuyerName = async () => {
-    if(!offerTransactions) return ;
-    const _allUser = await api.post("/auth/user/getAllMembers") ;
-    const allUser = _allUser?.data ;
-    const _offeringBuyerName = offerTransactions.map((item) => {
-      const _user:IUSER = allUser?.find((_item:IUSER) => _item.id === item.buyer) ;
-      return _user?.name ;
-    }) ;
-    setOfferingBuyerName(_offeringBuyerName) ;
-  }
-
-  useEffect(() => {
-    getOfferingBuyerName() ;
-  }, [offerTransactions])
-
   const getOffer_nfts = async () => {
-    // console.log({ _nfts });
     const nfts: any[] = offerTransactions?.map((_offer: IOFFER_TRANSACTION) =>
       listedNfts?.find((item: INFT) => item.id === _offer.nftid)
     );
@@ -237,30 +148,29 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const data = response?.data;
     return data;
   };
+
   useEffect(() => {
-    if (!myGroupData) return;
+    if (!groupInfor) return;
     (async () => {
       const _members = await Promise.all(
-        myGroupData?.member.map(
+        groupInfor?.member.map(
           async (_member: any) => await getMembersData(_member.id)
         )
       );
       setMembers(_members);
     })();
-  }, [myGroupData]);
+  }, [groupInfor]);
 
   const getRequestMembers = async () => {
-    if (requests) {
+    if (joinRequestsTransactions) {
       const _members = await api
         .post("/auth/user/getAllMembers")
         .catch((error) => {
           toast.error(error.message);
         });
       const _all_members = _members?.data;
-      console.log("_all_members", _all_members);
-      console.log("_requests", requests);
       const _request_members = _all_members.filter((_user: IUSER) =>
-        requests
+        joinRequestsTransactions
           .map((_request: IRequest) => _request.userid.toString())
           .includes(_user.id)
       );
@@ -271,7 +181,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getRequestMembers();
-  }, [requests]);
+  }, [joinRequestsTransactions]);
 
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
@@ -304,7 +214,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
   const deleteContent = (id: number) => {
-    // console.log("id", id);
     const newArray = [...uploadedContent];
     newArray.splice(id, 1);
     setUploadedContent(newArray);
@@ -321,8 +230,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     if (!address || !chainId || !signer) {
       return;
     }
-    if (myGroupData) {
-      const _contract = new Contract(myGroupData?.address, GROUP_ABI, signer);
+    if (groupInfor) {
+      const _contract = new Contract(groupInfor?.address, GROUP_ABI, signer);
       setContract(_contract);
       const _market_contract = new Contract(
         Marketplace_ADDRESSES[chainId],
@@ -331,7 +240,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       );
       setMarketplaceContract(_market_contract);
     }
-  }, [address, chainId, signer, myGroupData]);
+  }, [address, chainId, signer, groupInfor]);
 
   const dsiplayMembers = async () => {
     if (!contract) return;
@@ -350,13 +259,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.confirmOfferingSaleTransaction(
         BigInt(item.transactionid),
         true
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const confirm_member = item.confirm_member;
       confirm_member.push({ id: user.id });
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateOffering", {
           id: item.id,
@@ -389,11 +301,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
-
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.executeOfferingSaleTransaction(
         BigInt(item.transactionid)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/removeOffering", { id: item.nftid })
         .catch((error) => {
@@ -410,24 +324,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-        const _bidder_bid_state = await api.post("/api/getBidState", {bidder: item.buyer});
-        const bid_state:IActive_Bids[] = _bidder_bid_state.data;
-        const _withdrawAmount = bid_state.find((_bid:IActive_Bids) => _bid.nft === item.nftid);
-        console.log("_withdrawAmount", _withdrawAmount?.withdraw_amount);
-        if(Number(_withdrawAmount?.withdraw_amount) <= Number(item.price)) await api
-        .post("/api/removeBidState", {
-          bidder: item.buyer,
-          nft: item_nft.id
-        })
-        else{
-          await api
-        .post("/api/updateBidState", {
-          bidder: item.buyer,
-          nft: item_nft.id,
-          withdraw_amount: String(Number(_withdrawAmount?.withdraw_amount) - Number(item.price))
-        })
-        }
-      getMyGroupData();
+      // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -449,13 +346,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.confirmDirectorSettingTransaction(
         BigInt(item.transaction_id),
         true
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const confirm_member = item.confirm_member;
       confirm_member.push({ id: user.id });
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateDirector", {
           id: item.id,
@@ -485,10 +385,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsDisplaying(true);
       setIsLoading(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.executeDirectorSettingTransaction(
         BigInt(item.transaction_id)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/removeDirector", { id: item.new_director })
         .catch((error) => {
@@ -496,13 +399,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         });
       await api
         .post("/api/updateGroupDirector", {
-          id: myGroupData?.id,
+          id: groupInfor?.id,
           director: item.new_director,
         })
         .catch((error) => {
           toast.error(error.message);
         });
-      getMyGroupData();
+      // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -528,7 +431,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
       setIsDisplaying(true);
       setIsLoadingWithdrawButton(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.withdraw();
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       getBalancesForWithdraw();
     } catch (error: any) {
@@ -552,9 +457,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         return;
       }
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       setIsLoadingWithdrawMarketplaceButton(true);
 
       const tx = await contract.withdrawFromMarketplace();
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       getBalancesForWithdraw();
     } catch (error: any) {
@@ -576,15 +483,17 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) throw "You must sign in";
       setIsDisplaying(true);
       setIsLoadingLeaveButton(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.removeMember(address);
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
-      const _member = myGroupData?.member.filter(
+      const _member = groupInfor?.member.filter(
         (_user) => _user.id !== user.id
       );
-
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateGroupMember", {
-          id: myGroupData?.id,
+          id: groupInfor?.id,
           member: JSON.stringify(_member),
         })
         .catch((error) => {
@@ -620,7 +529,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
 
     await api
       .post("/api/updateEarning", {
-        id: myGroupData?.id,
+        id: groupInfor?.id,
         earning: Number(Number(totalEarningAmount) / 1e18).toString(),
       })
       .catch((error) => {
@@ -628,7 +537,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       });
     if (!marketplaceContract) return;
     const withdrawMarketplaceBalance =
-      await marketplaceContract.balanceOfSeller(myGroupData?.address);
+      await marketplaceContract.balanceOfSeller(groupInfor?.address);
     setWithdrawFromMarketplace(
       Number(Number(withdrawMarketplaceBalance) / 1e18).toString()
     );
@@ -645,17 +554,20 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!user) return;
       setIsLoading(true);
       setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const members_in_group = await contract.members(0);
       const members_in_group1 = await contract.members(1);
       const currentDirector = await contract.director();
       const tx = await contract.submitDirectorSettingTransaction(
         members[_num].wallet
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       const transaction_id = await contract.getNumberOfCandidateTransaction();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/addDirector", {
-          groupid: myGroupData?.id,
+          groupid: groupInfor?.id,
           new_director: members[_num].id,
           suggester: user?.id,
           confirm_member: JSON.stringify([]),
@@ -684,7 +596,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     // console.log("currentTime--->", formattedDateTime);
     await api
       .post("/api/addPost", {
-        groupId: myGroupData?.id,
+        groupId: groupInfor?.id,
         content: newPostMessage,
       })
       .catch((error) => {
@@ -713,21 +625,24 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if (!myGroupData) throw "No groupdata";
+      if (!groupInfor) throw "No groupdata";
 
       setIsDisplaying(true);
       setIsLoading(true);
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.addMember(requestMembers[index].wallet);
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
       console.log("asdf");
-      const _members = myGroupData?.member;
+      const _members = groupInfor?.member;
       console.log("_members", _members);
-      console.log("userid", requests[index]);
-      _members?.push({ id: requests[index].userid.toString() });
+      console.log("userid", joinRequestsTransactions[index]);
+      _members?.push({ id: joinRequestsTransactions[index].userid.toString() });
       console.log("_members again", _members);
+      setMainText("Waiting for backend process...");
       const result1 = await api
         .post("/api/removeJoinRequest", {
-          id: requests[index].id,
+          id: joinRequestsTransactions[index].id,
         })
         .catch((error) => {
           toast.error(error.message);
@@ -742,7 +657,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           toast.error(error.message);
         });
       console.log("here2");
-      getMyGroupData();
+      // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -761,10 +676,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
-      if (!myGroupData) throw "No groupdata";
+      if (!groupInfor) throw "No groupdata";
 
       if (
-        Number(requiredConfirmNumber) > myGroupData.member.length ||
+        Number(requiredConfirmNumber) > groupInfor.member.length ||
         Number(requiredConfirmNumber) < 0
       ) {
         toast.error("Invalid confirm number");
@@ -772,20 +687,23 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       }
       setIsDisplaying(true);
       setIsLoadingChangeConfirm(true);
+      setMainText("Waiting for user confirmation...");
 
       const tx = await contract.setConfirmationRequiredNumber(
         BigInt(requiredConfirmNumber)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       const result = await api
         .post("/api/updateGroupConfirmNumber", {
-          id: myGroupData.id,
+          id: groupInfor.id,
           confirmNumber: Number(requiredConfirmNumber).toString(),
         })
         .catch((error) => {
           toast.error(error.message);
         });
-      getMyGroupData();
+      // getJoinedGroupData();
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
         toast.error("User rejected transaction.");
@@ -798,11 +716,38 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Create a new Date object
+    const date = new Date(timestampInMilliseconds);
+
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
   return (
     <>
       {mintModalState && avatar && (
         <MintModal
-          groupAddress={myGroupData ? myGroupData.address : ""}
+          groupAddress={groupInfor ? groupInfor.address : ""}
           groupId={parseInt(params.id)}
           mintAvatar={mintAvatar}
           avatarFile={avatar}
@@ -814,11 +759,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       <div className="pt-[100px] h-full">
         <div className="page_container_p40 flex font-Maxeville" id="profile">
           <div>
-            <div className="gap-4 grid xl:grid-cols-2 lg:grid-cols-1 xl:w-[50%] xl:min-w-[920px] xs:w-full xs:h-full">
+            <div className="gap-4 grid grid-cols-1 md:grid-cols-2 xl:w-[50%] xl:min-w-[920px] xs:w-full xs:h-full">
               <div className="mt-5 xs:w-full xs:h-full">
-                {myGroupData && (
+                {groupInfor && (
                   <Image
-                    src={myGroupData?.avatar}
+                    src={groupInfor?.avatar}
                     className="w-full aspect-square object-cover"
                     alt="group_avatar"
                     width={500}
@@ -826,11 +771,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   />
                 )}
               </div>
-              <div className="group_info mt-5">
-                {members && myGroupData && (
+              <div className="mt-5">
+                {members && groupInfor && (
                   <GroupDescription
                     users={members}
-                    myGroupData={myGroupData}
+                    myGroupData={groupInfor}
                     totalEarning={totalEarning}
                   />
                 )}
@@ -838,7 +783,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             </div>
           </div>
         </div>
-        <div className="sticky top-[100px] z-10 hidden md:block">
+        <div className="sticky top-[100px] z-20 hidden md:block">
           <nav className="bg-white bg-opacity-95 border-b-[1px] page_container_p40 font-Maxeville">
             <div>
               <div className="flex items-center h-16">
@@ -861,10 +806,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
                         NFTS (
-                        {myGroupData?.mintnumber
-                          ? myGroupData?.mintnumber
-                          : "0"}
-                        )
+                        {groupInfor?.mintnumber ? groupInfor?.mintnumber : "0"})
                       </a>
                       <a
                         onClick={() => {
@@ -881,15 +823,15 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
-                        UPLOADED (0)
+                        NEW PRODUCT (0)
                       </a>
                       <a
                         onClick={() => {
-                          scrollToElement("withdraw");
+                          scrollToElement("manage");
                         }}
                         className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                       >
-                        WITHDRAW
+                        MANAGE
                       </a>
                     </div>
                   </div>
@@ -899,21 +841,20 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           </nav>
         </div>
         <div className="page_container_p40 font-Maxeville">
-          <div className="flex justify-between text-xl mt-5" id="nfts">
-            <div>
-              NFTs ({myGroupData?.mintnumber ? myGroupData?.mintnumber : "0"})
+          <div className="flex justify-between text-xl my-5" id="nfts">
+            <div className="font-bold">
+              NFTs ({groupInfor?.mintnumber ? groupInfor?.mintnumber : "0"})
             </div>
             <div className="border-b-2 border-indigo-500"></div>
           </div>
+          <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>SOLD ({soldNfts?.length ? soldNfts.length : "0"})</div>
-            <div className="border-b-2 border-indigo-500"></div>
-          </div>
-          {soldNfts?.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
+              VIEW ALL +
             </div>
-          )}
+          </div>
+          <ItemLoaderComponent data={soldNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {soldNfts?.map((item, index) => (
               <NftCard
@@ -932,13 +873,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>LISTED ({listedNfts?.length})</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-          </div>
-          {listedNfts.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
+              VIEW ALL +
             </div>
-          )}
+          </div>
+          <ItemLoaderComponent data={listedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {listedNfts.map((item, index) => (
               <NftCard
@@ -957,13 +896,11 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>NOT LISTED ({mintedNfts.length})</div>
-            <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-          </div>
-          {mintedNfts.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
+              VIEW ALL +
             </div>
-          )}
+          </div>
+          <ItemLoaderComponent data={mintedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
             {mintedNfts.map((item, index) => (
               <NftCard
@@ -980,128 +917,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             ))}
           </div>
           <Split_line />
-          <div className="flex justify-between text-lg" id="offers">
-            <div>OFFERS ({offerTransactions.length})</div>
-            <div className="border-b-2 border-indigo-500"></div>
-          </div>
-          {offerTransactions.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
-          <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
-            {offerTransactions?.map((item, key) => (
-              <div key={key}>
-                <div className="min-w-[50%] flex mt-[30px] gap-5">
-                  <div>
-                    <Image
-                      src={offerNfts[key]?.avatar}
-                      className="aspect-square object-cover rounded-lg"
-                      width={300}
-                      height={300}
-                      alt="offer"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="mb-[5px]">
-                      {offeringBuyerName[key]}
-                    </div>
-                    <div className="xs:grid xs:grid-cols-1 lg:grid lg:grid-cols-1 xl:grid xl:grid-cols-3">
-                      <div className="flex me-[5px]">
-                        <div className="text-gray-400">OFFERED</div>
-                        <div className="ms-[5px]">
-                          {offerTransactions[key]?.price} USDC
-                        </div>
-                      </div>
-                      <div className="flex">
-                        <div className="text-gray-400">FOR</div>
-                        <div className="ms-[5px]">CONTENT</div>
-                      </div>
-                    </div>
-                    <div className="text-gray-400 mt-5 text-md">
-                      CONFIRMED BY{" "}
-                      {offerTransactions[key].confirm_member.length}/
-                      {myGroupData?.member.length}
-                    </div>
-                    <div className="my-[20px]">
-                      {members &&
-                        renderAvatar(
-                          members?.filter((item: IUSER) =>
-                            offerTransactions[key]?.confirm_member
-                              .map((_id: any) => _id.id)
-                              .includes(item.id)
-                          )
-                        )}
-                    </div>
-                    <div className="flex flex-col w-full">
-                      {item.confirm_member.filter(
-                        (_item: any) => _item.id === user?.id
-                      ).length === 0 &&
-                        item.confirm_member.length <
-                          Number(myGroupData?.requiredconfirmnumber) && (
-                          <button
-                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
-                            onClick={() => {
-                              offeringConfrimHandle(offerTransactions[key]);
-                              setSelectedOfferConfirmBtn(key);
-                            }}
-                          >
-                            {selectedOfferConfirmBtn === key ? (
-                              <>
-                                <Icon
-                                  icon="eos-icons:bubble-loading"
-                                  width={20}
-                                  height={20}
-                                />{" "}
-                                PROCESSING...
-                              </>
-                            ) : (
-                              "CONFIRM"
-                            )}
-                          </button>
-                        )}
-                      {item.confirm_member.length >=
-                        Number(myGroupData?.requiredconfirmnumber) && (
-                        <button
-                          className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
-                          onClick={() => {
-                            offeringExecuteHandle(
-                              offerTransactions[key],
-                              offerNfts[key]
-                            );
-                            setSelectedOfferExecuteBtn(key);
-                          }}
-                        >
-                          {selectedOfferExecuteBtn === key ? (
-                            <>
-                              <Icon
-                                icon="eos-icons:bubble-loading"
-                                width={20}
-                                height={20}
-                              />
-                              PROCESSING...
-                            </>
-                          ) : (
-                            "EXECUTE"
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <Split_line />
           <div className="flex justify-between text-xl" id="create">
-            <div>UPLOADED CONTENT (0)</div>
-            <div className="border-b-2 border-indigo-500"></div>
+            <div className="font-bold">NEW PRODUCTS</div>
           </div>
-          {uploadedContent.length == 0 && (
-            <div className="w-full flex items-center justify-center min-h-[100px]">
-              NO RESULT
-            </div>
-          )}
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2">
             {uploadedContent.map((_content: string, item: number) => (
               <div key={item} className="flex flex-col">
@@ -1138,11 +956,10 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             ))}
-          </div>
-          <div className="flex justify-center items-center mt-5">
+
             <label
-              htmlFor="avatar"
-              className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg cursor-pointer text-center"
+              htmlFor="upload_content"
+              className=" bg-gray-200 w-full h-full content-card aspect-square text-lg cursor-pointer flex justify-center items-center"
             >
               <input
                 hidden
@@ -1150,326 +967,118 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 type="file"
                 onChange={onFileChange}
               />
-              UPLOAD NEW
+              +
             </label>
           </div>
-          <Split_line />
-          {isDirector && (
-            <>
-              <div className="flex justify-between text-xl">
-                <div>POST</div>
-                <div className="border-b-2 border-indigo-500">VIEW ALL +</div>
-              </div>
-              {postNews?.length == 0 && (
-                <div className="w-full flex items-center justify-center min-h-[100px]">
-                  NO RESULT
-                </div>
-              )}
-              <div>
-                {postNews &&
-                  postNews?.map((_news, key) => (
-                    <div
-                      key={key}
-                      className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1 bg-gray-100 p-5 rounded-sm"
-                    >
-                      <div className="">
-                        {_news.content.split("\n").map((line, index) => (
-                          <React.Fragment key={index}>
-                            {line}
-                            <br />
-                          </React.Fragment>
-                        ))}
-                      </div>
-                      <div className="text-right text-gray-500">
-                        {_news.post_time.toString()}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-              <div className="mt-5 gap-5 grid lg:grid-cols-2 xs:grid-cols-1">
-                <div></div>
-                <div>
-                  <textarea
-                    rows={4}
-                    className="p-4 outline-none border w-full border-chocolate-main rounded-lg resize-none"
-                    placeholder="Write a message to share with those outside your group."
-                    value={newPostMessage}
-                    onChange={(e) => setNewPostMessage(e.target.value)}
-                  />
-                  <div className="text-gray-400 text-right">
-                    <button
-                      className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[102px] text-lg"
-                      onClick={sendGroupPost}
-                    >
-                      SEND
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
 
-          {isDirector && (
-            <>
-              <div className="flex items-center text-xl mt-5">
-                <input
-                  id="default-radio"
-                  type="checkbox"
-                  checked={activeState}
-                  onChange={(e) => changeActiveState(e.target.checked)}
-                  name="default-radio"
-                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
-                />
-                <label
-                  htmlFor="default-radio"
-                  className="ms-2  font-medium text-gray-900 dark:text-gray-300"
-                >
-                  ACTIVELY RECRUITING
-                </label>
-              </div>
-              <div className="text-gray-400">
-                Looking to fill a role? set “actively recruiting” so users can
-                find your group!
-              </div>
-            </>
-          )}
           <Split_line />
-          <div className="flex justify-between text-xl">
-            <div>MANAGE</div>
-            <div className="border-b-2 border-indigo-500"></div>
+          <div className="flex justify-between text-lg" id="offers">
+            <div className="font-bold">OFFERS ({offerTransactions.length})</div>
           </div>
-          <div className="mt-5">
-            <h1>SET A NEW DIRECTOR</h1>
-          </div>
-          <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
-            {members && myGroupData && (
-              <div
-                className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2`}
-              >
-                {members && myGroupData && (
-                  <>
-                    <div className="aspect-square rounded-full">
-                      <Image
-                        src={
-                          members?.filter(
-                            (_user: IUSER) => _user.id === myGroupData?.director
-                          )[0].avatar
-                        }
-                        className="rounded-full aspect-square object-cover"
-                        alt="mebers"
-                        width={160}
-                        height={160}
-                      />
-                    </div>
-                    <div className="mt-3 justify-center">
-                      <p className="flex justify-center">
-                        {
-                          members?.filter((_user: IUSER) =>
-                            _user.id.includes(myGroupData?.director)
-                          )[0].name
-                        }
-                        (Current Director)
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-            {members &&
-              members.map((item, index) => (
-                <>
-                  <div
-                    key={index}
-                    className={`flex flex-col ${
-                      (item.id === myGroupData?.director ||
-                        directorTransactions?.filter(
-                          (_item: IDIRECTOR_TRANSACTION) =>
-                            _item.new_director === item.id
-                        ).length) &&
-                      "hidden"
-                    } `}
-                  >
-                    <div
-                      className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2 ${
-                        selected === index
-                          ? "border border-chocolate-main/50"
-                          : "border border-white"
-                      }`}
-                      onClick={() => setSelected(index)}
-                    >
-                      <div className="aspect-square rounded-full mt-3">
-                        <Image
-                          src={item.avatar}
-                          className="rounded-full aspect-square object-cover"
-                          alt="mebers"
-                          width={160}
-                          height={160}
-                        />
-                      </div>
-                      <div className="mt-3 justify-center">
-                        <p className="flex justify-center">{item.name} </p>
-                      </div>
-                    </div>
-                    {index === selected && (
-                      <button
-                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
-                          item.id === myGroupData?.director ? "hidden" : ""
-                        } `}
-                        onClick={() => {
-                          suggestDirectorSetting(index);
-                          setSelectedSuggestBtn(index);
-                        }}
-                      >
-                        {selectedSuggestBtn === index ? (
-                          <>
-                            <Icon
-                              icon="eos-icons:bubble-loading"
-                              width={20}
-                              height={20}
-                            />{" "}
-                            PROCESSING...
-                          </>
-                        ) : (
-                          "SUGGEST"
-                        )}
-                      </button>
-                    )}
+          <ItemLoaderComponent data={offerTransactions} />
+          <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
+            {offerTransactions?.map((item, key) => (
+              <div key={key}>
+                <div className="flex mt-[30px] gap-5 border rounded-xl p-5">
+                  <div>
+                    <Image
+                      src={offerNfts[key]?.avatar}
+                      className="aspect-square object-cover rounded-lg"
+                      width={300}
+                      height={300}
+                      alt="offer"
+                    />
                   </div>
-                </>
-              ))}
-          </div>
-          <div className="flex justify-between  mt-5" id="offers">
-            <div>
-              SUGGESTED DIRECTORS (
-              {directorTransactions?.length ? directorTransactions.length : "0"}
-              )
-            </div>
-            <div className="border-b-2 border-indigo-500"></div>
-          </div>
-          {directorTransactions &&
-            directorTransactions.length &&
-            myGroupData &&
-            members?.length &&
-            members && (
-              <div className="justify-start gap-2 mt-3 lg:grid lg:grid-cols-2 xs:grid xs:grid-cols-1">
-                {directorTransactions.map((item, key) => (
-                  <div key={key}>
-                    <div className="min-w-[50%] flex mt-[30px] gap-5">
-                      <div>
-                        {directorTransactions && members && (
-                          <Image
-                            src={
-                              members?.filter((_user: IUSER) =>
-                                _user.id.includes(
-                                  directorTransactions[key].new_director
-                                )
-                              )[0].avatar
-                            }
-                            className="aspect-square object-cover rounded-lg"
-                            width={300}
-                            height={300}
-                            alt="offer"
-                          />
-                        )}
+                  <div className="flex flex-col">
+                    <div className="mb-[5px]">
+                      {offerTransactions[key].buyer}
+                    </div>
+                    <div className="">
+                      <div className="flex me-[5px]">
+                        <div className="text-gray-400">OFFERED</div>
+                        <div className="ms-[5px]">
+                          {offerTransactions[key]?.price} USDC
+                        </div>
                       </div>
-                      <div className="flex flex-col justify-between">
-                        <div className="mb-[5px] ">
-                          {
-                            members?.filter((_user: IUSER) =>
-                              _user.id.includes(
-                                directorTransactions[key].suggester
-                              )
-                            )[0].name
-                          }
-                          <span className="text-gray-400 ml-2">SUGGESTED</span>
-                        </div>
-
-                        {members && directorTransactions && (
-                          <div className="text-gray-400 mt-5 text-md">
-                            CONFIRMED BY{" "}
-                            {directorTransactions[key].confirm_member.length
-                              ? directorTransactions[key].confirm_member.length
-                              : "0"}
-                            /{myGroupData.member.length}
-                          </div>
+                    </div>
+                    <div className="text-gray-400 mt-5 text-md">
+                      CONFIRMED {offerTransactions[key].confirm_member.length}/
+                      {groupInfor?.member.length}
+                    </div>
+                    <div className="my-[20px]">
+                      {members &&
+                        renderAvatar(
+                          members?.filter((item: IUSER) =>
+                            offerTransactions[key]?.confirm_member
+                              .map((_id: any) => _id.id)
+                              .includes(item.id)
+                          )
                         )}
-                        <div className="my-[20px]">
-                          {renderAvatar(
-                            members.filter((_user: IUSER) =>
-                              directorTransactions[key].confirm_member
-                                .map((_id: any) => _id.id)
-                                .includes(_user.id)
-                            )
-                          )}
-                        </div>
-                        <div className="flex flex-col w-full">
-                          {item.confirm_member.filter(
-                            (_item: any) => _item.id === user?.id
-                          ).length === 0 &&
-                            item.confirm_member.length <=
-                              Number(myGroupData?.requiredconfirmnumber) && (
-                              <button
-                                className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
-                                onClick={() => {
-                                  directorConfrimHandle(
-                                    directorTransactions[key]
-                                  );
-                                  setSelectedDirectorConfirmBtn(key);
-                                }}
-                              >
-                                {selectedDirectorConfirmBtn === key ? (
-                                  <>
-                                    <Icon
-                                      icon="eos-icons:bubble-loading"
-                                      width={20}
-                                      height={20}
-                                    />{" "}
-                                    PROCESSING...
-                                  </>
-                                ) : (
-                                  "CONFIRM"
-                                )}
-                              </button>
+                    </div>
+                    <div className="flex flex-col w-full">
+                      {item.confirm_member.filter(
+                        (_item: any) => _item.id === user?.id
+                      ).length === 0 &&
+                        item.confirm_member.length <
+                          Number(groupInfor?.requiredconfirmnumber) && (
+                          <button
+                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center hover:bg-chocolate-main hover:text-white transition-all"
+                            onClick={() => {
+                              offeringConfrimHandle(offerTransactions[key]);
+                              setSelectedOfferConfirmBtn(key);
+                            }}
+                          >
+                            {selectedOfferConfirmBtn === key ? (
+                              <>
+                                <Icon
+                                  icon="eos-icons:bubble-loading"
+                                  width={20}
+                                  height={20}
+                                />{" "}
+                                PROCESSING...
+                              </>
+                            ) : (
+                              "CONFIRM"
                             )}
-                          {item.confirm_member.length >=
-                            Number(myGroupData?.requiredconfirmnumber) && (
-                            <button
-                              className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
-                              onClick={() => {
-                                directorExecuteHandle(
-                                  directorTransactions[key]
-                                );
-                                setSelectedDirectorExecuteBtn(key);
-                              }}
-                            >
-                              {selectedDirectorExecuteBtn === key ? (
-                                <>
-                                  <Icon
-                                    icon="eos-icons:bubble-loading"
-                                    width={20}
-                                    height={20}
-                                  />{" "}
-                                  PROCESSING...
-                                </>
-                              ) : (
-                                "Execute"
-                              )}
-                            </button>
+                          </button>
+                        )}
+                      {item.confirm_member.length >=
+                        Number(groupInfor?.requiredconfirmnumber) && (
+                        <button
+                          className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                          onClick={() => {
+                            offeringExecuteHandle(
+                              offerTransactions[key],
+                              offerNfts[key]
+                            );
+                            setSelectedOfferExecuteBtn(key);
+                          }}
+                        >
+                          {selectedOfferExecuteBtn === key ? (
+                            <>
+                              <Icon
+                                icon="eos-icons:bubble-loading"
+                                width={20}
+                                height={20}
+                              />
+                              PROCESSING...
+                            </>
+                          ) : (
+                            "EXECUTE"
                           )}
-                        </div>
-                      </div>
+                        </button>
+                      )}
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-            )}
-          <div className="mt-5">
-            <h1>JOIN REQUESTS</h1>
-          </div>
-          <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
+            ))}
             {requestMembers &&
               requestMembers.map((item, index) => (
-                <div key={index} className={`flex flex-col`}>
+                <div
+                  key={index}
+                  className={`flex mt-[30px] gap-5 border rounded-xl p-5 flex-col`}
+                >
                   <div
                     className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2`}
                   >
@@ -1510,7 +1119,240 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   )}
                 </div>
               ))}
+            {directorTransactions.map((item, key) => (
+              <div key={key}>
+                <div className="border p-5 rounded-xl flex mt-[30px] gap-5">
+                  <div>
+                    {directorTransactions && members && (
+                      <Image
+                        src={
+                          members?.filter((_user: IUSER) =>
+                            _user.id.includes(
+                              directorTransactions[key].new_director
+                            )
+                          )[0].avatar
+                        }
+                        className="aspect-square object-cover rounded-lg"
+                        width={300}
+                        height={300}
+                        alt="offer"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="mb-[5px] ">
+                      {
+                        members?.filter((_user: IUSER) =>
+                          _user.id.includes(directorTransactions[key].suggester)
+                        )[0].name
+                      }
+                    </div>
+
+                    {members && directorTransactions && (
+                      <div className="text-gray-400 mt-5 text-md">
+                        CONFIRMED{" "}
+                        {directorTransactions[key].confirm_member.length
+                          ? directorTransactions[key].confirm_member.length
+                          : "0"}
+                        /{groupInfor?.member.length}
+                      </div>
+                    )}
+                    <div className="my-[20px]">
+                      {members &&
+                        renderAvatar(
+                          members.filter((_user: IUSER) =>
+                            directorTransactions[key].confirm_member
+                              .map((_id: any) => _id.id)
+                              .includes(_user.id)
+                          )
+                        )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      {item.confirm_member.filter(
+                        (_item: any) => _item.id === user?.id
+                      ).length === 0 &&
+                        item.confirm_member.length <=
+                          Number(groupInfor?.requiredconfirmnumber) && (
+                          <button
+                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center"
+                            onClick={() => {
+                              directorConfrimHandle(directorTransactions[key]);
+                              setSelectedDirectorConfirmBtn(key);
+                            }}
+                          >
+                            {selectedDirectorConfirmBtn === key ? (
+                              <>
+                                <Icon
+                                  icon="eos-icons:bubble-loading"
+                                  width={20}
+                                  height={20}
+                                />{" "}
+                                PROCESSING...
+                              </>
+                            ) : (
+                              "CONFIRM"
+                            )}
+                          </button>
+                        )}
+                      {item.confirm_member.length >=
+                        Number(groupInfor?.requiredconfirmnumber) && (
+                        <button
+                          className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                          onClick={() => {
+                            directorExecuteHandle(directorTransactions[key]);
+                            setSelectedDirectorExecuteBtn(key);
+                          }}
+                        >
+                          {selectedDirectorExecuteBtn === key ? (
+                            <>
+                              <Icon
+                                icon="eos-icons:bubble-loading"
+                                width={20}
+                                height={20}
+                              />{" "}
+                              PROCESSING...
+                            </>
+                          ) : (
+                            "Execute"
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
+
+          <Split_line />
+          <div className="flex justify-between text-xl">
+            <div id="manage">MANAGE</div>
+          </div>
+          <div className="mt-5">
+            <h1>SET A NEW DIRECTOR</h1>
+          </div>
+          <div className="grid grid-cols-8 mt-5 xl:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 xs:grid-cols-3 m-auto">
+            {members && groupInfor && (
+              <div
+                className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2`}
+              >
+                {members && groupInfor && (
+                  <>
+                    <div className="aspect-square rounded-full">
+                      <Image
+                        src={
+                          members?.filter(
+                            (_user: IUSER) => _user.id === groupInfor?.director
+                          )[0].avatar
+                        }
+                        className="rounded-full aspect-square object-cover"
+                        alt="mebers"
+                        width={160}
+                        height={160}
+                      />
+                    </div>
+                    <div className="mt-3 justify-center">
+                      <p className="flex justify-center">
+                        {
+                          members?.filter((_user: IUSER) =>
+                            _user.id.includes(groupInfor?.director)
+                          )[0].name
+                        }
+                        (Current Director)
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+            {members &&
+              members.map((item, index) => (
+                <>
+                  <div
+                    key={index}
+                    className={`flex flex-col ${
+                      (item.id === groupInfor?.director ||
+                        directorTransactions?.filter(
+                          (_item: IDIRECTOR_TRANSACTION) =>
+                            _item.new_director === item.id
+                        ).length) &&
+                      "hidden"
+                    } `}
+                  >
+                    <div
+                      className={`flex flex-col items-center justify-center cursor-pointer rounded-lg m-2 ${
+                        selected === index
+                          ? "border border-chocolate-main/50"
+                          : "border border-white"
+                      }`}
+                      onClick={() => setSelected(index)}
+                    >
+                      <div className="aspect-square rounded-full mt-3">
+                        <Image
+                          src={item.avatar}
+                          className="rounded-full aspect-square object-cover"
+                          alt="mebers"
+                          width={160}
+                          height={160}
+                        />
+                      </div>
+                      <div className="mt-3 justify-center">
+                        <p className="flex justify-center">{item.name} </p>
+                      </div>
+                    </div>
+                    {index === selected && (
+                      <button
+                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
+                          item.id === groupInfor?.director ? "hidden" : ""
+                        } `}
+                        onClick={() => {
+                          suggestDirectorSetting(index);
+                          setSelectedSuggestBtn(index);
+                        }}
+                      >
+                        {selectedSuggestBtn === index ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />{" "}
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "SUGGEST"
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </>
+              ))}
+          </div>
+          
+          {isDirector && (
+            <>
+              <div className="flex items-center text-xl mt-5">
+                <input
+                  id="default-radio"
+                  type="checkbox"
+                  checked={groupInfor?.is_actively_recruiting}
+                  onChange={(e) => changeActiveState(e.target.checked)}
+                  name="default-radio"
+                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
+                />
+                <label
+                  htmlFor="default-radio"
+                  className="ms-2  font-medium text-gray-900 dark:text-gray-300"
+                >
+                  ACTIVELY RECRUITING
+                </label>
+              </div>
+              <div className="text-gray-400">
+                Looking to fill a role? set “actively recruiting” so users can
+                find your group!
+              </div>
+            </>
+          )}
           <Split_line />
           {isDirector && (
             <>
@@ -1530,7 +1372,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                   <button
                     onClick={changeConfirmNumberHandle}
-                    className="border border-chocolate-main rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                    className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
                   >
                     {isLoadingChangeConfirm ? (
                       <>
@@ -1551,8 +1393,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <Split_line />
           <div className="text-xl" id="withdraw">
-            <div className="text-md">Withdraw</div>
-            <div className="border-b-2 border-indigo-500"></div>
+            <div className="text-md">WITHDRAW</div>
           </div>
           <div className="mt-5 text-lg lg:flex">
             <div className="flex gap-5">
@@ -1565,7 +1406,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button
                 onClick={withdrawFromGroup}
-                className="border border-chocolate-main rounded-full pl-4 pr-4 w-[190px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
               >
                 {isLoadingWithdrawButton ? (
                   <>
@@ -1597,7 +1438,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                 <button
                   onClick={withdrawFromMarketplace}
-                  className="border border-chocolate-main rounded-full pl-4 pr-4 w-[300px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
                 >
                   {isLoadingWithdrawMarketplaceButton ? (
                     <>
@@ -1609,7 +1450,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       PROCESSING...
                     </>
                   ) : (
-                    "Withdraw From Marketplace"
+                    "WITHDRAW FROM SQUAD"
                   )}
                 </button>
               </div>
@@ -1638,12 +1479,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           )}
           <Split_line />
         </div>
-        <div
-          className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full"
-          style={{
-            backgroundImage: "url('/assets/bg-1.jpg')",
-          }}
-        ></div>
+        <FooterBG />
         <Footer />
       </div>
     </>

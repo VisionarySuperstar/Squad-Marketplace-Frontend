@@ -6,7 +6,6 @@ export function useEndLoadingState() {
     (state) => state.updateLoadingState
   );
   useEffect(() => {
-    document.body.style.overflow = "auto";
     setLoadingState(false);
   });
 }

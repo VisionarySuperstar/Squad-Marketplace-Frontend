@@ -40,3 +40,35 @@ export function nftToCard(nft: INFT): INFTCard {
     favorite: 20,
   };
 }
+
+export enum AuctionType {
+  EnglishAuction = 0,
+  DutchAuction = 1,
+  Offering = 2,
+}
+
+export const auctionTypes = [
+  AuctionType.EnglishAuction,
+  AuctionType.DutchAuction,
+  AuctionType.Offering,
+];
+
+export type NFTFilter = {
+  group?: string;
+  collection?: string;
+  auctionType?: AuctionType;
+  priceMin?: number;
+  priceMax?: number;
+  blockchain?: string;
+};
+
+export function auctionToString(auction: AuctionType): string {
+  switch (auction) {
+    case AuctionType.EnglishAuction:
+      return "english auction";
+    case AuctionType.DutchAuction:
+      return "dutch auction";
+    case AuctionType.Offering:
+      return "offering";
+  }
+}

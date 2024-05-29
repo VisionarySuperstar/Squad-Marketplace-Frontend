@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import create, { StoreApi } from "zustand";
 
 type State = {
   url: string;
@@ -31,9 +31,10 @@ const useNavbarUIControlStore = create<State & Action>((set) => ({
   isbackground: false,
   isgroupbtn: false,
   walletInforModalState: false,
-  moonpayModalState:false,
+  moonpayModalState: false,
   updateMoonpayModalState: (value) => set(() => ({ moonpayModalState: value })),
-  updateWalletInforModalState: (value) => set(() => ({ walletInforModalState: value })),
+  updateWalletInforModalState: (value) =>
+    set(() => ({ walletInforModalState: value })),
   updateUrl: (value) => set(() => ({ url: value })),
   updateIsShow: (value) => set(() => ({ isshow: value })),
   updateIsBackbtn: (value) => set(() => ({ isbackbtn: value })),

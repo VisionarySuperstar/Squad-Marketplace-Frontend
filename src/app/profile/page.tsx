@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,9 +13,16 @@ import useAuth from "@/hooks/useAuth";
 import useAllNfts from "@/hooks/views/useAllNfts";
 import useMyGroups from "@/hooks/views/useMyGroups";
 import useActiveBids from "@/hooks/views/useActiveBids";
-import { IGROUP, INFT } from "@/types";
+import { INFT } from "@/types";
+import Toggle from "@/components/main/toggle";
+import ItemLoaderComponent from "@/components/main/itemLoader";
+import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
+import FooterBG from "@/components/main/footerbg";
 
 export default function Home() {
+  const api = useAPI();
+
   const router = useRouter();
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
@@ -83,13 +89,21 @@ export default function Home() {
   const activeBids = useActiveBids();
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
   const [bidNfts, setBidNfts] = useState<INFT[]>([]);
+  const [salesState, setSalesState] = useState<boolean | undefined>(undefined);
+  const [offersState, setOffersState] = useState<boolean | undefined>(
+    undefined
+  );
+  const [chatState, setChatState] = useState<boolean | undefined>(undefined);
+  const [requestState, setRequestState] = useState<boolean | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (!allNfts) return;
     setCollectedNfts(
       allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))
     );
-  }, [allNfts]);
+  }, [allNfts, user]);
 
   useEffect(() => {
     if (!activeBids || !allNfts) return;
@@ -97,6 +111,69 @@ export default function Home() {
       allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id))
     );
   }, [activeBids, allNfts]);
+  let count = 0;
+  const [userSetting, setUserSetting] = useState<
+    [
+      {
+        sales: boolean;
+      },
+      {
+        offers: boolean;
+      },
+      {
+        chat: boolean;
+      },
+      {
+        request: boolean;
+      }
+    ]
+  >();
+
+  const initialUserSetting = () => {
+    if (!userSetting) return;
+    setSalesState(userSetting[0].sales);
+    setOffersState(userSetting[1].offers);
+    setChatState(userSetting[2].chat);
+    setRequestState(userSetting[3].request);
+  };
+
+  useEffect(() => {
+    initialUserSetting();
+    console.log("userSetting after", userSetting);
+  }, [userSetting]);
+
+  const getUserSetting = async () => {
+    const _userSetting = await api.post(`/auth/user/getUserSetting`, {
+      id: user?.id,
+    });
+    console.log("userSetting", _userSetting.data);
+    setUserSetting(_userSetting.data);
+  };
+
+  useEffect(() => {
+    if (user) getUserSetting();
+  }, [user]);
+
+  let countasdf = 0;
+  const updateSetting = async () => {
+    if (!user) return;
+    countasdf++;
+    console.log("count", countasdf);
+    const settingData = [
+      { sales: salesState },
+      { offers: offersState },
+      { chat: chatState },
+      { request: requestState },
+    ];
+    console.log("seetingData", settingData);
+    await api.post("/auth/user/updateSetting", {
+      setting: JSON.stringify(settingData),
+    });
+  };
+
+  useEffect(() => {
+    updateSetting();
+  }, [salesState, offersState, chatState, requestState]);
 
   return (
     <>
@@ -144,7 +221,12 @@ export default function Home() {
                   <div>
                     <div className="text-gray-400">SMART WALLETS</div>
                     <div className="flex gap-3">
-                      <img src="/metamask.svg"></img>
+                      <Image
+                        src="/metamask.svg"
+                        alt={"metamask icon"}
+                        width={100}
+                        height={100}
+                      />
                       <div className=" text-ellipsis max-w-[150px] overflow-hidden">
                         {formatWalletAddress(user?.wallet)}
                       </div>
@@ -221,6 +303,7 @@ export default function Home() {
               <h1 className="text-[18px]">
                 ACTIVE BIDS ({bidNfts ? bidNfts.length : "0"})
               </h1>
+              <ItemLoaderComponent data={bidNfts} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {bidNfts.map((item, index) => (
                   <NftCard
@@ -243,8 +326,9 @@ export default function Home() {
             <Split_line />
             <div className="mt-5" id="groups">
               <h1 className="text-[18px]">
-                GROUPS ({myGroups ? myGroups.length : "0"})
+                JOINED GROUPS ({myGroups ? myGroups.length : "0"})
               </h1>
+              <ItemLoaderComponent data={myGroups} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {myGroups.map((item, index) => (
                   <GroupCard
@@ -253,7 +337,7 @@ export default function Home() {
                     name={item.name}
                     groupBio={item.description}
                     membercount={item.member.length}
-                    groupId={index.toString()}
+                    groupId={item.id}
                     avatar={item.avatar}
                   />
                 ))}
@@ -266,7 +350,7 @@ export default function Home() {
                   COLLECTED ({collectedNfts ? collectedNfts.length : "0"})
                 </h1>
               </div>
-
+              <ItemLoaderComponent data={collectedNfts} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
                 {collectedNfts.map((item, index) => (
                   <div
@@ -277,7 +361,7 @@ export default function Home() {
                       id={item.id}
                       avatar={item.avatar}
                       collectionName={item.collectionname}
-                      collectionId={Number(item.collectionid)}
+                      collectionId={Number(item.collectionid)} 
                       seen={200}
                       favorite={20}
                       price={
@@ -298,93 +382,91 @@ export default function Home() {
               <div className="mt-5">
                 <div className="grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 w-2/5">
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">SALES</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !salesState && "text-gray-400"
+                      }`}
+                    >
+                      SALES
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={salesState}
+                        onChange={() => {
+                          setSalesState(!salesState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
+                    </label>
+                  </div>
+
+                  <div className="p-[10px]">
+                    <div
+                      className={`text-md flex items-center ${
+                        !offersState && "text-gray-400"
+                      }`}
+                    >
+                      OFFERS
+                    </div>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={offersState}
+                        onChange={() => {
+                          setOffersState(!offersState);
+                        }}
+                        className="sr-only peer"
+                      />
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">OFFERS</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !chatState && "text-gray-400"
+                      }`}
+                    >
+                      CHAT
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={chatState}
+                        onChange={() => {
+                          setChatState(!chatState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">CHAT</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !requestState && "text-gray-400"
+                      }`}
+                    >
+                      REQUEST
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={requestState}
+                        onChange={() => {
+                          setRequestState(!requestState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
-                    </label>
-                  </div>
-                  <div className="p-[10px]">
-                    <div className="text-md flex items-center">REQUEST</div>
-                    <label className="inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        value=""
-                        className="sr-only peer"
-                      />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div
-            className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-            style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-          ></div>
+          <FooterBG />
           <Footer />
         </div>
       )}

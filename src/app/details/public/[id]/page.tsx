@@ -23,6 +23,7 @@ import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
@@ -34,13 +35,16 @@ type transferHistoryType = {
   timestamp: BigInt;
 };
 
-import useLoadingControlStore from "@/store/UI_control/loading";
 import ImageView from "@/components/main/imageViewer";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
+
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
@@ -87,14 +91,50 @@ const Home = ({ params }: { params: { id: string } }) => {
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
+  const [createdTime, setCreatedTime] = useState<string>("");
 
-  
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+    console.log("timestampInMilliseconds", timestampInMilliseconds);
+    // Create a new Date object
+    let date = new Date(timestampInMilliseconds);
+    // if (date.getFullYear() < 2024) {
+    //   const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
+    //   date = new Date(blockTime);
+    // }
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
   const getData = async () => {
+    console.log("getData");
     const result = await api
       .post("/api/getNftById", { id: params.id })
       .catch((error) => {
         toast.error(error.message);
       });
+    const _created_time = formatDateWithTimeZone(
+      Number(result?.data.created_at),
+      "America/New_York"
+    );
+    setCreatedTime(_created_time);
     setData(result?.data);
     console.log("data", result?.data);
     const group_name = await api
@@ -118,6 +158,13 @@ const Home = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     getData();
     setLoadingState(false);
+    // Set up an interval to decrease the value every second
+    const intervalId = setInterval(() => {
+      setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
+    }, 1000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -155,13 +202,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     console.log("currentTime", currentTime);
     setRemainTime(endTime - currentTime);
   };
-
-  useEffect(() => {
-    if (!contract || !data) return;
-    calcRemainTime();
-    getWithdrawAmounts();
-  }, [contract, data]);
-
   const getWithdrawAmounts = async () => {
     if (!contract || !data) return;
     if (Number(data.auctiontype) === 0) {
@@ -180,12 +220,35 @@ const Home = ({ params }: { params: { id: string } }) => {
       setWithdrawAmount((Number(value) / 1e18).toString());
     }
   };
+  const getDutchAuctionPrice = async () => {
+    if (
+      Number(data?.auctiontype) === 1 &&
+      contract &&
+      data &&
+      data.status !== "sold"
+    ) {
+      const value = await contract.getDutchAuctionPrice(data?.listednumber);
+      setCurrentDutchPrice((Number(value) / 1e18).toString());
+    }
+  };
+  useEffect(() => {
+    calcRemainTime();
+    getWithdrawAmounts();
+    getDutchAuctionPrice();
+  }, [contract, data]);
+
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
       return;
     }
-    const _contract = new Contract(data.collectionaddress, Content_ABI, signer);
-    setContentContract(_contract);
+    if (data.collectionaddress) {
+      const _contract = new Contract(
+        data.collectionaddress,
+        Content_ABI,
+        signer
+      );
+      setContentContract(_contract);
+    }
   }, [address, chainId, signer, data]);
   const getHistory = async () => {
     if (!contentContract) return;
@@ -244,23 +307,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     getHistory();
   }, [contentContract]);
 
-  const getDutchAuctionPrice = async () => {
-    if (
-      Number(data?.auctiontype) === 1 &&
-      contract &&
-      data &&
-      data.status !== "sold"
-    ) {
-      const value = await contract.getDutchAuctionPrice(data?.listednumber);
-      setCurrentDutchPrice((Number(value) / 1e18).toString());
-    }
-  };
-
-  useEffect(() => {
-    if (!contract || !data) return;
-    getDutchAuctionPrice();
-  }, [contract, data]);
-
   const convertSecondsToTime = (seconds: number) => {
     const days = Math.floor(seconds / (24 * 60 * 60));
     seconds %= 24 * 60 * 60;
@@ -271,53 +317,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     return [days, hours, minutes, seconds];
   };
 
-  const calcTimeFromBlockNumber = async (blockNumber: number) => {
-    const block = await provider.getBlock(blockNumber);
-    return Number(block.timestamp) * 1000;
-  };
-
-  const formatDateWithTimeZone = async (
-    timestampInSeconds: number,
-    timeZone: string
-  ) => {
-    // Convert the timestamp to milliseconds
-    const timestampInMilliseconds = timestampInSeconds * 1000;
-
-    // Create a new Date object
-    let date = new Date(timestampInMilliseconds);
-    if (date.getFullYear() < 2024) {
-      const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
-      date = new Date(blockTime);
-    }
-    // Define options for formatting
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-      timeZone: timeZone,
-      timeZoneName: "short",
-    };
-
-    // Format the date and time
-    const dateString = date.toLocaleString("en-US", options);
-
-    return dateString;
-  };
-
-  useEffect(() => {
-    if (!remainTime) return;
-    // Set up an interval to decrease the value every second
-    const intervalId = setInterval(() => {
-      setRemainTime((prevValue?) => (prevValue ? prevValue - 1 : 0));
-    }, 1000);
-
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, []);
-
   const buyClick = async () => {
     try {
       if (!contract) throw "no contract";
@@ -327,21 +326,25 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (!data) throw "no data";
       setIsLoading(true);
       setIsDisplaying(true);
-
+      setMainText("Waiting for user confirmation...");
       const tx1 = await usdc_contract.approve(
         Marketplace_ADDRESSES[chainId],
         BigInt(Number(currentDutchPrice) * 1e18)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx1.wait();
+      setMainText("Waiting for user confirmation...");
       const tx = await contract.buyDutchAuction(
         BigInt(data.listednumber),
         BigInt(Number(currentDutchPrice) * 1e18)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       await api
         .post("/api/updateSoldNft", {
           id: data.id,
-          owner: user.name,
+          owner: user.id,
           status: "sold",
           currentPrice: currentDutchPrice,
         })
@@ -402,16 +405,16 @@ const Home = ({ params }: { params: { id: string } }) => {
           withdrawAmount={withdrawAmount}
         />
       )}
-      {withdrawModalState && data && <WithdrawModal nftData={data} withdrawAmount={withdrawAmount}/>}
+      {withdrawModalState && data && (
+        <WithdrawModal nftData={data} withdrawAmount={withdrawAmount} />
+      )}
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="lg:me-[40px] sm:me-0">
+            <div className="lg:me-[40px] sm:me-0 border">
               <div>
                 <ImageView avatar={data.avatar} />
               </div>
-
-              <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
                   <EyeIcon props="#322A44" />
@@ -493,6 +496,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     )}
                   </>
                 )}
+
                 {Number(data?.auctiontype) === 0 &&
                   data?.currentbidder !== "0x000" && (
                     <>
@@ -540,19 +544,17 @@ const Home = ({ params }: { params: { id: string } }) => {
                         BID
                       </button>
                     )}
-                    {
+                    {Number(withdrawAmount) > 0 && (
                       <button
                         className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
                         onClick={() => setWithdrawModalState(true)}
                       >
                         WITHDRAW
                       </button>
-                    }
+                    )}
                   </div>
                 )}
               </div>
-              <Split_line />
-              {/* <div>DESCRIPTION</div> */}
               <div className="">
                 <Collapse title="Description">
                   {transferHistory && transferHistory.length && (
@@ -561,10 +563,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                       <span className="text-xl text-chocolate-main">
                         {groupName + " "}
                       </span>
-                      {formatDateWithTimeZone(
-                        Number(data.created_at),
-                        "America/New_York"
-                      )}
+                      {createdTime}
                     </p>
                   )}
                   <br></br>
@@ -597,11 +596,15 @@ const Home = ({ params }: { params: { id: string } }) => {
           )}
         </div>
       </div>
+
       <div>
-        <h1 className="text-xl p-10">MORE FROM THIS COLLECTION</h1>
         <div className="page_container_p40 mt-5">
+          <Split_line />
+          <h1 className="text-xl my-[30px] font-Maxeville">
+            MORE FROM THIS COLLECTION
+          </h1>
           <div
-            className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+            className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
           >
             {selectedNFTS?.map((item, index) => (
               <NftCard

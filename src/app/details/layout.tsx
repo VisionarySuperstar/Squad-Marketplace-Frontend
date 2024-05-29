@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import React from "react";
+
+import { useNavbarShow, useNavbarBackgound } from "@/hooks/ui/useNavbar";
+import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 
 export default function Detail({ children }: { children: React.ReactNode }) {
-  const setNavbarshow = useNavbarUIControlStore((state) => state.updateIsShow);
-  const setNavbarBg = useNavbarUIControlStore(
-    (state) => state.updateIsBackground
-  );
-  useEffect(() => {
-    setNavbarshow(true);
-    setNavbarBg(true);
-  }, [setNavbarBg, setNavbarshow]);
+  useNavbarShow(true);
+  useNavbarBackgound(true);
+  useEndLoadingState();
   return <div>{children}</div>;
 }

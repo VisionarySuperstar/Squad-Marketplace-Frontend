@@ -5,7 +5,8 @@ export interface IUSER {
   name: string,
   email: string,
   avatar: string,
-  join_at: string
+  join_at: string,
+  
 };
 
 export type TMsg = { 
