@@ -16,10 +16,10 @@ interface ListItemProps {
 const ListItem = ({ text, selected, onClick }: ListItemProps) => {
   const selectedClass = selected ? "bg-chocolate-main" : "";
   return (
-    <div className="flex gap-2.5 mt-5">
+    <div className="flex gap-2.5 mt-5 items-center">
       <button
         onClick={() => onClick && onClick()}
-        className={`shrink-0 rounded-full border border-solid border-slate-800 h-[13px] stroke-[1px] w-[13px] ${selectedClass}`}
+        className={`shrink-0 rounded-full border border-solid border-slate-800 h-[13px] stroke-[1px] w-[13px] mb-[3px] ${selectedClass}`}
       ></button>
       <span>{text}</span>
     </div>
