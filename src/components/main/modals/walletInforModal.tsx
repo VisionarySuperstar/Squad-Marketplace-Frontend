@@ -116,9 +116,7 @@ const WalletInforModal = () => {
             }}
           ></div>
           <div className="generalModal1 z-[1300] drop-shadow-lg rounded-xl  ">
-            <div
-              className={`rounded-xl flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
-            >
+            <div className={`rounded-xl flex flex-col  text-[#141416] pb-5 `}>
               {step !== 1 && (
                 <div className="bg-[#F6F6F6] pb-5 rounded-xl">
                   <div className="flex justify-between gap-2  h-[100px] p-2 pt-4 pb-4">
