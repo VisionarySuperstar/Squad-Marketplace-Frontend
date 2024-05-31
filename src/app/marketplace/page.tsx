@@ -65,50 +65,53 @@ export default function MarketplacePage() {
     <>
       <Carousel hasCaption={false} />
       <div className="font-Maxeville">
-        <div className="page_container_p40 p-[20px] lg:flex items-center justify-between sm:grid sm:grid-cols-1 sticky top-[100px] bg-white/95 border-b-[1px] z-20">
-          <div className="flex justify-between w-[60%] mt-2">
-            <Sort onItemSelected={(item) => setSortBy(item)} />
-            <button
-              onClick={() => onFilterClick()}
-              className={`font-Maxeville text-md px-5 ${
-                showFilter ? "bg-chocolate-main text-white rounded-full" : ""
-              }`}
-            >
-              {showFilter ? "APPLY" : "FILTER"}
-            </button>
-            {enableScale && (
-              <div className="ps-[15px] w-full max-w-[300px]">
-                <ViewProgress scale={scale} setScale={setScale} />
+        <div className="page_container_p40 p-[20px] sticky top-[100px] bg-white/95 border-b-[1px] z-20 flex flex-col gap-10">
+          <div className="lg:flex items-center justify-between sm:grid sm:grid-cols-1">
+            <div className="flex justify-between w-[60%] mt-2">
+              <Sort onItemSelected={(item) => setSortBy(item)} />
+              <button
+                onClick={() => onFilterClick()}
+                className={`font-Maxeville text-md px-5 ${
+                  showFilter ? "bg-chocolate-main text-white rounded-full" : ""
+                }`}
+              >
+                {showFilter ? "APPLY" : "FILTER"}
+              </button>
+              {enableScale && (
+                <div className="ps-[15px] w-full max-w-[300px]">
+                  <ViewProgress scale={scale} setScale={setScale} />
+                </div>
+              )}
+              <div>
+                <Recruiting
+                  recruitingState={availableState}
+                  setRecruitingState={setAvailableState}
+                  name="AVAILABLE"
+                />
               </div>
-            )}
-            <div>
-              <Recruiting
-                recruitingState={availableState}
-                setRecruitingState={setAvailableState}
-                name="AVAILABLE"
-              />
+            </div>
+            <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
+              <input
+                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                placeholder="SEARCH"
+              ></input>
+              <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
+                ENTER
+              </button>
             </div>
           </div>
-          <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
-            <input
-              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
-              placeholder="SEARCH"
-            ></input>
-            <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
-              ENTER
-            </button>
-          </div>
+          {showFilter && (
+            <div className="page_container_p40 ">
+              <FilterPanel
+                filter={pendingFilter}
+                setFilter={setPendingFilter}
+                collections={topCollections}
+                groups={topGroups}
+              />
+            </div>
+          )}
         </div>
-        {showFilter && (
-          <div className="page_container_p40 mt-5">
-            <FilterPanel
-              filter={pendingFilter}
-              setFilter={setPendingFilter}
-              collections={topCollections}
-              groups={topGroups}
-            />
-          </div>
-        )}
+
         <div className="min-h-[600px]">
           {enableScale && (
             <div className="page_container_p40 mt-5">
