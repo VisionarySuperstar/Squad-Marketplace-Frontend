@@ -4,36 +4,42 @@ import { useRouter } from "next/navigation";
 import EyeIcon from "@/components/svgs/eye_icon";
 import HeartIcon from "@/components/svgs/heart_icon";
 import useLoadingControlStore from "@/store/UI_control/loading";
+import { INFTCard } from "@/types/nft";
 
-interface CardProps {
-  avatar: string;
-  collectionName: string;
-  collectionId: number;
-  price: number;
-  seen: number;
-  favorite: number;
-}
+type Props = INFTCard & {
+  basePath?: string;
+};
 
-const NftCard: React.FC<CardProps> = ({
+const NftCard: React.FC<Props> = ({
+  id,
   avatar,
   collectionName,
   collectionId,
   price,
   seen,
   favorite,
+  basePath = "/details/public",
 }) => {
+  const router = useRouter();
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
+  const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
   return (
-    <>
+    <div
+      className="relative text-md content-card cursor-pointer"
+      onClick={() => {
+        console.log("clicked");
+        router.push(`${basePath}/${id}`);
+      }}
+    >
       <div
-        className="transition-transform duration-200 active:translate-y-1"
+        className="transition-transform duration-200 active:translate-y-1 aspect-square"
         onClick={() => {
           setLoadingState(true);
         }}
       >
-        <div className="transition-all absolute aspect-square top-0 content-card-menu opacity-0 rounded-lg text-white bg-chocolate-main/80 w-full">
+        <div className="transition-all absolute aspect-square top-0 left-0 content-card-menu opacity-0 text-white bg-chocolate-main/80 w-full z-10">
           <div>
             <div className="absolute left-4 top-4">
               {collectionName} #{collectionId}
@@ -42,21 +48,29 @@ const NftCard: React.FC<CardProps> = ({
             <div className="absolute right-4 bottom-4 items-center gap-1 sm:gap-2 xs:hidden md:flex">
               <EyeIcon props="white" />
               {seen}
-              <HeartIcon props="white" />
+              <HeartIcon fill="white" />
               {favorite}
             </div>
           </div>
         </div>
-        <Image
-          src={avatar}
-          className="w-full h-full aspect-square object-cover rounded-lg"
-          alt="market_nft"
-          width={0}
-          height={0}
-          sizes="100vw"
-        />
+        <div className="bg-white w-full h-full flex justify-center">
+          {!imageLoaded && (
+            <div className="w-full h-full absolute top-0 left-0 bg-white">
+              <div className="animated-background"></div>
+            </div>
+          )}
+
+          <Image
+            src={avatar}
+            alt={"nft"}
+            width={300}
+            height={300}
+            className="object-contain w-auto"
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

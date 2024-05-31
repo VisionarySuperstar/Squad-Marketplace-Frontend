@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -7,7 +8,7 @@ import mygroupsData from "@/data/mygroups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
 import useAuth from "@/hooks/useAuth";
-import useToastr from "@/hooks/useToastr";
+
 import { IMGBB_API_KEY } from "@/constants/config";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
@@ -15,6 +16,11 @@ import GROUP_ABI from "@/constants/creator_group.json";
 import NFT_ABI from "@/constants/content_nft.json";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { uploadToIPFS } from "@/utils/ipfs";
+import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
+import NftCard from "../../cards/nftCard";
+
+
 
 interface MintModalInterface {
   groupId: number;
@@ -34,6 +40,13 @@ const MintModal = ({
   uploadId,
   getNFTData,
 }: MintModalInterface) => {
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
+
   const [allCollection, setAllCollection] = useState<ICOLLECTION[]>([]);
   const [showProgressModal, setShowProgressModal] =
     React.useState<boolean>(false);
@@ -74,12 +87,13 @@ const MintModal = ({
   const [newCollectionDescription, setNewCollectionDescription] =
     React.useState<string>("");
   const { signIn, isAuthenticated, user } = useAuth();
-  const { showToast } = useToastr();
 
   const getCollectionData = async () => {
-    const result = await api.get("/api/getCollection");
-    setAllCollection(result.data);
-    console.log("result", result.data);
+    const result = await api.get("/api/getCollection").catch((error) => {
+      toast.error(error.message);
+    });
+    setAllCollection(result?.data);
+    console.log("result", result?.data);
   };
   useEffect(() => {
     getCollectionData();
@@ -119,9 +133,13 @@ const MintModal = ({
   }, [address, chainId, signer, groupAddress]);
   const getNftById = async (id: string) => {
     console.log("id ", id);
-    const result = await api.post(`/api/getNftById`, { id: id });
-    console.log("url", result.data);
-    return result.data;
+    const result = await api
+      .post(`/api/getNftById`, { id: id })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    console.log("url", result?.data); 
+    return result?.data;
   };
   const handleMint = async () => {
     // mint
@@ -147,35 +165,57 @@ const MintModal = ({
     // ).then(res => res.json());
     // _avatar = _newAvatar;
     // progress Modal show
-    setShowProgressModal(true);
     setIsLoading(true);
+    setIsDisplaying(true);
     // @step1 upload logo to PINATA
     setStepper(1);
-    setPercent(0);
     const _avatar = await uploadToIPFS(
       new File([avatarFile], "metadata.json"),
       ({ loaded, total }: { loaded: number; total: number }) => {
-        setPercent(Math.floor((loaded * 100) / total));
-        console.log(percent);
+        const value = Math.floor((Number(loaded) * 100) / Number(total));
+        console.log("loaded: ", loaded, "total: ", total, "value: ", value);
+        setMainText("Uploading content to IPFS... " + value + "%");
       }
     ).catch((err) => {
       console.log(err);
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-    setStepper(2);
+    setStepper(2) ;
+    setMainText("Now uploading metadata to IPFS...");
+    const _metadata = await uploadToIPFS(
+      new File([
+        JSON.stringify({
+          assetType: "image",
+          image: _avatar,
+        })
+      ], "metadata.json"),  
+      ({ loaded, total }: { loaded: number; total: number }) => {
+        // setPercent(Math.floor((loaded * 100) / total));
+        // console.log(percent);
+      }
+    ).catch((err) => {
+      console.log(err);
+      throw "Project Data upload failed to IPFS. Please retry.";
+    });
+    console.log("@logoURI: ", _avatar);
+    setStepper(3);
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       //setIsLoading(true);
+      setMainText("Waiting for user confirmation...");
+
       if (selected === allCollection.length) {
         const tx = await contract.mintNew(
-          _avatar,
+          _metadata,
           newCollectionName,
           newCollectionSymbol,
           newCollectionDescription
         );
+        setMainText("Waiting for transaction confirmation...");
+
         await tx.wait();
         const newMintNftId = await contract.numberOfNFT();
         collection_address = await contract.getNftAddress(
@@ -183,6 +223,7 @@ const MintModal = ({
         );
       } else {
         const tx = await contract.mint(_avatar, collection_address);
+        setMainText("Waiting for transaction confirmation...");
         await tx.wait();
       }
       const _contract = new Contract(collection_address, NFT_ABI, signer);
@@ -190,6 +231,7 @@ const MintModal = ({
       console.log("collection_id: " + collection_id_1);
       collection_id = Number(Number(collection_id_1) - 1).toString();
       console.log("collection_id", collection_id);
+      setMainText("Waiting for backend process...");
 
       await api
         .post("/api/addNft", {
@@ -202,55 +244,73 @@ const MintModal = ({
           collectionName: collection_name,
         })
         .then(async () => {
-          const result = await api.post("/api/getNftByCollection", {
-            collectionAddress: collection_address,
-            collectionId: collection_id,
-          });
-          console.log("result ", result.data);
-          if (selected === allCollection.length) {
-            const nft_collection = [{ id: result.data.id }];
-            console.log("nft_collection", nft_collection);
-            await api.post("/api/addCollection", {
-              name: newCollectionName,
-              symbol: newCollectionSymbol,
-              description: newCollectionDescription,
-              address: collection_address,
-              nft: JSON.stringify(nft_collection),
+          const result = await api
+            .post("/api/getNftByCollection", {
+              collectionAddress: collection_address,
+              collectionId: collection_id,
+            })
+            .catch((error) => {
+              toast.error(error.message);
             });
+          console.log("result ", result?.data);
+          if (selected === allCollection.length) {
+            const nft_collection = [{ id: result?.data.id }];
+            console.log("nft_collection", nft_collection);
+            await api
+              .post("/api/addCollection", {
+                name: newCollectionName,
+                symbol: newCollectionSymbol,
+                description: newCollectionDescription,
+                address: collection_address,
+                nft: JSON.stringify(nft_collection),
+              })
+              .catch((error) => {
+                toast.error(error.message);
+              });
           } else {
             const nft_collection_data = allCollection[selected].nft;
-            nft_collection_data.push({ id: result.data.id });
+            nft_collection_data.push({ id: result?.data.id });
             console.log("nft_collection_data", nft_collection_data);
-            await api.post("/api/updateCollection", {
-              id: allCollection[selected].id,
-              nft: JSON.stringify(nft_collection_data),
-            });
+            await api
+              .post("/api/updateCollection", {
+                id: allCollection[selected].id,
+                nft: JSON.stringify(nft_collection_data),
+              })
+              .catch((error) => {
+                toast.error(error.message);
+              });
           }
-          await api.post("/api/addMintNumberToGroup", { id: groupId });
+          await api
+            .post("/api/addMintNumberToGroup", { id: groupId })
+            .catch((error) => {
+              toast.error(error.message);
+            });
         });
       deleteContent(uploadId);
       getNFTData();
       setMintModalState(false);
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false);
     }
   };
   return (
     <>
+    
       <div className="z-100 font-Maxeville text-chocolate-main">
         <div
-          className=" bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setMintModalState(false);
           }}
         ></div>
-        <div className="joinModal drop-shadow-lg p-[25px]">
+        <div className="generalModal z-[1300] drop-shadow-lg p-[25px]">
           <div
             className="closeBtn"
             onClick={() => {
@@ -289,7 +349,7 @@ const MintModal = ({
                     }`}
                   >
                     <div className="grid grid-cols-2 gap-2">
-                      {index.nft.map((nfts, key1) => (
+                      {index.nft.slice(0, 4).map((nfts, key1) => (
                         <div
                           key={key1}
                           className="flex items-center justify-center"
@@ -421,6 +481,7 @@ const MintModal = ({
                   <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
                     <input
                       defaultValue={newCollectionName}
+                      disabled
                       className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                       type="text"
                       placeholder=" E.G. 'Nature'"
@@ -432,6 +493,7 @@ const MintModal = ({
                   <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
                     <input
                       defaultValue={newCollectionSymbol}
+                      disabled
                       className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                       type="text"
                       placeholder=" E.G. 'NATURE'"
@@ -442,6 +504,7 @@ const MintModal = ({
                   </h2>
                   <textarea
                     defaultValue={newCollectionDescription}
+                    disabled
                     placeholder="Write a description..."
                     className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-chocolate-main"
                     rows={4}
@@ -450,21 +513,23 @@ const MintModal = ({
               ) : (
                 <div className="p-1 w-1/4 mt-5 border-2 border-gray-400">
                   <div className="grid grid-cols-2 gap-2">
-                    {allCollection[selected].nft.map((nfts, key1) => (
-                      <div
-                        key={key1}
-                        className="flex items-center justify-center"
-                      >
-                        <Image
-                          src={avatar[nfts.id]}
-                          className="w-full h-full aspect-square"
-                          width={0}
-                          height={0}
-                          sizes="100vw"
-                          alt="avatar"
-                        />
-                      </div>
-                    ))}
+                    {allCollection[selected].nft
+                      .slice(0, 4)
+                      .map((nfts, key1) => (
+                        <div
+                          key={key1}
+                          className="flex items-center justify-center"
+                        >
+                          <Image
+                            src={avatar[nfts.id]}
+                            className="w-full h-full aspect-square"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            alt="avatar"
+                          />
+                        </div>
+                      ))}
                   </div>
                   <div className="mt-1 bottom-0">
                     {allCollection[selected].name}
@@ -501,6 +566,7 @@ const MintModal = ({
                     "MINT"
                   )}
                 </button>
+
               </div>
             </div>
           )}

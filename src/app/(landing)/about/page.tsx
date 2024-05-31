@@ -2,20 +2,14 @@
 
 import Footer from "@/components/main/footer/footer";
 import { useRouter } from "next/navigation";
-import JoinModal from "@/components/main/modals/landing/joinModal";
 import React from "react";
-import Welcome from "@/components/main/modals/landing/welcome";
 import useUIControlStore from "@/store/UI_control/landingpage";
 
 const About = () => {
-  const joinModalState = useUIControlStore((state) => state.joinModal);
   const welcomeModalState = useUIControlStore((state) => state.welcomeModal);
-  const setJoinModalState = useUIControlStore((state) => state.updateJoinModal);
   const router = useRouter();
   return (
     <>
-      {joinModalState && <JoinModal />}
-      {welcomeModalState && <Welcome />}
       <div className="head_bar">
         <div
           onClick={() => {
@@ -35,14 +29,7 @@ const About = () => {
             <circle cx="88" cy="87" r="25" fill="#322A44" />
           </svg>
         </div>
-        <div
-          className="join_btn"
-          onClick={() => {
-            setJoinModalState(true);
-          }}
-        >
-          Join Waitlist
-        </div>
+        <div className="join_btn">Join Waitlist</div>
       </div>
       <div className="section_container">
         <div className="line my-[40px]"></div>

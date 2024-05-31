@@ -5,6 +5,8 @@ export interface IUSER {
   name: string,
   email: string,
   avatar: string,
+  join_at: string,
+  
 };
 
 export type TMsg = { 
@@ -18,42 +20,7 @@ export type TRegister = {
   email: string, 
   avatar: string
 }
-export interface IGROUP {
-  id: string,
-  name: string,
-  description: string,
-  avatar: string,
-  director: string,
-  requiredconfirmnumber:string,
-  member: [
-    {
-       id: string
-     }
-  ],
-  mintnumber: string,
-  soldnumber:string,
-  earning:string,
-  address:string
-}
 
-
-export interface INFT {
-  id: string ;
-  avatar: string;
-  owner: string;
-  status: string;
-  collectionaddress: string;
-  collectionid:string;
-  groupid:string;
-  auctiontype: string;
-  initialprice: string;
-  saleperiod:string;
-  currentprice:string;
-  currentbidder:string;
-  reducingrate:string;
-  collectionname:string;
-  listednumber:string;
-}
 
 export interface ICOLLECTION {
   id: string;
@@ -92,4 +59,25 @@ export interface IDIRECTOR_TRANSACTION{
     }
   ]
   transaction_id: string;
+}
+
+export interface IPOST_NEWS{
+  id: string;
+  groupid:string;
+  post_time:string;
+  content:string;
+}
+
+export interface IRequest{
+  id:string;
+  groupid:string;
+  userid:string;
+  date:string;
+}
+
+export interface IActive_Bids{
+  id:string;
+  bidder:string;
+  nft:string;
+  withdraw_amount: string;
 }

@@ -1,52 +1,56 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useEffect } from "react";
 import Image from "next/image";
-import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import useNavbarUIControlStore from "@/store/UI_control/navbar";
-import useNotificationUIControlStore from "@/store/UI_control/notification";
+
+import Notification from "@/components/main/News&message/notifications";
+import CreateProfileModal from "@/components/main/modals/createProfileModal";
+
+
 import { Popover } from "flowbite-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import useActiveWeb3 from "@/hooks/useActiveWeb3";
-import useLoadingControlStore from "@/store/UI_control/loading";
+import { useConnectModal, useChainModal } from "@rainbow-me/rainbowkit";
 
-import useUserStore from "@/store/user_infor/userinfor";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Notification from "./News&message/notifications";
-import {
-  useConnectModal,
-  useAccountModal,
-  useChainModal,
-} from "@rainbow-me/rainbowkit";
-
-import { useBalance, useAccount, useChainId } from "wagmi";
 import useAuth from "@/hooks/useAuth";
 
+import { useDisconnect } from "wagmi";
+import { useBalance, useAccount, useChainId } from "wagmi";
+
+import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import useUserStore from "@/store/user_infor/userinfor";
+import useNotificationUIControlStore from "@/store/UI_control/notification";
+import useLoadingControlStore from "@/store/UI_control/loading";
+
 const NavBar = () => {
-  const isGroupBtn = useNavbarUIControlStore((state) => state.isgroupbtn);
   const [screenWidth, setScreenWidth] = useState<number>(0);
+  const [avatar, setAvatar] = useState<string>("");
+  const isBackbtn = useNavbarUIControlStore((state) => state.isbackbtn);
+  const isGroupBtn = useNavbarUIControlStore((state) => state.isgroupbtn);
   const current = useNavbarUIControlStore((state) => state.url);
   const isShow = useNavbarUIControlStore((state) => state.isshow);
+  const isBackground = useNavbarUIControlStore((state) => state.isbackground);
+
   const isLogin = useUserStore((store) => store.isLogin);
+  const account = useAccount();
+  const { data: balance } = useBalance(account);
   const updateLogin = useUserStore((store) => store.updateIsLogin);
+  const profileModalState = useGroupUIControlStore(
+    (state) => state.profileModal
+  );
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
+  );
+
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
-  const setIsGroupBtn = useNavbarUIControlStore(
-    (state) => state.updateIsGroupBtn
-  );
-  const account = useAccount();
-  const { data: balance, error } = useBalance(account);
-  const [avatar, setAvatar] = useState<string>("");
-  const isBackground = useNavbarUIControlStore((state) => state.isbackground);
 
   const notificationModal = useNotificationUIControlStore(
     (state) => state.notificationModal
   );
-  const setIsShow = useNavbarUIControlStore((state) => state.updateIsShow);
   const setNotificationState = useNotificationUIControlStore(
     (state) => state.updateNotificationModal
   );
@@ -55,16 +59,27 @@ const NavBar = () => {
     (state) => state.updateCreateGroupModal
   );
   const setCurrent = useNavbarUIControlStore((state) => state.updateUrl);
+  const setWalletInforModalState = useNavbarUIControlStore(
+    (state) => state.updateWalletInforModalState
+  );
+  const walletInforModalState = useNavbarUIControlStore(
+    (state) => state.walletInforModalState
+  );
+
+  const moonpayModalState = useNavbarUIControlStore(
+    (state) => state.moonpayModalState
+  );
+  const setMoonpayModalState = useNavbarUIControlStore(
+    (state) => state.updateMoonpayModalState
+  );
 
   const router = useRouter();
+
   const goBack = () => {
     router.back();
   };
+
   useEffect(() => {
-    console.log("test++++++++> ", isLogin)
-    // signIn().then((data: any) => {
-    //   console.log("here:=========> ", data);
-    // })
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
@@ -78,19 +93,7 @@ const NavBar = () => {
     };
   }, []);
   const { openConnectModal } = useConnectModal();
-  const { openAccountModal } = useAccountModal();
   const { openChainModal } = useChainModal();
-  const {
-    address,
-    chain,
-    signer,
-    isConnected,
-    isConnecting,
-    isReconnecting,
-    connector,
-    isDisconnected,
-    chainId,
-  } = useActiveWeb3();
   const { signIn, isAuthenticated, user } = useAuth();
 
   const chainID = useChainId();
@@ -107,15 +110,12 @@ const NavBar = () => {
   };
   useEffect(() => {
     if (isAuthenticated) {
-      
       if (user) {
         console.log("user", user);
         setAvatar(user.avatar);
-        
       }
       updateLogin(true);
-    }
-    else {
+    } else {
       updateLogin(false);
     }
   }, [isAuthenticated]);
@@ -138,10 +138,13 @@ const NavBar = () => {
           SignIn
         </div>
       );
-    } else {
+    } else if (user) {
       return (
         <div
-          onClick={() => router.push("/profile")}
+          onClick={() => {
+            setCurrent("user");
+            router.push("/profile");
+          }}
           className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
         >
           <Icon
@@ -152,69 +155,94 @@ const NavBar = () => {
           Profile
         </div>
       );
+    } else if (!user) {
+      return (
+        <div
+          onClick={() => setProfileModalState(true)}
+          className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+        >
+          <Icon
+            icon="material-symbols:lab-profile-outline"
+            width={20}
+            height={20}
+          />
+          Create Profile
+        </div>
+      );
+    }
+  };
+  const { disconnect } = useDisconnect();
+  const handleDisconnect = async () => {
+    disconnect();
+    window.localStorage.removeItem("accessToken");
+  };
+
+  const handleClick = (item: string) => {
+    setCurrent(item);
+    if (current !== item) setLoadingState(true);
+    if (item !== "logo") {
+      router.push(`/${item}`);
+    } else {
+      router.push("/");
     }
   };
 
   return (
     <>
+      {profileModalState && <CreateProfileModal />}
+      
       {isShow && (
-
         <>
           <div
-            className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] ${
-              isBackground ? " bg-white border-b" : ""
+            className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] transition-all ${
+              isBackground ? " bg-white" : ""
             }`}
           >
-            <div className="hidden">
-              <div className="min-w-[80px]">
-                {
-                  <button
-                    className="border-2 border-black rounded-full px-5 h-[30px]"
-                    onClick={goBack}
-                  >
-                    Back
-                  </button>
-                }
+            {isBackbtn && (
+              <div className="xs:hidden xl:block">
+                <div className="min-w-[80px]">
+                  {
+                    <button
+                      className="border-[1px] border-chocolate-main rounded-full px-5 h-[30px]"
+                      onClick={goBack}
+                    >
+                      Back
+                    </button>
+                  }
+                </div>
               </div>
-            </div>
+            )}
+
             <div className="flex justify-center w-full z-[10000]">
               <div className="font-Maxeville flex cursor-pointer justify-center">
                 <div
                   className={`bg-chocolate-main text-white font-bold text-[18px] h-[30px] flex items-center lg:pe-[50px] lg:ps-[50px] xs:px-[20px] rounded-l-full transition-all hover:bg-chocolate-main/80 active:bg-chocolate-main/90
-            ${current === "discover" ? "rounded-r-full" : ""}
-            ${current === "wallet" ? "xs:rounded-r-full lg:rounded-r-none" : ""}
+            ${current === "discover" ? "md:rounded-r-full" : ""}
             ${
-              current === "logo"
-                ? "rounded-r-full pe-[48px] ps-[50px] me-[2px]"
-                : "px-[50px]"
+              current === "wallet" ? "xs:rounded-r-full lg:rounded-r-none" : ""
             }`}
                   onClick={() => {
-                    setCurrent("logo");
-                    setIsGroupBtn(false);
-                    router.push("/");
+                    handleClick("logo");
                   }}
                 >
                   SQUAD
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${
               current === "discover"
                 ? "rounded-full px-[28px] mx-[2px]"
                 : "px-[30px]"
             }
-            ${current === "marketplace" ? "rounded-r-full" : ""}
-            ${current === "logo" ? "rounded-l-full" : ""}`}
+            ${current === "marketplace" ? "rounded-r-full" : ""}`}
                   onClick={() => {
-                    setCurrent("discover");
-                    setIsGroupBtn(false);
-                    setLoadingState(true);
+                    handleClick("discover");
                   }}
                 >
                   Discover
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${current === "discover" ? "rounded-l-full" : ""}
             ${current === "groups" ? "rounded-r-full" : ""}
             ${
@@ -224,16 +252,13 @@ const NavBar = () => {
             }
             `}
                   onClick={() => {
-                    setCurrent("marketplace");
-                    if (current !== "marketplace") setLoadingState(true);
-                    router.push("/marketplace");
-                    setIsGroupBtn(false);
+                    handleClick("marketplace");
                   }}
                 >
                   Marketplace
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden lg:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
             ${current === "marketplace" ? "rounded-l-full" : ""}
             ${current === "wallet" ? "rounded-r-full" : ""}
             ${
@@ -244,9 +269,7 @@ const NavBar = () => {
 
             `}
                   onClick={() => {
-                    if (current !== "groups") setLoadingState(true);
-                    router.push("/groups");
-                    setIsGroupBtn(true);
+                    handleClick("groups");
                   }}
                 >
                   Groups
@@ -254,7 +277,7 @@ const NavBar = () => {
                 {!openConnectModal && openChainModal && (
                   <>
                     <div
-                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[30px] 
+                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:pe-[10px] lg:ps-[20px]
                       ${
                         current === "logo"
                           ? "lg:rounded-none xs:rounded-l-full"
@@ -275,11 +298,7 @@ const NavBar = () => {
                           ? "lg:rounded-l-full xs:rounded-none"
                           : ""
                       }
-                      ${
-                        current === "wallet"
-                          ? "rounded-full px-[28px] mx-[2px]"
-                          : "px-[30px]"
-                      }
+                      ${current === "wallet" ? "rounded-full mx-[2px]" : ""}
                        ${
                          chainID === 11155111 &&
                          "hover:after:content-['Sepolia']"
@@ -287,12 +306,12 @@ const NavBar = () => {
                        ${chainID === 1 && "hover:after:content-['Mainnet']"}
                        ${chainID === 137 && "hover:after:content-['Polygon']"}
                        hover:after:absolute
-                       hover:after:w-full
                        hover:after:h-full
+                       hover:after:w-full
                        hover:after:bg-chocolate-main
                     `}
                       onClick={() => {
-                        openChainModal();
+                        if (user) setWalletInforModalState(true);
                       }}
                     >
                       <div>
@@ -303,19 +322,16 @@ const NavBar = () => {
                       </div>
                     </div>
                     <div
-                      className={`${
-                        user && "rounded-r-full"
-                      } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[20px] lg:px-[30px]
+                      className={` rounded-r-full bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[20px] hover:bg-chocolate-main/80
                 ${current === "user" ? "rounded-r-full" : ""}
                 ${current === "wallet" ? "rounded-l-full" : ""}
                 ${
                   current === "alert"
-                    ? "rounded-full px-[28px] mx-[2px]"
-                    : "px-[30px]"
+                    ? "rounded-full px-[18px] mx-[2px]"
+                    : "px-[10px]"
                 }
             `}
                       onClick={() => {
-                        setCurrent("alert");
                         setNotificationState(!notificationModal);
                       }}
                     >
@@ -350,7 +366,7 @@ const NavBar = () => {
                         <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
                           {_renderSignActions()}
                           <div
-                            onClick={openAccountModal}
+                            onClick={handleDisconnect}
                             className="flex gap-2 rounded-b-lg items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
                           >
                             <Icon icon="tabler:logout" width={20} height={20} />
@@ -362,36 +378,30 @@ const NavBar = () => {
                       trigger="hover"
                     >
                       <div
-                        className={`${
-                          user && "bg-white"
-                        } bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all 
-                      ${current === "alert" ? "rounded-l-full " : ""}
+                        className={`bg-transparent bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
+                      ${current === "alert" ? "rounded-l-full" : ""}
                       ${
                         current === "user"
-                          ? "rounded-l-full ms-[2px] ps-[20px] pe-[20px]"
-                          : "ps-[20px] pe-[20px]"
+                          ? "rounded-l-full ms-[2px] ps-[10px] pe-[20px]"
+                          : "ps-[10px] rounded-l-full pe-[20px]"
                       }`}
-                        onClick={() => {
-                          setCurrent("user");
-                        }}
                       >
-                        <div className="flex flex-none justify-center items-center p-2">
+                        <div className="flex flex-none justify-center items-center rounded-full border-white border-[2px]">
                           {user && user.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <Image
-                              src={avatar}
                               key={avatar}
-                              width={36}
-                              height={36}
+                              width={26}
+                              height={26}
+                              src={user.avatar}
                               alt={"wallet avatar"}
-                              // priority={true}
-                              className="rounded-full aspect-square"
+                              className="rounded-full aspect-square object-cover"
                             />
                           ) : (
                             <Icon
                               icon="flowbite:user-solid"
-                              width={36}
-                              height={36}
+                              width={26}
+                              height={26}
                               className="rounded-full bg-[#46455367] dark:text-black dark:bg-[#868592c4] opacity-50"
                             />
                           )}
@@ -403,11 +413,11 @@ const NavBar = () => {
                 {openConnectModal && (
                   <div
                     className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all rounded-r-full hover:bg-chocolate-main/80 active:bg-chocolate-main/90
-                
-                  ${current === "groups" ? "rounded-l-full" : ""}
+
+                  ${current === "groups" ? "md:rounded-l-full" : ""}
                   ${
                     current === "connectWallet"
-                      ? "rounded-full px-[28px] mx-[2px]"
+                      ? "px-[28px] mx-[2px]"
                       : "px-[30px]"
                   }
                   `}
@@ -427,12 +437,13 @@ const NavBar = () => {
               isGroupBtn ? "" : "hidden"
             } z-[1000] fixed right-0 top-[35px]`}
           >
-            <div className="min-w-[150px]">
+            <div className="me-2">
               <button
-                className="border-2 border-black rounded-full px-5 h-[30px]"
+                className="border border-chocolate-main rounded-full active:translate-y-[2px] px-5 h-[30px] hover:bg-chocolate-main hover:text-white transition-all"
                 onClick={() => setCreateGroupModalState(true)}
               >
-                NEW GROUP
+                <p className="hidden xl:block ">NEW GROUP</p>
+                <p className="xl:hidden xs:block">+</p>
               </button>
             </div>
           </div>

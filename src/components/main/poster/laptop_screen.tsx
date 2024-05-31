@@ -1,16 +1,25 @@
 import Logo from "../logo/logo";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import useLoadingControlStore from "@/store/UI_control/loading";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
 
 const Laptop = () => {
+  const setNavbarCurrent = useNavbarUIControlStore((state) => state.updateUrl);
+  const setLoadingState = useLoadingControlStore(
+    (state) => state.updateLoadingState
+  );
   const router = useRouter();
   return (
     <>
       <div className="laptop_screen">
-        <div className="laptop_join_btn">
+        <div className="laptop_join_btn active:translate-y-[1px]">
           <div
             className="join_btn"
             onClick={() => {
-              router.push("/groups");
+              router.push("/discover");
+              setNavbarCurrent("discover");
+              setLoadingState(true);
             }}
           >
             <p className="tracking-[1px] font-bold">Open App</p>

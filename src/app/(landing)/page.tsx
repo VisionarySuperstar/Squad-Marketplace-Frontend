@@ -1,26 +1,21 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Footer from "@/components/main/footer/footer";
-import JoinModal from "@/components/main/modals/landing/joinModal";
 import Mobile from "@/components/main/poster/mobile_screen";
-import Welcome from "@/components/main/modals/landing/welcome";
-import useUIControlStore from "@/store/UI_control/landingpage";
-import useLoadingControlStore from "@/store/UI_control/loading";
 import Laptop from "@/components/main/poster/laptop_screen";
 
+import useLoadingControlStore from "@/store/UI_control/loading";
+
 export default function Home() {
-  const joinModalState = useUIControlStore((state) => state.joinModal);
-  const welcomeModalState = useUIControlStore((state) => state.welcomeModal);
-  const setJoinModalState = useUIControlStore((state) => state.updateJoinModal);
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
   );
   useEffect(() => {
-    document.body.style.overflow = "auto";
     setLoadingState(false);
   }, [setLoadingState]);
-
+  const router = useRouter();
   const logoHandleHover = () => {
     const circle_1: HTMLElement = document.querySelector(
       ".circle_1"
@@ -80,11 +75,8 @@ export default function Home() {
   return (
     <>
       <div>
-        {welcomeModalState && <Welcome />}
-        {joinModalState && <JoinModal />}
         <Laptop />
         <Mobile />
-
         <div className="main_container tracking-[1px]">
           <div className="section_container">
             <div className="line my-[40px]"></div>
@@ -249,7 +241,7 @@ export default function Home() {
             <button
               className="BigButton"
               onClick={() => {
-                setJoinModalState(true);
+                router.push("/discover");
               }}
               onMouseEnter={() => {
                 logoHandleHover();

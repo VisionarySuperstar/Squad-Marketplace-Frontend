@@ -2,12 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import MyGroups from "@/data/mygroups.json";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import newgroups from "@/data/newgroups.json";
 import { IUSER } from "@/types";
 import AddMemberModal from "@/components/main/modals/groups/addMemberModal";
-import useToastr from "@/hooks/useToastr";
+
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
 import { IMGBB_API_KEY } from "@/constants/config";
@@ -19,11 +17,19 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 
 import useCreatGroupState from "@/store/createGroupStatus";
+import toast from "react-hot-toast";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
 
 const acceptables = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
 
 const NewGroupModal = () => {
   const router = useRouter();
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
 
   const setCreateGroupModalState = useGroupUIControlStore(
     (state) => state.updateCreateGroupModal
@@ -40,7 +46,7 @@ const NewGroupModal = () => {
   const { signIn, isAuthenticated, user } = useAuth();
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
-  const { showToast } = useToastr();
+
   const [selectedUsers, setSelectedUsers] = React.useState<IUSER[]>(
     user ? [user] : []
   );
@@ -69,14 +75,16 @@ const NewGroupModal = () => {
   }, [address, chainId, signer]);
 
   useEffect(() => {
-    setPreview("/assets/images/preview.png");
+    setPreview("/assets/images/upload.png");
   }, []);
 
   const addSelectedUsers = (_user: IUSER) => {
-    const isExist = selectedUsers.map((_user_index:IUSER) => _user_index.id === _user.id); 
+    const isExist = selectedUsers.map(
+      (_user_index: IUSER) => _user_index.id === _user.id
+    );
 
-    console.log("isExist : ", isExist) ;
-    if(isExist.includes(true)) return ;
+    console.log("isExist : ", isExist);
+    if (isExist.includes(true)) return;
     setSelectedUsers([...selectedUsers, _user]);
   };
 
@@ -86,6 +94,8 @@ const NewGroupModal = () => {
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
+      setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
       const memberAddresses = selectedUsers.map((item: IUSER) => item.wallet);
       const tx = await contract.createGroup(
         groupName,
@@ -93,11 +103,15 @@ const NewGroupModal = () => {
         memberAddresses,
         Number(groupConfirmNumber)
       );
+      setMainText("Waiting for transaction confirmation...");
       await tx.wait();
+      setMainText("Waiting for backend process...");
       const numberOfCreators = await contract.numberOfCreators();
+      console.log("numberOfCreators", numberOfCreators);
       const _group_Address = await contract.getCreatorGroupAddress(
         Number(numberOfCreators) - 1
       );
+      console.log("_group_Address", _group_Address);
 
       let _avatar = "";
       if (avatar) {
@@ -115,39 +129,44 @@ const NewGroupModal = () => {
 
       const memberData = selectedUsers.map((item: IUSER) => ({ id: item.id }));
       console.log("memberData", JSON.stringify(memberData));
-      const { data: res } = await api.post("/api/addGroup", {
-        id: user.id,
-        name: groupName,
-        avatar: _avatar,
-        director: user.id,
-        requiredConfirmNumber: groupConfirmNumber,
-        member: JSON.stringify(memberData),
-        description: groupDescription,
-        address: _group_Address,
-      });
+      const response = await api
+        .post("/api/addGroup", {
+          id: user.id,
+          name: groupName,
+          avatar: _avatar,
+          director: user.id,
+          requiredConfirmNumber: groupConfirmNumber,
+          member: JSON.stringify(memberData),
+          description: groupDescription,
+          address: _group_Address,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       console.log("adding group arrived!!!");
-      if (res === "Success") {
+      if (response?.data === "Success") {
         setAvatar(avatar);
-        showToast("Successfully New Group Created.", "success");
+        toast.success("Successfully New Group Created.");
         updateCreateGroupState("just_created");
         setCreateGroupModalState(false);
         router.push(`/groups`);
       } else {
-        showToast("Group Creating Failed.", "warning");
+        toast.error("Group Creating Failed.");
       }
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(err), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false);
     }
   };
 
   const handleSubmit = () => {
-    console.log("submit") ;
+    console.log("submit");
     if (isLoading) return;
 
     setIsInvalid(true);
@@ -155,25 +174,33 @@ const NewGroupModal = () => {
     let valid = true;
 
     if (!groupName) {
-      showToast("Input your Group Name", "warning");
+      toast.error("Input your Group Name");
       valid = false;
     }
     if (!groupDescription) {
-      showToast("Input your Group Description", "warning");
+      toast.error("Input your Group Description");
       valid = false;
     }
     console.log("selectedUsers", selectedUsers);
     if (!selectedUsers.length) {
-      showToast("Select at least one member", "warning");
+      toast.error("Select at least one member");
       valid = false;
     }
-    if(!Number(groupConfirmNumber) || Number(groupConfirmNumber) >  selectedUsers.length){
-      showToast("Select right confirm number", "warning");
-      valid = false ;
+    if (
+      !Number(groupConfirmNumber) ||
+      Number(groupConfirmNumber) > selectedUsers.length
+    ) {
+      toast.error("Select right confirm number");
+      valid = false;
     }
+    if (!avatar) {
+      toast.error("Upload Group Image!");
+      valid = false;
+    }
+
     if (valid) {
       if (!isAuthenticated) {
-        showToast("Connect your wallet!", "warning");
+        toast.error("Connect your wallet!");
       } else {
         _submitRegister();
       }
@@ -196,21 +223,24 @@ const NewGroupModal = () => {
         setPreview(_file);
       };
     } catch (err) {
-      showToast("Image upload failed. please try again.", "warning");
-      setPreview("/assets/images/preview.png");
+      toast.error("Image upload failed. please try again.");
+      setPreview("/assets/images/upload.png");
     }
   };
 
   return (
     <>
-      <div className="z-100 font-Maxeville">
-        <div
-          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
-          onClick={() => {
-            setCreateGroupModalState(false);
-          }}
-        ></div>
-        <div className="joinModal drop-shadow-lg">
+      {addMemberModalState && (
+        <AddMemberModal addSelectedUsers={addSelectedUsers} />
+      )}
+      <div
+        className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        onClick={() => {
+          setCreateGroupModalState(false);
+        }}
+      ></div>
+      <div className="z-[1000] font-Maxeville ">
+        <div className="generalModal z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {
@@ -230,16 +260,14 @@ const NewGroupModal = () => {
               />
             </svg>
           </div>
-          {addMemberModalState && (
-            <AddMemberModal addSelectedUsers={addSelectedUsers}/>
-          )}
+
           <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
             <h1 className="text-center mt-2 mb-[20px] text-chocolate-main text-lg ">
               CREATE A NEW GROUP
             </h1>
-            <div className="max-h-[678px] overflow-auto scrollbar">
+            <div className="height-handler overflow-auto scrollbar">
               <div className="flex justify-center items-center mt-2">
-                <div className="border bg-gray-200 relative w-1/2 ">
+                <div className="border bg-gray-200 relative w-[200px] ">
                   <Image
                     src={preview}
                     className="w-full h-full aspect-square object-cover"
@@ -249,10 +277,7 @@ const NewGroupModal = () => {
                   />
                   <div className="absolute top-0 w-full h-full">
                     <label htmlFor="avatar" className="w-full h-full ">
-                      <div className=" text-chocolate-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center">
-                        Upload group image
-                        <br /> +
-                      </div>
+                      <div className=" text-chocolate-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center hover:bg-chocolate-main/20 active:bg-chocolate-main/30 transition-all"></div>
                       <input
                         hidden
                         id="avatar"
@@ -266,9 +291,9 @@ const NewGroupModal = () => {
               <h2 className="text-left text-lg text-chocolate-main my-3">
                 GROUP NAME
               </h2>
-              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main/50 h-[30px] mt-2 w-1/2">
+              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main h-[30px] mt-2 w-1/2">
                 <input
-                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                  className="w-full h-full bg-transparent border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                   type="text"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
@@ -282,7 +307,7 @@ const NewGroupModal = () => {
                 placeholder="Write a description..."
                 value={groupDescription}
                 onChange={(e) => setGroupDescription(e.target.value)}
-                className="mt-2 outline-none border border-chocolate-main/50 w-4/5 p-[10px] rounded-xl text-chocolate-main resize-none"
+                className="mt-2 outline-none border-[1px] border-chocolate-main w-4/5 p-[10px] rounded-xl text-chocolate-main resize-none"
                 rows={4}
               />
               <h2 className="text-left text-lg text-chocolate-main my-3">
@@ -294,7 +319,7 @@ const NewGroupModal = () => {
                   <div key={key}>
                     <Image
                       src={index.avatar}
-                      className="rounded-full object-cover"
+                      className="rounded-full object-cover aspect-square"
                       width={60}
                       height={60}
                       alt="avatar"
@@ -305,7 +330,7 @@ const NewGroupModal = () => {
                   </div>
                 ))}
                 <div
-                  className=" cursor-pointer items-center rounded-full object-cover w-[60px] h-[60px] text-lg text-center justify-center flex bg-gray-200"
+                  className=" cursor-pointer items-center rounded-full object-cover w-[60px] h-[60px] text-lg text-center justify-center flex bg-gray-200 hover:bg-gray-300 active:bg-gray-400"
                   onClick={() => setAddMemberModalState(true)}
                 >
                   +
@@ -314,7 +339,7 @@ const NewGroupModal = () => {
               <h2 className="text-left text-lg text-chocolate-main my-3">
                 REQUIRED CONFIRMATION #
               </h2>
-              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main/50  h-[30px] mt-2 w-1/2">
+              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main/50 h-[30px] mt-2 w-1/2">
                 <input
                   className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
                   type="text"
@@ -325,7 +350,7 @@ const NewGroupModal = () => {
               </div>
               <div className="flex justify-center items-center mt-5 mb-3">
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg flex items-center justify-center text-center"
+                  className="border-[1px] border-chocolate-main bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg flex items-center justify-center text-center hover:bg-white hover:text-chocolate-main transition-all"
                   onClick={handleSubmit}
                 >
                   {isLoading ? (
