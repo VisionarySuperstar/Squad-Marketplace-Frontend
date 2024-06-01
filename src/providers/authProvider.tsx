@@ -62,7 +62,7 @@ const AuthProvider = ({
       if (!chain) throw "chain is not defined...";
       if (!address) throw "address is not defined...";
       const response = await api
-        .post(`/auth/user/request-message`, {
+        .post(`/api/auth/user/request-message`, {
           chain: 1,
           address,
         })
@@ -82,7 +82,7 @@ const AuthProvider = ({
       });
 
       const result_signdata = await api
-        .post(`/auth/user/signin`, {
+        .post(`/api/auth/user/signin`, {
           message,
           signature,
         })
@@ -116,7 +116,7 @@ const AuthProvider = ({
     const accessToken = window.localStorage.getItem("accessToken");
     if (accessToken) {
       const response = await api
-        .post("/auth/user/verifyuser", {
+        .post("/api/auth/user/verifyuser", {
           accessToken,
         })
         .catch((error) => {
@@ -142,7 +142,7 @@ const AuthProvider = ({
       if (!address) throw "address is not defined...";
 
       const response_messageData = await api
-        .post(`/auth/user/request-message`, {
+        .post(`/api/auth/user/request-message`, {
           chain: chainId,
           address,
         })
@@ -157,7 +157,7 @@ const AuthProvider = ({
       }
       const signature = await signMessageAsync({ message });
       const response = await api
-        .post(`/auth/user/signup`, {
+        .post(`/api/auth/user/signup`, {
           message,
           signature,
           user,

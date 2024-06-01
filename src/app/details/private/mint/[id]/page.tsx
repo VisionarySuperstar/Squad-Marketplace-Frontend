@@ -59,7 +59,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     setGroupAddress(result1?.data.address);
     if (user?.id === result1?.data.director) setIsDirector(true);
     const result2 = await api
-      .post("/auth/user/getUserByAddress", {
+      .post("/api/auth/user/getUserByAddress", {
         id: result?.data.owner,
       })
       .catch((error) => {
