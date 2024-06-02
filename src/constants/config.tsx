@@ -24,12 +24,14 @@ export const USDC_ADDRESS = {
   [NetworkId.POLYGON]: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", //verified
 };
 
-// export const webSocketURL = "ws://37.60.229.95:8080/";
-// export const baseURL = "http://37.60.229.95:8080/";
-export const webSocketURL = "wss://squadnft.xyz/";
-export const baseURL = "https://squadnft.xyz/";
+export const webSocketURL = "ws://37.60.229.95:8080/";
+export const baseURL = "http://37.60.229.95:8080/";
+// export const webSocketURL = "wss://squadnft.xyz/";
+// export const baseURL = "https://squadnft.xyz/";
 // export const baseURL = "http://localhost:8080/";
 // export const webSocketURL = "ws://localhost:8080/";
+// export const webSocketURL = process.env.NEXT_PUBLIC_API_URL;
+// export const baseURL = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
 export const IMGBB_API_KEY = "cef3855d197b6e623e08088e854ed444";
 export const PINATA_KEY =
