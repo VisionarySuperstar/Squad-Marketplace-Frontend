@@ -61,7 +61,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
     console.log("myGroupData", myGroupData);
     console.log("myNft", nftData);
     const response = await api
-      .post(`/auth/user/getAllMembers`)
+      .post(`/api/auth/user/getAllMembers`)
       .catch((error) => {
         toast.error(error.message);
       });

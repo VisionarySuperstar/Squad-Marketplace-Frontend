@@ -143,7 +143,7 @@ export default function Home() {
   }, [userSetting]);
 
   const getUserSetting = async () => {
-    const _userSetting = await api.post(`/auth/user/getUserSetting`, {
+    const _userSetting = await api.post(`/api/auth/user/getUserSetting`, {
       id: user?.id,
     });
     console.log("userSetting", _userSetting.data);
@@ -166,7 +166,7 @@ export default function Home() {
       { request: requestState },
     ];
     console.log("seetingData", settingData);
-    await api.post("/auth/user/updateSetting", {
+    await api.post("/api/auth/user/updateSetting", {
       setting: JSON.stringify(settingData),
     });
   };

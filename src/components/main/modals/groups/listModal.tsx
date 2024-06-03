@@ -171,7 +171,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         const listNumber = Number(Number(listed_number) - 1).toString();
         console.log("listed_number", listNumber);
         setMainText("Waiting for backend process...");
-        await api
+        await api 
           .post("/api/updateNft", {
             id: listNft.id,
             owner: listNft.owner,

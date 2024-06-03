@@ -142,7 +142,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   }, [listedNfts, offerTransactions]);
 
   const getMembersData = async (id: string) => {
-    const response = await api.get(`/auth/user/${id}`).catch((error) => {
+    const response = await api.get(`/api/auth/user/${id}`).catch((error) => {
       toast.error(error.message);
     });
     const data = response?.data;
@@ -164,7 +164,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const getRequestMembers = async () => {
     if (joinRequestsTransactions) {
       const _members = await api
-        .post("/auth/user/getAllMembers")
+        .post("/api/auth/user/getAllMembers")
         .catch((error) => {
           toast.error(error.message);
         });

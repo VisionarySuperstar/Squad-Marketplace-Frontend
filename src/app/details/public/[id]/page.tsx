@@ -299,7 +299,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (result.data.name) return result.data.name;
     }
 
-    const result = await api.post("/auth/user/getUserByAddress", {
+    const result = await api.post("/api/auth/user/getUserByAddress", {
       id: address,
     });
     if (result.data.name) return result.data.name;
@@ -450,7 +450,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     : "Offering"}
                 </div>
                 <div className="text-gray-400 mt-3">Initial Price</div>
-                <div className="text-[18px]">{data?.currentprice}</div>
+                <div className="text-[18px]">{data?.initialprice}</div>
 
                 {Number(data?.auctiontype) === 1 && (
                   <>
