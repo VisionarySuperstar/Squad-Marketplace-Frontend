@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -616,59 +615,45 @@ const Home = ({ params }: { params: { id: string } }) => {
               // when window width is >= 320px
               320: {
                 slidesPerView: 1,
-                spaceBetween: 20
+                spaceBetween: 20,
               },
               400: {
                 slidesPerView: 2,
-                spaceBetween: 40
+                spaceBetween: 40,
               },
               480: {
                 slidesPerView: 3,
-                spaceBetween: 40
+                spaceBetween: 40,
               },
               // when window width is >= 640px
               640: {
                 slidesPerView: 4,
-                spaceBetween: 40
+                spaceBetween: 40,
               },
               // when window width is >= 768px
               768: {
                 slidesPerView: 5,
-                spaceBetween: 50
-              }
+                spaceBetween: 50,
+              },
             }}
           >
             {selectedNFTS?.map((item, index) => (
-              <SwiperSlide>
-              <NftCard
-                key={index}
-                id={item.id}
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={parseInt(item.collectionid)}
-                price={parseInt(item.currentprice)}
-                seen={200}
-                favorite={20}
-              />
-              </SwiperSlide>
+              <div key={index}>
+                <SwiperSlide>
+                  <NftCard
+                    key={index}
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
+                </SwiperSlide>
+              </div>
             ))}
           </Swiper>
-          {/* <div
-            className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
-          >
-            {selectedNFTS?.map((item, index) => (
-              <NftCard
-                key={index}
-                id={item.id}
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={parseInt(item.collectionid)}
-                price={parseInt(item.currentprice)}
-                seen={200}
-                favorite={20}
-              />
-            ))}
-          </div> */}
         </div>
       </div>
 
