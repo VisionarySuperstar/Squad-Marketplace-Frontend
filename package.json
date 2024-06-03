@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -45,6 +45,7 @@
     "sharp": "^0.33.3",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.11",
+    "swiper": "^11.1.4",
     "viem": "^2.9.31",
     "wagmi": "^2.8.0",
     "zukeeper": "^1.0.2",

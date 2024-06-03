@@ -18,9 +18,9 @@ import {
 } from "@/utils/data-processing";
 import Link from "next/link";
 
+
 export default function DiscoverPage() {
   const topGroups = useTopGroups();
-
   const allNfts = useAllNfts();
   const topNfts = getTopNfts(allNfts);
   const newlyMinted = getNewlyMinted(allNfts);
