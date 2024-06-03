@@ -17,7 +17,6 @@ import ItemLoaderComponent from "@/components/main/itemLoader";
 import NftCard from "@/components/main/cards/nftCard";
 import useLoadingControlStore from "@/store/UI_control/loading";
 
-
 //import data
 
 import {
@@ -1329,7 +1328,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 </>
               ))}
           </div>
-          
+
           {isDirector && (
             <>
               <div className="flex items-center text-xl mt-5">
@@ -1343,7 +1342,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 />
                 <label
                   htmlFor="default-radio"
-                  className="ms-2  font-medium text-gray-900 dark:text-gray-300"
+                  className="ms-2  font-medium text-gray-900"
                 >
                   ACTIVELY RECRUITING
                 </label>
