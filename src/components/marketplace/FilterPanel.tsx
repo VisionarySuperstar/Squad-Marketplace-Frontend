@@ -111,9 +111,7 @@ const FilterPanel = ({
 
   const blockchainItems = [
     { key: "ethereum", text: "Ethereum" },
-    { key: "squadcoin", text: "Squad Coin" },
     { key: "polygon", text: "Polygon" },
-    { key: "other", text: "Other" },
   ];
   const groupItems = groups.map((group) => ({
     key: group.id,
@@ -125,27 +123,7 @@ const FilterPanel = ({
   }));
 
   return (
-    <div className="flex gap-5 justify-between items-start text-lg leading-6 uppercase text-slate-800 max-md:flex-wrap">
-      <section className="flex flex-col px-5 max-md:max-w-full">
-        <h2 className="max-md:max-w-full mb-5">TRENDING</h2>
-        <div className="flex gap-x-5">
-          <Section
-            title="Top Groups"
-            items={groupItems}
-            selected={filter.group}
-            onSelected={(selected) => handleFilterUpdate("group", selected)}
-          />
-          <Section
-            title="Top Collections"
-            items={collectionItems}
-            selected={filter.collection}
-            onSelected={(selected) =>
-              handleFilterUpdate("collection", selected)
-            }
-          />
-        </div>
-      </section>
-
+    <div className="flex justify-between items-start text-lg leading-6 uppercase text-slate-800 max-md:flex-wrap">
       <section className="flex flex-col px-5 max-md:max-w-full">
         <h2 className="max-md:max-w-full">SALE METHOD</h2>
         <div className="flex gap-5 justify-between mt-10 max-md:flex-wrap max-md:mt-10">
@@ -173,7 +151,7 @@ const FilterPanel = ({
       <section className="flex flex-col px-5 text-xs">
         <h2 className="text-lg">PRICE range</h2>
         <div className="flex gap-5 justify-between mt-5 max-md:flex-wrap max-md:mt-10">
-          ETH
+          USDC
         </div>
         <form className="mt-5">
           <label htmlFor="priceMin" className="sr-only">
