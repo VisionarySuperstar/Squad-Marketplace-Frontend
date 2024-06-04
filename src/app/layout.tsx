@@ -8,6 +8,13 @@ import dynamic from "next/dynamic";
 import SocketComponent from "@/components/WebSocketComponent";
 const Provider = dynamic(() => import("@/providers"), { ssr: false });
 import "@rainbow-me/rainbowkit/styles.css";
+import DisplayingScreen from "@/components/main/displaying_bar";
+import MobileNav from "@/components/main/MobileNav";
+import useNavbarUIControlStore from "@/store/UI_control/navbar";
+import WalletInforModal from "@/components/main/modals/walletInforModal";
+import MoonpayModal from "@/components/main/modals/moonpayModal";
+
+
 // import Web3ContextProvider from "@/providers/web3Provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,11 +42,14 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning={true}>
         <body className={inter.className} suppressHydrationWarning={true}>
           <Provider>
+            <SocketComponent />
             <NavBar />
             <Loading_screen />
+            <DisplayingScreen />
+            <WalletInforModal />
+            <MoonpayModal />
             {children}
           </Provider>
-          <SocketComponent />
         </body>
       </html>
     </AosProvider>

@@ -1,22 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import NewGroupModal from "@/components/main/modals/groups/newGroupModal";
 import Image from "next/image";
-import NFT_DATA from "@/data/nfts.json";
-import GROUPS_DATA from "@/data/mygroups.json";
 import NftCard from "@/components/main/cards/nftCard";
 import Footer from "@/components/main/footer/footer";
 import GroupCard from "@/components/main/cards/groupCard";
 import Split_line from "@/components/main/split_line";
 import useAuth from "@/hooks/useAuth";
+import useAllNfts from "@/hooks/views/useAllNfts";
+import useMyGroups from "@/hooks/views/useMyGroups";
+import useActiveBids from "@/hooks/views/useActiveBids";
+import { INFT } from "@/types";
+import Toggle from "@/components/main/toggle";
+import ItemLoaderComponent from "@/components/main/itemLoader";
+import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
+import FooterBG from "@/components/main/footerbg";
 
 export default function Home() {
+  const api = useAPI();
+
   const router = useRouter();
   const createGroupModalState = useGroupUIControlStore(
     (state) => state.createGroupModal
+  );
+  const setProfileModalState = useGroupUIControlStore(
+    (state) => state.updateProfileModal
   );
   function scrollToElement(elementId: string) {
     const element = document.getElementById(elementId);
@@ -31,13 +43,143 @@ export default function Home() {
     }
   }
   const { user } = useAuth();
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Create a new Date object
+    const date = new Date(timestampInMilliseconds);
+
+    // Define options for formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
+  function formatWalletAddress(address: string) {
+    if (!address) return;
+    // Extract the first 6 characters
+    const start = address.substring(0, 6);
+
+    // Extract the last 4 characters
+    const end = address.substring(address.length - 4);
+
+    // Combine the start, middle, and end parts
+    const formattedAddress = `${start}...${end}`;
+
+    return formattedAddress;
+  }
+
+  const allNfts = useAllNfts();
+  const myGroups = useMyGroups();
+  const activeBids = useActiveBids();
+  const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
+  const [bidNfts, setBidNfts] = useState<INFT[]>([]);
+  const [salesState, setSalesState] = useState<boolean | undefined>(undefined);
+  const [offersState, setOffersState] = useState<boolean | undefined>(
+    undefined
+  );
+  const [chatState, setChatState] = useState<boolean | undefined>(undefined);
+  const [requestState, setRequestState] = useState<boolean | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    if (!allNfts) return;
+    setCollectedNfts(
+      allNfts.filter((nft) => Number(nft.owner) === Number(user?.id))
+    );
+  }, [allNfts, user]);
+
+  useEffect(() => {
+    if (!activeBids || !allNfts) return;
+    setBidNfts(
+      allNfts.filter((nft) => activeBids.find((bid) => bid.nft === nft.id))
+    );
+  }, [activeBids, allNfts]);
+  let count = 0;
+  const [userSetting, setUserSetting] = useState<
+    [
+      {
+        sales: boolean;
+      },
+      {
+        offers: boolean;
+      },
+      {
+        chat: boolean;
+      },
+      {
+        request: boolean;
+      }
+    ]
+  >();
+
+  const initialUserSetting = () => {
+    if (!userSetting) return;
+    setSalesState(userSetting[0].sales);
+    setOffersState(userSetting[1].offers);
+    setChatState(userSetting[2].chat);
+    setRequestState(userSetting[3].request);
+  };
+
+  useEffect(() => {
+    initialUserSetting();
+    console.log("userSetting after", userSetting);
+  }, [userSetting]);
+
+  const getUserSetting = async () => {
+    const _userSetting = await api.post(`/api/auth/user/getUserSetting`, {
+      id: user?.id,
+    });
+    console.log("userSetting", _userSetting.data);
+    setUserSetting(_userSetting.data);
+  };
+
+  useEffect(() => {
+    if (user) getUserSetting();
+  }, [user]);
+
+  let countasdf = 0;
+  const updateSetting = async () => {
+    if (!user) return;
+    countasdf++;
+    console.log("count", countasdf);
+    const settingData = [
+      { sales: salesState },
+      { offers: offersState },
+      { chat: chatState },
+      { request: requestState },
+    ];
+    console.log("seetingData", settingData);
+    await api.post("/api/auth/user/updateSetting", {
+      setting: JSON.stringify(settingData),
+    });
+  };
+
+  useEffect(() => {
+    updateSetting();
+  }, [salesState, offersState, chatState, requestState]);
 
   return (
     <>
       {user && (
         <div className="font-Maxeville">
           {createGroupModalState && <NewGroupModal />}
-
           <div className="page_container_p40 mt-[130px] font-Maxeville p-5">
             <div className="flex justify-between" id="profile">
               <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">
@@ -63,20 +205,30 @@ export default function Home() {
                 <div className="flex flex-col ">
                   <div>
                     <div className="text-gray-400">JOINED ON</div>
-                    <div>APRIL 3RD, 2024</div>
+                    <div>
+                      {formatDateWithTimeZone(
+                        Number(user.join_at),
+                        "America/New_York"
+                      )}
+                    </div>
                   </div>
                   <div className="mt-5">
                     <div className="text-gray-400">TOTAL COLLECTED</div>
-                    <div>28</div>
+                    <div>{collectedNfts ? collectedNfts.length : "0"}</div>
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <div>
                     <div className="text-gray-400">SMART WALLETS</div>
                     <div className="flex gap-3">
-                      <img src="/metamask.svg"></img>
+                      <Image
+                        src="/metamask.svg"
+                        alt={"metamask icon"}
+                        width={100}
+                        height={100}
+                      />
                       <div className=" text-ellipsis max-w-[150px] overflow-hidden">
-                        {user.wallet}
+                        {formatWalletAddress(user?.wallet)}
                       </div>
                     </div>
                   </div>
@@ -84,7 +236,7 @@ export default function Home() {
               </div>
               <div
                 className="underline cursor-pointer"
-                onClick={() => router.push("/profile/create")}
+                onClick={() => setProfileModalState(true)}
               >
                 EDIT_PROFILE
               </div>
@@ -112,7 +264,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          ACTIVE BIDS (5)
+                          ACTIVE BIDS ({bidNfts ? bidNfts.length : "0"})
                         </a>
                         <a
                           onClick={() => {
@@ -120,7 +272,7 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          GROUPS (3)
+                          GROUPS ({myGroups ? myGroups.length : "0"})
                         </a>
                         <a
                           onClick={() => {
@@ -128,15 +280,8 @@ export default function Home() {
                           }}
                           className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
                         >
-                          COLLECTED
-                        </a>
-                        <a
-                          onClick={() => {
-                            scrollToElement("liked");
-                          }}
-                          className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
-                        >
-                          LIKED
+                          COLLECTED (
+                          {collectedNfts ? collectedNfts.length : "0"})
                         </a>
                         <a
                           onClick={() => {
@@ -155,41 +300,44 @@ export default function Home() {
           </div>
           <div className="page_container_p40">
             <div className="mt-5" id="active_bid">
-              <h1 className="text-[18px]">ACTIVE BIDS (5)</h1>
+              <h1 className="text-[18px]">
+                ACTIVE BIDS ({bidNfts ? bidNfts.length : "0"})
+              </h1>
+              <ItemLoaderComponent data={bidNfts} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {NFT_DATA.map((item, index) => (
-                  <div
+                {bidNfts.map((item, index) => (
+                  <NftCard
                     key={index}
-                    className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
-                      seen={200}
-                      favorite={20}
-                      price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
-                      }
-                    />
-                  </div>
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={Number(item.collectionid)}
+                    seen={200}
+                    favorite={20}
+                    price={
+                      item.currentprice
+                        ? Number(item.currentprice)
+                        : Number(item.initialprice)
+                    }
+                  />
                 ))}
               </div>
             </div>
             <Split_line />
             <div className="mt-5" id="groups">
-              <h1 className="text-[18px]">GROUPS (5)</h1>
+              <h1 className="text-[18px]">
+                JOINED GROUPS ({myGroups ? myGroups.length : "0"})
+              </h1>
+              <ItemLoaderComponent data={myGroups} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {GROUPS_DATA.map((item, index) => (
+                {myGroups.map((item, index) => (
                   <GroupCard
                     key={index}
                     state={"2"}
                     name={item.name}
-                    groupBio={item.bio}
-                    membercount={item.members.length}
-                    groupId={index.toString()}
+                    groupBio={item.description}
+                    membercount={item.member.length}
+                    groupId={item.id}
                     avatar={item.avatar}
                   />
                 ))}
@@ -198,64 +346,28 @@ export default function Home() {
             <Split_line />
             <div className="mt-5" id="collected">
               <div className="flex justify-between">
-                <h1 className="text-[18px]">COLLECTED (28)</h1>
-                <h1 className="text-[18px] underline">VIEW ALL +</h1>
+                <h1 className="text-[18px]">
+                  COLLECTED ({collectedNfts ? collectedNfts.length : "0"})
+                </h1>
               </div>
-
-              <div className="flex p-[1px] border rounded-[30px] border-black h-[30px] md:w-[472px] xs:w-full mt-5">
-                <input
-                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
-                  placeholder="SEARCH"
-                ></input>
-                <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
-                  ENTER
-                </button>
-              </div>
-
+              <ItemLoaderComponent data={collectedNfts} />
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {NFT_DATA.map((item, index) => (
+                {collectedNfts.map((item, index) => (
                   <div
                     key={index}
                     className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
                   >
                     <NftCard
+                      id={item.id}
                       avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
+                      collectionName={item.collectionname}
+                      collectionId={Number(item.collectionid)}
                       seen={200}
                       favorite={20}
                       price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <Split_line />
-            <div className="mt-5" id="liked">
-              <div className="flex gap-3">
-                <img src="/favorite.svg"></img>
-                <h1 className="text-[18px]">LIKED</h1>
-              </div>
-              <div className="grid grid-cols-2 gap-5 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 mb-5 mt-5">
-                {NFT_DATA.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-square text-md content-card cursor-pointer drop-shadow-md"
-                  >
-                    <NftCard
-                      avatar={item.avatar}
-                      collectionName={item.collectionName}
-                      collectionId={1}
-                      seen={200}
-                      favorite={20}
-                      price={
-                        item.currentPrice
-                          ? item.currentPrice
-                          : item.initialPrice
+                        item.currentprice
+                          ? Number(item.currentprice)
+                          : Number(item.initialprice)
                       }
                     />
                   </div>
@@ -265,162 +377,96 @@ export default function Home() {
             <Split_line />
             <div className="mt-5 mb-5" id="setting">
               <div className="">
-                <h1 className="text-[18px]">SETTINGS</h1>
+                <h1 className="text-[18px]">NOTIFICATION SETTING</h1>
               </div>
               <div className="mt-5">
-                <div className=" text-gray-400">NOTIFICATIONS</div>
                 <div className="grid grid-cols-2 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 w-2/5">
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">SALES</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !salesState && "text-gray-400"
+                      }`}
+                    >
+                      SALES
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={salesState}
+                        onChange={() => {
+                          setSalesState(!salesState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
-                    </label>
-                  </div>
-                  <div className="p-[10px]">
-                    <div className="text-md flex items-center">SALES</div>
-                    <label className="inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        value=""
-                        className="sr-only peer"
-                      />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
 
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">OFFERS</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !offersState && "text-gray-400"
+                      }`}
+                    >
+                      OFFERS
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={offersState}
+                        onChange={() => {
+                          setOffersState(!offersState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">CHAT</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !chatState && "text-gray-400"
+                      }`}
+                    >
+                      CHAT
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={chatState}
+                        onChange={() => {
+                          setChatState(!chatState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                   <div className="p-[10px]">
-                    <div className="text-md flex items-center">REQUEST</div>
+                    <div
+                      className={`text-md flex items-center ${
+                        !requestState && "text-gray-400"
+                      }`}
+                    >
+                      REQUEST
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        value=""
+                        checked={requestState}
+                        onChange={() => {
+                          setRequestState(!requestState);
+                        }}
                         className="sr-only peer"
                       />
-                      <div
-                        className="relative w-[58px] h-[30px] appearance-none border border-chocolate-main p-2
-                 bg-white rounded-full
-                 peer-checked:after:translate-x-full
-                 rtl:peer-checked:after:-translate-x-full
-                 after:absolute after:top-[1px] after:start-[2px]
-                 after:border-gray-300 after:border after:rounded-full
-                 after:content-[''] after:bg-chocolate-main
-                 after:h-[26px] after:w-[26px] after:transition-all"
-                      ></div>
+                      <Toggle />
                     </label>
                   </div>
                 </div>
-              </div>
-              <div className="mt-5">
-                <div className="text-gray-400">WALLETS</div>
-                <div className="flex flex-col mt-2">
-                  <div className="text-[12px] text-gray-400">NEWS</div>
-                  <div className="flex gap-5 items-center mt-2">
-                    <img src="/metamask.svg"></img>
-                    <div>0X111...222</div>
-                    <div className="underline text-[12px]">REMOVE</div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-5">
-                <div className="text-gray-400">PRIVACY</div>
-                <div className="flex items-center text-xl">
-                  <input
-                    id="default-radio"
-                    type="checkbox"
-                    value=""
-                    name="default-radio"
-                    className="appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
-                  />
-                  <label
-                    htmlFor="default-radio"
-                    className="ms-2 text-chocolate-main text-[18px] dark:text-gray-300"
-                  >
-                    MAKE MY PROFILE PRIVATE
-                  </label>
-                </div>
-                <div className="text-[18px] text-gray-400 mt-2">
-                  on `private`other users can only see your name and when you
-                  joined.
-                </div>
-              </div>
-              <div className="mt-5">
-                <div className="text-gray-400">ACCOUNT</div>
-                <div className="text-[12px] text-gray-400 mt-3">EMAIL</div>
-                <div className="flex gap-3 mt-2">
-                  <div>Z@ZAK.LLC</div>
-                  <div className="underline text-[12px]">CHANGE</div>
-                </div>
-                <div className="text-[12px] underline mt-2">DELETE ACCOUNT</div>
               </div>
             </div>
           </div>
-          <div
-            className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-            style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-          ></div>
+          <FooterBG />
           <Footer />
         </div>
       )}

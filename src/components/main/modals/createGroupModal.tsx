@@ -3,6 +3,7 @@ import React from "react";
 
 import { useState } from "react";
 import { Modal } from "flowbite-react";
+import Image from "next/image";
 
 const CreateGroupModal = () => {
   const [openModal, setOpenModal] = useState(true);
@@ -40,7 +41,13 @@ const CreateGroupModal = () => {
               <label>ADD MEMBERS</label>
               <div className="flex gap-3">
                 <div className="w-10 h-10 bg-gray-500 aspect-square rounded-full">
-                  <img src="/temp.jpg" className="w-full h-full rounded-full" />
+                  <Image
+                    alt="temp"
+                    src="/temp.jpg"
+                    className="w-full h-full rounded-full"
+                    width={300}
+                    height={300}
+                  />
                 </div>
               </div>
             </div>

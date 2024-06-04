@@ -21,6 +21,13 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/components/main/footerLogoAnimation.tsx", "src/app/components/main/footer.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/components/main/footerLogoAnimation.tsx",
+    "src/app/components/main/footer.tsx"
+  ],
   "exclude": ["node_modules"]
 }

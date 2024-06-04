@@ -16,29 +16,39 @@ const GroupDescription: React.FC<GroupDescriptionProps> = ({
 }) => {
   return (
     <>
-      <div className="">
-        <div className="flex gap-3">
-          <div>{myGroupData.name}</div>
-          <div className="flex gap-2 items-center">
-            <TrendingIcon />
+      <div className="min-h-full">
+        <div className=" flex-row justify-end">
+          <div className="flex gap-3">
+            <div>{myGroupData.name}</div>
+            <div className="flex gap-2 items-center">
+              <TrendingIcon />
+            </div>
           </div>
-        </div>
-        <div className="mt-5 text-gray-400">
-          <div>MEMBERS ({users.length})</div>
-          <div className="my-[15px]">{renderAvatar(users)}</div>
-        </div>
-        <div className="flex">
-          <div className="mt-5 me-5">
-            <div className="text-gray-400">TOTAL MINTED</div>
-            <div>{myGroupData.mintnumber ? myGroupData.mintnumber : "0"}</div>
+          <div className="mt-[20px] md:overflow-auto scrollbar md:max-h-[150px]">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem
+            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum
+            dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit
           </div>
-          <div className="mt-5 me-5">
-            <div className="text-gray-400">TOTAL SOLD</div>
-            <div>{myGroupData.soldnumber ? myGroupData.soldnumber : "0"}</div>
+          <div className="mt-5 text-gray-400">
+            <div>MEMBERS ({users.length})</div>
+            <div className="my-[15px]">{renderAvatar(users)}</div>
           </div>
-          <div className="mt-5 me-5">
-            <div className="text-gray-400">TOTAL EARNINGS</div>
-            <div>{totalEarning ? totalEarning : "0"} USDC</div>
+          <div className="flex">
+            <div className="mt-5 me-5">
+              <div className="text-gray-400">MINTED</div>
+              <div>{myGroupData.mintnumber ? myGroupData.mintnumber : "0"}</div>
+            </div>
+            <div className="mt-5 me-5">
+              <div className="text-gray-400">SOLD</div>
+              <div>{myGroupData.soldnumber ? myGroupData.soldnumber : "0"}</div>
+            </div>
+            <div className="mt-5 me-5">
+              <div className="text-gray-400">EARNINGS</div>
+              <div>{totalEarning ? totalEarning : "0"} USDC</div>
+            </div>
           </div>
         </div>
       </div>

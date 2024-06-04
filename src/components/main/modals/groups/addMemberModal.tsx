@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -7,6 +8,7 @@ import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
 import { IUSER } from "@/types";
+import { toast } from "react-hot-toast";
 
 interface AddMemberModalInterface {
   addSelectedUsers: (user: IUSER) => void;
@@ -25,29 +27,34 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
   const { signIn, isAuthenticated, user } = useAuth();
   const api = useAPI();
   const [allUserData, setAllUserData] = useState<IUSER[]>();
-  const [selectedUser, setSelectedUser] = useState<IUSER | undefined>(undefined);
+  const [selectedUser, setSelectedUser] = useState<IUSER | undefined>(
+    undefined
+  );
 
   const getAllUserData = async () => {
-    const { data: Data } = await api.post(`/auth/user/getAllMembers`);
+    const response = await api
+      .post(`/api/auth/user/getAllMembers`)
+      .catch((error) => {
+        toast.error(error.message);
+      });
     // console.log("User Data-->", Data);
-    setAllUserData(Data);
+    setAllUserData(response?.data);
   };
   useEffect(() => {
     getAllUserData();
   }, []);
   const [name, setName] = useState<string>("");
 
-
   return (
     <>
+      <div
+        className="w-[100vw] h-[100vh] fixed top-0 z-[1400]"
+        onClick={() => {
+          setAddMemberModalState(false);
+        }}
+      ></div>
       <div className="font-Maxeville">
-        <div
-          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
-          onClick={() => {
-            setAddMemberModalState(false);
-          }}
-        ></div>
-        <div className="joinModal !w-[500px] drop-shadow-lg mt-5">
+        <div className="generalModal !w-[500px] drop-shadow-xl mt-5 z-[1500] border">
           <div
             className="closeBtn"
             onClick={() => {
@@ -98,7 +105,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
                   .map((_user: IUSER, key) => (
                     <div
                       className={`flex gap-3 items-center mt-3 cursor-pointer hover:bg-indigo-300 p-2 ${
-                        selectedUser === _user && "bg-indigo-300"
+                        selectedUser === _user && "bg-chocolate-main"
                       }`}
                       onClick={() => setSelectedUser(_user)}
                       key={key}
@@ -121,12 +128,10 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
               }}
             >
               <button
-                className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
-                onClick={() =>
-                  {
-                    selectedUser && addSelectedUsers(selectedUser) 
-                  }
-                }
+                className="border bg-chocolate-main text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                onClick={() => {
+                  selectedUser && addSelectedUsers(selectedUser);
+                }}
               >
                 ADD MEMBER
               </button>

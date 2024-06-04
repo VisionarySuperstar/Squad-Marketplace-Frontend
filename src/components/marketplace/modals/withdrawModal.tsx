@@ -9,76 +9,92 @@ import { Contract } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import MARKETPLACE_ABI from "@/constants/marketplace.json";
-import useToastr from "@/hooks/useToastr";
+
 import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useAPI from "@/hooks/useAPI";
+import toast from "react-hot-toast";
+import { INFT } from "@/types";
+import useDisplayingControlStore from "@/store/UI_control/displaying";
 
 interface WithdrawGroupModalInterface {
-  groupAddress: string;
+  nftData: INFT;
+  withdrawAmount: string;
 }
 
-const WithdrawGroupModal = ({ groupAddress }: WithdrawGroupModalInterface) => {
+const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInterface) => {
+  const setIsDisplaying = useDisplayingControlStore(
+    (state) => state.updateDisplayingState
+  );
+  const setMainText = useDisplayingControlStore(
+    (state) => state.updateMainText
+  );
   const setBidModalState = useMarketplaceUIControlStore(
     (state) => state.updateBidModal
   );
   const setWithdrawModalState = useMarketplaceUIControlStore(
     (state) => state.updateWithdrawModal
   );
-  const bidModalState = useMarketplaceUIControlStore((state) => state.bidModal);
-  const withdrawModalState = useMarketplaceUIControlStore(
-    (state) => state.withdrawModal
-  );
-  const seletedGroup = MyGroups[3];
-  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const api = useAPI();
 
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
-  const { showToast } = useToastr();
 
   useEffect(() => {
-    if (!address || !chainId || !signer) {
+    if (!address || !chainId || !signer || !nftData) {
       return;
     }
-    const _contract = new Contract(groupAddress, GROUP_ABI, signer);
-    setContract(_contract);
     const _market_contract = new Contract(
       Marketplace_ADDRESSES[chainId],
       MARKETPLACE_ABI,
       signer
     );
-    async () => {
-      const value = await _market_contract.balanceOfSeller(groupAddress);
-      console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
-    };
-  }, [address, chainId, signer, groupAddress]);
+    setContract(_market_contract);
+  }, [address, chainId, signer, nftData]);
+  
   const handleWithdrawClick = async () => {
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
+      if (!Number(withdrawAmount)) {
+        toast.error("You don't have any balance to withdraw!");
+        return;
+      }
       setIsLoading(true);
-      const tx = await contract.withdrawFromMarketplace();
-      await tx.wait();
-
-      // await api.post("/api/updateNft", {
-      //     id: listNft.id, owner: listNft.owner, status: "list", auctionType: auctionType, initialPrice: auctionQuery.initialPrice,
-      //     salePeriod: _salePeriod, currentPrice: auctionQuery.initialPrice, currentBidder: "0x000", reducingRate: auctionQuery.reducingRate ? auctionQuery.reducingRate : 0,
-      //     listedNumber: listNumber
-      // })
+      setIsDisplaying(true);
+      setMainText("Waiting for user confirmation...");
+      if (Number(nftData.auctiontype) === 0) {
+        const tx = await contract.withdrawFromEnglishAuction(
+          BigInt(nftData.listednumber)
+        );
+      setMainText("Waiting for transaction confirmation...");
+        await tx.wait();
+      } else if (Number(nftData.auctiontype) === 2) {
+        
+        const tx = await contract.withdrawFromOfferingSale(
+          BigInt(nftData.listednumber)
+        );
+      setMainText("Waiting for transaction confirmation...");
+        await tx.wait();
+      }
+      setMainText("Waiting for backend process...");
+      await api.post("/api/removeBidState", {
+        bidder: user.id,
+        nft: nftData.id
+      })
       setWithdrawModalState(false);
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
-        showToast("User rejected transaction.", "warning");
+        toast.error("User rejected transaction.");
       } else {
-        showToast(String(error), "warning");
+        toast.error("An error occurred. please try again");
       }
     } finally {
       setIsLoading(false);
+      setIsDisplaying(false);
     }
   };
   return (
@@ -89,7 +105,7 @@ const WithdrawGroupModal = ({ groupAddress }: WithdrawGroupModalInterface) => {
           setWithdrawModalState(false);
         }}
       ></div>
-      <div className="joinModal drop-shadow-lg">
+      <div className="generalModal px-5 z-[1300] drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {

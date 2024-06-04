@@ -7,15 +7,17 @@ import groups from "@/data/groups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP } from "@/types";
 import useCreatGroupState from "@/store/createGroupStatus";
+import toast from "react-hot-toast";
+import { sortGroupsBy } from "@/utils/data-processing";
 
 interface IProps {
   scale: number;
-  // sortType:string;
-  // activelyRecruiting:boolean;
-  // searchContent:string;
+  recruitingState: boolean;
+  searchFilter: string;
+  sortBy?: string;
 }
 
-const AllGroup = ({ scale}: IProps) => {
+const AllGroup = ({ scale, recruitingState, searchFilter, sortBy }: IProps) => {
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [enableScale, setEnableScale] = useState<boolean>(true);
   const [allGroupData, setAllGroupData] = useState<IGROUP[]>();
@@ -42,10 +44,48 @@ const AllGroup = ({ scale}: IProps) => {
   }, []);
 
   const getAllGroupData = async () => {
-    const { data: Data } = await api.get(`/api/getAllGroup`);
-    setAllGroupData(Data);
+    const response = await api.get(`/api/getAllGroup`).catch((error) => {
+      toast.error(error.message);
+    });
+    setAllGroupData(response?.data);
     updateCreateGroupState("ready");
   };
+
+  const filterAllGroupData_state = async () => {
+    if(!allGroupData) return ;
+    if(recruitingState){
+      const _groupdata = allGroupData.filter((_group:IGROUP) => _group.is_actively_recruiting === (recruitingState)) ;
+      setAllGroupData(_groupdata) ;
+    }
+    else{
+      getAllGroupData();
+    }
+  }
+
+  const filterAllGroupData_search = async () => {
+    if(!allGroupData) return ;
+    if(searchFilter){
+      const _groupdata = allGroupData.filter((_group:IGROUP) => (_group.name).toLowerCase().includes(searchFilter.toLowerCase())) ;
+      setAllGroupData(_groupdata) ;
+    }
+    else{
+      getAllGroupData();
+    }
+  }
+
+  useEffect(() => {
+    if (allGroupData && sortBy) {
+      setAllGroupData(sortGroupsBy(allGroupData, sortBy));
+    }
+  }, [sortBy]);
+
+  useEffect(() => {
+    filterAllGroupData_state();
+  }, [recruitingState]);
+
+  useEffect(() => {
+    filterAllGroupData_search() ;
+  },[searchFilter])
 
   useEffect(() => {
     getAllGroupData();
@@ -71,18 +111,17 @@ const AllGroup = ({ scale}: IProps) => {
               )}, 1fr)`,
             }}
           >
-            {allGroupData &&
-              allGroupData.map((item, index) => (
-                <Card
-                  key={index}
-                  state={"1"}
-                  name={item.name}
-                  groupBio={item.description}
-                  membercount={item.member.length}
-                  groupId={item.id}
-                  avatar={item.avatar}
-                />
-              ))}
+            {allGroupData?.map((item, index) => (
+              <Card
+                key={index}
+                state={"1"}
+                name={item.name}
+                groupBio={item.description}
+                membercount={item.member.length}
+                groupId={item.id}
+                avatar={item.avatar}
+              />
+            ))}
           </div>
         </div>
       )}
@@ -91,18 +130,17 @@ const AllGroup = ({ scale}: IProps) => {
           <div
             className={`gap-3 flex-wrap grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5`}
           >
-            {allGroupData &&
-              allGroupData.map((item, index) => (
-                <Card
-                  key={index}
-                  state={"1"}
-                  groupBio={item.description}
-                  membercount={item.member.length}
-                  name={item.name}
-                  groupId={item.id}
-                  avatar={item.avatar}
-                />
-              ))}
+            {allGroupData?.map((item, index) => (
+              <Card
+                key={index}
+                state={"1"}
+                groupBio={item.description}
+                membercount={item.member.length}
+                name={item.name}
+                groupId={item.id}
+                avatar={item.avatar}
+              />
+            ))}
           </div>
         </div>
       )}
