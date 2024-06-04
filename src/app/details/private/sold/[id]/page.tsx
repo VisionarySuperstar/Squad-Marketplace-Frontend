@@ -58,7 +58,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       });
     setGroupName(result1?.data.name);
     const result2 = await api
-      .get(`/auth/user/${result?.data.owner}`)
+      .get(`/api/auth/user/${result?.data.owner}`)
       .catch((error) => {
         toast.error(error.message);
       });
@@ -150,7 +150,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       console.log("here name is ", result.data.name);
       if (result.data.name) return result.data.name;
     }
-    const result = await api.post("/auth/user/getUserByAddress", {
+    const result = await api.post("/api/auth/user/getUserByAddress", {
       id: address,
     });
     if (result.data.name) return result.data.name;

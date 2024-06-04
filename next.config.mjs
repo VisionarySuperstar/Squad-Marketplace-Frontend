@@ -2,15 +2,24 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["i.ibb.co", "ipfs.io"], // Add the domain of your image here
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+      },
+      {
+        protocol: "https",
+        hostname: "ipfs.io",
+      },
+    ],
   },
-  webpack: config => {
+  webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
     };
     return config;
   },
-  transpilePackages: ['@uniswap/widgets']
+  transpilePackages: ["@uniswap/widgets"],
 };
 
 export default nextConfig;

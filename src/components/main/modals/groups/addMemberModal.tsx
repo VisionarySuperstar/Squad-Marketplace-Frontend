@@ -33,7 +33,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
 
   const getAllUserData = async () => {
     const response = await api
-      .post(`/auth/user/getAllMembers`)
+      .post(`/api/auth/user/getAllMembers`)
       .catch((error) => {
         toast.error(error.message);
       });

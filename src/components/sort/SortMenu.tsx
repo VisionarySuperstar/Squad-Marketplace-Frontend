@@ -16,7 +16,7 @@ type SortMenuProps = {
 
 export default function SortMenu({ items, onItemSelected }: SortMenuProps) {
   return (
-    <div className="cursor-pointer h-[30px] flex items-center">
+    <div className="cursor-pointer h-[30px] flex items-center font-Maxeville">
       <Dropdown
         className="bg-white dark:bg-white border-none"
         label="SORT"

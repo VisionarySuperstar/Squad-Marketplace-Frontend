@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -36,6 +35,9 @@ type transferHistoryType = {
 };
 
 import ImageView from "@/components/main/imageViewer";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -296,7 +298,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       if (result.data.name) return result.data.name;
     }
 
-    const result = await api.post("/auth/user/getUserByAddress", {
+    const result = await api.post("/api/auth/user/getUserByAddress", {
       id: address,
     });
     if (result.data.name) return result.data.name;
@@ -447,7 +449,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     : "Offering"}
                 </div>
                 <div className="text-gray-400 mt-3">Initial Price</div>
-                <div className="text-[18px]">{data?.currentprice}</div>
+                <div className="text-[18px]">{data?.initialprice}</div>
 
                 {Number(data?.auctiontype) === 1 && (
                   <>
@@ -603,24 +605,58 @@ const Home = ({ params }: { params: { id: string } }) => {
           <h1 className="text-xl my-[30px] font-Maxeville">
             MORE FROM THIS COLLECTION
           </h1>
-          <div
-            className={`gap-3 grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+
+          <Swiper
+            spaceBetween={50}
+            slidesPerView={5}
+            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => console.log(swiper)}
+            breakpoints={{
+              // when window width is >= 320px
+              320: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+              },
+              400: {
+                slidesPerView: 2,
+                spaceBetween: 40,
+              },
+              480: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+              // when window width is >= 640px
+              640: {
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              // when window width is >= 768px
+              768: {
+                slidesPerView: 5,
+                spaceBetween: 50,
+              },
+            }}
           >
             {selectedNFTS?.map((item, index) => (
-              <NftCard
-                key={index}
-                id={item.id}
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={parseInt(item.collectionid)}
-                price={parseInt(item.currentprice)}
-                seen={200}
-                favorite={20}
-              />
+              <div key={index}>
+                <SwiperSlide>
+                  <NftCard
+                    key={index}
+                    id={item.id}
+                    avatar={item.avatar}
+                    collectionName={item.collectionname}
+                    collectionId={parseInt(item.collectionid)}
+                    price={parseInt(item.currentprice)}
+                    seen={200}
+                    favorite={20}
+                  />
+                </SwiperSlide>
+              </div>
             ))}
-          </div>
+          </Swiper>
         </div>
       </div>
+
       <div
         className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
         style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}

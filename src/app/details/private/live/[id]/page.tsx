@@ -65,7 +65,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     if (user?.id === result1?.data.director) setIsDirector(true);
 
     const result2 = await api
-      .post("/auth/user/getUserByAddress", {
+      .post("/api/auth/user/getUserByAddress", {
         id: result?.data.owner,
       })
       .catch((error) => {
@@ -155,7 +155,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsLoading(true);
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
-
 
       const __director = await contract.director();
       console.log("_director", __director);
