@@ -44,26 +44,28 @@ const Section = <T,>({
             // when window width is >= 320px
             320: {
               slidesPerView: 1,
-              spaceBetween: 20
+              spaceBetween: 20,
             },
             // when window width is >= 640px
             640: {
               slidesPerView: 2,
-              spaceBetween: 40
+              spaceBetween: 40,
             },
             // when window width is >= 768px
             768: {
               slidesPerView: 3,
-              spaceBetween: 50
-            }
+              spaceBetween: 50,
+            },
           }}
         >
           {images.map((image, index) => (
-            <SwiperSlide>
-              <div key={index} className={containerClassName}>
-                {renderCard(image)}
-              </div>
-            </SwiperSlide>
+            <div key={index}>
+              <SwiperSlide>
+                <div key={index} className={containerClassName}>
+                  {renderCard(image)}
+                </div>
+              </SwiperSlide>
+            </div>
           ))}
           {fillerArray.map((_, index) => (
             <div key={index} className={`${containerClassName} invisible`} />

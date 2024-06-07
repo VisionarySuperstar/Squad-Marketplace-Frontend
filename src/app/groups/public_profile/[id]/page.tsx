@@ -88,9 +88,9 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
     if (!myGroupData) return;
     if (!user) return;
     let flg = false;
-    
+
     flg = myGroupData.member.map((_user: any) => _user.id).includes(user.id);
-    if(flg) setIsMemberOfGroup(true) ;
+    if (flg) setIsMemberOfGroup(true);
     if (!flg) {
       const result = await api
         .post("/api/getJoinRequestByGroupId", { id: params.id })
@@ -104,7 +104,6 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
         .map((_request: IRequest) => _request.userid.toString())
         .includes(user.id);
     }
-
 
     setIsAvailableRequest(flg);
   };
@@ -127,18 +126,17 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
     checkIsAvailableRequest();
   };
   const cancelRequestHandle = async () => {
-
     const response = await api
-    .post(`/api/removeJoinRequest`, {
-      groupId: params.id,
-      userId: user?.id,
-    })
-    .catch((error) => {
-      toast.error(error.message);
-    });
-  toast.success("Successfully canceled request!");
-  checkIsAvailableRequest();
-  }
+      .post(`/api/removeJoinRequest`, {
+        groupId: params.id,
+        userId: user?.id,
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    toast.success("Successfully canceled request!");
+    checkIsAvailableRequest();
+  };
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -203,16 +201,14 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
                   REQUEST TO JOIN
                 </button>
               )}
-              {
-                isAvailableRequest && !isMemberOfGroup && (
-                  <button
-                    className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
-                    onClick={() => cancelRequestHandle()}
-                  >
-                    CANCEL REQUEST
-                  </button>
-                )
-              }
+              {isAvailableRequest && !isMemberOfGroup && (
+                <button
+                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
+                  onClick={() => cancelRequestHandle()}
+                >
+                  CANCEL REQUEST
+                </button>
+              )}
             </div>
           </div>
         </div>

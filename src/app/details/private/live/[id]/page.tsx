@@ -156,7 +156,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
 
-
       const __director = await contract.director();
       console.log("_director", __director);
       const _name = await contract.name();
