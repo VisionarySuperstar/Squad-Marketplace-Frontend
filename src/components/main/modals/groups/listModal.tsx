@@ -15,6 +15,8 @@ import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import { scale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 type auctionQueryType = {
   initialPrice: string;
@@ -55,6 +57,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
+  const { symbol, decimals } = useUSDC();
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -113,6 +116,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (!contract) throw "no contract";
         if (!chainId) throw "Invalid chain id";
         if (!user) throw "You must sign in";
+        if (!decimals) throw "no decimals";
         setIsLoading(true);
         setIsDisplaying(true);
         setMainText("Waiting for user confirmation...");
@@ -134,10 +138,10 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (auctionType === 0) {
           const tx = await contract.listToEnglishAuction(
             nftId,
-            BigInt(Number(auctionQuery.initialPrice) * 1e18),
+            scale(auctionQuery.initialPrice, decimals),
             BigInt(_salePeriod)
           );
-        setMainText("Waiting for transaction confirmation...");
+          setMainText("Waiting for transaction confirmation...");
 
           await tx.wait();
           listed_number =
@@ -145,17 +149,17 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         } else if (auctionType === 1) {
           const tx = await contract.listToDutchAuction(
             nftId,
-            BigInt(Number(auctionQuery.initialPrice) * 1e18),
-            BigInt(Number(auctionQuery.reducingRate) * 1e18),
+            scale(auctionQuery.initialPrice, decimals),
+            scale(auctionQuery.reducingRate, decimals),
             BigInt(_salePeriod)
           );
-        setMainText("Waiting for transaction confirmation...");
+          setMainText("Waiting for transaction confirmation...");
           await tx.wait();
           listed_number = await _market_contract.getListedDutchAuctionNumber();
         } else {
           const tx = await contract.listToOfferingSale(
             nftId,
-            BigInt(Number(auctionQuery.initialPrice) * 1e18)
+            scale(auctionQuery.initialPrice, decimals)
           );
           setMainText("Waiting for transaction confirmation...");
           await tx.wait();

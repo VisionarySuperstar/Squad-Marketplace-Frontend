@@ -38,6 +38,8 @@ import ImageView from "@/components/main/imageViewer";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { scale, unscale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -66,9 +68,8 @@ const Home = ({ params }: { params: { id: string } }) => {
   const { user } = useAuth();
   const { address, chainId, signer, chain, provider } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
-  const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
-    undefined
-  );
+  const { contract: usdcContract, decimals } = useUSDC();
+
   const [contentContract, setContentContract] = useState<Contract | undefined>(
     undefined
   );
@@ -178,12 +179,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       signer
     );
     setContract(_contract);
-    const _usdc_contract = new Contract(
-      USDC_ADDRESS[chainId],
-      USDC_ABI,
-      signer
-    );
-    setUsdc_Contract(_usdc_contract);
   }, [address, chainId, signer]);
 
   const calcRemainTime = async () => {
@@ -205,21 +200,21 @@ const Home = ({ params }: { params: { id: string } }) => {
     setRemainTime(endTime - currentTime);
   };
   const getWithdrawAmounts = async () => {
-    if (!contract || !data) return;
+    if (!contract || !data || !decimals) return;
     if (Number(data.auctiontype) === 0) {
       const value = await contract.withdrawBalanceForEnglishAuction(
         BigInt(data.listednumber),
         user?.wallet
       );
       console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
+      setWithdrawAmount(unscale(value, decimals).toString());
     } else if (Number(data.auctiontype) === 2) {
       const value = await contract.withdrawBalanceForOfferingSale(
         BigInt(data.listednumber),
         user?.wallet
       );
       console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
+      setWithdrawAmount(unscale(value, decimals).toString());
     }
   };
   const getDutchAuctionPrice = async () => {
@@ -227,17 +222,18 @@ const Home = ({ params }: { params: { id: string } }) => {
       Number(data?.auctiontype) === 1 &&
       contract &&
       data &&
+      decimals &&
       data.status !== "sold"
     ) {
       const value = await contract.getDutchAuctionPrice(data?.listednumber);
-      setCurrentDutchPrice((Number(value) / 1e18).toString());
+      setCurrentDutchPrice(unscale(value, decimals).toString());
     }
   };
   useEffect(() => {
     calcRemainTime();
     getWithdrawAmounts();
     getDutchAuctionPrice();
-  }, [contract, data]);
+  }, [contract, data, decimals]);
 
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
@@ -322,23 +318,24 @@ const Home = ({ params }: { params: { id: string } }) => {
   const buyClick = async () => {
     try {
       if (!contract) throw "no contract";
-      if (!usdc_contract) throw "no contract";
+      if (!usdcContract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       if (!data) throw "no data";
+      if (!decimals) throw "no decimals";
       setIsLoading(true);
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
-      const tx1 = await usdc_contract.approve(
+      const tx1 = await usdcContract.approve(
         Marketplace_ADDRESSES[chainId],
-        BigInt(Number(currentDutchPrice) * 1e18)
+        scale(currentDutchPrice, decimals)
       );
       setMainText("Waiting for transaction confirmation...");
       await tx1.wait();
       setMainText("Waiting for user confirmation...");
       const tx = await contract.buyDutchAuction(
         BigInt(data.listednumber),
-        BigInt(Number(currentDutchPrice) * 1e18)
+        scale(currentDutchPrice, decimals)
       );
       setMainText("Waiting for transaction confirmation...");
       await tx.wait();

@@ -40,6 +40,8 @@ import FooterBG from "@/components/main/footerbg";
 import { useGroupInforById } from "@/hooks/views/useGroupInforById";
 import { useNftsByGroupAndStatus } from "@/hooks/views/useNftsByGroupAndStatus";
 import { useConfirmTransaction } from "@/hooks/views/useConfirmTransaction";
+import { unscale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 const acceptables = [
   "image/png",
@@ -91,6 +93,8 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     useState<number>(-1);
   const [isLoadingChangeConfirm, setIsLoadingChangeConfirm] =
     useState<boolean>(false);
+
+  const { decimals, symbol } = useUSDC();
 
   const [activeState, setActiveState] = useState<boolean>(false);
   const [requestMembers, setRequestMembers] = useState<IUSER[]>([]);
@@ -520,16 +524,16 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   };
 
   const getBalancesForWithdraw = async () => {
-    if (!contract) return;
+    if (!contract || !decimals) return;
     const withdrawGroupBalance = await contract.balance(address);
-    setWithdrawAmount(Number(Number(withdrawGroupBalance) / 1e18).toString());
+    setWithdrawAmount(unscale(withdrawGroupBalance, decimals).toString());
     const totalEarningAmount = await contract.totalEarning();
-    setTotalEarning(Number(Number(totalEarningAmount) / 1e18).toString());
+    setTotalEarning(unscale(totalEarningAmount, decimals).toString());
 
     await api
       .post("/api/updateEarning", {
         id: groupInfor?.id,
-        earning: Number(Number(totalEarningAmount) / 1e18).toString(),
+        earning: unscale(totalEarningAmount, decimals).toString(),
       })
       .catch((error) => {
         toast.error(error.message);
@@ -538,7 +542,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const withdrawMarketplaceBalance =
       await marketplaceContract.balanceOfSeller(groupInfor?.address);
     setWithdrawFromMarketplace(
-      Number(Number(withdrawMarketplaceBalance) / 1e18).toString()
+      unscale(withdrawMarketplaceBalance, decimals).toString()
     );
   };
 
@@ -996,7 +1000,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       <div className="flex me-[5px]">
                         <div className="text-gray-400">OFFERED</div>
                         <div className="ms-[5px]">
-                          {offerTransactions[key]?.price} USDC
+                          {offerTransactions[key]?.price} {symbol}
                         </div>
                       </div>
                     </div>
@@ -1400,7 +1404,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="flex border border-chocolate-main items-center justify-center pl-5 pr-5 rounded-lg text-gray-400">
                 {withdrawAmount ? withdrawAmount : "0"}
               </div>
-              <div className="flex items-center h-[32px]">USDC</div>
+              <div className="flex items-center h-[32px]">{symbol}</div>
             </div>
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button

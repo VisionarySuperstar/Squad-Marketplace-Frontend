@@ -12,12 +12,12 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 
 import GROUP_ABI from "@/constants/creator_group.json";
-import USDC_ABI from "@/constants/usdc.json";
-import { USDC_ADDRESS } from "@/constants/config";
 import useAPI from "@/hooks/useAPI";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import { scale, unscale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 interface BidGroupModalInterface {
   nftData: INFT;
@@ -32,7 +32,7 @@ const BidGroupModal = ({
   groupAddress,
   groupId,
   getData,
-  withdrawAmount
+  withdrawAmount,
 }: BidGroupModalInterface) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
@@ -58,9 +58,8 @@ const BidGroupModal = ({
   const { signIn, isAuthenticated, user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
-  const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
-    undefined
-  );
+  const { contract: usdcContract, symbol, decimals } = useUSDC();
+
   useEffect(() => {
     if (!address || !chainId || !signer) {
       return;
@@ -71,12 +70,6 @@ const BidGroupModal = ({
       signer
     );
     setContract(_contract);
-    const _usdc_contract = new Contract(
-      USDC_ADDRESS[chainId],
-      USDC_ABI,
-      signer
-    );
-    setUsdc_Contract(_usdc_contract);
   }, [address, chainId, signer]);
 
   const api = useAPI();
@@ -84,7 +77,7 @@ const BidGroupModal = ({
   const handleBidClick = async () => {
     try {
       if (!contract) throw "no contract";
-      if (!usdc_contract) throw "no contract";
+      if (!usdcContract || !decimals) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
@@ -93,16 +86,16 @@ const BidGroupModal = ({
       if (Number(nftData.auctiontype) === 0) {
         if (Number(bidAmount) <= Number(nftData.currentprice))
           throw "You must bid higher than now";
-        const tx1 = await usdc_contract.approve(
+        const tx1 = await usdcContract.approve(
           Marketplace_ADDRESSES[chainId],
-          BigInt(Number(bidAmount) * 1e18)
+          scale(bidAmount, decimals)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
         setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToEnglishAuction(
           BigInt(nftData.listednumber),
-          BigInt(Number(bidAmount) * 1e18)
+          scale(bidAmount, decimals)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx.wait();
@@ -111,8 +104,10 @@ const BidGroupModal = ({
         );
         console.log("auction_data", auction_data);
         const current_winner = auction_data.currentWinner;
-        const current_price = auction_data.currentPrice;
-        const currentPrice = Number(Number(current_price) / 1e18).toString();
+        const currentPrice = unscale(
+          auction_data.currentPrice,
+          decimals
+        ).toString();
         setMainText("Waiting for backend process...");
         await api
           .post("/api/updateNft", {
@@ -126,30 +121,30 @@ const BidGroupModal = ({
             currentBidder: user.name,
             reducingRate: nftData.reducingrate ? nftData.reducingrate : 0,
             listedNumber: nftData.listednumber,
-            marketplaceNumber: nftData.marketplacenumber
+            marketplaceNumber: nftData.marketplacenumber,
           })
           .catch((error) => {
             toast.error(error.message);
           });
       } else if (Number(nftData.auctiontype) === 2) {
-        const tx1 = await usdc_contract.approve(
+        const tx1 = await usdcContract.approve(
           Marketplace_ADDRESSES[chainId],
-          BigInt(Number(bidAmount) * 1e18)
+          scale(bidAmount, decimals)
         );
-      setMainText("Waiting for transaction confirmation...");
+        setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
-      setMainText("Waiting for user confirmation...");
+        setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToOfferingSale(
           BigInt(nftData.listednumber),
-          BigInt(Number(bidAmount) * 1e18)
+          scale(bidAmount, decimals)
         );
-      setMainText("Waiting for transaction confirmation...");
+        setMainText("Waiting for transaction confirmation...");
         await tx.wait();
         // const list_number = await contract.offeringSale_listedNumber(BigInt(nftData.listednumber)) ;
         const _group_contract = new Contract(groupAddress, GROUP_ABI, signer);
         const offering_number =
           await _group_contract.getNumberOfSaleOfferingTransaction();
-      setMainText("Waiting for backend process...");
+        setMainText("Waiting for backend process...");
         await api
           .post("/api/addOffering", {
             groupId: groupId,
@@ -163,32 +158,37 @@ const BidGroupModal = ({
             toast.error(error.message);
           });
       }
-      const _active_bids = await api.post("/api/getBidState", {id:user.id});
-      console.log("active bids", _active_bids.data) ;
-      let isExist ;
-      if(_active_bids) isExist = _active_bids.data.find((item:IActive_Bids) => item.nft === nftData.id);
-      console.log("isExist", isExist) ;
-      let bid_amount ;
-      if(nftData.auctiontype === "0") bid_amount = withdrawAmount;
-      else bid_amount = (Number(withdrawAmount) + Number(bidAmount)).toString() ;
-      if(!isExist) api
-        .post("/api/addBidState", {
-          bidder: user.id,
-          nft: nftData.id,
-          withdraw_amount: bid_amount
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      if(isExist) api
-        .post("/api/updateBidState", {
-          bidder: user.id,
-          nft: nftData.id,
-          withdraw_amount: bid_amount
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
+      const _active_bids = await api.post("/api/getBidState", { id: user.id });
+      console.log("active bids", _active_bids.data);
+      let isExist;
+      if (_active_bids)
+        isExist = _active_bids.data.find(
+          (item: IActive_Bids) => item.nft === nftData.id
+        );
+      console.log("isExist", isExist);
+      let bid_amount;
+      if (nftData.auctiontype === "0") bid_amount = withdrawAmount;
+      else bid_amount = (Number(withdrawAmount) + Number(bidAmount)).toString();
+      if (!isExist)
+        api
+          .post("/api/addBidState", {
+            bidder: user.id,
+            nft: nftData.id,
+            withdraw_amount: bid_amount,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
+      if (isExist)
+        api
+          .post("/api/updateBidState", {
+            bidder: user.id,
+            nft: nftData.id,
+            withdraw_amount: bid_amount,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -243,7 +243,7 @@ const BidGroupModal = ({
               />
             </div>
             <div className="flex items-center justify-center text-[20px]">
-              USDC
+              {symbol}
             </div>
           </div>
           <div className="flex justify-center items-center mt-5 mb-5">

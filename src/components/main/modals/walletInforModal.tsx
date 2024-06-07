@@ -21,6 +21,8 @@ import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import { darkTheme, lightTheme, Theme, SwapWidget } from "@uniswap/widgets";
 import "@uniswap/widgets/fonts.css";
+import { unscale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 const WalletInforModal = () => {
   const { signUp, isAuthenticated, user } = useAuth();
@@ -30,29 +32,18 @@ const WalletInforModal = () => {
   const [usdcBalance, setUSDCBalance] = useState<String>("");
 
   const { address, chainId, signer, chain, provider } = useActiveWeb3();
-  const [contract, setContract] = React.useState<Contract | undefined>(
-    undefined
-  );
+  const { contract, decimals } = useUSDC();
+
   React.useEffect(() => {
-    if (!address || !chainId || !signer) {
-      return;
-    }
-    // if (chainId !== 11155111) return;
-    const _contract = new Contract(USDC_ADDRESS[chainId], USDC_ABI, signer);
-    setContract(_contract);
-  }, [address, chainId, signer]);
-  const getUSDCBalance = async () => {
-    if (!contract) return;
-    const value = await contract.balanceOf(address);
-    let decimal = 1e6;
-    if (chainID === 11155111) decimal = 1e18;
-    const displayingValue = (Number(value) / decimal).toFixed(2);
-    console.log("displayingValue", displayingValue);
-    setUSDCBalance(displayingValue.toString());
-  };
-  React.useEffect(() => {
+    const getUSDCBalance = async () => {
+      if (!contract || !decimals) return;
+      const value = await contract.balanceOf(address);
+      const displayingValue = unscale(value, decimals).toFixed(2);
+      console.log("displayingValue", displayingValue);
+      setUSDCBalance(displayingValue.toString());
+    };
     getUSDCBalance();
-  }, [contract]);
+  }, [contract, decimals, address]);
 
   const walletInforModalState = useNavbarUIControlStore(
     (state) => state.walletInforModalState
