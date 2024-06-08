@@ -1,5 +1,0 @@
-{
-    "build": {
-      "installCommand": "yarn install --frozen-lockfile"
-    }
-}
