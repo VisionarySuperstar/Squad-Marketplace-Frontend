@@ -11,9 +11,9 @@ export interface IImageWithCaption extends IImage {
 
 export function imageWithCaptionFromNFT(nft: INFT): IImageWithCaption {
   return {
-    src: nft.avatar,
-    caption: `${nft.collectionname} #${nft.id}`,
-    alt: `${nft.collectionname} #${nft.id}`,
+    src: nft.content,
+    caption: `${nft.name}`,
+    alt: `${nft.description}`,
   };
 }
 

@@ -11,7 +11,7 @@ export function useGroupInforById(id: string) {
   const [isDirector, setIsDirector] = useState<boolean>(false);
 
   const getGroupInforById = async () => {
-    const response = await api.post("api/getGroupId", { id });
+    const response = await api.post("api/getGroupById", { id });
     const data = response.data;
     await setGroupInfor(data);
     if (data?.director === user?.id) setIsDirector(true);

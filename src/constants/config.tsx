@@ -12,14 +12,14 @@ export const supportedChainIds = [
 ];
 
 export const Marketplace_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0x6a0754B18030E052C1D67577AcF21a1070173F3F", //verified
+  [NetworkId.SEPOLIA]: "0x0b57F4BC4019880b4C45D53b3CDEaeb528201f7B", //verified
 };
 export const Factory_ADDRESSES = {
-  [NetworkId.SEPOLIA]: "0xD6676c528D5a5D8f206a52C62af418F5793f14E6", //verified
+  [NetworkId.SEPOLIA]: "0x9f8F5e9dc62148D8F908A7eF715967A8e451Eb43", //verified
 };
 
 export const USDC_ADDRESS = {
-  [NetworkId.SEPOLIA]: "0x1578876aCc56349FC800B1f8efe624c688f5eF4B", //verified
+  [NetworkId.SEPOLIA]: "0xEAE389018d303feEAC3a659cc1eBeFB6392A4E7e", //verified
   [NetworkId.ETHEREUM]: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", //verified
   [NetworkId.POLYGON]: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", //verified
 };

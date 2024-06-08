@@ -19,13 +19,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
 
-import {
-  IUSER,
-  INFT,
-  IOFFER_TRANSACTION,
-  IDIRECTOR_TRANSACTION,
-  IRequest,
-} from "@/types";
+import { IUSER, INFT, IOFFER_TRANSACTION } from "@/types";
 
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -110,21 +104,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   );
   const { soldNfts, listedNfts, mintedNfts, getNFTData } =
     useNftsByGroupAndStatus(params.id);
-  const {
-    offerTransactions,
-    directorTransactions,
-    joinRequestsTransactions,
-    getOfferingTransaction,
-    getDerectorSettingTransaction,
-    getJoinRequestTransaction,
-  } = useConfirmTransaction(params.id);
+  const { offerTransactions, getOfferingTransaction } = useConfirmTransaction(
+    params.id
+  );
 
   useEffect(() => {
     getGroupInforById();
     getNFTData();
     getOfferingTransaction();
-    getDerectorSettingTransaction();
-    getJoinRequestTransaction();
   }, [user]);
 
   const getOffer_nfts = async () => {
@@ -159,28 +146,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setMembers(_members);
     })();
   }, [groupInfor]);
-
-  const getRequestMembers = async () => {
-    if (joinRequestsTransactions) {
-      const _members = await api
-        .post("/api/auth/user/getAllMembers")
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      const _all_members = _members?.data;
-      const _request_members = _all_members.filter((_user: IUSER) =>
-        joinRequestsTransactions
-          .map((_request: IRequest) => _request.userid.toString())
-          .includes(_user.id)
-      );
-      console.log("_request_member", _request_members);
-      setRequestMembers(_request_members);
-    }
-  };
-
-  useEffect(() => {
-    getRequestMembers();
-  }, [joinRequestsTransactions]);
 
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [preview, setPreview] = React.useState<string>("");
@@ -251,45 +216,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     if (contract) dsiplayMembers();
   }, [contract]);
 
-  const offeringConfrimHandle = async (item: IOFFER_TRANSACTION) => {
-    try {
-      if (!contract) throw "no contract";
-      if (!chainId) throw "Invalid chain id";
-      if (!user) throw "You must sign in";
-      setIsLoading(true);
-      setIsDisplaying(true);
-      setMainText("Waiting for user confirmation...");
-      const tx = await contract.confirmOfferingSaleTransaction(
-        BigInt(item.transactionid),
-        true
-      );
-      setMainText("Waiting for transaction confirmation...");
-      await tx.wait();
-      const confirm_member = item.confirm_member;
-      confirm_member.push({ id: user.id });
-      setMainText("Waiting for backend process...");
-      await api
-        .post("/api/updateOffering", {
-          id: item.id,
-          confirm_member: JSON.stringify(confirm_member),
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      getNFTData();
-    } catch (error: any) {
-      if (String(error.code) === "ACTION_REJECTED") {
-        toast.error("User rejected transaction.");
-      } else {
-        toast.error("An error occurred. please try again");
-      }
-    } finally {
-      setIsLoading(false);
-      setIsDisplaying(false);
-      setSelectedOfferConfirmBtn(-1);
-    }
-  };
-
   const offeringExecuteHandle = async (
     item: IOFFER_TRANSACTION,
     item_nft: INFT
@@ -335,87 +261,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       setIsDisplaying(false);
       setIsLoading(false);
       setSelectedOfferExecuteBtn(-1);
-    }
-  };
-
-  const directorConfrimHandle = async (item: IDIRECTOR_TRANSACTION) => {
-    try {
-      if (!contract) throw "no contract";
-      if (!chainId) throw "Invalid chain id";
-      if (!user) throw "You must sign in";
-      setIsLoading(true);
-      setIsDisplaying(true);
-      setMainText("Waiting for user confirmation...");
-      const tx = await contract.confirmDirectorSettingTransaction(
-        BigInt(item.transaction_id),
-        true
-      );
-      setMainText("Waiting for transaction confirmation...");
-      await tx.wait();
-      const confirm_member = item.confirm_member;
-      confirm_member.push({ id: user.id });
-      setMainText("Waiting for backend process...");
-      await api
-        .post("/api/updateDirector", {
-          id: item.id,
-          confirm_member: JSON.stringify(confirm_member),
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      getNFTData();
-    } catch (error: any) {
-      if (String(error.code) === "ACTION_REJECTED") {
-        toast.error("User rejected transaction.");
-      } else {
-        toast.error("An error occurred. please try again");
-      }
-    } finally {
-      setIsDisplaying(false);
-      setIsLoading(false);
-      setSelectedDirectorConfirmBtn(-1);
-    }
-  };
-
-  const directorExecuteHandle = async (item: IDIRECTOR_TRANSACTION) => {
-    try {
-      if (!contract) throw "no contract";
-      if (!chainId) throw "Invalid chain id";
-      if (!user) throw "You must sign in";
-      setIsDisplaying(true);
-      setIsLoading(true);
-      setMainText("Waiting for user confirmation...");
-      const tx = await contract.executeDirectorSettingTransaction(
-        BigInt(item.transaction_id)
-      );
-      setMainText("Waiting for transaction confirmation...");
-      await tx.wait();
-      setMainText("Waiting for backend process...");
-      await api
-        .post("/api/removeDirector", { id: item.new_director })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      await api
-        .post("/api/updateGroupDirector", {
-          id: groupInfor?.id,
-          director: item.new_director,
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      // getJoinedGroupData();
-      getNFTData();
-    } catch (error: any) {
-      if (String(error.code) === "ACTION_REJECTED") {
-        toast.error("User rejected transaction.");
-      } else {
-        toast.error("An error occurred. please try again");
-      }
-    } finally {
-      setIsDisplaying(false);
-      setIsLoading(false);
-      setSelectedDirectorExecuteBtn(-1);
     }
   };
 
@@ -635,13 +480,12 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       console.log("asdf");
       const _members = groupInfor?.member;
       console.log("_members", _members);
-      console.log("userid", joinRequestsTransactions[index]);
-      _members?.push({ id: joinRequestsTransactions[index].userid.toString() });
       console.log("_members again", _members);
       setMainText("Waiting for backend process...");
       const result1 = await api
         .post("/api/removeJoinRequest", {
-          id: joinRequestsTransactions[index].id,
+          groupId: params.id,
+          userId: requestMembers[index].id,
         })
         .catch((error) => {
           toast.error(error.message);
@@ -747,6 +591,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
       {mintModalState && avatar && (
         <MintModal
           groupAddress={groupInfor ? groupInfor.address : ""}
+          collectionAddress={groupInfor ? groupInfor.collection_address : ""}
           groupId={parseInt(params.id)}
           mintAvatar={mintAvatar}
           avatarFile={avatar}
@@ -774,6 +619,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 {members && groupInfor && (
                   <GroupDescription
                     users={members}
+                    description={groupInfor?.description}
                     myGroupData={groupInfor}
                     totalEarning={totalEarning}
                   />
@@ -849,9 +695,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>SOLD ({soldNfts?.length ? soldNfts.length : "0"})</div>
-            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
-              VIEW ALL +
-            </div>
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all"></div>
           </div>
           <ItemLoaderComponent data={soldNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
@@ -860,9 +704,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 key={index}
                 id={item.id}
                 basePath="/details/private/sold"
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={Number(item.collectionid)}
+                content={item.content}
+                name={item.name}
+                description={item.description}
                 seen={200}
                 favorite={20}
                 price={Number(item.currentprice)}
@@ -872,9 +716,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>LISTED ({listedNfts?.length})</div>
-            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
-              VIEW ALL +
-            </div>
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all"></div>
           </div>
           <ItemLoaderComponent data={listedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
@@ -883,9 +725,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 key={index}
                 id={item.id}
                 basePath="/details/private/live"
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={Number(item.collectionid)}
+                content={item.content}
+                name={item.name}
+                description={item.description}
                 seen={200}
                 favorite={20}
                 price={Number(item.currentprice)}
@@ -895,9 +737,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>NOT LISTED ({mintedNfts.length})</div>
-            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
-              VIEW ALL +
-            </div>
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all"></div>
           </div>
           <ItemLoaderComponent data={mintedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
@@ -906,9 +746,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 key={index}
                 id={item.id}
                 basePath="/details/private/mint"
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={Number(item.collectionid)}
+                content={item.content}
+                name={item.name}
+                description={item.description}
                 seen={200}
                 favorite={20}
                 price={Number(item.currentprice)}
@@ -981,7 +821,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div className="flex mt-[30px] gap-5 border rounded-xl p-5">
                   <div>
                     <Image
-                      src={offerNfts[key]?.avatar}
+                      src={offerNfts[key]?.content}
                       className="aspect-square object-cover rounded-lg"
                       width={300}
                       height={300}
@@ -1000,20 +840,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="text-gray-400 mt-5 text-md">
-                      CONFIRMED {offerTransactions[key].confirm_member.length}/
-                      {groupInfor?.member.length}
-                    </div>
-                    <div className="my-[20px]">
-                      {members &&
-                        renderAvatar(
-                          members?.filter((item: IUSER) =>
-                            offerTransactions[key]?.confirm_member
-                              .map((_id: any) => _id.id)
-                              .includes(item.id)
-                          )
-                        )}
-                    </div>
                     <div className="flex flex-col w-full">
                       {item.confirm_member.filter(
                         (_item: any) => _item.id === user?.id
@@ -1021,7 +847,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         item.confirm_member.length <
                           Number(groupInfor?.requiredconfirmnumber) && (
                           <button
-                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center hover:bg-black-main hover:text-white transition-all"
+                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center hover:bg-chocolate-main hover:text-white transition-all"
                             onClick={() => {
                               offeringConfrimHandle(offerTransactions[key]);
                               setSelectedOfferConfirmBtn(key);
@@ -1096,7 +922,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   </div>
                   {isDirector && (
                     <button
-                      className={`border bg-[#000] text-white rounded-full text-lg text-center flex justify-center items-center`}
+                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center`}
                       onClick={() => {
                         setSelectedRequestButton(index);
                         addMember(index);
@@ -1301,7 +1127,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     </div>
                     {index === selected && (
                       <button
-                        className={`border bg-[#000] text-white rounded-full text-lg text-center flex justify-center items-center ${
+                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
                           item.id === groupInfor?.director ? "hidden" : ""
                         } `}
                         onClick={() => {
@@ -1337,7 +1163,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   checked={groupInfor?.is_actively_recruiting}
                   onChange={(e) => changeActiveState(e.target.checked)}
                   name="default-radio"
-                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-black-main checked:border-transparent"
+                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
                 />
                 <label
                   htmlFor="default-radio"
@@ -1371,7 +1197,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                   <button
                     onClick={changeConfirmNumberHandle}
-                    className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center"
+                    className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
                   >
                     {isLoadingChangeConfirm ? (
                       <>

@@ -3,7 +3,7 @@
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import react, { useState, useEffect } from "react";
 import useAPI from "@/hooks/useAPI";
-import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
+import { IGROUP, IUSER, INFT } from "@/types";
 import { useRouter } from "next/navigation";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
@@ -117,7 +117,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         setIsDisplaying(true);
         setMainText("Waiting for user confirmation...");
         console.log("groupAddress", groupAddress);
-        console.log("listNft.collectionaddress ", listNft.collectionaddress);
+        console.log("listNft.collectionaddress ", );
         console.log("listNft.collectionid ", listNft.collectionid);
         const nftId = await contract.getNFTId(
           listNft.collectionaddress,
@@ -171,7 +171,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         const listNumber = Number(Number(listed_number) - 1).toString();
         console.log("listed_number", listNumber);
         setMainText("Waiting for backend process...");
-        await api
+        await api 
           .post("/api/updateNft", {
             id: listNft.id,
             owner: listNft.owner,
@@ -222,7 +222,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
             close();
           }}
         ></div>
-        <div className="generalModal z-[1300] drop-shadow-lg">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

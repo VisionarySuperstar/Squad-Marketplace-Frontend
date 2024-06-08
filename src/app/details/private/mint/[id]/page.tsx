@@ -11,8 +11,6 @@ import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import Split_line from "@/components/main/split_line";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import ListModal from "@/components/main/modals/groups/listModal";
-
-import NFTs from "@/data/nfts.json";
 import { INFT, IGROUP, IUSER } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
@@ -28,8 +26,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     (state) => state.updateLoadingState
   );
   const listModalState = useGroupUIControlStore((state) => state.listModal);
-  const data = NFTs.find((nft) => nft.id === params.id);
-  const auctionType = data?.auctionType;
 
   const { signIn, isAuthenticated, user } = useAuth();
 
@@ -49,7 +45,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     console.log("auctiontype", result?.data.auctiontype);
     console.log("result", result);
     const result1 = await api
-      .post("/api/getGroupId", {
+      .post("/api/getGroupById", {
         id: result?.data.groupid,
       })
       .catch((error) => {
@@ -84,7 +80,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <ImageView avatar={nftData.avatar} />
+                <ImageView avatar={nftData.content} />
               </div>
               <Split_line />
               <div>
@@ -101,7 +97,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div className="p-2 flex-col flex justify-between">
             <div className="flex-col">
               <div className="text-[18px] flex gap-4">
-                {nftData?.collectionname} #{nftData?.collectionid}
+                {nftData?.name}
                 <div className="flex items-center">
                   <TrendingIcon />
                 </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import MyGroups from "@/data/mygroups.json";
 import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
 import { IActive_Bids, INFT } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -51,7 +50,6 @@ const BidGroupModal = ({
   const withdrawModalState = useMarketplaceUIControlStore(
     (state) => state.withdrawModal
   );
-  const seletedGroup = MyGroups[3];
   const [bidAmount, setBidAmount] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -216,7 +214,7 @@ const BidGroupModal = ({
           setBidModalState(false);
         }}
       ></div>
-      <div className="generalModal z-[1300] px-5 drop-shadow-lg">
+      <div className="generalModal w-[565px] z-[1300] px-5 drop-shadow-lg">
         <div
           className="closeBtn"
           onClick={() => {

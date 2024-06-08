@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from "react";
 import Card from "@/components/main/cards/groupCard";
-import groups from "@/data/groups.json";
 import useAPI from "@/hooks/useAPI";
 import { IGROUP } from "@/types";
 import useCreatGroupState from "@/store/createGroupStatus";
@@ -53,13 +52,7 @@ const AllGroup = ({ scale, recruitingState, searchFilter, sortBy }: IProps) => {
 
   const filterAllGroupData_state = async () => {
     if(!allGroupData) return ;
-    if(recruitingState){
-      const _groupdata = allGroupData.filter((_group:IGROUP) => _group.is_actively_recruiting === (recruitingState)) ;
-      setAllGroupData(_groupdata) ;
-    }
-    else{
       getAllGroupData();
-    }
   }
 
   const filterAllGroupData_search = async () => {

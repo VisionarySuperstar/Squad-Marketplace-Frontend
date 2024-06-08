@@ -12,6 +12,7 @@ import { IMGBB_API_KEY } from "@/constants/config";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
 import FACTORY_ABI from "@/constants/factory.json";
+import GROUP_ABI from "@/constants/creator_group.json";
 import { Factory_ADDRESSES } from "@/constants/config";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
@@ -55,8 +56,6 @@ const NewGroupModal = () => {
 
   const [groupName, setGroupName] = React.useState<string>("");
   const [groupDescription, setGroupDescription] = React.useState<string>("");
-  const [groupConfirmNumber, setGroupConfirmNumber] =
-    React.useState<string>("");
   const api = useAPI();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [contract, setContract] = React.useState<Contract | undefined>(
@@ -100,8 +99,7 @@ const NewGroupModal = () => {
       const tx = await contract.createGroup(
         groupName,
         groupDescription,
-        memberAddresses,
-        Number(groupConfirmNumber)
+        memberAddresses
       );
       setMainText("Waiting for transaction confirmation...");
       await tx.wait();
@@ -112,6 +110,12 @@ const NewGroupModal = () => {
         Number(numberOfCreators) - 1
       );
       console.log("_group_Address", _group_Address);
+      const _contract = new Contract(
+        _group_Address,
+        GROUP_ABI,
+        signer
+      );
+      const _collection_address = await _contract.collectionAddress();
 
       let _avatar = "";
       if (avatar) {
@@ -135,10 +139,10 @@ const NewGroupModal = () => {
           name: groupName,
           avatar: _avatar,
           director: user.id,
-          requiredConfirmNumber: groupConfirmNumber,
           member: JSON.stringify(memberData),
           description: groupDescription,
           address: _group_Address,
+          collectionAddress: _collection_address
         })
         .catch((error) => {
           toast.error(error.message);
@@ -184,13 +188,6 @@ const NewGroupModal = () => {
     console.log("selectedUsers", selectedUsers);
     if (!selectedUsers.length) {
       toast.error("Select at least one member");
-      valid = false;
-    }
-    if (
-      !Number(groupConfirmNumber) ||
-      Number(groupConfirmNumber) > selectedUsers.length
-    ) {
-      toast.error("Select right confirm number");
       valid = false;
     }
     if (!avatar) {
@@ -249,7 +246,7 @@ const NewGroupModal = () => {
         }}
       ></div>
       <div className="z-[1000] font-Maxeville ">
-        <div className="generalModal z-[1300] drop-shadow-lg">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

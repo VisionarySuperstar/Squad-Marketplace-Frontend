@@ -51,9 +51,9 @@ const Home = ({ params }: { params: { id: string } }) => {
       });
     setNftData(result?.data);
     console.log("auctiontype", result?.data.auctiontype);
-    console.log("result", result);
+    console.log("result", result?.data);
     const result1 = await api
-      .post("/api/getGroupId", {
+      .post("/api/getGroupById", {
         id: result?.data.groupid,
       })
       .catch((error) => {
@@ -91,7 +91,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoading1, setIsLoading1] = useState<boolean>(false);
-  const { signIn, isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [groupAddress, setGroupAddress] = useState<string>("");
   const [contract, setContract] = useState<Contract | undefined>(undefined);
@@ -296,7 +296,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <ImageView avatar={nftData.avatar} />
+                <ImageView avatar={nftData.content} />
               </div>
               <Split_line />
               <div>
@@ -313,7 +313,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div className="p-2 flex-col flex justify-between">
             <div className="flex-col">
               <div className="text-[18px] flex gap-4">
-                {nftData?.collectionname} #{nftData?.collectionid}
+                {nftData?.name}
                 <div className="flex items-center">
                   <TrendingIcon />
                 </div>

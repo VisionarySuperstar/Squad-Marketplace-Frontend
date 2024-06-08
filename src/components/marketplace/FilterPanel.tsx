@@ -1,5 +1,4 @@
 import {
-  ICOLLECTION,
   IGROUP,
   NFTFilter,
   auctionToString,
@@ -87,14 +86,12 @@ type FilterPanelProps = {
   filter: NFTFilter;
   setFilter: (filter: NFTFilter) => void;
   groups: IGROUP[];
-  collections: ICOLLECTION[];
 };
 
 const FilterPanel = ({
   filter,
   setFilter,
   groups,
-  collections,
 }: FilterPanelProps) => {
   const handleFilterUpdate = <T extends keyof NFTFilter>(
     key: T,
@@ -116,10 +113,6 @@ const FilterPanel = ({
   const groupItems = groups.map((group) => ({
     key: group.id,
     text: group.name,
-  }));
-  const collectionItems = collections.map((collection) => ({
-    key: collection.id,
-    text: collection.name,
   }));
 
   return (

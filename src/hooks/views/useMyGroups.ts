@@ -9,7 +9,7 @@ export default function useMyGroups() {
   const { user } = useAuth();
   useEffect(() => {
     const fetchGroups = async () => {
-      const response = await api.post("api/getGroup", { id: user?.id });
+      const response = await api.post("api/getGroupByUser", { id: user?.id });
       setGroups(response.data);
     };
 

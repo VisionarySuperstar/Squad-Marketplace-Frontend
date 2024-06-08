@@ -1,7 +1,7 @@
 "use client";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import React, { useState, useEffect } from "react";
-import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
+import { IGROUP, IUSER, INFT } from "@/types";
 import { Contract } from "ethers";
 import GROUP_ABI from "@/constants/creator_group.json";
 import { Marketplace_ADDRESSES } from "@/constants/config";
@@ -150,7 +150,7 @@ const CreateProfileModal = () => {
             setProfileModalState(false);
           }}
         ></div>
-        <div className="generalModal z-[1300] drop-shadow-lg">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {

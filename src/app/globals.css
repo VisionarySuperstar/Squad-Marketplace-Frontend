@@ -340,18 +340,6 @@ body {
 
 .generalModal {
   position: fixed;
-  width: max(565px, calc(var(--perX) * 565));
-  background-color: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 15px;
-  animation: pulse 0.3s;
-}
-
-.generalModal1 {
-  position: fixed;
-  width: max(400px);
   background-color: white;
   top: 50%;
   left: 50%;
@@ -451,36 +439,26 @@ body {
     transition: opacity 0.3s;
     height: 100vh;
   }
-  .height-handler {
-    max-height: 80vh;
-  }
 }
 
-@media (max-width: 600px) {
-  .generalModal1 {
-    position: fixed;
-    width: 100%;
-    height: 600px;
-    bottom: 0px;
-    left: 0px;
-    top: auto;
-    border-radius: 0px;
-    transform: none;
-  }
-}
+
 
 @media (max-width: 600px) {
   .height-handler {
     max-height: 100%;
   }
+  
   .generalModal {
     position: fixed;
     width: 100%;
-    height: 100%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    height: 600px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1000;
+    top: auto;
     border-radius: 0px;
+    transform: none;
+    animation: mobilePulse 0.3s;
   }
 
   .join_form {
@@ -617,6 +595,19 @@ body {
     transform: translate(-50%, -50%);
   }
 }
+
+@keyframes mobilePulse {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  50% {
+    transform: translate(0%, -5%);
+  }
+  100% {
+    transform: translate(0%, 0%);
+  }
+}
+
 
 .content-card:hover .content-card-menu {
   opacity: 1;

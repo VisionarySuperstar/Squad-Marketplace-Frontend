@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
-import collectionData from "@/data/collections.json";
-import mygroupsData from "@/data/mygroups.json";
 import useAPI from "@/hooks/useAPI";
-import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
+import { IGROUP, IUSER, INFT } from "@/types";
 import useAuth from "@/hooks/useAuth";
 
 import { IMGBB_API_KEY } from "@/constants/config";
@@ -23,6 +21,7 @@ import NftCard from "../../cards/nftCard";
 interface MintModalInterface {
   groupId: number;
   groupAddress: string;
+  collectionAddress: string;
   mintAvatar: string;
   avatarFile: File;
   uploadId: number;
@@ -32,6 +31,7 @@ interface MintModalInterface {
 const MintModal = ({
   groupId,
   groupAddress,
+  collectionAddress,
   mintAvatar,
   avatarFile,
   deleteContent,
@@ -45,11 +45,8 @@ const MintModal = ({
     (state) => state.updateMainText
   );
 
-  const [allCollection, setAllCollection] = useState<ICOLLECTION[]>([]);
   const [showProgressModal, setShowProgressModal] =
     React.useState<boolean>(false);
-  const [stepper, setStepper] = React.useState<number>(0);
-  const [percent, setPercent] = React.useState<number>(0);
   const api = useAPI();
 
   const setMintModalState = useGroupUIControlStore(
@@ -59,68 +56,14 @@ const MintModal = ({
   const [step, setStep] = React.useState<number>(0);
   const [lastStep, setLastStep] = React.useState<number>(0);
   const [avatar, setAvatar] = React.useState<Record<string, string>>({});
-  const handleNext = () => {
-    setLastStep(step);
-    if (!step) {
-      //if (selected === allCollection.length) setStep(1);
-      setStep(2);
-    }
-    if (step === 1) {
-      if (newCollectionName && newCollectionSymbol && newCollectionDescription)
-        setStep(2);
-    }
-  };
-  const handleBack = () => {
-    if (step === 2) {
-      setStep(lastStep);
-    } else if (step === 1) {
-      setStep(0);
-    }
-  };
-  const [newCollectionName, setNewCollectionName] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
-  const [newCollectionSymbol, setNewCollectionSymbol] =
-    React.useState<string>("");
-  const [newCollectionDescription, setNewCollectionDescription] =
-    React.useState<string>("");
-  const { signIn, isAuthenticated, user } = useAuth();
-
-  const getCollectionData = async () => {
-    const result = await api.get("/api/getCollection").catch((error) => {
-      toast.error(error.message);
-    });
-    setAllCollection(result?.data);
-    console.log("result", result?.data);
-  };
-  useEffect(() => {
-    getCollectionData();
-  }, []);
-  useEffect(() => {
-    const fetchAvatars = async () => {
-      const _avatarQuery: Record<string, string> = {};
-
-      // Use Promise.all to wait for all promises to resolve
-      await Promise.all(
-        allCollection.flatMap((collection) =>
-          collection.nft.map((id) => getNftById(id.id))
-        )
-      ).then((results) => {
-        results.forEach((index, idIndex) => {
-          // Assuming id.id is the key and index.avatar is the value
-          _avatarQuery[index.id] = index.avatar;
-        });
-      });
-
-      console.log("_avatarQuery", _avatarQuery);
-      setAvatar(_avatarQuery);
-    };
-    fetchAvatars();
-  }, [allCollection]);
+  const { user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [contract, setContract] = React.useState<Contract | undefined>(
     undefined
   );
+  const [name, setName] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
 
   React.useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -129,6 +72,7 @@ const MintModal = ({
     const _contract = new Contract(groupAddress, GROUP_ABI, signer);
     setContract(_contract);
   }, [address, chainId, signer, groupAddress]);
+<<<<<<< HEAD
   const getNftById = async (id: string) => {
     console.log("id ", id);
     const result = await api
@@ -139,34 +83,12 @@ const MintModal = ({
     console.log("url", result?.data);
     return result?.data;
   };
+=======
+>>>>>>> 0b578aadd946aebdd123791683e1e0accd3a92ab
   const handleMint = async () => {
-    // mint
-    let collection_address = "",
-      collection_name;
-    if (selected === allCollection.length) {
-      collection_name = newCollectionName;
-    } else {
-      collection_address = allCollection[selected].address;
-      collection_name = allCollection[selected].name;
-    }
-    let collection_id = "1";
-
-    // console.log("mintAvatar, ", avatarFile);
-    // const formData = new FormData();
-    // formData.append("image", avatarFile);
-    // const { data: { url: _newAvatar } } = await fetch(
-    //   `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
-    //   {
-    //     method: "POST",
-    //     body: formData
-    //   }
-    // ).then(res => res.json());
-    // _avatar = _newAvatar;
-    // progress Modal show
     setIsLoading(true);
     setIsDisplaying(true);
     // @step1 upload logo to PINATA
-    setStepper(1);
     const _avatar = await uploadToIPFS(
       new File([avatarFile], "metadata.json"),
       ({ loaded, total }: { loaded: number; total: number }) => {
@@ -179,6 +101,7 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
+<<<<<<< HEAD
     setStepper(2);
     setMainText("Now uploading metadata to IPFS...");
     const _metadata = await uploadToIPFS(
@@ -191,96 +114,52 @@ const MintModal = ({
         ],
         "metadata.json"
       ),
+=======
+    setMainText("Now uploading metadata to IPFS...");
+    const _metadata = await uploadToIPFS(
+      new File([
+        JSON.stringify({
+          assetType: "image",
+          name: name,
+          description: description,
+          image: _avatar,
+        })
+      ], "metadata.json"),  
+>>>>>>> 0b578aadd946aebdd123791683e1e0accd3a92ab
       ({ loaded, total }: { loaded: number; total: number }) => {
-        // setPercent(Math.floor((loaded * 100) / total));
-        // console.log(percent);
       }
     ).catch((err) => {
       console.log(err);
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-    setStepper(3);
     try {
       if (!contract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       //setIsLoading(true);
       setMainText("Waiting for user confirmation...");
-
-      if (selected === allCollection.length) {
-        const tx = await contract.mintNew(
-          _metadata,
-          newCollectionName,
-          newCollectionSymbol,
-          newCollectionDescription
-        );
-        setMainText("Waiting for transaction confirmation...");
-
-        await tx.wait();
-        const newMintNftId = await contract.numberOfNFT();
-        collection_address = await contract.getNftAddress(
-          Number(newMintNftId) - 1
-        );
-      } else {
-        const tx = await contract.mint(_avatar, collection_address);
-        setMainText("Waiting for transaction confirmation...");
-        await tx.wait();
-      }
-      const _contract = new Contract(collection_address, NFT_ABI, signer);
+      const tx = await contract.mint(_metadata);
+      setMainText("Waiting for transaction confirmation...");
+      await tx.wait();
+      const _contract = new Contract(collectionAddress, NFT_ABI, signer);
       const collection_id_1 = await _contract.tokenNumber();
       console.log("collection_id: " + collection_id_1);
-      collection_id = Number(Number(collection_id_1) - 1).toString();
+      const collection_id = Number(Number(collection_id_1) - 1).toString(); 
       console.log("collection_id", collection_id);
       setMainText("Waiting for backend process...");
 
       await api
         .post("/api/addNft", {
-          collectionAddress: collection_address,
+          name:name,
+          description:description,
+          collectionAddress: collectionAddress,
           collectionId: collection_id,
-          avatar: _avatar,
+          content: _avatar,
           groupId: groupId,
           owner: groupAddress,
-          status: "mint",
-          collectionName: collection_name,
         })
         .then(async () => {
-          const result = await api
-            .post("/api/getNftByCollection", {
-              collectionAddress: collection_address,
-              collectionId: collection_id,
-            })
-            .catch((error) => {
-              toast.error(error.message);
-            });
-          console.log("result ", result?.data);
-          if (selected === allCollection.length) {
-            const nft_collection = [{ id: result?.data.id }];
-            console.log("nft_collection", nft_collection);
-            await api
-              .post("/api/addCollection", {
-                name: newCollectionName,
-                symbol: newCollectionSymbol,
-                description: newCollectionDescription,
-                address: collection_address,
-                nft: JSON.stringify(nft_collection),
-              })
-              .catch((error) => {
-                toast.error(error.message);
-              });
-          } else {
-            const nft_collection_data = allCollection[selected].nft;
-            nft_collection_data.push({ id: result?.data.id });
-            console.log("nft_collection_data", nft_collection_data);
-            await api
-              .post("/api/updateCollection", {
-                id: allCollection[selected].id,
-                nft: JSON.stringify(nft_collection_data),
-              })
-              .catch((error) => {
-                toast.error(error.message);
-              });
-          }
           await api
             .post("/api/addMintNumberToGroup", { id: groupId })
             .catch((error) => {
@@ -295,7 +174,7 @@ const MintModal = ({
         toast.error("User rejected transaction.");
       } else {
         toast.error("An error occurred. please try again");
-      }
+      } 
     } finally {
       setIsLoading(false);
       setIsDisplaying(false);
@@ -310,7 +189,7 @@ const MintModal = ({
             setMintModalState(false);
           }}
         ></div>
-        <div className="generalModal z-[1300] drop-shadow-lg p-[25px]">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg p-[25px]">
           <div
             className="closeBtn"
             onClick={() => {
@@ -330,6 +209,7 @@ const MintModal = ({
               />
             </svg>
           </div>
+<<<<<<< HEAD
 
           {!step && (
             <div>
@@ -454,6 +334,8 @@ const MintModal = ({
             </div>
           )}
           {step === 2 && (
+=======
+>>>>>>> 0b578aadd946aebdd123791683e1e0accd3a92ab
             <div>
               <h1 className="text-center mt-2 text-black-main text-lg ">
                 MINT
@@ -473,8 +355,9 @@ const MintModal = ({
               <h2 className="text-left text-lg text-black-main mt-5">
                 MINTING TO
               </h2>
-              {selected === allCollection.length ? (
+              
                 <div>
+<<<<<<< HEAD
                   <h2 className="text-left text-lg text-black-main mt-2">
                     COLLECTION NAME
                   </h2>
@@ -483,10 +366,21 @@ const MintModal = ({
                       defaultValue={newCollectionName}
                       disabled
                       className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+=======
+                  <h2 className="text-left text-lg text-chocolate-main mt-2">
+                    NAME
+                  </h2>
+                  <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
+                    <input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+>>>>>>> 0b578aadd946aebdd123791683e1e0accd3a92ab
                       type="text"
                       placeholder=" E.G. 'Nature'"
                     />
                   </div>
+<<<<<<< HEAD
                   <h2 className="text-left text-lg text-black-main mt-2">
                     COLLECTION SYMBOL
                   </h2>
@@ -501,41 +395,20 @@ const MintModal = ({
                   </div>
                   <h2 className="text-left text-lg text-black-main mt-2">
                     COLLECTION DESCRIPTION
+=======
+                  
+                  <h2 className="text-left text-lg text-chocolate-main mt-2">
+                    DESCRIPTION
+>>>>>>> 0b578aadd946aebdd123791683e1e0accd3a92ab
                   </h2>
                   <textarea
-                    defaultValue={newCollectionDescription}
-                    disabled
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     placeholder="Write a description..."
                     className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-black-main"
                     rows={4}
                   />
                 </div>
-              ) : (
-                <div className="p-1 w-1/4 mt-5 border-2 border-gray-400">
-                  <div className="grid grid-cols-2 gap-2">
-                    {allCollection[selected].nft
-                      .slice(0, 4)
-                      .map((nfts, key1) => (
-                        <div
-                          key={key1}
-                          className="flex items-center justify-center"
-                        >
-                          <Image
-                            src={avatar[nfts.id]}
-                            className="w-full h-full aspect-square"
-                            width={0}
-                            height={0}
-                            sizes="100vw"
-                            alt="avatar"
-                          />
-                        </div>
-                      ))}
-                  </div>
-                  <div className="mt-1 bottom-0">
-                    {allCollection[selected].name}
-                  </div>
-                </div>
-              )}
 
               <div
                 className="flex justify-between items-center mt-5 mb-3"
@@ -544,6 +417,7 @@ const MintModal = ({
                 }}
               >
                 <button
+<<<<<<< HEAD
                   className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                   onClick={handleBack}
                 >
@@ -551,6 +425,9 @@ const MintModal = ({
                 </button>
                 <button
                   className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+=======
+                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+>>>>>>> 0b578aadd946aebdd123791683e1e0accd3a92ab
                   onClick={handleMint}
                 >
                   {isLoading ? (
@@ -568,7 +445,6 @@ const MintModal = ({
                 </button>
               </div>
             </div>
-          )}
         </div>
       </div>
     </>
