@@ -23,6 +23,7 @@ const Section = <T,>({
   const containerClassName = `max-w-full flex-grow-0 flex-shrink-0 sm:basis-1 ${
     itemsPerRow === 3 ? "md:basis-[31%]" : "md:basis-[23%]"
   }`;
+  
 
   return (
     <div className="my-5">

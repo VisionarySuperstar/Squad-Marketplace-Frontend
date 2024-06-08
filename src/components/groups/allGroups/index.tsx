@@ -53,13 +53,7 @@ const AllGroup = ({ scale, recruitingState, searchFilter, sortBy }: IProps) => {
 
   const filterAllGroupData_state = async () => {
     if(!allGroupData) return ;
-    if(recruitingState){
-      const _groupdata = allGroupData.filter((_group:IGROUP) => _group.is_actively_recruiting === (recruitingState)) ;
-      setAllGroupData(_groupdata) ;
-    }
-    else{
       getAllGroupData();
-    }
   }
 
   const filterAllGroupData_search = async () => {

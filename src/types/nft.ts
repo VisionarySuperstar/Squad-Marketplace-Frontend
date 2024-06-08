@@ -1,8 +1,8 @@
 export interface INFTCard {
   id: string;
-  avatar: string;
-  collectionName: string;
-  collectionId: number;
+  content: string;
+  name: string;
+  description: string;
   price: number;
   seen: number;
   favorite: number;
@@ -10,10 +10,12 @@ export interface INFTCard {
 
 export interface INFT {
   id: string;
-  avatar: string;
+  name: string,
+  description: string,
+  content: string;
   owner: string;
   status: string;
-  collectionaddress: string;
+  collectionaddress:string;
   collectionid: string;
   groupid: string;
   auctiontype: string;
@@ -22,7 +24,6 @@ export interface INFT {
   currentprice: string;
   currentbidder: string;
   reducingrate: string;
-  collectionname: string;
   listednumber: string;
   marketplacenumber: string;
   created_at: string;
@@ -32,9 +33,9 @@ export interface INFT {
 export function nftToCard(nft: INFT): INFTCard {
   return {
     id: nft.id,
-    avatar: nft.avatar,
-    collectionName: nft.collectionname,
-    collectionId: Number(nft.collectionid),
+    content: nft.content,
+    name: nft.name,
+    description: nft.description,
     price: Number(nft.currentprice),
     seen: 200,
     favorite: 20,

@@ -50,7 +50,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     setNftData(result?.data);
     console.log("result", result);
     const result1 = await api
-      .post("/api/getGroupId", {
+      .post("/api/getGroupById", {
         id: result?.data.groupid,
       })
       .catch((error) => {
@@ -204,9 +204,9 @@ const Home = ({ params }: { params: { id: string } }) => {
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
                 <PhotoProvider bannerVisible={false}>
-                  <PhotoView src={nftData.avatar}>
+                  <PhotoView src={nftData.content}>
                     <Image
-                      src={nftData.avatar}
+                      src={nftData.content}
                       className="md:h-[70vh] object-contain w-auto"
                       alt="group_avatar"
                       width={706}
@@ -230,7 +230,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div className="p-2 flex-col flex justify-between">
             <div className="flex-col">
               <div className="text-[18px] flex gap-4">
-                {nftData?.collectionname} #{nftData?.collectionid}
+                {nftData?.name}
                 <div className="flex items-center">
                   <TrendingIcon />
                 </div>
