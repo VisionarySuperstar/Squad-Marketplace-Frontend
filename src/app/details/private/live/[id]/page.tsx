@@ -51,7 +51,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       });
     setNftData(result?.data);
     console.log("auctiontype", result?.data.auctiontype);
-    console.log("result", result);
+    console.log("result", result?.data);
     const result1 = await api
       .post("/api/getGroupById", {
         id: result?.data.groupid,
@@ -91,7 +91,7 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoading1, setIsLoading1] = useState<boolean>(false);
-  const { signIn, isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [groupAddress, setGroupAddress] = useState<string>("");
   const [contract, setContract] = useState<Contract | undefined>(undefined);
@@ -296,7 +296,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <ImageView avatar={nftData.name} />
+                <ImageView avatar={nftData.content} />
               </div>
               <Split_line />
               <div>
