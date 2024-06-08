@@ -11,8 +11,6 @@ import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import Split_line from "@/components/main/split_line";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import ListModal from "@/components/main/modals/groups/listModal";
-
-import NFTs from "@/data/nfts.json";
 import { INFT, IGROUP, IUSER } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import useAPI from "@/hooks/useAPI";
@@ -28,8 +26,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     (state) => state.updateLoadingState
   );
   const listModalState = useGroupUIControlStore((state) => state.listModal);
-  const data = NFTs.find((nft) => nft.id === params.id);
-  const auctionType = data?.auctionType;
 
   const { signIn, isAuthenticated, user } = useAuth();
 
