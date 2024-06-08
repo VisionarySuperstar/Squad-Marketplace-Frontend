@@ -218,10 +218,10 @@ const Home = ({ params }: { params: { id: string } }) => {
               <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
-                  <EyeIcon props="#322A44" />
+                  <EyeIcon props="#000" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon fill="#322A44" />
+                  <HeartIcon fill="#000" />
                   <div>20</div>
                 </div>
               </div>
@@ -271,7 +271,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                               : key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-chocolate-main">
+                            <span className="text-xl text-black-main">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}

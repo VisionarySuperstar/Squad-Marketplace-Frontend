@@ -107,7 +107,7 @@ const SocketComponent = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0">Connection:{isConnected}</div>
+      {/* <div className="fixed top-0 left-0">Connection:{isConnected}</div> */}
     </>
   );
 };

@@ -419,10 +419,10 @@ const Home = ({ params }: { params: { id: string } }) => {
               </div>
               <div>
                 <div className="flex items-center gap-3 p-2">
-                  <EyeIcon props="#322A44" />
+                  <EyeIcon props="#000" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon fill="#322A44" />
+                  <HeartIcon fill="#000" />
                   <div>20</div>
                 </div>
               </div>
@@ -512,7 +512,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   data?.status !== "sold" &&
                   remainTime && (
                     <button
-                      className="w-full bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center"
+                      className="w-full bg-[#000] rounded-full text-white h-[30px] text-center flex items-center justify-center"
                       onClick={buyClick}
                     >
                       {isLoading ? (
@@ -540,7 +540,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   >
                     {data?.status !== "sold" && (
                       <button
-                        className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
+                        className="w-full bg-[#000] rounded-full text-white h-[30px]"
                         onClick={() => setBidModalState(true)}
                       >
                         BID
@@ -548,7 +548,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     )}
                     {Number(withdrawAmount) > 0 && (
                       <button
-                        className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
+                        className="w-full bg-[#000] rounded-full text-white h-[30px]"
                         onClick={() => setWithdrawModalState(true)}
                       >
                         WITHDRAW
@@ -562,7 +562,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   {transferHistory && transferHistory.length && (
                     <p className="text-gray-400">
                       Minted by{" "}
-                      <span className="text-xl text-chocolate-main">
+                      <span className="text-xl text-black-main">
                         {groupName + " "}
                       </span>
                       {createdTime}
@@ -584,7 +584,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                               : key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-chocolate-main">
+                            <span className="text-xl text-black-main">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}

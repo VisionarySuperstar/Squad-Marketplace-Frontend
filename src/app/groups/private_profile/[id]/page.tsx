@@ -932,9 +932,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       alt="uploaded content"
                     />
                     {isDirector && (
-                      <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-chocolate-main/80 rounded-lg">
+                      <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-black-main/80 rounded-lg">
                         <button
-                          className="border bg-[#322A44] text-white rounded-full w-[75%] text-[18px] h-[30px]"
+                          className="border bg-[#000] text-white rounded-full w-[75%] text-[18px] h-[30px]"
                           onClick={() => {
                             setMintModalState(true);
                             setUploadId(item);
@@ -1021,7 +1021,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                         item.confirm_member.length <
                           Number(groupInfor?.requiredconfirmnumber) && (
                           <button
-                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center hover:bg-chocolate-main hover:text-white transition-all"
+                            className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] mb-[5px] text-center flex items-center justify-center hover:bg-black-main hover:text-white transition-all"
                             onClick={() => {
                               offeringConfrimHandle(offerTransactions[key]);
                               setSelectedOfferConfirmBtn(key);
@@ -1096,7 +1096,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   </div>
                   {isDirector && (
                     <button
-                      className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center`}
+                      className={`border bg-[#000] text-white rounded-full text-lg text-center flex justify-center items-center`}
                       onClick={() => {
                         setSelectedRequestButton(index);
                         addMember(index);
@@ -1301,7 +1301,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     </div>
                     {index === selected && (
                       <button
-                        className={`border bg-[#322A44] text-white rounded-full text-lg text-center flex justify-center items-center ${
+                        className={`border bg-[#000] text-white rounded-full text-lg text-center flex justify-center items-center ${
                           item.id === groupInfor?.director ? "hidden" : ""
                         } `}
                         onClick={() => {
@@ -1337,7 +1337,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                   checked={groupInfor?.is_actively_recruiting}
                   onChange={(e) => changeActiveState(e.target.checked)}
                   name="default-radio"
-                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-chocolate-main checked:border-transparent"
+                  className=" cursor-pointer appearance-none outline-none w-5 h-5 rounded-full border-2 border-chocolate-main checked:bg-black-main checked:border-transparent"
                 />
                 <label
                   htmlFor="default-radio"
@@ -1371,7 +1371,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                 <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                   <button
                     onClick={changeConfirmNumberHandle}
-                    className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                    className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center"
                   >
                     {isLoadingChangeConfirm ? (
                       <>
@@ -1405,7 +1405,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button
                 onClick={withdrawFromGroup}
-                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
+                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
               >
                 {isLoadingWithdrawButton ? (
                   <>
@@ -1437,7 +1437,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                 <button
                   onClick={withdrawFromMarketplace}
-                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center"
                 >
                   {isLoadingWithdrawMarketplaceButton ? (
                     <>

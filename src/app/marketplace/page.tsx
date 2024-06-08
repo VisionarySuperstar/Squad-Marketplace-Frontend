@@ -24,7 +24,8 @@ export default function MarketplacePage() {
   const [availableState, setAvailableState] = useState<boolean>(false);
 
   const listedNftData = useListedNfts();
-  const [displayedNftData, setDisplayedNftData] = useState<INFT[]>(listedNftData);
+  const [displayedNftData, setDisplayedNftData] =
+    useState<INFT[]>(listedNftData);
   const api = useAPI();
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function MarketplacePage() {
               <button
                 onClick={() => onFilterClick()}
                 className={`font-Maxeville text-md px-5 ${
-                  showFilter ? "bg-chocolate-main text-white rounded-full" : ""
+                  showFilter ? "bg-black-main text-white rounded-full" : ""
                 }`}
               >
                 {showFilter ? "APPLY" : "FILTER"}
@@ -82,20 +83,13 @@ export default function MarketplacePage() {
                   <ViewProgress scale={scale} setScale={setScale} />
                 </div>
               )}
-              <div>
-                <Recruiting
-                  recruitingState={availableState}
-                  setRecruitingState={setAvailableState}
-                  name="AVAILABLE"
-                />
-              </div>
             </div>
             <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
               <input
-                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                 placeholder="SEARCH"
               ></input>
-              <button className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
+              <button className="bg-black-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60">
                 ENTER
               </button>
             </div>

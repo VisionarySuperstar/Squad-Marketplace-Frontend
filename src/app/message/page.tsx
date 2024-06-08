@@ -215,13 +215,13 @@ export default function MessagePage() {
             <div className="pe-[20px]">
               <div className="bg-white py-3 border-b-[1px]">
                 <div className="flex justify-between min-h-[50px] items-center ">
-                  <div className="text-[18px] text-[#322A44]">INBOX</div>
+                  <div className="text-[18px] text-[#000]">INBOX</div>
                   <div className="flex gap-2">
                     <div className="rounded-md p-[5px] hover:bg-gray-100 transition-all active:translate-y-[2px]">
-                      <SearchIcon props="#322A44" />
+                      <SearchIcon props="#000" />
                     </div>
                     <div className="rounded-md p-[5px] hover:bg-gray-100 transition-all active:translate-y-1">
-                      <WriteIcon props="#322A44" />
+                      <WriteIcon props="#000" />
                     </div>
                   </div>
                 </div>
@@ -238,8 +238,8 @@ export default function MessagePage() {
                     className={`flex flex-col gap-1 border-b-[1px] cursor-pointer transition-all ${
                       selectedGroupListId === index &&
                       !selectedUserListId &&
-                      "bg-chocolate-main/10"
-                    } hover:bg-chocolate-main/5 p-3 `}
+                      "bg-black-main/10"
+                    } hover:bg-black-main/5 p-3 `}
                     onClick={() => {
                       handleGroupListItemClicked(index, item.id);
                       setSelectedUserListId(0);
@@ -269,7 +269,7 @@ export default function MessagePage() {
                             {index.lastSeen}
                           </div> */}
                           <div className="mt-2 flex  justify-end">
-                            <SeenIcon props="#322A44" />
+                            <SeenIcon props="#000" />
                           </div>
                         </div>
                       </div>
@@ -279,7 +279,7 @@ export default function MessagePage() {
               ))}
             </div>
           </div>
-          <div className="h-full w-[2px] bg-chocolate-main/10 me-[20px] xs:hidden md:block"></div>
+          <div className="h-full w-[2px] bg-black-main/10 me-[20px] xs:hidden md:block"></div>
           {/* Messages */}
           <div className="flex flex-col w-full md:w-4/5 justify-between">
             {selectedGroupListId === -1 && selectedUserListId === -1 ? null : (
@@ -359,15 +359,15 @@ export default function MessagePage() {
                       onInput={(e) => {
                         setContent(e.currentTarget.textContent || "");
                       }}
-                      className="w-full p-3 whitespace-pre-wrap rounded-lg bg-transparent border-[1px] border-[#322A44] focus:outline-none resize-none min-h-[90px] scrollbar line-height-1 max-h-[200px] overflow-y-auto"
+                      className="w-full p-3 whitespace-pre-wrap rounded-lg bg-transparent border-[1px] border-[#000] focus:outline-none resize-none min-h-[90px] scrollbar line-height-1 max-h-[200px] overflow-y-auto"
                     ></div>
                     <div className="flex justify-between mt-3">
                       <div className="justify-center flex items-center h-full mt-3">
-                        <ChatLinkIcon props="#322A44" />
+                        <ChatLinkIcon props="#000" />
                       </div>
                       <div className="justify-center flex items-center h-full">
                         <button
-                          className=" rounded-full p-2 text-white bg-[#322A44] w-[119px]"
+                          className=" rounded-full p-2 text-white bg-[#000] w-[119px]"
                           onClick={() => {
                             if (content != "")
                               saveMessageData(messageType, groupid, content);

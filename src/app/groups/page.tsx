@@ -61,17 +61,10 @@ export default function GroupsPage() {
                 <ViewProgress scale={scale} setScale={setScale} />
               </div>
             )}
-            <div>
-              <Recruiting
-                recruitingState={recruitingState}
-                setRecruitingState={setRecruitingState}
-                name="ACTIVELY RECRUITING"
-              />
-            </div>
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
             <input
-              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
               value={searchInput}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 const value = event.target.value as string;
@@ -84,7 +77,7 @@ export default function GroupsPage() {
               placeholder="SEARCH"
             />
             <button
-              className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
+              className="bg-black-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
               onClick={() => setSearchFilter(searchInput)}
             >
               ENTER

@@ -54,7 +54,7 @@ const CreateGroupModal = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="bg-[#322A44] text-white rounded-full pl-4 pr-4 w-1/2 text-lg">
+          <button className="bg-[#000] text-white rounded-full pl-4 pr-4 w-1/2 text-lg">
             CREATE GROUP
           </button>
         </Modal.Footer>

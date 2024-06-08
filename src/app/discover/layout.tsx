@@ -3,7 +3,6 @@
 import React from "react";
 import Footer from "@/components/main/footer/footer";
 import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
-import { useScrollHandler } from "@/hooks/ui/useScreenHandler";
 import {
   useNavbarCurrent,
   useNavbarShow,
@@ -23,7 +22,6 @@ export default function DiscoverLayout({
   useNavbarBackBtn(false);
   useNavbarGroupBtn(false);
   useEndLoadingState();
-  useScrollHandler();
   return (
     <div>
       {children}

@@ -45,7 +45,6 @@ body {
   top: calc(var(--perX) * 132);
 }
 
-
 .LaptopLogo {
   position: absolute;
   top: calc(var(--perX) * 132);
@@ -88,18 +87,18 @@ body {
 }
 
 .question {
-  color: #322a44;
+  color: #000;
 }
 .heading_text {
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
 }
 .answer {
-  color: #322a4499;
+  color: #000;
 }
 
 .welcome_text {
   font-size: max(16px, calc(var(--perX) * 18));
-  color: #322a44;
+  color: #000;
 }
 
 .line {
@@ -163,7 +162,7 @@ body {
   position: absolute;
   width: calc(var(--perX) * 1010);
   height: calc(var(--perX) * 250);
-  background-color: #322a44;
+  background-color: #000;
   border-radius: 300px;
   display: flex;
   align-items: center;
@@ -175,17 +174,17 @@ body {
   left: calc(50vw - calc(var(--perX) * 570));
   cursor: pointer;
   z-index: 100;
-  border: 1px solid #322a44;
+  border: 1px solid #000;
   transition: background-color 0.3s;
 }
 
 .BigButton:hover {
   background-color: #ffffff;
-  color: #322a44;
+  color: #000;
 }
 
 .join_background {
-  background-color: #322a44;
+  background-color: #000;
 }
 
 .head_bar {
@@ -201,7 +200,7 @@ body {
 
 .footer {
   min-height: calc(var(--perX) * 320);
-  background-color: #322a44;
+  background-color: #000;
   padding-left: calc(var(--perX) * 40);
   padding-right: calc(var(--perX) * 40);
   padding-top: calc(var(--perX) * 83);
@@ -279,7 +278,7 @@ body {
 }
 
 .join_btn {
-  background-color: #322a44;
+  background-color: #000;
   color: white;
   padding: 10px;
   padding-left: 20px;
@@ -290,14 +289,14 @@ body {
   width: 150px;
   height: 44px;
   cursor: pointer;
-  border: 1px solid #322a44;
+  border: 1px solid #000;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .join_btn:hover {
   background-color: #ffffff;
-  color: #322a44;
-  border: 1px solid #322a44;
+  color: #000;
+  border: 1px solid #000;
 }
 
 .team_label {
@@ -305,7 +304,7 @@ body {
 }
 
 .join_btn_2 {
-  background-color: #322a44;
+  background-color: #000;
   color: white;
   padding: 10px;
   padding-left: 20px;
@@ -383,7 +382,7 @@ body {
 }
 
 .regist_input {
-  border: 2px solid #322a44;
+  border: 2px solid #000;
   height: 40px;
   border-radius: 30px;
 }
@@ -398,7 +397,7 @@ body {
 
 /* Navbar */
 .navbar_block {
-  background-color: #322a44;
+  background-color: #000;
   color: #ffffff;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -483,7 +482,6 @@ body {
     transform: translate(-50%, -50%);
     border-radius: 0px;
   }
-  
 
   .join_form {
     position: fixed;

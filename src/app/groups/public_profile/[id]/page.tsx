@@ -195,7 +195,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 xs:flex sm:justify-center xs:justify-center h-[30px] ">
               {!isAvailableRequest && (
                 <button
-                  className="border border-chocolate-main bg-white p-1 text-chocolate-main rounded-full flex items-center pl-6 pr-6 text-md hover:bg-chocolate-main hover:text-white active:translate-y-[1px] transition-all"
+                  className="border border-chocolate-main bg-white p-1 text-black-main rounded-full flex items-center pl-6 pr-6 text-md hover:bg-black-main hover:text-white active:translate-y-[1px] transition-all"
                   onClick={() => requestJoinHandle()}
                 >
                   REQUEST TO JOIN
@@ -203,7 +203,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
               )}
               {isAvailableRequest && !isMemberOfGroup && (
                 <button
-                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
+                  className="border border-chocolate-main bg-[#000] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-black-main active:translate-y-[1px] transition-all"
                   onClick={() => cancelRequestHandle()}
                 >
                   CANCEL REQUEST

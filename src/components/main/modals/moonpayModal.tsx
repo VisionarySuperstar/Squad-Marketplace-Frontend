@@ -21,7 +21,7 @@ const MoonpayModal = () => {
       {moonpayModalState && (
         <>
           <div
-            className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+            className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
             onClick={() => {
               setMoonpayModalState(false);
             }}

@@ -20,8 +20,6 @@ import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import NftCard from "../../cards/nftCard";
 
-
-
 interface MintModalInterface {
   groupId: number;
   groupAddress: string;
@@ -138,7 +136,7 @@ const MintModal = ({
       .catch((error) => {
         toast.error(error.message);
       });
-    console.log("url", result?.data); 
+    console.log("url", result?.data);
     return result?.data;
   };
   const handleMint = async () => {
@@ -181,15 +179,18 @@ const MintModal = ({
       throw "Project Data upload failed to IPFS. Please retry.";
     });
     console.log("@logoURI: ", _avatar);
-    setStepper(2) ;
+    setStepper(2);
     setMainText("Now uploading metadata to IPFS...");
     const _metadata = await uploadToIPFS(
-      new File([
-        JSON.stringify({
-          assetType: "image",
-          image: _avatar,
-        })
-      ], "metadata.json"),  
+      new File(
+        [
+          JSON.stringify({
+            assetType: "image",
+            image: _avatar,
+          }),
+        ],
+        "metadata.json"
+      ),
       ({ loaded, total }: { loaded: number; total: number }) => {
         // setPercent(Math.floor((loaded * 100) / total));
         // console.log(percent);
@@ -302,8 +303,7 @@ const MintModal = ({
   };
   return (
     <>
-    
-      <div className="z-100 font-Maxeville text-chocolate-main">
+      <div className="z-100 font-Maxeville text-black-main">
         <div
           className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
@@ -326,17 +326,17 @@ const MintModal = ({
             >
               <path
                 d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-                fill="#322A44"
+                fill="#000"
               />
             </svg>
           </div>
 
           {!step && (
             <div>
-              <h1 className="text-center mt-2 text-chocolate-main text-lg ">
+              <h1 className="text-center mt-2 text-black-main text-lg ">
                 Collection
               </h1>
-              <h1 className="text-left text-lg text-chocolate-main mt-2">
+              <h1 className="text-left text-lg text-black-main mt-2">
                 SELECT WHICH COLLECTION THIS NFT WILL BE MINTED TO
               </h1>
               <div className="grid xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 mt-5">
@@ -376,13 +376,13 @@ const MintModal = ({
                 }}
               >
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                  className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                   onClick={handleNext}
                 >
                   NEXT
                 </button>
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                  className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                   onClick={() => {
                     setSelected(allCollection.length);
                     setStep(1);
@@ -395,41 +395,41 @@ const MintModal = ({
           )}
           {step === 1 && (
             <div>
-              <h1 className="text-center mt-2 text-chocolate-main text-lg ">
+              <h1 className="text-center mt-2 text-black-main text-lg ">
                 NEW COLLECTION
               </h1>
-              <h2 className="text-left text-lg text-chocolate-main mt-2">
+              <h2 className="text-left text-lg text-black-main mt-2">
                 COLLECTION NAME
               </h2>
               <div className="flex p-[1px] border rounded-[30px] border-chocolate-main  h-[30px] mt-2 w-1/2">
                 <input
                   value={newCollectionName}
                   onChange={(e) => setNewCollectionName(e.target.value)}
-                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                   type="text"
                   placeholder=" E.G. 'Nature'"
                 />
               </div>
-              <h2 className="text-left text-lg text-chocolate-main mt-2">
+              <h2 className="text-left text-lg text-black-main mt-2">
                 COLLECTION SYMBOL
               </h2>
               <div className="flex p-[1px] border rounded-[30px] border-chocolate-main h-[30px] mt-2 w-1/2">
                 <input
                   value={newCollectionSymbol}
                   onChange={(e) => setNewCollectionSymbol(e.target.value)}
-                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                   type="text"
                   placeholder=" E.G. 'NATURE'"
                 />
               </div>
-              <h2 className="text-left text-lg text-chocolate-main mt-2">
+              <h2 className="text-left text-lg text-black-main mt-2">
                 COLLECTION DESCRIPTION
               </h2>
               <textarea
                 value={newCollectionDescription}
                 onChange={(e) => setNewCollectionDescription(e.target.value)}
                 placeholder="Write a description..."
-                className="mt-2 outline-none border border-chocolate-main w-4/5 p-[10px] rounded-xl text-chocolate-main"
+                className="mt-2 outline-none border border-chocolate-main w-4/5 p-[10px] rounded-xl text-black-main"
                 rows={4}
               />
               <div
@@ -439,13 +439,13 @@ const MintModal = ({
                 }}
               >
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg sm:w-full"
+                  className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg sm:w-full"
                   onClick={handleBack}
                 >
                   BACK
                 </button>
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg sm:w-full"
+                  className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg sm:w-full"
                   onClick={handleNext}
                 >
                   NEXT
@@ -455,7 +455,7 @@ const MintModal = ({
           )}
           {step === 2 && (
             <div>
-              <h1 className="text-center mt-2 text-chocolate-main text-lg ">
+              <h1 className="text-center mt-2 text-black-main text-lg ">
                 MINT
               </h1>
               <div className="flex justify-center items-center mt-2">
@@ -470,43 +470,43 @@ const MintModal = ({
                   />
                 </div>
               </div>
-              <h2 className="text-left text-lg text-chocolate-main mt-5">
+              <h2 className="text-left text-lg text-black-main mt-5">
                 MINTING TO
               </h2>
               {selected === allCollection.length ? (
                 <div>
-                  <h2 className="text-left text-lg text-chocolate-main mt-2">
+                  <h2 className="text-left text-lg text-black-main mt-2">
                     COLLECTION NAME
                   </h2>
                   <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
                     <input
                       defaultValue={newCollectionName}
                       disabled
-                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                       type="text"
                       placeholder=" E.G. 'Nature'"
                     />
                   </div>
-                  <h2 className="text-left text-lg text-chocolate-main mt-2">
+                  <h2 className="text-left text-lg text-black-main mt-2">
                     COLLECTION SYMBOL
                   </h2>
                   <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
                     <input
                       defaultValue={newCollectionSymbol}
                       disabled
-                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                       type="text"
                       placeholder=" E.G. 'NATURE'"
                     />
                   </div>
-                  <h2 className="text-left text-lg text-chocolate-main mt-2">
+                  <h2 className="text-left text-lg text-black-main mt-2">
                     COLLECTION DESCRIPTION
                   </h2>
                   <textarea
                     defaultValue={newCollectionDescription}
                     disabled
                     placeholder="Write a description..."
-                    className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-chocolate-main"
+                    className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-black-main"
                     rows={4}
                   />
                 </div>
@@ -544,13 +544,13 @@ const MintModal = ({
                 }}
               >
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                  className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                   onClick={handleBack}
                 >
                   BACK
                 </button>
                 <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+                  className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
                   onClick={handleMint}
                 >
                   {isLoading ? (
@@ -566,7 +566,6 @@ const MintModal = ({
                     "MINT"
                   )}
                 </button>
-
               </div>
             </div>
           )}

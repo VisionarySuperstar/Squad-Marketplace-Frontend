@@ -28,9 +28,6 @@ const Section = <T,>({
     <div className="my-5">
       <div id="top" className="flex justify-between mb-2">
         <h2>{title}</h2>
-        {/* <h2>
-          <a href={viewAllUrl}>VIEW ALL</a>
-        </h2> */}
       </div>
 
       {title === "TOP NFTS" || title === "TOP GROUPS" ? (
@@ -42,17 +39,17 @@ const Section = <T,>({
           breakpoints={{
             // when window width is >= 320px
             320: {
-              slidesPerView: 1,
+              slidesPerView: 2,
               spaceBetween: 20,
             },
             // when window width is >= 640px
             640: {
-              slidesPerView: 2,
+              slidesPerView: 3,
               spaceBetween: 40,
             },
             // when window width is >= 768px
-            768: {
-              slidesPerView: 3,
+            1280: {
+              slidesPerView: 4,
               spaceBetween: 50,
             },
           }}

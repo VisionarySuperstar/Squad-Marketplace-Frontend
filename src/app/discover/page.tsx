@@ -12,12 +12,8 @@ import useAllNfts from "@/hooks/views/useAllNfts";
 import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 import useTopGroups from "@/hooks/views/useTopGroups";
 import { groupToCard, nftToCard } from "@/types";
-import {
-  getNewlyMinted,
-  getTopNfts
-} from "@/utils/data-processing";
+import { getNewlyMinted, getTopNfts } from "@/utils/data-processing";
 import Link from "next/link";
-
 
 export default function DiscoverPage() {
   const topGroups = useTopGroups();
@@ -64,7 +60,7 @@ export default function DiscoverPage() {
         <div className="text-center">
           <Link
             href="/marketplace"
-            className="inline-block px-6 py-3 text-white bg-chocolate-main rounded-3xl hover:opacity-60"
+            className="inline-block px-6 py-3 text-white bg-black-main rounded-3xl hover:opacity-60"
           >
             GO TO MARKETPLACE
           </Link>

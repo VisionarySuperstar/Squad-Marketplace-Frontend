@@ -145,7 +145,7 @@ const CreateProfileModal = () => {
     <>
       <div className="z-100 font-Maxeville">
         <div
-          className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setProfileModalState(false);
           }}
@@ -166,7 +166,7 @@ const CreateProfileModal = () => {
             >
               <path
                 d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-                fill="#322A44"
+                fill="#000"
               />
             </svg>
           </div>
@@ -197,7 +197,7 @@ const CreateProfileModal = () => {
                   </div>
                   <label
                     htmlFor="avatar"
-                    className="border bg-[#322A44] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center mt-5 sm:mt-0"
+                    className="border bg-[#000] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center mt-5 sm:mt-0"
                   >
                     <Icon icon="ph:plus-bold" width={14} />
                     <span>Upload new avatar</span>
@@ -212,7 +212,7 @@ const CreateProfileModal = () => {
                   <div className="flex justify-center items-center mt-5 sm:mt-0">
                     <button
                       onClick={removeAvatar}
-                      className="border bg-[#322A44] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center w-full"
+                      className="border bg-[#000] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center w-full"
                     >
                       Remove
                     </button>
@@ -245,7 +245,7 @@ const CreateProfileModal = () => {
                 <div className="mt-5 flex justify-center items-center">
                   <button
                     onClick={handleSubmit}
-                    className="border bg-[#322A44] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-lg flex items-center justify-center text-center w-full sm:w-1/2"
+                    className="border bg-[#000] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-lg flex items-center justify-center text-center w-full sm:w-1/2"
                   >
                     {!isLoading ? (
                       <Icon icon="bx:cloud-upload" width={20} height={20} />

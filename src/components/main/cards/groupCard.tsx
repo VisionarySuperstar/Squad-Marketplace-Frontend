@@ -41,7 +41,7 @@ const GroupCard: React.FC<IGroupCard> = ({
             </div>
           ) : (
             <div className="aspect-square w-full h-full relative ">
-              <div className="absolute top-0 z-10 w-full h-full bg-chocolate-main/80 opacity-0 transition-all group-card-info p-[15px]">
+              <div className="absolute top-0 z-10 w-full h-full bg-black-main/80 opacity-0 transition-all group-card-info p-[15px]">
                 <div>GROUP BIO</div>
                 <div className="mt-[5px] lg:max-h-[70%] xs:max-h-[50%]  overflow-y-auto scrollbar break-all">
                   {groupBio}
