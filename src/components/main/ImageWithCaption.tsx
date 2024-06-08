@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import NftCard from "@/components/main/cards/nftCard";
-import NFTs from "@/data/nfts.json";
 import { INFT } from "@/types";
 import useAPI from "@/hooks/useAPI";
 import { IImageWithCaption } from "@/types/images";

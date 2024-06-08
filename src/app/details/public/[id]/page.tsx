@@ -567,7 +567,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         <div className="page_container_p40 mt-5">
           <Split_line />
           <h1 className="text-xl my-[30px] font-Maxeville">
-            MORE FROM THIS COLLECTION
+            MORE FROM THIS GROUP
           </h1>
 
           <Swiper

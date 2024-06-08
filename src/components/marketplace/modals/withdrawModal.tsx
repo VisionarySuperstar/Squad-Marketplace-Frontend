@@ -2,7 +2,6 @@
 
 import react, { useState, useEffect } from "react";
 import Image from "next/image";
-import MyGroups from "@/data/mygroups.json";
 import useMarketplaceUIControlStore from "@/store/UI_control/marketplacePage/marketplaceModal";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
