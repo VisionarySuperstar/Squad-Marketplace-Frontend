@@ -38,6 +38,7 @@ import ImageView from "@/components/main/imageViewer";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { useNftsByGroupAndStatus } from "@/hooks/views/useNftsByGroupAndStatus";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -80,18 +81,29 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
-  const [allNftData, setAllNftData] = useState<INFT[] | undefined>(undefined);
   const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(
     undefined
   );
-  const router = useRouter();
   const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
     []
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
   const [createdTime, setCreatedTime] = useState<string>("");
-
+  const getListedNFTs = async () => {
+    if(groupId){
+      console.log("groupId", groupId);
+      const listNftResponse = await api.post("/api/getNftByGroupAndStatus", {
+        id:groupId,
+        status: "list",
+      });
+      console.log("listNftResponse", listNftResponse.data);
+      setSelectedNFTS(listNftResponse?.data);
+    }
+  }
+  useEffect(() => {
+    getListedNFTs();
+  }, [groupId])
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -146,12 +158,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     setGroupName(group_name?.data.name);
     setGroupAddress(group_name?.data.address);
     setGroupId(group_name?.data.id);
-
-    const _allNft = await api.get("/api/getAllNft").catch((error) => {
-      toast.error(error.message);
-    });
-    console.log("list nfts", _allNft?.data);
-    setAllNftData(_allNft?.data);
   };
 
   useEffect(() => {
@@ -601,7 +607,7 @@ const Home = ({ params }: { params: { id: string } }) => {
               },
             }}
           >
-            {selectedNFTS?.map((item, index) => (
+            {selectedNFTS?.filter((_nft:INFT) => _nft.id !== params.id).map((item, index) => (
               <div key={index}>
                 <SwiperSlide>
                   <NftCard
