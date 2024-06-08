@@ -12,7 +12,7 @@ import Split_line from "@/components/main/split_line";
 import "react-photo-view/dist/react-photo-view.css";
 
 import useAPI from "@/hooks/useAPI";
-import { INFT, ICOLLECTION } from "@/types";
+import { INFT } from "@/types";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract, ethers } from "ethers";
 import Marketplace_ABI from "@/constants/marketplace.json";
@@ -80,9 +80,6 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   const [currentDutchPrice, setCurrentDutchPrice] = useState<string>("");
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
-  const [collectionData, setCollectionData] = useState<ICOLLECTION | undefined>(
-    undefined
-  );
   const [allNftData, setAllNftData] = useState<INFT[] | undefined>(undefined);
   const [selectedNFTS, setSelectedNFTS] = useState<INFT[] | undefined>(
     undefined
@@ -140,7 +137,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     setData(result?.data);
     console.log("data", result?.data);
     const group_name = await api
-      .post("/api/getGroupId", {
+      .post("/api/getGroupById", {
         id: result?.data.groupid,
       })
       .catch((error) => {
@@ -367,35 +364,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const getCollectionData = async () => {
-    if (!data) return;
-    if (!allNftData) return;
-    const result = await api.post("/api/getCollectionByAddress", {
-      id: data?.collectionaddress,
-    });
-    const _collectionData: ICOLLECTION = result.data;
-    console.log("_collectionData", _collectionData);
-    setCollectionData(_collectionData);
-    const nfts_in_collection = _collectionData.nft;
-    console.log("allNftData", allNftData);
-    let _allNftData = allNftData.filter((_nft: INFT) =>
-      nfts_in_collection
-        .map((index: any) => String(index.id))
-        .includes(String(_nft.id))
-    );
-    _allNftData = _allNftData.filter(
-      (_nft: INFT) =>
-        String(_nft.id) !== String(data.id) && _nft.status !== "mint"
-    );
-    console.log("_selected nfts ", _allNftData);
-    setSelectedNFTS(_allNftData);
-  };
-
-  useEffect(() => {
-    if (!data || !allNftData) return;
-    getCollectionData();
-  }, [data, allNftData]);
-
   return (
     <>
       {bidModalState && data && (
@@ -415,7 +383,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {data && (
             <div className="lg:me-[40px] sm:me-0 border">
               <div>
-                <ImageView avatar={data.avatar} />
+                <ImageView avatar={data.content} />
               </div>
               <div>
                 <div className="flex items-center gap-3 p-2">
@@ -432,7 +400,7 @@ const Home = ({ params }: { params: { id: string } }) => {
             <div className="p-2 flex-col flex justify-between">
               <div className="flex-col">
                 <div className="text-[18px] flex gap-4">
-                  {data.collectionname} #{data.collectionid}
+                  {data.name}
                   <div className="flex items-center">
                     <TrendingIcon />
                   </div>
@@ -568,10 +536,6 @@ const Home = ({ params }: { params: { id: string } }) => {
                       {createdTime}
                     </p>
                   )}
-                  <br></br>
-                  <p className="text-gray-400">
-                    {collectionData && collectionData.description}
-                  </p>
                 </Collapse>
                 <Collapse title="History">
                   {transferHistory.length &&
@@ -643,9 +607,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                   <NftCard
                     key={index}
                     id={item.id}
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={parseInt(item.collectionid)}
+                    content={item.content}
+                    name={item.name}
+                    description={item.description}
                     price={parseInt(item.currentprice)}
                     seen={200}
                     favorite={20}
@@ -653,7 +617,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                 </SwiperSlide>
               </div>
             ))}
-          </div>
+          </Swiper>
         </div>
       </div>
 

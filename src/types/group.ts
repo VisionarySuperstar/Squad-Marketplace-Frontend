@@ -4,7 +4,6 @@ export interface IGROUP {
   description: string;
   avatar: string;
   director: string;
-  requiredconfirmnumber: string;
   member: [
     {
       id: string;
@@ -14,7 +13,7 @@ export interface IGROUP {
   soldnumber: string;
   earning: string;
   address: string;
-  is_actively_recruiting: boolean;
+  collection_address:string;
   ranking: string;
   created_at: string;
 }

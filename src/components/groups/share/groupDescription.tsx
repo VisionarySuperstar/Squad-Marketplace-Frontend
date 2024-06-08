@@ -7,12 +7,14 @@ interface GroupDescriptionProps {
   users: IUSER[];
   myGroupData: IGROUP;
   totalEarning: string;
+  description:string;
 }
 
 const GroupDescription: React.FC<GroupDescriptionProps> = ({
   users,
   myGroupData,
   totalEarning,
+  description
 }) => {
   return (
     <>
@@ -25,12 +27,7 @@ const GroupDescription: React.FC<GroupDescriptionProps> = ({
             </div>
           </div>
           <div className="mt-[20px] md:overflow-auto scrollbar md:max-h-[150px]">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem
-            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit
+            {description}
           </div>
           <div className="mt-5 text-gray-400">
             <div>MEMBERS ({users.length})</div>

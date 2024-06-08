@@ -29,7 +29,7 @@ const MyGroup = () => {
   //func
   const getJoinedGroupData = async () => {
     const response = await api
-      .post(`/api/getGroup`, { id: user?.id })
+      .post(`/api/getGroupByUser`, { id: user?.id })
       .catch((error) => {
         toast.error(error.message);
       });

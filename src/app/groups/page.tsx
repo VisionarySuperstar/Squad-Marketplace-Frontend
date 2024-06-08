@@ -6,7 +6,6 @@ import React, { useState, useEffect } from "react";
 import Sort from "@/components/groups/groupSearch/sort";
 import MyGroup from "@/components/groups/JoinedGroups";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
-import Recruiting from "@/components/groups/groupSearch/recruiting";
 import AllGroup from "@/components/groups/allGroups";
 import GeneralButton from "@/components/groups/share/generalButton";
 import Split_line from "@/components/main/split_line";
@@ -61,13 +60,6 @@ export default function GroupsPage() {
                 <ViewProgress scale={scale} setScale={setScale} />
               </div>
             )}
-            <div>
-              <Recruiting
-                recruitingState={recruitingState}
-                setRecruitingState={setRecruitingState}
-                name="ACTIVELY RECRUITING"
-              />
-            </div>
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
             <input

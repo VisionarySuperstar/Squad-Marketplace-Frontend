@@ -10,7 +10,7 @@ import Footer from "@/components/main/footer/footer";
 
 //import data
 import useAPI from "@/hooks/useAPI";
-import { IGROUP, IUSER, INFT, IPOST_NEWS, IRequest } from "@/types";
+import { IGROUP, IUSER, INFT } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
@@ -23,14 +23,12 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
   const { user } = useAuth();
   const [myGroupData, setMyGroupData] = useState<IGROUP | undefined>(undefined);
   const [nftData, setNftData] = useState<INFT[] | undefined>(undefined);
-  const [postNews, setPostNews] = useState<IPOST_NEWS[] | undefined>(undefined);
-  const [isAvailableRequest, setIsAvailableRequest] = useState<boolean>(true);
   const [isMemberOfGroup, setIsMemberOfGroup] = useState<boolean>(false);
   const api = useAPI();
 
   const getJoinedGroupData = async () => {
     const response = await api
-      .post(`/api/getGroupId`, { id: params.id })
+      .post(`/api/getGroupById`, { id: params.id })
       .catch((error) => {
         toast.error(error.message);
       });
@@ -74,69 +72,12 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
     );
     console.log("_members", _members);
     setMembers(_members);
-    const result_postNews = await api
-      .post("/api/getPostByGroupId", {
-        id: params.id,
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setPostNews(result_postNews?.data);
-  };
-
-  const checkIsAvailableRequest = async () => {
-    if (!myGroupData) return;
-    if (!user) return;
-    let flg = false;
-
-    flg = myGroupData.member.map((_user: any) => _user.id).includes(user.id);
-    if (flg) setIsMemberOfGroup(true);
-    if (!flg) {
-      const result = await api
-        .post("/api/getJoinRequestByGroupId", { id: params.id })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      console.log("result for all join request", result?.data);
-      console.log("user id", user.id);
-      const all_requests: IRequest[] = result?.data;
-      flg = all_requests
-        .map((_request: IRequest) => _request.userid.toString())
-        .includes(user.id);
-    }
-
-    setIsAvailableRequest(flg);
   };
 
   useEffect(() => {
     usersInfor();
-    checkIsAvailableRequest();
   }, [myGroupData]);
 
-  const requestJoinHandle = async () => {
-    const response = await api
-      .post(`/api/addJoinRequest`, {
-        groupId: params.id,
-        userId: user?.id,
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    toast.success("Successfully submitted join request!");
-    checkIsAvailableRequest();
-  };
-  const cancelRequestHandle = async () => {
-    const response = await api
-      .post(`/api/removeJoinRequest`, {
-        groupId: params.id,
-        userId: user?.id,
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    toast.success("Successfully canceled request!");
-    checkIsAvailableRequest();
-  };
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -186,29 +127,12 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
                 {members && myGroupData && (
                   <GroupDescription
                     users={members}
+                    description={myGroupData.description}
                     myGroupData={myGroupData}
                     totalEarning={""}
                   />
                 )}
               </div>
-            </div>
-            <div className="mt-5 xs:flex sm:justify-center xs:justify-center h-[30px] ">
-              {!isAvailableRequest && (
-                <button
-                  className="border border-chocolate-main bg-white p-1 text-chocolate-main rounded-full flex items-center pl-6 pr-6 text-md hover:bg-chocolate-main hover:text-white active:translate-y-[1px] transition-all"
-                  onClick={() => requestJoinHandle()}
-                >
-                  REQUEST TO JOIN
-                </button>
-              )}
-              {isAvailableRequest && !isMemberOfGroup && (
-                <button
-                  className="border border-chocolate-main bg-[#322A44] p-1 text-white rounded-full flex items-center pl-6 pr-6 text-md hover:bg-white hover:text-chocolate-main active:translate-y-[1px] transition-all"
-                  onClick={() => cancelRequestHandle()}
-                >
-                  CANCEL REQUEST
-                </button>
-              )}
             </div>
           </div>
         </div>
@@ -226,9 +150,9 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
               <NftCard
                 key={index}
                 id={item.id}
-                avatar={item.avatar}
-                collectionName={item.collectionname}
-                collectionId={Number(item.collectionid)}
+                content={item.content}
+                name={item.name}
+                description={item.description}
                 seen={200}
                 favorite={20}
                 price={Number(item.currentprice)}

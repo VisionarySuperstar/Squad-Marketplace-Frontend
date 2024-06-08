@@ -53,7 +53,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     console.log("auctiontype", result?.data.auctiontype);
     console.log("result", result);
     const result1 = await api
-      .post("/api/getGroupId", {
+      .post("/api/getGroupById", {
         id: result?.data.groupid,
       })
       .catch((error) => {
@@ -296,7 +296,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           {nftData && (
             <div className="lg:me-[40px] sm:me-0">
               <div className="flex justify-center">
-                <ImageView avatar={nftData.avatar} />
+                <ImageView avatar={nftData.name} />
               </div>
               <Split_line />
               <div>
@@ -313,7 +313,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div className="p-2 flex-col flex justify-between">
             <div className="flex-col">
               <div className="text-[18px] flex gap-4">
-                {nftData?.collectionname} #{nftData?.collectionid}
+                {nftData?.name}
                 <div className="flex items-center">
                   <TrendingIcon />
                 </div>

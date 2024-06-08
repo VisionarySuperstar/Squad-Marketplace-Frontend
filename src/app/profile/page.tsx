@@ -309,9 +309,9 @@ export default function Home() {
                   <NftCard
                     key={index}
                     id={item.id}
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={Number(item.collectionid)}
+                    content={item.content}
+                    name={item.name}
+                    description={item.description}
                     seen={200}
                     favorite={20}
                     price={
@@ -359,9 +359,9 @@ export default function Home() {
                   >
                     <NftCard
                       id={item.id}
-                      avatar={item.avatar}
-                      collectionName={item.collectionname}
-                      collectionId={Number(item.collectionid)}
+                      content={item.content}
+                      name={item.name}
+                      description={item.description}
                       seen={200}
                       favorite={20}
                       price={

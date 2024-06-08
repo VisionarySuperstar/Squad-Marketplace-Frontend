@@ -3,7 +3,7 @@
 import useGroupUIControlStore from "@/store/UI_control/groupPage/newgroupPage";
 import react, { useState, useEffect } from "react";
 import useAPI from "@/hooks/useAPI";
-import { IGROUP, IUSER, INFT, ICOLLECTION } from "@/types";
+import { IGROUP, IUSER, INFT } from "@/types";
 import { useRouter } from "next/navigation";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import { Contract } from "ethers";
@@ -117,7 +117,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         setIsDisplaying(true);
         setMainText("Waiting for user confirmation...");
         console.log("groupAddress", groupAddress);
-        console.log("listNft.collectionaddress ", listNft.collectionaddress);
+        console.log("listNft.collectionaddress ", );
         console.log("listNft.collectionid ", listNft.collectionid);
         const nftId = await contract.getNFTId(
           listNft.collectionaddress,

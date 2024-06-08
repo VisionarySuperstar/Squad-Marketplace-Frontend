@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Sort from "@/components/marketplace/Sort";
 import ViewProgress from "@/components/groups/groupSearch/viewProgress";
-import Recruiting from "@/components/groups/groupSearch/recruiting";
 import Carousel from "@/components/main/carousel";
 import NftCard from "@/components/main/cards/nftCard";
 import useListedNfts from "@/hooks/views/useListedNfts";
@@ -13,7 +12,6 @@ import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 import { filterNFTS, sortNFTSBy } from "@/utils/data-processing";
 import FilterPanel from "@/components/marketplace/FilterPanel";
-import useTopCollections from "@/hooks/views/useTopCollections";
 import useTopGroups from "@/hooks/views/useTopGroups";
 
 export default function MarketplacePage() {
@@ -54,7 +52,6 @@ export default function MarketplacePage() {
     setShowFilter(!showFilter);
   };
 
-  const topCollections = useTopCollections(4);
   const topGroups = useTopGroups(4);
 
   useEffect(() => {
@@ -82,13 +79,6 @@ export default function MarketplacePage() {
                   <ViewProgress scale={scale} setScale={setScale} />
                 </div>
               )}
-              <div>
-                <Recruiting
-                  recruitingState={availableState}
-                  setRecruitingState={setAvailableState}
-                  name="AVAILABLE"
-                />
-              </div>
             </div>
             <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
               <input
@@ -105,7 +95,6 @@ export default function MarketplacePage() {
               <FilterPanel
                 filter={pendingFilter}
                 setFilter={setPendingFilter}
-                collections={topCollections}
                 groups={topGroups}
               />
             </div>
@@ -127,9 +116,9 @@ export default function MarketplacePage() {
                   <NftCard
                     key={index}
                     id={item.id}
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={parseInt(item.collectionid)}
+                    content={item.content}
+                    name={item.name}
+                    description={item.description}
                     price={parseInt(item.currentprice)}
                     seen={200}
                     favorite={20}
@@ -147,9 +136,9 @@ export default function MarketplacePage() {
                   <NftCard
                     key={index}
                     id={item.id}
-                    avatar={item.avatar}
-                    collectionName={item.collectionname}
-                    collectionId={parseInt(item.collectionid)}
+                    content={item.content}
+                    name={item.name}
+                    description={item.description}
                     price={parseInt(item.currentprice)}
                     seen={200}
                     favorite={20}
