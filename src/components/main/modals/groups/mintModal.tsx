@@ -119,7 +119,7 @@ const MintModal = ({
       const _contract = new Contract(collectionAddress, NFT_ABI, signer);
       const collection_id_1 = await _contract.tokenNumber();
       console.log("collection_id: " + collection_id_1);
-      const collection_id = Number(Number(collection_id_1) - 1).toString();
+      const collection_id = Number(Number(collection_id_1) - 1).toString(); 
       console.log("collection_id", collection_id);
       setMainText("Waiting for backend process...");
 
