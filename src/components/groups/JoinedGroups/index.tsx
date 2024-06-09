@@ -73,7 +73,7 @@ const MyGroup = () => {
             <div className="flex items-center justify-center mt-5 min-h-[150px]">
               <button
                 onClick={() => setCreateGroupModalState(true)}
-                className="border border-black rounded-full pl-4 pr-4 w-[350px] text-[18px] mb-[5px] text-center flex items-center justify-center bg-white text-chocolate-main hover:bg-chocolate-main hover:text-white transition-all"
+                className="border border-black rounded-full pl-4 pr-4 w-[350px] text-[18px] mb-[5px] text-center flex items-center justify-center bg-white text-black-main hover:bg-black-main hover:text-white transition-all"
               >
                 CREATE NEW GROUP
               </button>

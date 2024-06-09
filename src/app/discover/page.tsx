@@ -12,12 +12,9 @@ import useAllNfts from "@/hooks/views/useAllNfts";
 import { useEndLoadingState } from "@/hooks/ui/useEndLoadingState";
 import useTopGroups from "@/hooks/views/useTopGroups";
 import { groupToCard, nftToCard } from "@/types";
-import {
-  getNewlyMinted,
-  getTopNfts
-} from "@/utils/data-processing";
+import { getNewlyMinted, getTopNfts } from "@/utils/data-processing";
 import Link from "next/link";
-
+import FooterBG from "@/components/main/footerbg";
 
 export default function DiscoverPage() {
   const topGroups = useTopGroups();
@@ -34,10 +31,7 @@ export default function DiscoverPage() {
         <Carousel_Component hasCaption={true} />
       </div>
 
-      <div
-        className="font-Maxeville  w-full bg-no-repeat bg-bottom pb-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      >
+      <div>
         <div className="page_container_p40 mt-5 min-h-[920px]">
           <Section
             title="TOP NFTS"
@@ -54,7 +48,7 @@ export default function DiscoverPage() {
             renderCard={(group) => <GroupCard {...groupToCard(group)} />}
           />
           <Section
-            title="NEWLY MINTED"
+            title="NEWLY LISTED"
             viewAllUrl="#"
             itemsPerRow={4}
             images={newlyMinted}
@@ -64,11 +58,12 @@ export default function DiscoverPage() {
         <div className="text-center">
           <Link
             href="/marketplace"
-            className="inline-block px-6 py-3 text-white bg-chocolate-main rounded-3xl hover:opacity-60"
+            className="inline-block px-6 py-3 text-white bg-black-main rounded-3xl hover:opacity-60"
           >
             GO TO MARKETPLACE
           </Link>
         </div>
+        <FooterBG />
       </div>
     </>
   );

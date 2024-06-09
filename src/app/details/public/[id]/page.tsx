@@ -38,7 +38,7 @@ import ImageView from "@/components/main/imageViewer";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { useNftsByGroupAndStatus } from "@/hooks/views/useNftsByGroupAndStatus";
+import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -61,11 +61,10 @@ const Home = ({ params }: { params: { id: string } }) => {
   const withdrawModalState = useMarketplaceUIControlStore(
     (state) => state.withdrawModal
   );
-
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
-  const { address, chainId, signer, chain, provider } = useActiveWeb3();
+  const { address, chainId, signer } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
     undefined
@@ -91,19 +90,19 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
   const [createdTime, setCreatedTime] = useState<string>("");
   const getListedNFTs = async () => {
-    if(groupId){
+    if (groupId) {
       console.log("groupId", groupId);
       const listNftResponse = await api.post("/api/getNftByGroupAndStatus", {
-        id:groupId,
+        id: groupId,
         status: "list",
       });
       console.log("listNftResponse", listNftResponse.data);
       setSelectedNFTS(listNftResponse?.data);
     }
-  }
+  };
   useEffect(() => {
     getListedNFTs();
-  }, [groupId])
+  }, [groupId]);
   const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
@@ -113,11 +112,6 @@ const Home = ({ params }: { params: { id: string } }) => {
     console.log("timestampInMilliseconds", timestampInMilliseconds);
     // Create a new Date object
     let date = new Date(timestampInMilliseconds);
-    // if (date.getFullYear() < 2024) {
-    //   const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
-    //   date = new Date(blockTime);
-    // }
-    // Define options for formatting
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
@@ -254,7 +248,8 @@ const Home = ({ params }: { params: { id: string } }) => {
       );
       setContentContract(_contract);
     }
-  }, [address, chainId, signer, data]);
+  }, [address, chainId, signer, data, user]);
+
   const getHistory = async () => {
     if (!contentContract) return;
     const transaction_history: transferHistoryType[] =
@@ -387,18 +382,9 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="lg:me-[40px] sm:me-0 border">
+            <div className="lg:me-[40px] sm:me-0">
               <div>
                 <ImageView avatar={data.content} />
-              </div>
-              <div>
-                <div className="flex items-center gap-3 p-2">
-                  <EyeIcon props="#322A44" />
-                  <div>200</div>
-                  <div>WATCHING</div>
-                  <HeartIcon fill="#322A44" />
-                  <div>20</div>
-                </div>
               </div>
             </div>
           )}
@@ -486,7 +472,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   data?.status !== "sold" &&
                   remainTime && (
                     <button
-                      className="w-full bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center"
+                      className="w-full bg-[#000] rounded-full text-white h-[30px] text-center flex items-center justify-center"
                       onClick={buyClick}
                     >
                       {isLoading ? (
@@ -514,7 +500,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   >
                     {data?.status !== "sold" && (
                       <button
-                        className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
+                        className="w-full bg-[#000] rounded-full text-white h-[30px]"
                         onClick={() => setBidModalState(true)}
                       >
                         BID
@@ -522,7 +508,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     )}
                     {Number(withdrawAmount) > 0 && (
                       <button
-                        className="w-full bg-[#322A44] rounded-full text-white h-[30px]"
+                        className="w-full bg-[#000] rounded-full text-white h-[30px]"
                         onClick={() => setWithdrawModalState(true)}
                       >
                         WITHDRAW
@@ -536,7 +522,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   {transferHistory && transferHistory.length && (
                     <p className="text-gray-400">
                       Minted by{" "}
-                      <span className="text-xl text-chocolate-main">
+                      <span className="text-xl text-black-main">
                         {groupName + " "}
                       </span>
                       {createdTime}
@@ -554,7 +540,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                               : key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-chocolate-main">
+                            <span className="text-xl text-black-main">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}
@@ -607,30 +593,28 @@ const Home = ({ params }: { params: { id: string } }) => {
               },
             }}
           >
-            {selectedNFTS?.filter((_nft:INFT) => _nft.id !== params.id).map((item, index) => (
-              <div key={index}>
-                <SwiperSlide>
-                  <NftCard
-                    key={index}
-                    id={item.id}
-                    content={item.content}
-                    name={item.name}
-                    description={item.description}
-                    price={parseInt(item.currentprice)}
-                    seen={200}
-                    favorite={20}
-                  />
-                </SwiperSlide>
-              </div>
-            ))}
+            {selectedNFTS
+              ?.filter((_nft: INFT) => _nft.id !== params.id)
+              .map((item, index) => (
+                <div key={index}>
+                  <SwiperSlide>
+                    <NftCard
+                      key={index}
+                      id={item.id}
+                      content={item.content}
+                      name={item.name}
+                      description={item.description}
+                      price={parseInt(item.currentprice)}
+                      seen={200}
+                      favorite={20}
+                    />
+                  </SwiperSlide>
+                </div>
+              ))}
           </Swiper>
         </div>
       </div>
-
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
     </>
   );
 };

@@ -6,9 +6,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  safelist: [
-    "h-[500px]",
-  ],
+  safelist: ["h-[500px]"],
   theme: {
     screens: {
       xs: "320px",
@@ -28,7 +26,7 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        "chocolate-main": "#322a44",
+        "black-main": "#1b1b1b",
       },
     },
   },

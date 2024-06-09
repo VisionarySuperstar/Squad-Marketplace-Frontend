@@ -8,7 +8,6 @@ import Image from "next/image";
 import Notification from "@/components/main/News&message/notifications";
 import CreateProfileModal from "@/components/main/modals/createProfileModal";
 
-
 import { Popover } from "flowbite-react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useConnectModal, useChainModal } from "@rainbow-me/rainbowkit";
@@ -190,7 +189,7 @@ const NavBar = () => {
   return (
     <>
       {profileModalState && <CreateProfileModal />}
-      
+
       {isShow && (
         <>
           <div
@@ -216,7 +215,7 @@ const NavBar = () => {
             <div className="flex justify-center w-full z-[10000]">
               <div className="font-Maxeville flex cursor-pointer justify-center">
                 <div
-                  className={`bg-chocolate-main text-white font-bold text-[18px] h-[30px] flex items-center lg:pe-[50px] lg:ps-[50px] xs:px-[20px] rounded-l-full transition-all hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-[#262329]/80 text-white font-bold text-[18px] h-[40px] flex items-center lg:pe-[50px] lg:ps-[50px] xs:px-[20px] rounded-l-full transition-all hover:bg-[#262329]/80 active:bg-[#262329]/90
             ${current === "discover" ? "md:rounded-r-full" : ""}
             ${
               current === "wallet" ? "xs:rounded-r-full lg:rounded-r-none" : ""
@@ -228,7 +227,7 @@ const NavBar = () => {
                   SQUAD
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center xs:hidden md:flex hover:bg-[#262329]/80 transition-all active:bg-[#262329]/90
             ${
               current === "discover"
                 ? "rounded-full px-[28px] mx-[2px]"
@@ -242,7 +241,7 @@ const NavBar = () => {
                   Discover
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center transition-all xs:hidden md:flex hover:bg-[#262329]/80 active:bg-[#262329]/90
             ${current === "discover" ? "rounded-l-full" : ""}
             ${current === "groups" ? "rounded-r-full" : ""}
             ${
@@ -258,7 +257,7 @@ const NavBar = () => {
                   Marketplace
                 </div>
                 <div
-                  className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:hidden md:block hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                  className={`bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center transition-all xs:hidden md:flex hover:bg-[#262329]/80 active:bg-[#262329]/90
             ${current === "marketplace" ? "rounded-l-full" : ""}
             ${current === "wallet" ? "rounded-r-full" : ""}
             ${
@@ -277,7 +276,7 @@ const NavBar = () => {
                 {!openConnectModal && openChainModal && (
                   <>
                     <div
-                      className={`relative bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:pe-[10px] lg:ps-[20px]
+                      className={`relative bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center transition-all xs:px-[10px] lg:pe-[10px] lg:ps-[20px]
                       ${
                         current === "logo"
                           ? "lg:rounded-none xs:rounded-l-full"
@@ -293,22 +292,7 @@ const NavBar = () => {
                           ? "lg:rounded-l-full xs:rounded-none"
                           : ""
                       }
-                      ${
-                        current === "connectWallet"
-                          ? "lg:rounded-l-full xs:rounded-none"
-                          : ""
-                      }
-                      ${current === "wallet" ? "rounded-full mx-[2px]" : ""}
-                       ${
-                         chainID === 11155111 &&
-                         "hover:after:content-['Sepolia']"
-                       }
-                       ${chainID === 1 && "hover:after:content-['Mainnet']"}
-                       ${chainID === 137 && "hover:after:content-['Polygon']"}
-                       hover:after:absolute
-                       hover:after:h-full
-                       hover:after:w-full
-                       hover:after:bg-chocolate-main
+
                     `}
                       onClick={() => {
                         if (user) setWalletInforModalState(true);
@@ -322,14 +306,7 @@ const NavBar = () => {
                       </div>
                     </div>
                     <div
-                      className={` rounded-r-full bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all xs:px-[10px] lg:px-[20px] hover:bg-chocolate-main/80
-                ${current === "user" ? "rounded-r-full" : ""}
-                ${current === "wallet" ? "rounded-l-full" : ""}
-                ${
-                  current === "alert"
-                    ? "rounded-full px-[18px] mx-[2px]"
-                    : "px-[10px]"
-                }
+                      className={`bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center transition-all xs:px-[10px] lg:px-[20px] hover:bg-[#262329]/80
             `}
                       onClick={() => {
                         setNotificationState(!notificationModal);
@@ -378,15 +355,9 @@ const NavBar = () => {
                       trigger="hover"
                     >
                       <div
-                        className={`bg-transparent bg-chocolate-main text-white text-[18px] h-[30px] flex items-center rounded-r-full transition-all
-                      ${current === "alert" ? "rounded-l-full" : ""}
-                      ${
-                        current === "user"
-                          ? "rounded-l-full ms-[2px] ps-[10px] pe-[20px]"
-                          : "ps-[10px] rounded-l-full pe-[20px]"
-                      }`}
+                        className={` bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center rounded-r-full transition-all px-[8px]`}
                       >
-                        <div className="flex flex-none justify-center items-center rounded-full border-white border-[2px]">
+                        <div className="flex justify-center items-center rounded-full border-green-400 border-[2px]">
                           {user && user.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <Image
@@ -412,7 +383,7 @@ const NavBar = () => {
                 )}
                 {openConnectModal && (
                   <div
-                    className={`bg-chocolate-main text-white text-[18px] h-[30px] flex items-center transition-all rounded-r-full hover:bg-chocolate-main/80 active:bg-chocolate-main/90
+                    className={`bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center transition-all rounded-r-full hover:bg-[#262329]/80 active:bg-[#262329]/90
 
                   ${current === "groups" ? "md:rounded-l-full" : ""}
                   ${
@@ -439,7 +410,7 @@ const NavBar = () => {
           >
             <div className="me-2">
               <button
-                className="border border-chocolate-main rounded-full active:translate-y-[2px] px-5 h-[30px] hover:bg-chocolate-main hover:text-white transition-all"
+                className="border-[2px] border-black-main rounded-full active:translate-y-[2px] px-5 h-[40px] hover:bg-[#262329] hover:text-white transition-all"
                 onClick={() => setCreateGroupModalState(true)}
               >
                 <p className="hidden xl:block ">NEW GROUP</p>

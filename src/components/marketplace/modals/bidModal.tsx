@@ -31,7 +31,7 @@ const BidGroupModal = ({
   groupAddress,
   groupId,
   getData,
-  withdrawAmount
+  withdrawAmount,
 }: BidGroupModalInterface) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
@@ -124,7 +124,7 @@ const BidGroupModal = ({
             currentBidder: user.name,
             reducingRate: nftData.reducingrate ? nftData.reducingrate : 0,
             listedNumber: nftData.listednumber,
-            marketplaceNumber: nftData.marketplacenumber
+            marketplaceNumber: nftData.marketplacenumber,
           })
           .catch((error) => {
             toast.error(error.message);
@@ -134,20 +134,20 @@ const BidGroupModal = ({
           Marketplace_ADDRESSES[chainId],
           BigInt(Number(bidAmount) * 1e18)
         );
-      setMainText("Waiting for transaction confirmation...");
+        setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
-      setMainText("Waiting for user confirmation...");
+        setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToOfferingSale(
           BigInt(nftData.listednumber),
           BigInt(Number(bidAmount) * 1e18)
         );
-      setMainText("Waiting for transaction confirmation...");
+        setMainText("Waiting for transaction confirmation...");
         await tx.wait();
         // const list_number = await contract.offeringSale_listedNumber(BigInt(nftData.listednumber)) ;
         const _group_contract = new Contract(groupAddress, GROUP_ABI, signer);
         const offering_number =
           await _group_contract.getNumberOfSaleOfferingTransaction();
-      setMainText("Waiting for backend process...");
+        setMainText("Waiting for backend process...");
         await api
           .post("/api/addOffering", {
             groupId: groupId,
@@ -161,32 +161,37 @@ const BidGroupModal = ({
             toast.error(error.message);
           });
       }
-      const _active_bids = await api.post("/api/getBidState", {id:user.id});
-      console.log("active bids", _active_bids.data) ;
-      let isExist ;
-      if(_active_bids) isExist = _active_bids.data.find((item:IActive_Bids) => item.nft === nftData.id);
-      console.log("isExist", isExist) ;
-      let bid_amount ;
-      if(nftData.auctiontype === "0") bid_amount = withdrawAmount;
-      else bid_amount = (Number(withdrawAmount) + Number(bidAmount)).toString() ;
-      if(!isExist) api
-        .post("/api/addBidState", {
-          bidder: user.id,
-          nft: nftData.id,
-          withdraw_amount: bid_amount
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      if(isExist) api
-        .post("/api/updateBidState", {
-          bidder: user.id,
-          nft: nftData.id,
-          withdraw_amount: bid_amount
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
+      const _active_bids = await api.post("/api/getBidState", { id: user.id });
+      console.log("active bids", _active_bids.data);
+      let isExist;
+      if (_active_bids)
+        isExist = _active_bids.data.find(
+          (item: IActive_Bids) => item.nft === nftData.id
+        );
+      console.log("isExist", isExist);
+      let bid_amount;
+      if (nftData.auctiontype === "0") bid_amount = withdrawAmount;
+      else bid_amount = (Number(withdrawAmount) + Number(bidAmount)).toString();
+      if (!isExist)
+        api
+          .post("/api/addBidState", {
+            bidder: user.id,
+            nft: nftData.id,
+            withdraw_amount: bid_amount,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
+      if (isExist)
+        api
+          .post("/api/updateBidState", {
+            bidder: user.id,
+            nft: nftData.id,
+            withdraw_amount: bid_amount,
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -204,7 +209,7 @@ const BidGroupModal = ({
   return (
     <div className="font-Maxeville">
       <div
-        className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
         onClick={() => {
           setBidModalState(false);
         }}
@@ -225,7 +230,7 @@ const BidGroupModal = ({
           >
             <path
               d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-              fill="#322A44"
+              fill="#000"
             />
           </svg>
         </div>
@@ -235,7 +240,7 @@ const BidGroupModal = ({
               <input
                 value={bidAmount}
                 onChange={(e) => setBidAmount(e.target.value)}
-                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                 type="text"
                 placeholder="3000"
               />
@@ -246,7 +251,7 @@ const BidGroupModal = ({
           </div>
           <div className="flex justify-center items-center mt-5 mb-5">
             <button
-              className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+              className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
               onClick={handleBidClick}
             >
               {isLoading ? (

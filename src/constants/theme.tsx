@@ -1,6 +1,6 @@
 const theme = {
   colors: {
-    chocolateMain: "#322a44",
+    chocolateMain: "#000",
     connectedGreen: "#24FF00",
   },
   sizes: {

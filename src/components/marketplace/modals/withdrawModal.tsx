@@ -21,7 +21,10 @@ interface WithdrawGroupModalInterface {
   withdrawAmount: string;
 }
 
-const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInterface) => {
+const WithdrawGroupModal = ({
+  nftData,
+  withdrawAmount,
+}: WithdrawGroupModalInterface) => {
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
@@ -52,7 +55,7 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
     );
     setContract(_market_contract);
   }, [address, chainId, signer, nftData]);
-  
+
   const handleWithdrawClick = async () => {
     try {
       if (!contract) throw "no contract";
@@ -69,21 +72,20 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
         const tx = await contract.withdrawFromEnglishAuction(
           BigInt(nftData.listednumber)
         );
-      setMainText("Waiting for transaction confirmation...");
+        setMainText("Waiting for transaction confirmation...");
         await tx.wait();
       } else if (Number(nftData.auctiontype) === 2) {
-        
         const tx = await contract.withdrawFromOfferingSale(
           BigInt(nftData.listednumber)
         );
-      setMainText("Waiting for transaction confirmation...");
+        setMainText("Waiting for transaction confirmation...");
         await tx.wait();
       }
       setMainText("Waiting for backend process...");
       await api.post("/api/removeBidState", {
         bidder: user.id,
-        nft: nftData.id
-      })
+        nft: nftData.id,
+      });
       setWithdrawModalState(false);
     } catch (error: any) {
       if (String(error.code) === "ACTION_REJECTED") {
@@ -99,7 +101,7 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
   return (
     <div className="">
       <div
-        className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
         onClick={() => {
           setWithdrawModalState(false);
         }}
@@ -120,7 +122,7 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
           >
             <path
               d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-              fill="#322A44"
+              fill="#000"
             />
           </svg>
         </div>
@@ -132,7 +134,7 @@ const WithdrawGroupModal = ({ nftData, withdrawAmount }: WithdrawGroupModalInter
           </div>
           <div className="flex justify-center items-center mt-5 mb-5">
             <button
-              className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex justify-center items-center"
+              className="border bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex justify-center items-center"
               onClick={handleWithdrawClick}
             >
               {isLoading ? (

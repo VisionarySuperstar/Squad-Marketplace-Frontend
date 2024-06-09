@@ -110,7 +110,7 @@ const WalletInforModal = () => {
       {walletInforModalState && (
         <div className="z-100 font-Maxeville">
           <div
-            className="bg-chocolate-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+            className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
             onClick={() => {
               setWalletInforModalState(false);
             }}
@@ -175,7 +175,7 @@ const WalletInforModal = () => {
                       to Purchase NFT
                     </div>
                     <button
-                      className="w-2/3 bg-[#322A44] rounded-full text-white h-[30px] text-center flex items-center justify-center p-5"
+                      className="w-2/3 bg-[#000] rounded-full text-white h-[30px] text-center flex items-center justify-center p-5"
                       onClick={() => {
                         setWalletInforModalState(false);
                         setMoonpayModalState(true);

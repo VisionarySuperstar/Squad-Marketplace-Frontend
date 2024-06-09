@@ -45,12 +45,16 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
   }, []);
   const [name, setName] = useState<string>("");
 
+  const close = () => {
+    setAddMemberModalState(false);
+  };
+
   return (
     <>
       <div
         className="w-[100vw] h-[100vh] fixed top-0 z-[1400]"
         onClick={() => {
-          setAddMemberModalState(false);
+          close();
         }}
       ></div>
       <div className="font-Maxeville">
@@ -58,7 +62,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
           <div
             className="closeBtn"
             onClick={() => {
-              setAddMemberModalState(false);
+              close();
             }}
           >
             <svg
@@ -70,20 +74,18 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
             >
               <path
                 d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-                fill="#322A44"
+                fill="#000"
               />
             </svg>
           </div>
           <div className="mt-3 p-3 rounded-lg">
-            <h1 className="text-center mt-2 text-chocolate-main text-lg ">
+            <h1 className="text-center mt-2 text-black-main text-lg ">
               ADD MEMBER
             </h1>
-            <h1 className="text-left text-lg text-chocolate-main mt-2">
-              USERNAME
-            </h1>
-            <div className="flex p-[1px] relative border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
+            <h1 className="text-left text-lg text-black-main mt-2">USERNAME</h1>
+            <div className="flex p-[1px] relative border rounded-[30px] border-black h-[30px] mt-2 w-1/2">
               <input
-                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
                 type="text"
                 placeholder=" E.G. 'Jack'"
                 value={name}
@@ -105,7 +107,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
                   .map((_user: IUSER, key) => (
                     <div
                       className={`flex gap-3 items-center mt-3 cursor-pointer hover:bg-indigo-300 p-2 ${
-                        selectedUser === _user && "bg-chocolate-main"
+                        selectedUser === _user && "bg-black-main"
                       }`}
                       onClick={() => setSelectedUser(_user)}
                       key={key}
@@ -128,7 +130,7 @@ const AddMemberModal = ({ addSelectedUsers }: AddMemberModalInterface) => {
               }}
             >
               <button
-                className="border bg-chocolate-main text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
+                className="border bg-black-main text-white rounded-full pl-4 pr-4 w-[380px] text-lg"
                 onClick={() => {
                   selectedUser && addSelectedUsers(selectedUser);
                 }}

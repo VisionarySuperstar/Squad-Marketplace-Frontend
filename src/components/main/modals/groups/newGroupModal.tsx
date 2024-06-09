@@ -225,6 +225,15 @@ const NewGroupModal = () => {
     }
   };
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+  }, []);
+
+  const close = () => {
+    setCreateGroupModalState(false);
+    document.body.style.overflow = "auto";
+  };
+
   return (
     <>
       {addMemberModalState && (
@@ -233,7 +242,7 @@ const NewGroupModal = () => {
       <div
         className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
         onClick={() => {
-          setCreateGroupModalState(false);
+          close();
         }}
       ></div>
       <div className="z-[1000] font-Maxeville ">
@@ -241,7 +250,7 @@ const NewGroupModal = () => {
           <div
             className="closeBtn"
             onClick={() => {
-              setCreateGroupModalState(false);
+              close();
             }}
           >
             <svg
@@ -253,13 +262,13 @@ const NewGroupModal = () => {
             >
               <path
                 d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-                fill="#322A44"
+                fill="#000"
               />
             </svg>
           </div>
 
           <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
-            <h1 className="text-center mt-2 mb-[20px] text-chocolate-main text-lg ">
+            <h1 className="text-center mt-2 mb-[20px] text-black-main text-lg ">
               CREATE A NEW GROUP
             </h1>
             <div className="height-handler overflow-auto scrollbar">
@@ -274,7 +283,7 @@ const NewGroupModal = () => {
                   />
                   <div className="absolute top-0 w-full h-full">
                     <label htmlFor="avatar" className="w-full h-full ">
-                      <div className=" text-chocolate-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center hover:bg-chocolate-main/20 active:bg-chocolate-main/30 transition-all"></div>
+                      <div className=" text-black-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center hover:bg-black-main/20 active:bg-black-main/30 transition-all"></div>
                       <input
                         hidden
                         id="avatar"
@@ -285,29 +294,29 @@ const NewGroupModal = () => {
                   </div>
                 </div>
               </div>
-              <h2 className="text-left text-lg text-chocolate-main my-3">
+              <h2 className="text-left text-lg text-black-main my-3">
                 GROUP NAME
               </h2>
               <div className="flex p-[1px] border rounded-[30px] border-chocolate-main h-[30px] mt-2 w-1/2">
                 <input
-                  className="w-full h-full bg-transparent border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                  className="w-full h-full bg-transparent border border-none outline-none outline-[0px] px-[10px] text-black-main"
                   type="text"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder=" E.G. 'TOP ARTISTS'"
                 />
               </div>
-              <h2 className="text-left text-lg text-chocolate-main my-3">
+              <h2 className="text-left text-lg text-black-main my-3">
                 GROUP DESCRIPTION
               </h2>
               <textarea
                 placeholder="Write a description..."
                 value={groupDescription}
                 onChange={(e) => setGroupDescription(e.target.value)}
-                className="mt-2 outline-none border-[1px] border-chocolate-main w-4/5 p-[10px] rounded-xl text-chocolate-main resize-none"
+                className="mt-2 outline-none border-[1px] border-chocolate-main w-4/5 p-[10px] rounded-xl text-black-main resize-none"
                 rows={4}
               />
-              <h2 className="text-left text-lg text-chocolate-main my-3">
+              <h2 className="text-left text-lg text-black-main my-3">
                 ADD MEMBERS
               </h2>
 
@@ -335,7 +344,7 @@ const NewGroupModal = () => {
               </div>
               <div className="flex justify-center items-center mt-5 mb-3">
                 <button
-                  className="border-[1px] border-chocolate-main bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg flex items-center justify-center text-center hover:bg-white hover:text-chocolate-main transition-all"
+                  className="border-[1px] border-chocolate-main bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg flex items-center justify-center text-center hover:bg-white hover:text-black-main transition-all"
                   onClick={handleSubmit}
                 >
                   {isLoading ? (

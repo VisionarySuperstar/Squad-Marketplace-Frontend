@@ -194,7 +194,7 @@ export default function Home() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="321" cy="321" r="321" fill="#322A44" />
+                <circle cx="321" cy="321" r="321" fill="#000" />
               </svg>
             </div>
             <div className="circle_2">
@@ -204,7 +204,7 @@ export default function Home() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="321" cy="321" r="321" fill="#322A44" />
+                <circle cx="321" cy="321" r="321" fill="#000" />
               </svg>
             </div>
             <div className="circle_3">
@@ -214,7 +214,7 @@ export default function Home() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="321" cy="321" r="321" fill="#322A44" />
+                <circle cx="321" cy="321" r="321" fill="#000" />
               </svg>
             </div>
             <div className="circle_4">
@@ -224,7 +224,7 @@ export default function Home() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="321" cy="321" r="321" fill="#322A44" />
+                <circle cx="321" cy="321" r="321" fill="#000" />
               </svg>
             </div>
             <div className="circle_5">
@@ -235,7 +235,7 @@ export default function Home() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="321" cy="321" r="321" fill="#322A44" />
+                <circle cx="321" cy="321" r="321" fill="#000" />
               </svg>
             </div>
             <button

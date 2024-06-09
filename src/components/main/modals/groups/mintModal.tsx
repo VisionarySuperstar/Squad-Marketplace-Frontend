@@ -18,8 +18,6 @@ import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import NftCard from "../../cards/nftCard";
 
-
-
 interface MintModalInterface {
   groupId: number;
   groupAddress: string;
@@ -92,16 +90,18 @@ const MintModal = ({
     console.log("@logoURI: ", _avatar);
     setMainText("Now uploading metadata to IPFS...");
     const _metadata = await uploadToIPFS(
-      new File([
-        JSON.stringify({
-          assetType: "image",
-          name: name,
-          description: description,
-          image: _avatar,
-        })
-      ], "metadata.json"),  
-      ({ loaded, total }: { loaded: number; total: number }) => {
-      }
+      new File(
+        [
+          JSON.stringify({
+            assetType: "image",
+            name: name,
+            description: description,
+            image: _avatar,
+          }),
+        ],
+        "metadata.json"
+      ),
+      ({ loaded, total }: { loaded: number; total: number }) => {}
     ).catch((err) => {
       console.log(err);
       throw "Project Data upload failed to IPFS. Please retry.";
@@ -119,14 +119,14 @@ const MintModal = ({
       const _contract = new Contract(collectionAddress, NFT_ABI, signer);
       const collection_id_1 = await _contract.tokenNumber();
       console.log("collection_id: " + collection_id_1);
-      const collection_id = Number(Number(collection_id_1) - 1).toString(); 
+      const collection_id = Number(Number(collection_id_1) - 1).toString();
       console.log("collection_id", collection_id);
       setMainText("Waiting for backend process...");
 
       await api
         .post("/api/addNft", {
-          name:name,
-          description:description,
+          name: name,
+          description: description,
           collectionAddress: collectionAddress,
           collectionId: collection_id,
           content: _avatar,
@@ -148,7 +148,7 @@ const MintModal = ({
         toast.error("User rejected transaction.");
       } else {
         toast.error("An error occurred. please try again");
-      } 
+      }
     } finally {
       setIsLoading(false);
       setIsDisplaying(false);
@@ -156,8 +156,7 @@ const MintModal = ({
   };
   return (
     <>
-    
-      <div className="z-100 font-Maxeville text-chocolate-main">
+      <div className="z-100 font-Maxeville text-black-main">
         <div
           className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
@@ -180,82 +179,79 @@ const MintModal = ({
             >
               <path
                 d="M1.6 16L0 14.4L6.4 8L0 1.6L1.6 0L8 6.4L14.4 0L16 1.6L9.6 8L16 14.4L14.4 16L8 9.6L1.6 16Z"
-                fill="#322A44"
+                fill="#000"
               />
             </svg>
           </div>
-            <div>
-              <h1 className="text-center mt-2 text-chocolate-main text-lg ">
-                MINT
-              </h1>
-              <div className="flex justify-center items-center mt-2">
-                <div className="content-card border bg-gray-200 relative w-1/2 ">
-                  <Image
-                    src={mintAvatar}
-                    className="w-full h-full aspect-square object-cover"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    alt="avatar"
-                  />
-                </div>
-              </div>
-              <h2 className="text-left text-lg text-chocolate-main mt-5">
-                MINTING TO
-              </h2>
-              
-                <div>
-                  <h2 className="text-left text-lg text-chocolate-main mt-2">
-                    NAME
-                  </h2>
-                  <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
-                    <input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
-                      type="text"
-                      placeholder=" E.G. 'Nature'"
-                    />
-                  </div>
-                  
-                  <h2 className="text-left text-lg text-chocolate-main mt-2">
-                    DESCRIPTION
-                  </h2>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Write a description..."
-                    className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-chocolate-main"
-                    rows={4}
-                  />
-                </div>
-
-              <div
-                className="flex justify-between items-center mt-5 mb-3"
-                onClick={() => {
-                  () => setMintModalState(false);
-                }}
-              >
-                <button
-                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
-                  onClick={handleMint}
-                >
-                  {isLoading ? (
-                    <>
-                      <Icon
-                        icon="eos-icons:bubble-loading"
-                        width={20}
-                        height={20}
-                      />{" "}
-                      PROCESSING...
-                    </>
-                  ) : (
-                    "MINT"
-                  )}
-                </button>
-
+          <div>
+            <h1 className="text-center mt-2 text-black-main text-lg ">MINT</h1>
+            <div className="flex justify-center items-center mt-2">
+              <div className="content-card border bg-gray-200 relative w-1/2 ">
+                <Image
+                  src={mintAvatar}
+                  className="w-full h-full aspect-square object-cover"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  alt="avatar"
+                />
               </div>
             </div>
+            <h2 className="text-left text-lg text-black-main mt-5">
+              MINTING TO
+            </h2>
+
+            <div>
+              <h2 className="text-left text-lg text-chocolate-main mt-2">
+                NAME
+              </h2>
+              <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                  type="text"
+                  placeholder=" E.G. 'Nature'"
+                />
+              </div>
+
+              <h2 className="text-left text-lg text-chocolate-main mt-2">
+                DESCRIPTION
+              </h2>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Write a description..."
+                className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-black-main"
+                rows={4}
+              />
+            </div>
+
+            <div
+              className="flex justify-between items-center mt-5 mb-3"
+              onClick={() => {
+                () => setMintModalState(false);
+              }}
+            >
+              <button
+                className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+                onClick={handleMint}
+              >
+                {isLoading ? (
+                  <>
+                    <Icon
+                      icon="eos-icons:bubble-loading"
+                      width={20}
+                      height={20}
+                    />{" "}
+                    PROCESSING...
+                  </>
+                ) : (
+                  "MINT"
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

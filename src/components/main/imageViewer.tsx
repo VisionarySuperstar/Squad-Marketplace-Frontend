@@ -5,6 +5,8 @@ import React, { useEffect } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import Image from "next/image";
+import HeartIcon from "../svgs/heart_icon";
+import EyeIcon from "../svgs/eye_icon";
 
 const ImageView: React.FC<{ avatar: string }> = ({ avatar }) => {
   const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);

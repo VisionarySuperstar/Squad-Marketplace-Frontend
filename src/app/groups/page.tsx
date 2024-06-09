@@ -63,7 +63,7 @@ export default function GroupsPage() {
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
             <input
-              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
               value={searchInput}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 const value = event.target.value as string;
@@ -76,7 +76,7 @@ export default function GroupsPage() {
               placeholder="SEARCH"
             />
             <button
-              className="bg-chocolate-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
+              className="bg-black-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
               onClick={() => setSearchFilter(searchInput)}
             >
               ENTER
@@ -89,7 +89,7 @@ export default function GroupsPage() {
           searchFilter={searchFilter}
           sortBy={sortBy}
         />
-        <div className="flex items-center justify-center mt-5">
+        <div className="flex items-center justify-center mt-[50px] mb-[130px]">
           <GeneralButton name={"LOAD  MORE"} />
         </div>
       </div>

@@ -19,11 +19,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 
 //import data
 
-import {
-  IUSER,
-  INFT,
-  IOFFER_TRANSACTION
-} from "@/types";
+import { IUSER, INFT, IOFFER_TRANSACTION } from "@/types";
 
 import useAuth from "@/hooks/useAuth";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
@@ -108,10 +104,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   );
   const { soldNfts, listedNfts, mintedNfts, getNFTData } =
     useNftsByGroupAndStatus(params.id);
-  const {
-    offerTransactions,
-    getOfferingTransaction,
-  } = useConfirmTransaction(params.id);
+  const { offerTransactions, getOfferingTransaction } = useConfirmTransaction(
+    params.id
+  );
 
   useEffect(() => {
     getGroupInforById();
@@ -269,8 +264,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  
-  
   const withdrawFromGroup = async () => {
     try {
       if (!contract) throw "no contract";
@@ -702,8 +695,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>SOLD ({soldNfts?.length ? soldNfts.length : "0"})</div>
-            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
-            </div>
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all"></div>
           </div>
           <ItemLoaderComponent data={soldNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
@@ -724,8 +716,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>LISTED ({listedNfts?.length})</div>
-            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
-            </div>
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all"></div>
           </div>
           <ItemLoaderComponent data={listedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
@@ -746,8 +737,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
           <Split_line />
           <div className="flex justify-between text-md mt-3">
             <div>NOT LISTED ({mintedNfts.length})</div>
-            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all">
-            </div>
+            <div className=" cursor-pointer border-b-[1px] hover:border-chocolate-main active:translate-y-[2px] transition-all"></div>
           </div>
           <ItemLoaderComponent data={mintedNfts} />
           <div className="grid grid-cols-6 gap-4 mt-5 xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 mb-[50px]">
@@ -782,9 +772,9 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       alt="uploaded content"
                     />
                     {isDirector && (
-                      <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-chocolate-main/80 rounded-lg">
+                      <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-black-main/80 rounded-lg">
                         <button
-                          className="border bg-[#322A44] text-white rounded-full w-[75%] text-[18px] h-[30px]"
+                          className="border bg-[#000] text-white rounded-full w-[75%] text-[18px] h-[30px]"
                           onClick={() => {
                             setMintModalState(true);
                             setUploadId(item);
@@ -851,30 +841,29 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       </div>
                     </div>
                     <div className="flex flex-col w-full">
-                      
                       <button
-                          className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
-                          onClick={() => {
-                            offeringExecuteHandle(
-                              offerTransactions[key],
-                              offerNfts[key]
-                            );
-                            setSelectedOfferExecuteBtn(key);
-                          }}
-                        >
-                          {selectedOfferExecuteBtn === key ? (
-                            <>
-                              <Icon
-                                icon="eos-icons:bubble-loading"
-                                width={20}
-                                height={20}
-                              />
-                              PROCESSING...
-                            </>
-                          ) : (
-                            "EXECUTE"
-                          )}
-                        </button>
+                        className="border border-chocolate-main rounded-full pl-4 pr-4 w-[200px] text-[18px] text-center flex items-center justify-center"
+                        onClick={() => {
+                          offeringExecuteHandle(
+                            offerTransactions[key],
+                            offerNfts[key]
+                          );
+                          setSelectedOfferExecuteBtn(key);
+                        }}
+                      >
+                        {selectedOfferExecuteBtn === key ? (
+                          <>
+                            <Icon
+                              icon="eos-icons:bubble-loading"
+                              width={20}
+                              height={20}
+                            />
+                            PROCESSING...
+                          </>
+                        ) : (
+                          "EXECUTE"
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -904,7 +893,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button
                 onClick={withdrawFromGroup}
-                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
+                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
               >
                 {isLoadingWithdrawButton ? (
                   <>
@@ -936,7 +925,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                 <button
                   onClick={withdrawFromMarketplace}
-                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-chocolate-main hover:text-white transition-all text-center flex items-center justify-center"
+                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center"
                 >
                   {isLoadingWithdrawMarketplaceButton ? (
                     <>

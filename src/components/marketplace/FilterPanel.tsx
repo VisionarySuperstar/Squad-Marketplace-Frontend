@@ -13,7 +13,7 @@ interface ListItemProps {
 }
 
 const ListItem = ({ text, selected, onClick }: ListItemProps) => {
-  const selectedClass = selected ? "bg-chocolate-main" : "";
+  const selectedClass = selected ? "bg-black-main" : "";
   return (
     <div className="flex gap-2.5 mt-5 items-center">
       <button

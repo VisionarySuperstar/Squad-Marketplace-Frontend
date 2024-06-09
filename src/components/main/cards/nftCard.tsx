@@ -39,7 +39,7 @@ const NftCard: React.FC<Props> = ({
           setLoadingState(true);
         }}
       >
-        <div className="transition-all absolute aspect-square top-0 left-0 content-card-menu opacity-0 text-white bg-chocolate-main/80 w-full z-10">
+        <div className="transition-all absolute aspect-square top-0 left-0 content-card-menu opacity-0 text-white bg-black-main/80 w-full z-10">
           <div>
             <div className="absolute left-4 top-4">
               {name}

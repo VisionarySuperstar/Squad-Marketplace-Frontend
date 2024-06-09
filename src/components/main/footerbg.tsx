@@ -4,8 +4,8 @@ const FooterBG = () => {
   return (
     <>
       <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[920px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
+        className="mt-[-300px] bg-cover bg-no-repeat h-[520px] w-full z-10 "
+        style={{ backgroundImage: "url('/assets/bg-1.png')" }}
       ></div>
     </>
   );

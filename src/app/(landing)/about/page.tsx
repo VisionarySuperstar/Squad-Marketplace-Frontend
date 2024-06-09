@@ -22,11 +22,11 @@ const About = () => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="24.5" cy="24.5" r="24.5" fill="#322A44" />
-            <circle cx="87.5" cy="24.5" r="24.5" fill="#322A44" />
-            <circle cx="56" cy="56" r="25" fill="#322A44" />
-            <circle cx="25" cy="87" r="25" fill="#322A44" />
-            <circle cx="88" cy="87" r="25" fill="#322A44" />
+            <circle cx="24.5" cy="24.5" r="24.5" fill="#000" />
+            <circle cx="87.5" cy="24.5" r="24.5" fill="#000" />
+            <circle cx="56" cy="56" r="25" fill="#000" />
+            <circle cx="25" cy="87" r="25" fill="#000" />
+            <circle cx="88" cy="87" r="25" fill="#000" />
           </svg>
         </div>
         <div className="join_btn">Join Waitlist</div>

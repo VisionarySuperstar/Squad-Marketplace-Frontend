@@ -17,6 +17,7 @@ import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
 import useLoadingControlStore from "@/store/UI_control/loading";
 import ImageView from "@/components/main/imageViewer";
+import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setListModalState = useGroupUIControlStore(
@@ -85,10 +86,10 @@ const Home = ({ params }: { params: { id: string } }) => {
               <Split_line />
               <div>
                 <div className="flex items-center gap-3 p-2">
-                  <EyeIcon props="#322A44" />
+                  <EyeIcon props="#000" />
                   <div>200</div>
                   <div>WATCHING</div>
-                  <HeartIcon fill="#322A44" />
+                  <HeartIcon fill="#000" />
                   <div>20</div>
                 </div>
               </div>
@@ -116,7 +117,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     LIST TO MARKETPLACE
                   </button>
                 )}
-                <div className="mt-[20px] border-[1px] border-[#322A44]"></div>
+                <div className="mt-[20px] border-[1px] border-[#000]"></div>
                 <Collapse title="Description">
                   <p>This is the content of the first collapsible section.</p>
                 </Collapse>
@@ -128,10 +129,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
     </>
   );
 };
