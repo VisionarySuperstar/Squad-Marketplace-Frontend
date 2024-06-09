@@ -89,7 +89,7 @@ export default function GroupsPage() {
           searchFilter={searchFilter}
           sortBy={sortBy}
         />
-        <div className="flex items-center justify-center mt-5">
+        <div className="flex items-center justify-center mt-[50px] mb-[130px]">
           <GeneralButton name={"LOAD  MORE"} />
         </div>
       </div>

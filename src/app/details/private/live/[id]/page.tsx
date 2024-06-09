@@ -26,6 +26,7 @@ import useDisplayingControlStore from "@/store/UI_control/displaying";
 import useLoadingControlStore from "@/store/UI_control/loading";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import ImageView from "@/components/main/imageViewer";
+import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const setIsDisplaying = useDisplayingControlStore(
@@ -421,10 +422,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
     </>
   );
 };

@@ -108,7 +108,7 @@ body {
 
 .background {
   margin-top: calc(var(--perX) * -750);
-  background-image: url("/assets/images/backgrounds/background.jpg");
+  background-image: url("/assets/images/backgrounds/background.png");
   min-height: calc(var(--perX) * 1800);
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -119,7 +119,7 @@ body {
   position: relative;
   width: 100%;
   padding: 0px;
-  margin-top: calc(var(--perX) * -1280);
+  margin-top: calc(var(--perX) * -1200);
   overflow: hidden;
   height: calc(var(--perX) * 1050);
 }
@@ -441,13 +441,11 @@ body {
   }
 }
 
-
-
 @media (max-width: 600px) {
   .height-handler {
     max-height: 100%;
   }
-  
+
   .generalModal {
     position: fixed;
     width: 100%;
@@ -607,7 +605,6 @@ body {
     transform: translate(0%, 0%);
   }
 }
-
 
 .content-card:hover .content-card-menu {
   opacity: 1;

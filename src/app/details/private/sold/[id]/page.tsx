@@ -27,6 +27,7 @@ type transferHistoryType = {
 };
 import Marketplace_ABI from "@/constants/marketplace.json";
 import { Marketplace_ADDRESSES, NetworkId } from "@/constants/config";
+import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
@@ -285,10 +286,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
-      <div
-        className="mt-[-400px] bg-cover bg-no-repeat h-[720px] w-full -z-10"
-        style={{ backgroundImage: "url('/assets/bg-1.jpg')" }}
-      ></div>
+      <FooterBG />
     </>
   );
 };
