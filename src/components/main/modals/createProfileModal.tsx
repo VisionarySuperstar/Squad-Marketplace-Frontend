@@ -40,10 +40,9 @@ const CreateProfileModal = () => {
   const [isInvalid, setIsInvalid] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { address, chain, isConnected, chainId } = useActiveWeb3();
-  const { signUp, isAuthenticated, user } = useAuth();
+  const { signUp, setCurrentUser, user } = useAuth();
   const router = useRouter();
   const api = useAPI();
-  const [user1, setUser1] = useAtom(userAtom);
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (!event.target.files) throw "no files";
@@ -86,11 +85,11 @@ const CreateProfileModal = () => {
       }
       const data = { name, email, avatar: _avatar };
       setMainText("Waiting for updating profile...");
-      if (user1) {
+      if (user) {
         console.log("update process");
         const response = await api
-          .put("/user", {
-            avatar: _avatar,
+          .post("/api/auth/user/update", {
+            avatar: _avatar === ""? user.avatar : _avatar,
             name,
             email,
           })
@@ -98,9 +97,9 @@ const CreateProfileModal = () => {
             toast.error(error.message);
           });
         if (response?.data === "Update Success") {
-          if (user1) {
-            setUser1({ ...user1, avatar: _avatar, email, name });
-          }
+          
+            setCurrentUser(_avatar === ""? user.avatar : _avatar, name, email );
+          
           setAvatar(avatar);
           toast.success("Profile Updated Successfully.");
         } else {
@@ -109,6 +108,7 @@ const CreateProfileModal = () => {
       } else {
         await signUp(data);
       }
+
       router.push("/profile");
     } catch (err) {
     } finally {
@@ -174,7 +174,7 @@ const CreateProfileModal = () => {
             className={`p-5  rounded-lg sm:h-[500px] h-[600px] flex flex-col justify-between`}
           >
             <div className="flex w-full flex-col gap-2 text-[#141416] dark:text-[#FAFCFF] justify-center mt-5">
-              <h1 className="text-lg px-1 text-center">Create Your Profile</h1>
+              <h1 className="text-lg px-1 text-center">{!user?"Create":"Edit"} Your Profile</h1>
               <div className="dark:bg-[#100E28] bg-white px-3 xs:px-6 py-6 rounded-xl ">
                 <section className="mt-5  sm:flex sm:flex-row gap-2 items-center justify-start flex-col">
                   <div className="flex justify-center">
