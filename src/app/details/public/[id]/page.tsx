@@ -69,9 +69,8 @@ const Home = ({ params }: { params: { id: string } }) => {
   const { user } = useAuth();
   const { address, chainId, signer } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
-  const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
-    undefined
-  );
+  const { contract: usdcContract, decimals } = useUSDC();
+
   const [contentContract, setContentContract] = useState<Contract | undefined>(
     undefined
   );
@@ -172,12 +171,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       signer
     );
     setContract(_contract);
-    const _usdc_contract = new Contract(
-      USDC_ADDRESS[chainId],
-      USDC_ABI,
-      signer
-    );
-    setUsdc_Contract(_usdc_contract);
   }, [address, chainId, signer]);
 
   const calcRemainTime = async () => {
@@ -199,7 +192,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     setRemainTime(endTime - currentTime);
   };
   const getWithdrawAmounts = async () => {
-    if (!contract || !data) return;
+    if (!contract || !data || !decimals) return;
     if (Number(data.auctiontype) === 0) {
       const value = await contract.withdrawBalanceForEnglishAuction(
         BigInt(data.listednumber),
@@ -221,6 +214,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       Number(data?.auctiontype) === 1 &&
       contract &&
       data &&
+      decimals &&
       data.status !== "sold"
     ) {
       const value = await contract.getDutchAuctionPrice(data?.listednumber);
@@ -231,7 +225,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     calcRemainTime();
     getWithdrawAmounts();
     getDutchAuctionPrice();
-  }, [contract, data]);
+  }, [contract, data, decimals]);
 
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
@@ -317,14 +311,15 @@ const Home = ({ params }: { params: { id: string } }) => {
   const buyClick = async () => {
     try {
       if (!contract) throw "no contract";
-      if (!usdc_contract) throw "no contract";
+      if (!usdcContract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       if (!data) throw "no data";
+      if (!decimals) throw "no decimals";
       setIsLoading(true);
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
-      const tx1 = await usdc_contract.approve(
+      const tx1 = await usdcContract.approve(
         Marketplace_ADDRESSES[chainId],
         BigInt(Number(currentDutchPrice) * 1e6)
       );

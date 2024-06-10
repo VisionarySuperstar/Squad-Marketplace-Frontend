@@ -15,6 +15,8 @@ import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import { scale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 type auctionQueryType = {
   initialPrice: string;
@@ -55,6 +57,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
+  const { symbol, decimals } = useUSDC();
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -113,6 +116,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (!contract) throw "no contract";
         if (!chainId) throw "Invalid chain id";
         if (!user) throw "You must sign in";
+        if (!decimals) throw "no decimals";
         setIsLoading(true);
         setIsDisplaying(true);
         setMainText("Waiting for user confirmation...");

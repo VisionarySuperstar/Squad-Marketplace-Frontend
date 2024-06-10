@@ -11,12 +11,12 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 
 import GROUP_ABI from "@/constants/creator_group.json";
-import USDC_ABI from "@/constants/usdc.json";
-import { USDC_ADDRESS } from "@/constants/config";
 import useAPI from "@/hooks/useAPI";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import { scale, unscale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 interface BidGroupModalInterface {
   nftData: INFT;
@@ -56,9 +56,8 @@ const BidGroupModal = ({
   const { signIn, isAuthenticated, user } = useAuth();
   const { address, chainId, signer, chain } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
-  const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
-    undefined
-  );
+  const { contract: usdcContract, symbol, decimals } = useUSDC();
+
   useEffect(() => {
     if (!address || !chainId || !signer) {
       return;
@@ -69,12 +68,6 @@ const BidGroupModal = ({
       signer
     );
     setContract(_contract);
-    const _usdc_contract = new Contract(
-      USDC_ADDRESS[chainId],
-      USDC_ABI,
-      signer
-    );
-    setUsdc_Contract(_usdc_contract);
   }, [address, chainId, signer]);
 
   const api = useAPI();
@@ -82,7 +75,7 @@ const BidGroupModal = ({
   const handleBidClick = async () => {
     try {
       if (!contract) throw "no contract";
-      if (!usdc_contract) throw "no contract";
+      if (!usdcContract || !decimals) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       setIsLoading(true);
@@ -91,9 +84,10 @@ const BidGroupModal = ({
       if (Number(nftData.auctiontype) === 0) {
         if (Number(bidAmount) <= Number(nftData.currentprice))
           throw "You must bid higher than now";
-        const tx1 = await usdc_contract.approve(
+        const tx1 = await usdcContract.approve(
           Marketplace_ADDRESSES[chainId],
           BigInt(Number(bidAmount) * 1e6)
+
         );
         setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
@@ -130,7 +124,7 @@ const BidGroupModal = ({
             toast.error(error.message);
           });
       } else if (Number(nftData.auctiontype) === 2) {
-        const tx1 = await usdc_contract.approve(
+        const tx1 = await usdcContract.approve(
           Marketplace_ADDRESSES[chainId],
           BigInt(Number(bidAmount) * 1e6)
         );
@@ -246,7 +240,7 @@ const BidGroupModal = ({
               />
             </div>
             <div className="flex items-center justify-center text-[20px]">
-              USDC
+              {symbol}
             </div>
           </div>
           <div className="flex justify-center items-center mt-5 mb-5">
