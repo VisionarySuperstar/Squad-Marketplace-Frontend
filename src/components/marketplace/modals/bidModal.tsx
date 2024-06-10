@@ -143,23 +143,26 @@ const BidGroupModal = ({
         );
         setMainText("Waiting for transaction confirmation...");
         await tx.wait();
-        // const list_number = await contract.offeringSale_listedNumber(BigInt(nftData.listednumber)) ;
+        console.log("here0");
         const _group_contract = new Contract(groupAddress, GROUP_ABI, signer);
-        const offering_number =
-          await _group_contract.getNumberOfSaleOfferingTransaction();
+        const offering_array =
+          await _group_contract.transactions_offering();
+        const  offering_number = offering_array.length; 
         setMainText("Waiting for backend process...");
+        console.log("here1");
         await api
           .post("/api/addOffering", {
             groupId: groupId,
             buyer: user.id,
             nftId: nftData.id,
-            confirm_member: JSON.stringify([]),
             price: bidAmount,
             transactionId: Number(Number(offering_number) - 1).toString(),
           })
           .catch((error) => {
             toast.error(error.message);
           });
+        console.log("here2");
+
       }
       const _active_bids = await api.post("/api/getBidState", { id: user.id });
       console.log("active bids", _active_bids.data);
