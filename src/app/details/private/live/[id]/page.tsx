@@ -27,8 +27,18 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import ImageView from "@/components/main/imageViewer";
 import FooterBG from "@/components/main/footerbg";
+import Content_ABI from "@/constants/content_nft.json";
+import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
+type transferHistoryType = {
+  from: string;
+  to: string;
+  timestamp: BigInt;
+};
 const Home = ({ params }: { params: { id: string } }) => {
+  const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
+    []
+  );
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
@@ -43,7 +53,12 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [ownerName, setOwnerName] = useState<string>("");
   const [isDirector, setIsDirector] = useState<boolean>(false);
   const api = useAPI();
-
+  const [contentContract, setContentContract] = useState<Contract | undefined>(
+    undefined
+  );
+  const [ownedName, setOwnedName] = useState<string[]>([]);
+  const [displayingTime, setDisplayingTime] = useState<string[]>([]);
+  const timeZone = useLocalTimeZone();
   const getNftData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -290,6 +305,97 @@ const Home = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  function shortenAddress(address: string) {
+    // Check if the address is valid
+    const regex = /^0x[a-fA-F0-9]{40}$/;
+    if (!regex.test(address)) {
+      return "Invalid Ethereum address";
+    }
+
+    // Truncate the address after 6 characters
+    return `${address.substring(0, 6)}...${address.substring(38)}`;
+  }
+  const getUserName = async (address: string, key: number) => {
+    console.log("key", key);
+    if (!key) {
+      const result = await api.post("/api/getGroupByAddress", { id: address });
+      console.log("here name is ", result.data.name);
+      if (result.data.name) return result.data.name;
+    }
+    const result = await api.post("/api/auth/user/getUserByAddress", {
+      id: address,
+    });
+    if (result.data.name) return result.data.name;
+    else return shortenAddress(address);
+  };
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+    console.log("timestampInMilliseconds", timestampInMilliseconds);
+    // Create a new Date object
+    let date = new Date(timestampInMilliseconds);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
+  useEffect(() => {
+    if (!address || !chainId || !signer || !nftData) {
+      return;
+    }
+    const _contract = new Contract(
+      nftData.collectionaddress,
+      Content_ABI,
+      signer
+    );
+    setContentContract(_contract);
+  }, [address, chainId, signer, nftData]);
+  useEffect(() => {
+    if (!contentContract) return;
+    getHistory();
+  }, [contentContract]);
+  const getHistory = async () => {
+    if (!contentContract) return;
+    const transaction_history: transferHistoryType[] =
+      await contentContract.getTransferHistory(
+        BigInt(String(nftData?.collectionid))
+      );
+    console.log("transaction_history", transaction_history);
+    setTransferHistory(transaction_history);
+    setOwnedName(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await getUserName(index.to, key)
+        )
+      )
+    );
+    setDisplayingTime(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await formatDateWithTimeZone(
+              Number(index.timestamp),
+              timeZone?timeZone:"America/New_York"
+            )
+        )
+      )
+    );
+  };
   return (
     <>
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
@@ -412,12 +518,37 @@ const Home = ({ params }: { params: { id: string } }) => {
             <Split_line />
             {/* <div>DESCRIPTION</div> */}
             <div className="">
-              <Collapse title="Description">
-                <p>This is the content of the first collapsible section.</p>
-              </Collapse>
-              <Collapse title="History">
-                <p>This is the content of the second collapsible section.</p>
-              </Collapse>
+            <Collapse title="Description">
+                  <p className="text-gray-400">{nftData?.description}</p>
+                </Collapse>
+                <Collapse title="History">
+                  <p className="text-gray-400">
+                    Minted by{" "}
+                    <span className="text-xl text-black-main">
+                      {groupName + " "}
+                    </span>
+                    {formatDateWithTimeZone(
+                      Number(nftData?.created_at),
+                      timeZone?timeZone:"America/New_York"
+                    )}
+                  </p>
+                  {transferHistory.length >= 1 &&
+                    transferHistory.map(
+                      (item: transferHistoryType, key: number) => {
+                        return (
+                          <p key={key} className="text-gray-400">
+                            {key === transferHistory.length - 1
+                              ? "Owner"
+                              : "Owned"}{" "}
+                            <span className="text-xl text-black-main">
+                              {ownedName[key]}
+                            </span>{" "}
+                            {displayingTime && "\t" + displayingTime[key]}
+                          </p>
+                        );
+                      }
+                    )}
+                </Collapse>
             </div>
           </div>
         </div>

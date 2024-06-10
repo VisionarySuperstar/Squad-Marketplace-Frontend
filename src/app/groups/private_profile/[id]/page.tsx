@@ -367,14 +367,14 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
   const getBalancesForWithdraw = async () => {
     if (!contract) return;
     const withdrawGroupBalance = await contract.balance(address);
-    setWithdrawAmount(Number(Number(withdrawGroupBalance) / 1e18).toString());
+    setWithdrawAmount(Number(Number(withdrawGroupBalance) / 1e6).toString());
     const totalEarningAmount = await contract.totalEarning();
-    setTotalEarning(Number(Number(totalEarningAmount) / 1e18).toString());
+    setTotalEarning(Number(Number(totalEarningAmount) / 1e6).toString());
 
     await api
       .post("/api/updateEarning", {
         id: groupInfor?.id,
-        earning: Number(Number(totalEarningAmount) / 1e18).toString(),
+        earning: Number(Number(totalEarningAmount) / 1e6).toString(),
       })
       .catch((error) => {
         toast.error(error.message);
@@ -383,7 +383,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     const withdrawMarketplaceBalance =
       await marketplaceContract.balanceOfSeller(groupInfor?.address);
     setWithdrawFromMarketplace(
-      Number(Number(withdrawMarketplaceBalance) / 1e18).toString()
+      Number(Number(withdrawMarketplaceBalance) / 1e6).toString()
     );
   };
 

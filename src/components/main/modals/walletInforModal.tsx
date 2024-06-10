@@ -45,7 +45,6 @@ const WalletInforModal = () => {
     if (!contract) return;
     const value = await contract.balanceOf(address);
     let decimal = 1e6;
-    if (chainID === 11155111) decimal = 1e18;
     const displayingValue = (Number(value) / decimal).toFixed(2);
     console.log("displayingValue", displayingValue);
     setUSDCBalance(displayingValue.toString());
