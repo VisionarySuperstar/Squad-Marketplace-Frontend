@@ -40,6 +40,7 @@ import ImageView from "@/components/main/imageViewer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import FooterBG from "@/components/main/footerbg";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const localTimeZone = useLocalTimeZone();
@@ -199,14 +200,14 @@ const Home = ({ params }: { params: { id: string } }) => {
         user?.wallet
       );
       console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e6).toString());
+      setWithdrawAmount((Number(value) / decimals).toString());
     } else if (Number(data.auctiontype) === 2) {
       const value = await contract.withdrawBalanceForOfferingSale(
         BigInt(data.listednumber),
         user?.wallet
       );
       console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e6).toString());
+      setWithdrawAmount((Number(value) / decimals).toString());
     }
   };
   const getDutchAuctionPrice = async () => {
@@ -218,7 +219,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       data.status !== "sold"
     ) {
       const value = await contract.getDutchAuctionPrice(data?.listednumber);
-      setCurrentDutchPrice((Number(value) / 1e6).toString());
+      setCurrentDutchPrice((Number(value) / decimals).toString());
     }
   };
   useEffect(() => {
@@ -321,14 +322,14 @@ const Home = ({ params }: { params: { id: string } }) => {
       setMainText("Waiting for user confirmation...");
       const tx1 = await usdcContract.approve(
         Marketplace_ADDRESSES[chainId],
-        BigInt(Number(currentDutchPrice) * 1e6)
+        BigInt(Number(currentDutchPrice) * decimals)
       );
       setMainText("Waiting for transaction confirmation...");
       await tx1.wait();
       setMainText("Waiting for user confirmation...");
       const tx = await contract.buyDutchAuction(
         BigInt(data.listednumber),
-        BigInt(Number(currentDutchPrice) * 1e6)
+        BigInt(Number(currentDutchPrice) * decimals)
       );
       setMainText("Waiting for transaction confirmation...");
       await tx.wait();

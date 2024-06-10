@@ -86,7 +86,7 @@ const BidGroupModal = ({
           throw "You must bid higher than now";
         const tx1 = await usdcContract.approve(
           Marketplace_ADDRESSES[chainId],
-          BigInt(Number(bidAmount) * 1e6)
+          BigInt(Number(bidAmount) * decimals)
 
         );
         setMainText("Waiting for transaction confirmation...");
@@ -94,7 +94,7 @@ const BidGroupModal = ({
         setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToEnglishAuction(
           BigInt(nftData.listednumber),
-          BigInt(Number(bidAmount) * 1e6)
+          BigInt(Number(bidAmount) * decimals)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx.wait();
@@ -104,7 +104,7 @@ const BidGroupModal = ({
         console.log("auction_data", auction_data);
         const current_winner = auction_data.currentWinner;
         const current_price = auction_data.currentPrice;
-        const currentPrice = Number(Number(current_price) / 1e6).toString();
+        const currentPrice = Number(Number(current_price) / decimals).toString();
         setMainText("Waiting for backend process...");
         await api
           .post("/api/updateNft", {
@@ -126,34 +126,37 @@ const BidGroupModal = ({
       } else if (Number(nftData.auctiontype) === 2) {
         const tx1 = await usdcContract.approve(
           Marketplace_ADDRESSES[chainId],
-          BigInt(Number(bidAmount) * 1e6)
+          BigInt(Number(bidAmount) * decimals)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
         setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToOfferingSale(
           BigInt(nftData.listednumber),
-          BigInt(Number(bidAmount) * 1e6)
+          BigInt(Number(bidAmount) * decimals)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx.wait();
-        // const list_number = await contract.offeringSale_listedNumber(BigInt(nftData.listednumber)) ;
+        console.log("here0");
         const _group_contract = new Contract(groupAddress, GROUP_ABI, signer);
-        const offering_number =
-          await _group_contract.getNumberOfSaleOfferingTransaction();
+        const offering_array =
+          await _group_contract.transactions_offering();
+        const  offering_number = offering_array.length; 
         setMainText("Waiting for backend process...");
+        console.log("here1");
         await api
           .post("/api/addOffering", {
             groupId: groupId,
             buyer: user.id,
             nftId: nftData.id,
-            confirm_member: JSON.stringify([]),
             price: bidAmount,
             transactionId: Number(Number(offering_number) - 1).toString(),
           })
           .catch((error) => {
             toast.error(error.message);
           });
+        console.log("here2");
+
       }
       const _active_bids = await api.post("/api/getBidState", { id: user.id });
       console.log("active bids", _active_bids.data);
