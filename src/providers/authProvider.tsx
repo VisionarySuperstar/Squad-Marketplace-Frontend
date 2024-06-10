@@ -21,6 +21,7 @@ interface IContext {
   signUp: (data: TRegister) => Promise<void>;
   isAuthenticated: boolean;
   user: IUSER | undefined;
+  setCurrentUser : (avatar:string, name:string, email:string) => void;
 }
 
 export const AuthContext = React.createContext<IContext | undefined>(undefined);
@@ -56,6 +57,18 @@ const AuthProvider = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDisconnected]);
+
+  const setCurrentUser = (_avatar: string, _name: string, _email: string) => {
+    setUser({
+      ...user,
+      avatar: _avatar,
+      email: _email,
+      name: _name,
+      id: user?.id || "",
+      wallet: user?.wallet || "",
+      join_at: user?.join_at || "",
+    });
+  };
 
   const signIn = async () => {
     try {
@@ -204,6 +217,7 @@ const AuthProvider = ({
   return (
     <AuthContext.Provider
       value={{
+        setCurrentUser,
         signIn,
         signUp,
         isAuthenticated,
