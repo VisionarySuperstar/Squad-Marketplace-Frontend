@@ -532,7 +532,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                 <Collapse title="History">
                   <p className="text-gray-400">
                     Minted by{" "}
-                    <span className="text-xl text-black-main">
+                    <span className="text-xl text-black">
                       {groupName + " "}
                     </span>
                     {formatDateWithTimeZone(

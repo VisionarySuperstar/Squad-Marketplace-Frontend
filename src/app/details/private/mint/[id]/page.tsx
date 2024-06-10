@@ -23,7 +23,6 @@ import Content_ABI from "@/constants/content_nft.json";
 import useActiveWeb3 from "@/hooks/useActiveWeb3";
 import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
-
 type transferHistoryType = {
   from: string;
   to: string;
@@ -175,7 +174,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              timeZone?timeZone:"America/New_York"
+              timeZone ? timeZone : "America/New_York"
             )
         )
       )
@@ -236,12 +235,12 @@ const Home = ({ params }: { params: { id: string } }) => {
                 <Collapse title="History">
                   <p className="text-gray-400">
                     Minted by{" "}
-                    <span className="text-xl text-black-main">
+                    <span className="text-xl text-black">
                       {groupName + " "}
                     </span>
                     {formatDateWithTimeZone(
                       Number(nftData?.created_at),
-                      timeZone?timeZone:"America/New_York"
+                      timeZone ? timeZone : "America/New_York"
                     )}
                   </p>
                   {transferHistory.length >= 1 &&
@@ -252,7 +251,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                             {key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
+                            <span className="text-xl text-black">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}

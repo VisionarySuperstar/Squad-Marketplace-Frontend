@@ -409,7 +409,7 @@ const NavBar = () => {
           >
             <div className="me-2">
               <button
-                className="border-[2px] border-black-main rounded-full active:translate-y-[2px] xs:hidden md:block px-5 h-[40px] hover:bg-[#262329] hover:text-white transition-all"
+                className="border-[2px] border-black rounded-full active:translate-y-[2px] xs:hidden md:block px-5 h-[40px] hover:bg-[#262329] hover:text-white transition-all"
                 onClick={() => setCreateGroupModalState(true)}
               >
                 <p className="hidden xl:block ">NEW GROUP</p>
