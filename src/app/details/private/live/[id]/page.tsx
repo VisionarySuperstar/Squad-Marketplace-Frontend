@@ -117,7 +117,8 @@ const Home = ({ params }: { params: { id: string } }) => {
     undefined
   );
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
-  const [isAvaliableCancelListingState, setIsAvailableCancelListingState] = useState<boolean>(true);
+  const [isAvaliableCancelListingState, setIsAvailableCancelListingState] =
+    useState<boolean>(true);
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -164,34 +165,33 @@ const Home = ({ params }: { params: { id: string } }) => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const isAvaliableCancelListing = async () =>  {
+  const isAvaliableCancelListing = async () => {
     if (!nftData) throw "no data";
-      if (!contract) throw "no contract";
-      if (!chainId) throw "Invalid chain id";
-      if (!user) throw "You must sign in";  
-      let flg = true;
-      if (Number(nftData.auctiontype) === 0) {
-        if (nftData.currentbidder !== "0x000") {
-          flg = false;
-        }
+    if (!contract) throw "no contract";
+    if (!chainId) throw "Invalid chain id";
+    if (!user) throw "You must sign in";
+    let flg = true;
+    if (Number(nftData.auctiontype) === 0) {
+      if (nftData.currentbidder !== "0x000") {
+        flg = false;
       }
-      if (Number(nftData.auctiontype) === 2) {
-        const result = await api.post("/api/getOffering", {
-          id: nftData.groupid,
-        });
-        const offering_transactions: IOFFER_TRANSACTION[] = result.data;
-        if (
-          offering_transactions
-            .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
-            .includes(nftData.id)
-        ) {
-          flg = false;
-        }
+    }
+    if (Number(nftData.auctiontype) === 2) {
+      const result = await api.post("/api/getOffering", {
+        id: nftData.groupid,
+      });
+      const offering_transactions: IOFFER_TRANSACTION[] = result.data;
+      if (
+        offering_transactions
+          .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
+          .includes(nftData.id)
+      ) {
+        flg = false;
       }
-      console.log("flg", flg);
-      setIsAvailableCancelListingState(flg) ;
-  }
-
+    }
+    console.log("flg", flg);
+    setIsAvailableCancelListingState(flg);
+  };
 
   const cancelListing = async () => {
     try {
@@ -280,7 +280,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         })
         .catch((error) => {
           toast.error(error.message);
-        })
+        });
       const _bidder_bid_state = await api.post("/api/getBidState", {
         bidder: nftData.currentbidder,
       });
@@ -373,7 +373,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   }, [contentContract]);
   const getCancelListingState = () => {
     isAvaliableCancelListing();
-  }
+  };
   const getHistory = async () => {
     if (!contentContract) return;
     const transaction_history: transferHistoryType[] =
@@ -396,7 +396,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              timeZone?timeZone:"America/New_York"
+              timeZone ? timeZone : "America/New_York"
             )
         )
       )
@@ -483,26 +483,25 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
             {isDirector && (
               <div className="flex  mt-3 mb-[35px]">
-                {
-                   isAvaliableCancelListingState &&
+                {isAvaliableCancelListingState && (
                   <button
-                  className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
-                  onClick={cancelListing}
-                >
-                  {isLoading ? (
-                    <>
-                      <Icon
-                        icon="eos-icons:bubble-loading"
-                        width={20}
-                        height={20}
-                      />{" "}
-                      PROCESSING...
-                    </>
-                  ) : (
-                    "CANCEL LISTING"
-                  )}
-                </button>
-                }
+                    className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
+                    onClick={cancelListing}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Icon
+                          icon="eos-icons:bubble-loading"
+                          width={20}
+                          height={20}
+                        />{" "}
+                        PROCESSING...
+                      </>
+                    ) : (
+                      "CANCEL LISTING"
+                    )}
+                  </button>
+                )}
                 {Number(nftData?.auctiontype) === 0 && remainTime === 0 && (
                   <button
                     className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
@@ -527,37 +526,35 @@ const Home = ({ params }: { params: { id: string } }) => {
             <Split_line />
             {/* <div>DESCRIPTION</div> */}
             <div className="">
-            <Collapse title="Description">
-                  <p className="text-gray-400">{nftData?.description}</p>
-                </Collapse>
-                <Collapse title="History">
-                  <p className="text-gray-400">
-                    Minted by{" "}
-                    <span className="text-xl text-black-main">
-                      {groupName + " "}
-                    </span>
-                    {formatDateWithTimeZone(
-                      Number(nftData?.created_at),
-                      timeZone?timeZone:"America/New_York"
-                    )}
-                  </p>
-                  {transferHistory.length >= 1 &&
-                    transferHistory.map(
-                      (item: transferHistoryType, key: number) => {
-                        return (
-                          <p key={key} className="text-gray-400">
-                            {key === transferHistory.length - 1
-                              ? "Owner"
-                              : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
-                              {ownedName[key]}
-                            </span>{" "}
-                            {displayingTime && "\t" + displayingTime[key]}
-                          </p>
-                        );
-                      }
-                    )}
-                </Collapse>
+              <Collapse title="Description">
+                <p className="text-gray-400">{nftData?.description}</p>
+              </Collapse>
+              <Collapse title="History">
+                <p className="text-gray-400">
+                  Minted by{" "}
+                  <span className="text-xl text-black">{groupName + " "}</span>
+                  {formatDateWithTimeZone(
+                    Number(nftData?.created_at),
+                    timeZone ? timeZone : "America/New_York"
+                  )}
+                </p>
+                {transferHistory.length >= 1 &&
+                  transferHistory.map(
+                    (item: transferHistoryType, key: number) => {
+                      return (
+                        <p key={key} className="text-gray-400">
+                          {key === transferHistory.length - 1
+                            ? "Owner"
+                            : "Owned"}{" "}
+                          <span className="text-xl text-black">
+                            {ownedName[key]}
+                          </span>{" "}
+                          {displayingTime && "\t" + displayingTime[key]}
+                        </p>
+                      );
+                    }
+                  )}
+              </Collapse>
             </div>
           </div>
         </div>

@@ -193,7 +193,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              timeZone?timeZone:"America/New_York"
+              timeZone ? timeZone : "America/New_York"
             )
         )
       )
@@ -267,12 +267,12 @@ const Home = ({ params }: { params: { id: string } }) => {
                 <Collapse title="History">
                   <p className="text-gray-400">
                     Minted by{" "}
-                    <span className="text-xl text-black-main">
+                    <span className="text-xl text-black">
                       {groupName + " "}
                     </span>
                     {formatDateWithTimeZone(
                       Number(nftData?.created_at),
-                      timeZone?timeZone:"America/New_York"
+                      timeZone ? timeZone : "America/New_York"
                     )}
                   </p>
                   {transferHistory.length &&

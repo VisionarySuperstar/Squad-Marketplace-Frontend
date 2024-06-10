@@ -20,21 +20,21 @@ const MoonpayModal = () => {
     <>
       {moonpayModalState && (
         <>
-          <div
-            className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
-            onClick={() => {
-              setMoonpayModalState(false);
-            }}
-          ></div>
-          <div className="font-Maxeville">
-            <div className="generalModal !w-[500px] drop-shadow-xl z-[1500] justify-center flex ">
+          <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
+            <div
+              className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
+              onClick={() => {
+                setMoonpayModalState(false);
+              }}
+            ></div>
+            <div className="generalModal !w-auto drop-shadow-xl z-[1500] justify-center flex !p-0">
               <MoonPayBuyWidget
                 variant="embedded"
                 baseCurrencyCode="usd"
                 baseCurrencyAmount="500"
                 defaultCurrencyCode="usdc"
                 visible={moonpayModalState}
-                className="w-full h-full !border-none"
+                className="w-full h-full !border-none !m-0"
               />
             </div>
           </div>

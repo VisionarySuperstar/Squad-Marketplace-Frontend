@@ -341,7 +341,7 @@ body {
 .generalModal {
   position: fixed;
   background-color: white;
-  border-radius: 15px;
+  border-radius: 20px;
   padding: 35px;
 }
 
