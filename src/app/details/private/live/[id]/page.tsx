@@ -50,6 +50,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   );
   const [nftData, setNftData] = useState<INFT>();
   const [groupName, setGroupName] = useState<string>("");
+  const [groupId, setGroupId] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
   const [isDirector, setIsDirector] = useState<boolean>(false);
   const api = useAPI();
@@ -76,6 +77,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     console.log("groupName", result1?.data.name);
+    setGroupId(result?.data.groupid);
     setGroupName(result1?.data.name);
     setGroupAddress(result1?.data.address);
     if (user?.id === result1?.data.director) setIsDirector(true);
@@ -278,7 +280,13 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-
+      await api
+        .post("/api/addSoldNumberToGroup", {
+          id: groupId,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        })
       const _bidder_bid_state = await api.post("/api/getBidState", {
         bidder: nftData.currentbidder,
       });

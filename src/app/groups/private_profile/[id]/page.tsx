@@ -249,6 +249,13 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
+        await api
+        .post("/api/addSoldNumberToGroup", {
+          id: params.id,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        })
       // getJoinedGroupData();
       getNFTData();
     } catch (error: any) {
@@ -391,79 +398,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     getBalancesForWithdraw();
   }, [contract, marketplaceContract]);
 
-  const suggestDirectorSetting = async (_num: number) => {
-    try {
-      if (!members) return;
-      if (!contract) return;
-      if (!user) return;
-      setIsLoading(true);
-      setIsDisplaying(true);
-      setMainText("Waiting for user confirmation...");
-      const members_in_group = await contract.members(0);
-      const members_in_group1 = await contract.members(1);
-      const currentDirector = await contract.director();
-      const tx = await contract.submitDirectorSettingTransaction(
-        members[_num].wallet
-      );
-      setMainText("Waiting for transaction confirmation...");
-      await tx.wait();
-      const transaction_id = await contract.getNumberOfCandidateTransaction();
-      setMainText("Waiting for backend process...");
-      await api
-        .post("/api/addDirector", {
-          groupid: groupInfor?.id,
-          new_director: members[_num].id,
-          suggester: user?.id,
-          confirm_member: JSON.stringify([]),
-          transaction_id: Number(Number(transaction_id) - 1).toString(),
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      getNFTData();
-    } catch (error: any) {
-      if (String(error.code) === "ACTION_REJECTED") {
-        toast.error("User rejected transaction.");
-      } else {
-        toast.error("An error occurred. please try again");
-      }
-    } finally {
-      setIsDisplaying(false);
-      setIsLoading(false);
-      setSelectedSuggestBtn(-1);
-    }
-  };
-
-  const sendGroupPost = async () => {
-    const now = new Date();
-    const formattedDateTime = now.toISOString();
-    // console.log("currentTime--->", formattedDateTime);
-    await api
-      .post("/api/addPost", {
-        groupId: groupInfor?.id,
-        content: newPostMessage,
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setNewPostMessage("");
-    getNFTData();
-    toast.success("Successfully posted news!");
-  };
-
-  const changeActiveState = async (_activeState: boolean) => {
-    const result = await api
-      .post("/api/updateActiveState", {
-        id: params.id,
-        activeState: _activeState,
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    setActiveState(_activeState);
-    toast.success("Successfully updated");
-  };
-
   const addMember = async (index: number) => {
     try {
       if (!contract) throw "no contract";
@@ -514,50 +448,6 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const changeConfirmNumberHandle = async () => {
-    try {
-      if (!contract) throw "no contract";
-      if (!chainId) throw "Invalid chain id";
-      if (!user) throw "You must sign in";
-      if (!groupInfor) throw "No groupdata";
-
-      if (
-        Number(requiredConfirmNumber) > groupInfor.member.length ||
-        Number(requiredConfirmNumber) < 0
-      ) {
-        toast.error("Invalid confirm number");
-        return;
-      }
-      setIsDisplaying(true);
-      setIsLoadingChangeConfirm(true);
-      setMainText("Waiting for user confirmation...");
-
-      const tx = await contract.setConfirmationRequiredNumber(
-        BigInt(requiredConfirmNumber)
-      );
-      setMainText("Waiting for transaction confirmation...");
-      await tx.wait();
-      setMainText("Waiting for backend process...");
-      const result = await api
-        .post("/api/updateGroupConfirmNumber", {
-          id: groupInfor.id,
-          confirmNumber: Number(requiredConfirmNumber).toString(),
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
-      // getJoinedGroupData();
-    } catch (error: any) {
-      if (String(error.code) === "ACTION_REJECTED") {
-        toast.error("User rejected transaction.");
-      } else {
-        toast.error("An error occurred. please try again");
-      }
-    } finally {
-      setIsDisplaying(false);
-      setIsLoadingChangeConfirm(false);
-    }
-  };
 
   const formatDateWithTimeZone = (
     timestampInSeconds: number,

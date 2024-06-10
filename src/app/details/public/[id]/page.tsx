@@ -349,7 +349,13 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-
+        await api
+        .post("/api/addSoldNumberToGroup", {
+          id: groupId,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        })
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
