@@ -129,7 +129,7 @@ const PublicGroupPage = ({ params }: { params: { id: string } }) => {
                     users={members}
                     description={myGroupData.description}
                     myGroupData={myGroupData}
-                    totalEarning={""}
+                    totalEarning={myGroupData.earning}
                   />
                 )}
               </div>

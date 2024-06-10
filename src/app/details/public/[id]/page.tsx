@@ -26,6 +26,7 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import toast from "react-hot-toast";
 import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
+import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
 import Content_ABI from "@/constants/content_nft.json";
 type transferHistoryType = {
@@ -41,6 +42,8 @@ import "swiper/css";
 import FooterBG from "@/components/main/footerbg";
 
 const Home = ({ params }: { params: { id: string } }) => {
+  const localTimeZone = useLocalTimeZone();
+
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
@@ -88,7 +91,6 @@ const Home = ({ params }: { params: { id: string } }) => {
   );
   const [ownedName, setOwnedName] = useState<string[]>([]);
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
-  const [createdTime, setCreatedTime] = useState<string>("");
   const getListedNFTs = async () => {
     if (groupId) {
       console.log("groupId", groupId);
@@ -135,11 +137,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       .catch((error) => {
         toast.error(error.message);
       });
-    const _created_time = formatDateWithTimeZone(
-      Number(result?.data.created_at),
-      "America/New_York"
-    );
-    setCreatedTime(_created_time);
     setData(result?.data);
     console.log("data", result?.data);
     const group_name = await api
@@ -272,7 +269,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              "America/New_York"
+              localTimeZone ? localTimeZone : "America/New_York"
             )
         )
       )
@@ -351,7 +348,13 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-
+      await api
+        .post("/api/addSoldNumberToGroup", {
+          id: groupId,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -419,7 +422,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                 )}
                 {Number(data?.auctiontype) !== 2 && (
                   <>
-                    <div className="text-gray-400 mt-3">Current Price</div>
+                    <div className="text-gray-400 mt-3">
+                      {data?.status === "sold" ? "Sold" : "Current"} Price
+                    </div>
                     <div className="text-[18px]">
                       {Number(data?.auctiontype) !== 1
                         ? data?.currentprice
@@ -519,25 +524,25 @@ const Home = ({ params }: { params: { id: string } }) => {
               </div>
               <div className="">
                 <Collapse title="Description">
-                  {transferHistory && transferHistory.length && (
-                    <p className="text-gray-400">
-                      Minted by{" "}
-                      <span className="text-xl text-black">
-                        {groupName + " "}
-                      </span>
-                      {createdTime}
-                    </p>
-                  )}
+                  <p className="text-gray-400">{data?.description}</p>
                 </Collapse>
-                {/* <Collapse title="History">
-                  {transferHistory.length &&
+                <Collapse title="History">
+                  <p className="text-gray-400">
+                    Minted by{" "}
+                    <span className="text-xl text-black-main">
+                      {groupName + " "}
+                    </span>
+                    {formatDateWithTimeZone(
+                      Number(data?.created_at),
+                      localTimeZone ? localTimeZone : "America/New_York"
+                    )}
+                  </p>
+                  {transferHistory.length >= 1 &&
                     transferHistory.map(
                       (item: transferHistoryType, key: number) => {
                         return (
                           <p key={key} className="text-gray-400">
-                            {!key
-                              ? "Creator"
-                              : key === transferHistory.length - 1
+                            {key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
                             <span className="text-xl text-black">
@@ -548,7 +553,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                         );
                       }
                     )}
-                </Collapse> */}
+                </Collapse>
               </div>
             </div>
           )}

@@ -27,8 +27,18 @@ import useLoadingControlStore from "@/store/UI_control/loading";
 import { Marketplace_ADDRESSES } from "@/constants/config";
 import ImageView from "@/components/main/imageViewer";
 import FooterBG from "@/components/main/footerbg";
+import Content_ABI from "@/constants/content_nft.json";
+import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
+type transferHistoryType = {
+  from: string;
+  to: string;
+  timestamp: BigInt;
+};
 const Home = ({ params }: { params: { id: string } }) => {
+  const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
+    []
+  );
   const setIsDisplaying = useDisplayingControlStore(
     (state) => state.updateDisplayingState
   );
@@ -40,10 +50,16 @@ const Home = ({ params }: { params: { id: string } }) => {
   );
   const [nftData, setNftData] = useState<INFT>();
   const [groupName, setGroupName] = useState<string>("");
+  const [groupId, setGroupId] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
   const [isDirector, setIsDirector] = useState<boolean>(false);
   const api = useAPI();
-
+  const [contentContract, setContentContract] = useState<Contract | undefined>(
+    undefined
+  );
+  const [ownedName, setOwnedName] = useState<string[]>([]);
+  const [displayingTime, setDisplayingTime] = useState<string[]>([]);
+  const timeZone = useLocalTimeZone();
   const getNftData = async () => {
     const result = await api
       .post("/api/getNftById", { id: params.id })
@@ -61,6 +77,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         toast.error(error.message);
       });
     console.log("groupName", result1?.data.name);
+    setGroupId(result?.data.groupid);
     setGroupName(result1?.data.name);
     setGroupAddress(result1?.data.address);
     if (user?.id === result1?.data.director) setIsDirector(true);
@@ -100,6 +117,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     undefined
   );
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
+  const [isAvaliableCancelListingState, setIsAvailableCancelListingState] = useState<boolean>(true);
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -146,6 +164,35 @@ const Home = ({ params }: { params: { id: string } }) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const isAvaliableCancelListing = async () =>  {
+    if (!nftData) throw "no data";
+      if (!contract) throw "no contract";
+      if (!chainId) throw "Invalid chain id";
+      if (!user) throw "You must sign in";  
+      let flg = true;
+      if (Number(nftData.auctiontype) === 0) {
+        if (nftData.currentbidder !== "0x000") {
+          flg = false;
+        }
+      }
+      if (Number(nftData.auctiontype) === 2) {
+        const result = await api.post("/api/getOffering", {
+          id: nftData.groupid,
+        });
+        const offering_transactions: IOFFER_TRANSACTION[] = result.data;
+        if (
+          offering_transactions
+            .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
+            .includes(nftData.id)
+        ) {
+          flg = false;
+        }
+      }
+      console.log("flg", flg);
+      setIsAvailableCancelListingState(flg) ;
+  }
+
+
   const cancelListing = async () => {
     try {
       if (!nftData) throw "no data";
@@ -156,47 +203,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsLoading(true);
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
-
-      const __director = await contract.director();
-      console.log("_director", __director);
-      const _name = await contract.name();
-      console.log("groupname", _name);
-
       const nftId = await contract.getNFTId(
         nftData.collectionaddress,
         BigInt(nftData.collectionid)
       );
       console.log("nftId", nftId.toString());
-      console.log("auctionType", nftData.auctiontype);
-      console.log("currentbidder", nftData.currentbidder);
-      if (Number(nftData.auctiontype) === 0) {
-        if (nftData.currentbidder !== "0x000") {
-          if (remainTime && remainTime > 0) {
-            toast.error("Auction is not ended!");
-            return;
-          } else {
-            toast.error("Already someone made a bid");
-            return;
-          }
-        }
-      }
-      if (Number(nftData.auctiontype) === 2) {
-        console.log("here");
-        const result = await api.post("/api/getOffering", {
-          id: nftData.groupid,
-        });
-        const offering_transactions: IOFFER_TRANSACTION[] = result.data;
-        console.log("offering_transactions", offering_transactions);
-        if (
-          offering_transactions
-            .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
-            .includes(nftData.id)
-        ) {
-          toast.error("Already someone made a bid");
-          return;
-        }
-      }
-
       const tx = await contract.cancelListing(nftId);
       setMainText("Waiting for transaction confirmation...");
       await tx.wait();
@@ -263,7 +274,13 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-
+      await api
+        .post("/api/addSoldNumberToGroup", {
+          id: groupId,
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        })
       const _bidder_bid_state = await api.post("/api/getBidState", {
         bidder: nftData.currentbidder,
       });
@@ -290,6 +307,101 @@ const Home = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  function shortenAddress(address: string) {
+    // Check if the address is valid
+    const regex = /^0x[a-fA-F0-9]{40}$/;
+    if (!regex.test(address)) {
+      return "Invalid Ethereum address";
+    }
+
+    // Truncate the address after 6 characters
+    return `${address.substring(0, 6)}...${address.substring(38)}`;
+  }
+  const getUserName = async (address: string, key: number) => {
+    console.log("key", key);
+    if (!key) {
+      const result = await api.post("/api/getGroupByAddress", { id: address });
+      console.log("here name is ", result.data.name);
+      if (result.data.name) return result.data.name;
+    }
+    const result = await api.post("/api/auth/user/getUserByAddress", {
+      id: address,
+    });
+    if (result.data.name) return result.data.name;
+    else return shortenAddress(address);
+  };
+  const formatDateWithTimeZone = (
+    timestampInSeconds: number,
+    timeZone: string
+  ) => {
+    // Convert the timestamp to milliseconds
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+    console.log("timestampInMilliseconds", timestampInMilliseconds);
+    // Create a new Date object
+    let date = new Date(timestampInMilliseconds);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: timeZone,
+      timeZoneName: "short",
+    };
+
+    // Format the date and time
+    const dateString = date.toLocaleString("en-US", options);
+
+    return dateString;
+  };
+  useEffect(() => {
+    if (!address || !chainId || !signer || !nftData) {
+      return;
+    }
+    const _contract = new Contract(
+      nftData.collectionaddress,
+      Content_ABI,
+      signer
+    );
+    setContentContract(_contract);
+  }, [address, chainId, signer, nftData]);
+  useEffect(() => {
+    if (!contentContract) return;
+    getHistory();
+    getCancelListingState();
+  }, [contentContract]);
+  const getCancelListingState = () => {
+    isAvaliableCancelListing();
+  }
+  const getHistory = async () => {
+    if (!contentContract) return;
+    const transaction_history: transferHistoryType[] =
+      await contentContract.getTransferHistory(
+        BigInt(String(nftData?.collectionid))
+      );
+    console.log("transaction_history", transaction_history);
+    setTransferHistory(transaction_history);
+    setOwnedName(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await getUserName(index.to, key)
+        )
+      )
+    );
+    setDisplayingTime(
+      await Promise.all(
+        transaction_history.map(
+          async (index: transferHistoryType, key: number) =>
+            await formatDateWithTimeZone(
+              Number(index.timestamp),
+              timeZone?timeZone:"America/New_York"
+            )
+        )
+      )
+    );
+  };
   return (
     <>
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
@@ -371,7 +483,9 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
             {isDirector && (
               <div className="flex  mt-3 mb-[35px]">
-                <button
+                {
+                   isAvaliableCancelListingState &&
+                  <button
                   className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
                   onClick={cancelListing}
                 >
@@ -388,7 +502,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                     "CANCEL LISTING"
                   )}
                 </button>
-                {Number(nftData?.auctiontype) === 0 && (
+                }
+                {Number(nftData?.auctiontype) === 0 && remainTime === 0 && (
                   <button
                     className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
                     onClick={endAuction}
@@ -412,12 +527,37 @@ const Home = ({ params }: { params: { id: string } }) => {
             <Split_line />
             {/* <div>DESCRIPTION</div> */}
             <div className="">
-              <Collapse title="Description">
-                <p>This is the content of the first collapsible section.</p>
-              </Collapse>
-              <Collapse title="History">
-                <p>This is the content of the second collapsible section.</p>
-              </Collapse>
+            <Collapse title="Description">
+                  <p className="text-gray-400">{nftData?.description}</p>
+                </Collapse>
+                <Collapse title="History">
+                  <p className="text-gray-400">
+                    Minted by{" "}
+                    <span className="text-xl text-black-main">
+                      {groupName + " "}
+                    </span>
+                    {formatDateWithTimeZone(
+                      Number(nftData?.created_at),
+                      timeZone?timeZone:"America/New_York"
+                    )}
+                  </p>
+                  {transferHistory.length >= 1 &&
+                    transferHistory.map(
+                      (item: transferHistoryType, key: number) => {
+                        return (
+                          <p key={key} className="text-gray-400">
+                            {key === transferHistory.length - 1
+                              ? "Owner"
+                              : "Owned"}{" "}
+                            <span className="text-xl text-black-main">
+                              {ownedName[key]}
+                            </span>{" "}
+                            {displayingTime && "\t" + displayingTime[key]}
+                          </p>
+                        );
+                      }
+                    )}
+                </Collapse>
             </div>
           </div>
         </div>
