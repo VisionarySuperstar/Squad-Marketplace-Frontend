@@ -35,6 +35,7 @@ const WalletInforModal = () => {
   const [contract, setContract] = React.useState<Contract | undefined>(
     undefined
   );
+  const {decimals} = useUSDC();
   React.useEffect(() => {
     if (!address || !chainId || !signer) {
       return;
@@ -43,14 +44,6 @@ const WalletInforModal = () => {
     const _contract = new Contract(USDC_ADDRESS[chainId], USDC_ABI, signer);
     setContract(_contract);
   }, [address, chainId, signer]);
-  const getUSDCBalance = async () => {
-    if (!contract) return;
-    const value = await contract.balanceOf(address);
-    let decimal = 1e6;
-    const displayingValue = (Number(value) / decimal).toFixed(2);
-    console.log("displayingValue", displayingValue);
-    setUSDCBalance(displayingValue.toString());
-  };
   React.useEffect(() => {
     const getUSDCBalance = async () => {
       if (!contract || !decimals) return;
