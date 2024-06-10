@@ -147,7 +147,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const getUserName = async (address: string, key: number) => {
     console.log("key", key);
     if (!key) {
-      const result = await api.post("/api/getGroupAddress", { id: address });
+      const result = await api.post("/api/getGroupByAddress", { id: address });
       console.log("here name is ", result.data.name);
       if (result.data.name) return result.data.name;
     }
@@ -272,7 +272,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                               : key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
+                            <span className="text-xl text-black">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}

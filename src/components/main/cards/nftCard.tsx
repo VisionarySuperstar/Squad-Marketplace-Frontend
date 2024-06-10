@@ -39,7 +39,7 @@ const NftCard: React.FC<Props> = ({
           setLoadingState(true);
         }}
       >
-        <div className="transition-all absolute aspect-square top-0 left-0 content-card-menu opacity-0 text-white bg-black-main/80 w-full z-10 rounded-lg">
+        <div className="transition-all absolute aspect-square top-0 left-0 content-card-menu opacity-0 text-white bg-black/80 w-full z-10 ">
           <div>
             <div className="absolute left-4 top-4">{name}</div>
             <div className="absolute left-4 bottom-4">{price} USDC</div>
@@ -51,9 +51,9 @@ const NftCard: React.FC<Props> = ({
             </div>
           </div>
         </div>
-        <div className="bg-white w-full h-full flex justify-center rounded-lg">
+        <div className="bg-white w-full h-full flex justify-center ">
           {!imageLoaded && (
-            <div className="w-full h-full absolute top-0 left-0 bg-white rounded-lg">
+            <div className="w-full h-full absolute top-0 left-0 bg-white ">
               <div className="animated-background"></div>
             </div>
           )}
@@ -64,7 +64,7 @@ const NftCard: React.FC<Props> = ({
             width={300}
             height={300}
             // className="object-contain w-auto"
-            className=" object-cover aspect-square w-full h-full rounded-lg"
+            className=" object-cover aspect-square w-full h-full "
             onLoad={() => setImageLoaded(true)}
           />
         </div>

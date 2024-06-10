@@ -93,14 +93,14 @@ const BidGroupModal = ({
           throw "You must bid higher than now";
         const tx1 = await usdc_contract.approve(
           Marketplace_ADDRESSES[chainId],
-          BigInt(Number(bidAmount) * 1e18)
+          BigInt(Number(bidAmount) * 1e6)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
         setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToEnglishAuction(
           BigInt(nftData.listednumber),
-          BigInt(Number(bidAmount) * 1e18)
+          BigInt(Number(bidAmount) * 1e6)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx.wait();
@@ -110,7 +110,7 @@ const BidGroupModal = ({
         console.log("auction_data", auction_data);
         const current_winner = auction_data.currentWinner;
         const current_price = auction_data.currentPrice;
-        const currentPrice = Number(Number(current_price) / 1e18).toString();
+        const currentPrice = Number(Number(current_price) / 1e6).toString();
         setMainText("Waiting for backend process...");
         await api
           .post("/api/updateNft", {
@@ -132,14 +132,14 @@ const BidGroupModal = ({
       } else if (Number(nftData.auctiontype) === 2) {
         const tx1 = await usdc_contract.approve(
           Marketplace_ADDRESSES[chainId],
-          BigInt(Number(bidAmount) * 1e18)
+          BigInt(Number(bidAmount) * 1e6)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx1.wait();
         setMainText("Waiting for user confirmation...");
         const tx = await contract.makeBidToOfferingSale(
           BigInt(nftData.listednumber),
-          BigInt(Number(bidAmount) * 1e18)
+          BigInt(Number(bidAmount) * 1e6)
         );
         setMainText("Waiting for transaction confirmation...");
         await tx.wait();
@@ -207,9 +207,9 @@ const BidGroupModal = ({
     setBidModalState(false);
   };
   return (
-    <div className="font-Maxeville">
+    <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
       <div
-        className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
         onClick={() => {
           setBidModalState(false);
         }}
@@ -240,7 +240,7 @@ const BidGroupModal = ({
               <input
                 value={bidAmount}
                 onChange={(e) => setBidAmount(e.target.value)}
-                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                 type="text"
                 placeholder="3000"
               />

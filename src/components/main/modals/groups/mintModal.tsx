@@ -72,7 +72,8 @@ const MintModal = ({
     const _contract = new Contract(groupAddress, GROUP_ABI, signer);
     setContract(_contract);
   }, [address, chainId, signer, groupAddress]);
-  const handleMint = async () => {
+  const handleMint = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsLoading(true);
     setIsDisplaying(true);
     // @step1 upload logo to PINATA
@@ -81,7 +82,7 @@ const MintModal = ({
       ({ loaded, total }: { loaded: number; total: number }) => {
         const value = Math.floor((Number(loaded) * 100) / Number(total));
         console.log("loaded: ", loaded, "total: ", total, "value: ", value);
-        setMainText("Uploading content to IPFS... " + value + "%");
+        setMainText("Uploading content to IPFS: " + value + "%");
       }
     ).catch((err) => {
       console.log(err);
@@ -154,20 +155,28 @@ const MintModal = ({
       setIsDisplaying(false);
     }
   };
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+  }, []);
+
+  const close = () => {
+    setMintModalState(false);
+    document.body.style.overflow = "auto";
+  };
   return (
     <>
-      <div className="z-100 font-Maxeville text-black-main">
+      <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
         <div
-          className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
           onClick={() => {
-            setMintModalState(false);
+            close();
           }}
         ></div>
-        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg p-[25px]">
+        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
           <div
             className="closeBtn"
             onClick={() => {
-              setMintModalState(false);
+              close();
             }}
           >
             <svg
@@ -184,7 +193,7 @@ const MintModal = ({
             </svg>
           </div>
           <div>
-            <h1 className="text-center mt-2 text-black-main text-lg ">MINT</h1>
+            <h1 className="text-center mt-2 text-black text-lg ">MINT</h1>
             <div className="flex justify-center items-center mt-2">
               <div className="content-card border bg-gray-200 relative w-1/2 ">
                 <Image
@@ -197,60 +206,59 @@ const MintModal = ({
                 />
               </div>
             </div>
-            <h2 className="text-left text-lg text-black-main mt-5">
-              MINTING TO
-            </h2>
-
-            <div>
-              <h2 className="text-left text-lg text-chocolate-main mt-2">
-                NAME
-              </h2>
-              <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-1/2">
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
-                  type="text"
-                  placeholder=" E.G. 'Nature'"
+            <form onSubmit={handleMint}>
+              <div>
+                <h2 className="text-left text-lg text-chocolate-main mt-2">
+                  NAME
+                </h2>
+                <div className="flex p-[1px] border rounded-[30px] border-black  h-[30px] mt-2 w-full">
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-chocolate-main"
+                    type="text"
+                    placeholder=" E.G. 'Nature'"
+                    required
+                  />
+                </div>
+                <h2 className="text-left text-lg text-chocolate-main mt-5">
+                  DESCRIPTION
+                </h2>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Write a description..."
+                  className="mt-2 outline-none border border-black w-full p-[10px] rounded-xl text-black resize-none"
+                  rows={4}
+                  required
                 />
               </div>
 
-              <h2 className="text-left text-lg text-chocolate-main mt-2">
-                DESCRIPTION
-              </h2>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Write a description..."
-                className="mt-2 outline-none border-2 border-black w-4/5 p-[10px] rounded-xl text-black-main"
-                rows={4}
-              />
-            </div>
-
-            <div
-              className="flex justify-between items-center mt-5 mb-3"
-              onClick={() => {
-                () => setMintModalState(false);
-              }}
-            >
-              <button
-                className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
-                onClick={handleMint}
+              <div
+                className="flex justify-center items-center mt-5 mb-3"
+                onClick={() => {
+                  () => setMintModalState(false);
+                }}
               >
-                {isLoading ? (
-                  <>
-                    <Icon
-                      icon="eos-icons:bubble-loading"
-                      width={20}
-                      height={20}
-                    />{" "}
-                    PROCESSING...
-                  </>
-                ) : (
-                  "MINT"
-                )}
-              </button>
-            </div>
+                <button
+                  className="border bg-[#322A44] text-white rounded-full pl-4 pr-4 w-[380px] text-lg text-center flex items-center justify-center"
+                  type="submit"
+                >
+                  {isLoading ? (
+                    <>
+                      <Icon
+                        icon="eos-icons:bubble-loading"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      PROCESSING...
+                    </>
+                  ) : (
+                    "MINT"
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

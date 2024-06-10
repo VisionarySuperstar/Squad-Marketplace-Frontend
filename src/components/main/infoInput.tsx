@@ -36,7 +36,7 @@ const Input = ({
       </div>
       <div className="flex p-[1px] border rounded-[30px] border-chocolate-main/50 h-[30px] mt-2 ">
         <input
-          className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+          className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
           type="text"
           value={value}
           onChange={onChange}

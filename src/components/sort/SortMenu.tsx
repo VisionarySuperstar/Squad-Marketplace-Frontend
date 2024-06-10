@@ -18,7 +18,7 @@ export default function SortMenu({ items, onItemSelected }: SortMenuProps) {
   return (
     <div className="cursor-pointer h-[30px] flex items-center font-Maxeville">
       <Dropdown
-        className="bg-white dark:bg-white border-none"
+        className="bg-white dark:bg-white border ms-[40px]"
         label="SORT"
         renderTrigger={() => (
           <div className="text-md flex gap-2 items-center ">

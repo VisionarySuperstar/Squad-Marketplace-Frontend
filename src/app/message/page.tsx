@@ -238,8 +238,8 @@ export default function MessagePage() {
                     className={`flex flex-col gap-1 border-b-[1px] cursor-pointer transition-all ${
                       selectedGroupListId === index &&
                       !selectedUserListId &&
-                      "bg-black-main/10"
-                    } hover:bg-black-main/5 p-3 `}
+                      "bg-black/10"
+                    } hover:bg-black/5 p-3 `}
                     onClick={() => {
                       handleGroupListItemClicked(index, item.id);
                       setSelectedUserListId(0);
@@ -279,7 +279,7 @@ export default function MessagePage() {
               ))}
             </div>
           </div>
-          <div className="h-full w-[2px] bg-black-main/10 me-[20px] xs:hidden md:block"></div>
+          <div className="h-full w-[2px] bg-black/10 me-[20px] xs:hidden md:block"></div>
           {/* Messages */}
           <div className="flex flex-col w-full md:w-4/5 justify-between">
             {selectedGroupListId === -1 && selectedUserListId === -1 ? null : (

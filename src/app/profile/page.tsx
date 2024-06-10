@@ -171,7 +171,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="sticky top-[100px] z-10 hidden md:block bg-slate-500">
+          <div className="sticky top-[100px] z-10 hidden md:block">
             <nav className="bg-white bg-opacity-95 border-b-[1px] page_container_p40 font-Maxeville">
               <div>
                 <div className="flex items-center h-16">

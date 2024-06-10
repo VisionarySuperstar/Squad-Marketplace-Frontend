@@ -22,13 +22,13 @@ const ViewProgress: React.FC<IProps> = ({ setScale, scale }) => {
          [&::-webkit-slider-thumb]:h-[24px]
          [&::-webkit-slider-thumb]:w-[24px]
          [&::-webkit-slider-thumb]:rounded-full
-       [&::-webkit-slider-thumb]:bg-black-main
+       [&::-webkit-slider-thumb]:bg-black
        [&::-moz-range-track]:bg-white 
          [&::-moz-range-thumb]:appearance-none 
          [&::-moz-range-thumb]:h-[20px] 
          [&::-moz-range-thumb]:w-[20px] 
          [&::-moz-range-thumb]:rounded-full 
-       [&::-moz-range-thumb]:bg-black-main"
+       [&::-moz-range-thumb]:bg-black"
       />
     </div>
   );

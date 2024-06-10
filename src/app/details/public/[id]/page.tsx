@@ -209,14 +209,14 @@ const Home = ({ params }: { params: { id: string } }) => {
         user?.wallet
       );
       console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
+      setWithdrawAmount((Number(value) / 1e6).toString());
     } else if (Number(data.auctiontype) === 2) {
       const value = await contract.withdrawBalanceForOfferingSale(
         BigInt(data.listednumber),
         user?.wallet
       );
       console.log("value ", value);
-      setWithdrawAmount((Number(value) / 1e18).toString());
+      setWithdrawAmount((Number(value) / 1e6).toString());
     }
   };
   const getDutchAuctionPrice = async () => {
@@ -227,7 +227,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       data.status !== "sold"
     ) {
       const value = await contract.getDutchAuctionPrice(data?.listednumber);
-      setCurrentDutchPrice((Number(value) / 1e18).toString());
+      setCurrentDutchPrice((Number(value) / 1e6).toString());
     }
   };
   useEffect(() => {
@@ -291,7 +291,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const getUserName = async (address: string, key: number) => {
     console.log("key", key);
     if (!key) {
-      const result = await api.post("/api/getGroupAddress", { id: address });
+      const result = await api.post("/api/getGroupByAddress", { id: address });
       console.log("here name is ", result.data.name);
       if (result.data.name) return result.data.name;
     }
@@ -329,14 +329,14 @@ const Home = ({ params }: { params: { id: string } }) => {
       setMainText("Waiting for user confirmation...");
       const tx1 = await usdc_contract.approve(
         Marketplace_ADDRESSES[chainId],
-        BigInt(Number(currentDutchPrice) * 1e18)
+        BigInt(Number(currentDutchPrice) * 1e6)
       );
       setMainText("Waiting for transaction confirmation...");
       await tx1.wait();
       setMainText("Waiting for user confirmation...");
       const tx = await contract.buyDutchAuction(
         BigInt(data.listednumber),
-        BigInt(Number(currentDutchPrice) * 1e18)
+        BigInt(Number(currentDutchPrice) * 1e6)
       );
       setMainText("Waiting for transaction confirmation...");
       await tx.wait();
@@ -522,7 +522,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                   {transferHistory && transferHistory.length && (
                     <p className="text-gray-400">
                       Minted by{" "}
-                      <span className="text-xl text-black-main">
+                      <span className="text-xl text-black">
                         {groupName + " "}
                       </span>
                       {createdTime}
@@ -540,7 +540,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                               : key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
+                            <span className="text-xl text-black">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}

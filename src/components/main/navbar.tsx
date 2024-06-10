@@ -123,7 +123,7 @@ const NavBar = () => {
       return (
         <div
           onClick={_handleSignIn}
-          className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+          className="flex gap-2 items-center cursor-pointer px-3 py-2 hover:bg-[#b6bcc2]"
         >
           {!isLoading ? (
             <Icon
@@ -144,7 +144,7 @@ const NavBar = () => {
             setCurrent("user");
             router.push("/profile");
           }}
-          className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+          className="flex gap-2 items-center cursor-pointer"
         >
           <Icon
             icon="material-symbols:lab-profile-outline"
@@ -158,7 +158,7 @@ const NavBar = () => {
       return (
         <div
           onClick={() => setProfileModalState(true)}
-          className="flex gap-2 items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+          className="flex gap-2 items-center cursor-pointer px-3 py-2 hover:bg-[#b6bcc2]"
         >
           <Icon
             icon="material-symbols:lab-profile-outline"
@@ -340,13 +340,12 @@ const NavBar = () => {
                     <Notification />
                     <Popover
                       content={
-                        <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
+                        <div className="px-3 py-2 border-b border-gray-200">
                           {_renderSignActions()}
                           <div
                             onClick={handleDisconnect}
-                            className="flex gap-2 rounded-b-lg items-center cursor-pointer dark:hover:bg-[#040413] px-3 py-2 hover:bg-[#b6bcc2]"
+                            className="flex gap-2 rounded-b-lg items-center cursor-pointer"
                           >
-                            <Icon icon="tabler:logout" width={20} height={20} />
                             Disconnect
                           </div>
                         </div>
@@ -373,7 +372,7 @@ const NavBar = () => {
                               icon="flowbite:user-solid"
                               width={26}
                               height={26}
-                              className="rounded-full bg-[#46455367] dark:text-black dark:bg-[#868592c4] opacity-50"
+                              className="rounded-full bg-[#46455367]"
                             />
                           )}
                         </div>
@@ -410,11 +409,10 @@ const NavBar = () => {
           >
             <div className="me-2">
               <button
-                className="border-[2px] border-black-main rounded-full active:translate-y-[2px] px-5 h-[40px] hover:bg-[#262329] hover:text-white transition-all"
+                className="border-[2px] border-black-main rounded-full active:translate-y-[2px] xs:hidden md:block px-5 h-[40px] hover:bg-[#262329] hover:text-white transition-all"
                 onClick={() => setCreateGroupModalState(true)}
               >
                 <p className="hidden xl:block ">NEW GROUP</p>
-                <p className="xl:hidden xs:block">+</p>
               </button>
             </div>
           </div>
