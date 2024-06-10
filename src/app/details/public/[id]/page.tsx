@@ -382,7 +382,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="lg:me-[40px] sm:me-0">
+            <div className="lg:me-[40px] sm:me-0 bg-[#fcfcfd] rounded-sm">
               <div>
                 <ImageView avatar={data.content} />
               </div>
@@ -495,7 +495,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     className={`grid grid-cols-1 gap-1 ${
                       data?.status === "sold"
                         ? "sm:grid-cols-1"
-                        : "sm:grid-cols-2"
+                        : "sm:grid-cols-1"
                     }`}
                   >
                     {data?.status !== "sold" && (
@@ -529,7 +529,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     </p>
                   )}
                 </Collapse>
-                <Collapse title="History">
+                {/* <Collapse title="History">
                   {transferHistory.length &&
                     transferHistory.map(
                       (item: transferHistoryType, key: number) => {
@@ -548,7 +548,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                         );
                       }
                     )}
-                </Collapse>
+                </Collapse> */}
               </div>
             </div>
           )}
@@ -557,7 +557,6 @@ const Home = ({ params }: { params: { id: string } }) => {
 
       <div>
         <div className="page_container_p40 mt-5">
-          <Split_line />
           <h1 className="text-xl my-[30px] font-Maxeville">
             MORE FROM THIS GROUP
           </h1>

@@ -106,7 +106,7 @@ export default function MarketplacePage() {
           {enableScale && (
             <div className="page_container_p40 mt-5">
               <div
-                className={`gap-3 grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4`}
+                className={`gap-[30px] grid xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4`}
                 style={{
                   gridTemplateColumns: `repeat(${Math.floor(
                     (100 - scale) / 10 + 1

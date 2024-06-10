@@ -171,7 +171,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="sticky top-[100px] z-10 hidden md:block">
+          <div className="sticky top-[100px] z-10 hidden md:block bg-slate-500">
             <nav className="bg-white bg-opacity-95 border-b-[1px] page_container_p40 font-Maxeville">
               <div>
                 <div className="flex items-center h-16">
@@ -211,14 +211,6 @@ export default function Home() {
                         >
                           COLLECTED (
                           {collectedNfts ? collectedNfts.length : "0"})
-                        </a>
-                        <a
-                          onClick={() => {
-                            scrollToElement("setting");
-                          }}
-                          className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
-                        >
-                          SETTINGS
                         </a>
                       </div>
                     </div>

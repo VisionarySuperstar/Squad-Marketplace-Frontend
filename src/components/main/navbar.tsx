@@ -193,8 +193,8 @@ const NavBar = () => {
       {isShow && (
         <>
           <div
-            className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 drop-shadow-sm z-[150] transition-all ${
-              isBackground ? " bg-white" : ""
+            className={`flex justify-between w-[100vw] fixed top-[0px] h-[100px] items-center p-3 z-[150]  ${
+              isBackground ? " bg-white " : ""
             }`}
           >
             {isBackbtn && (
@@ -357,7 +357,7 @@ const NavBar = () => {
                       <div
                         className={` bg-[#262329]/80 text-white text-[18px] h-[40px] flex items-center rounded-r-full transition-all px-[8px]`}
                       >
-                        <div className="flex justify-center items-center rounded-full border-green-400 border-[2px]">
+                        <div className="flex justify-center items-center rounded-full border-white border-[2px]">
                           {user && user.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <Image
