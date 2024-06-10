@@ -24,7 +24,7 @@ export default function useERC20(contractAddress: string | null): ERC20Data {
         contract.symbol(),
         contract.decimals(),
       ]);
-      setData({ contract, symbol, decimals });
+      setData({ contract, symbol, decimals:Math.pow(10,decimals) });
     };
     loadData();
   }, [contract]);
