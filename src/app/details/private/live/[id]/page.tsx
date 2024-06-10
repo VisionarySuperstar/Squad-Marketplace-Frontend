@@ -117,6 +117,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     undefined
   );
   const [remainTime, setRemainTime] = useState<number | undefined>(undefined);
+  const [isAvaliableCancelListingState, setIsAvailableCancelListingState] = useState<boolean>(true);
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -163,6 +164,35 @@ const Home = ({ params }: { params: { id: string } }) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const isAvaliableCancelListing = async () =>  {
+    if (!nftData) throw "no data";
+      if (!contract) throw "no contract";
+      if (!chainId) throw "Invalid chain id";
+      if (!user) throw "You must sign in";  
+      let flg = true;
+      if (Number(nftData.auctiontype) === 0) {
+        if (nftData.currentbidder !== "0x000") {
+          flg = false;
+        }
+      }
+      if (Number(nftData.auctiontype) === 2) {
+        const result = await api.post("/api/getOffering", {
+          id: nftData.groupid,
+        });
+        const offering_transactions: IOFFER_TRANSACTION[] = result.data;
+        if (
+          offering_transactions
+            .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
+            .includes(nftData.id)
+        ) {
+          flg = false;
+        }
+      }
+      console.log("flg", flg);
+      setIsAvailableCancelListingState(flg) ;
+  }
+
+
   const cancelListing = async () => {
     try {
       if (!nftData) throw "no data";
@@ -173,47 +203,11 @@ const Home = ({ params }: { params: { id: string } }) => {
       setIsLoading(true);
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
-
-      const __director = await contract.director();
-      console.log("_director", __director);
-      const _name = await contract.name();
-      console.log("groupname", _name);
-
       const nftId = await contract.getNFTId(
         nftData.collectionaddress,
         BigInt(nftData.collectionid)
       );
       console.log("nftId", nftId.toString());
-      console.log("auctionType", nftData.auctiontype);
-      console.log("currentbidder", nftData.currentbidder);
-      if (Number(nftData.auctiontype) === 0) {
-        if (nftData.currentbidder !== "0x000") {
-          if (remainTime && remainTime > 0) {
-            toast.error("Auction is not ended!");
-            return;
-          } else {
-            toast.error("Already someone made a bid");
-            return;
-          }
-        }
-      }
-      if (Number(nftData.auctiontype) === 2) {
-        console.log("here");
-        const result = await api.post("/api/getOffering", {
-          id: nftData.groupid,
-        });
-        const offering_transactions: IOFFER_TRANSACTION[] = result.data;
-        console.log("offering_transactions", offering_transactions);
-        if (
-          offering_transactions
-            .map((_offer: IOFFER_TRANSACTION) => _offer.nftid)
-            .includes(nftData.id)
-        ) {
-          toast.error("Already someone made a bid");
-          return;
-        }
-      }
-
       const tx = await contract.cancelListing(nftId);
       setMainText("Waiting for transaction confirmation...");
       await tx.wait();
@@ -375,7 +369,11 @@ const Home = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     if (!contentContract) return;
     getHistory();
+    getCancelListingState();
   }, [contentContract]);
+  const getCancelListingState = () => {
+    isAvaliableCancelListing();
+  }
   const getHistory = async () => {
     if (!contentContract) return;
     const transaction_history: transferHistoryType[] =
@@ -485,7 +483,9 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
             {isDirector && (
               <div className="flex  mt-3 mb-[35px]">
-                <button
+                {
+                   isAvaliableCancelListingState &&
+                  <button
                   className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
                   onClick={cancelListing}
                 >
@@ -502,7 +502,8 @@ const Home = ({ params }: { params: { id: string } }) => {
                     "CANCEL LISTING"
                   )}
                 </button>
-                {Number(nftData?.auctiontype) === 0 && (
+                }
+                {Number(nftData?.auctiontype) === 0 && remainTime === 0 && (
                   <button
                     className="w-full bg-[#000] rounded-full text-white h-[30px] flex justify-center items-center text-center"
                     onClick={endAuction}
