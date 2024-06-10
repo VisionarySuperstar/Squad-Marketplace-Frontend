@@ -18,6 +18,7 @@ import Toggle from "@/components/main/toggle";
 import ItemLoaderComponent from "@/components/main/itemLoader";
 import useAPI from "@/hooks/useAPI";
 import toast from "react-hot-toast";
+import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 import FooterBG from "@/components/main/footerbg";
 
 export default function Home() {
@@ -89,7 +90,7 @@ export default function Home() {
   const activeBids = useActiveBids();
   const [collectedNfts, setCollectedNfts] = useState<INFT[]>([]);
   const [bidNfts, setBidNfts] = useState<INFT[]>([]);
-
+  const timeZone = useLocalTimeZone();
   useEffect(() => {
     if (!allNfts) return;
     setCollectedNfts(
@@ -137,7 +138,7 @@ export default function Home() {
                     <div>
                       {formatDateWithTimeZone(
                         Number(user.join_at),
-                        "America/New_York"
+                        timeZone?timeZone:"America/New_York"
                       )}
                     </div>
                   </div>

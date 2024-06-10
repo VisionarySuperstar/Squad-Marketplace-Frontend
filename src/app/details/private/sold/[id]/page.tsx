@@ -19,6 +19,7 @@ import { Contract, ethers } from "ethers";
 import USDC_ABI from "@/constants/usdc.json";
 import { USDC_ADDRESS } from "@/constants/config";
 import Content_ABI from "@/constants/content_nft.json";
+import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
 type transferHistoryType = {
   from: string;
@@ -33,11 +34,14 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [transferHistory, setTransferHistory] = useState<transferHistoryType[]>(
     []
   );
+  const timeZone = useLocalTimeZone();
+
   const [ownedName, setOwnedName] = useState<string[]>([]);
   const [displayingTime, setDisplayingTime] = useState<string[]>([]);
   const [nftData, setNftData] = useState<INFT>();
   const [groupName, setGroupName] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
+
   const api = useAPI();
   const setLoadingState = useLoadingControlStore(
     (state) => state.updateLoadingState
@@ -96,20 +100,15 @@ const Home = ({ params }: { params: { id: string } }) => {
     const block = await provider.getBlock(blockNumber);
     return Number(block.timestamp) * 1000;
   };
-  const formatDateWithTimeZone = async (
+  const formatDateWithTimeZone = (
     timestampInSeconds: number,
     timeZone: string
   ) => {
     // Convert the timestamp to milliseconds
     const timestampInMilliseconds = timestampInSeconds * 1000;
-
+    console.log("timestampInMilliseconds", timestampInMilliseconds);
     // Create a new Date object
     let date = new Date(timestampInMilliseconds);
-    if (date.getFullYear() < 2024) {
-      const blockTime = await calcTimeFromBlockNumber(timestampInSeconds);
-      date = new Date(blockTime);
-    }
-    // Define options for formatting
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
@@ -147,7 +146,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const getUserName = async (address: string, key: number) => {
     console.log("key", key);
     if (!key) {
-      const result = await api.post("/api/getGroupAddress", { id: address });
+      const result = await api.post("/api/getGroupByAddress", { id: address });
       console.log("here name is ", result.data.name);
       if (result.data.name) return result.data.name;
     }
@@ -168,6 +167,10 @@ const Home = ({ params }: { params: { id: string } }) => {
     );
     setContentContract(_contract);
   }, [address, chainId, signer, nftData]);
+  useEffect(() => {
+    if (!contentContract) return;
+    getHistory();
+  }, [contentContract]);
   const getHistory = async () => {
     if (!contentContract) return;
     const transaction_history: transferHistoryType[] =
@@ -190,7 +193,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              "America/New_York"
+              timeZone?timeZone:"America/New_York"
             )
         )
       )
@@ -259,17 +262,25 @@ const Home = ({ params }: { params: { id: string } }) => {
               {/* <div>DESCRIPTION</div> */}
               <div className="">
                 <Collapse title="Description">
-                  <p>This is the content of the first collapsible section.</p>
+                  <p className="text-gray-400">{nftData?.description}</p>
                 </Collapse>
                 <Collapse title="History">
+                  <p className="text-gray-400">
+                    Minted by{" "}
+                    <span className="text-xl text-black-main">
+                      {groupName + " "}
+                    </span>
+                    {formatDateWithTimeZone(
+                      Number(nftData?.created_at),
+                      timeZone?timeZone:"America/New_York"
+                    )}
+                  </p>
                   {transferHistory.length &&
                     transferHistory.map(
                       (item: transferHistoryType, key: number) => {
                         return (
                           <p key={key} className="text-gray-400">
-                            {!key
-                              ? "Creator"
-                              : key === transferHistory.length - 1
+                            {key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
                             <span className="text-xl text-black-main">

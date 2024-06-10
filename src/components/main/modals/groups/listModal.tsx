@@ -134,7 +134,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (auctionType === 0) {
           const tx = await contract.listToEnglishAuction(
             nftId,
-            BigInt(Number(auctionQuery.initialPrice) * 1e18),
+            BigInt(Number(auctionQuery.initialPrice) * 1e6),
             BigInt(_salePeriod)
           );
           setMainText("Waiting for transaction confirmation...");
@@ -145,8 +145,8 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         } else if (auctionType === 1) {
           const tx = await contract.listToDutchAuction(
             nftId,
-            BigInt(Number(auctionQuery.initialPrice) * 1e18),
-            BigInt(Number(auctionQuery.reducingRate) * 1e18),
+            BigInt(Number(auctionQuery.initialPrice) * 1e6),
+            BigInt(Number(auctionQuery.reducingRate) * 1e6),
             BigInt(_salePeriod)
           );
           setMainText("Waiting for transaction confirmation...");
@@ -155,7 +155,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         } else {
           const tx = await contract.listToOfferingSale(
             nftId,
-            BigInt(Number(auctionQuery.initialPrice) * 1e18)
+            BigInt(Number(auctionQuery.initialPrice) * 1e6)
           );
           setMainText("Waiting for transaction confirmation...");
           await tx.wait();
