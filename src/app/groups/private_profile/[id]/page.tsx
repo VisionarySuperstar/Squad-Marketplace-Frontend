@@ -519,7 +519,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                     users={members}
                     description={groupInfor?.description}
                     myGroupData={groupInfor}
-                    totalEarning={totalEarning}
+                    totalEarning={groupInfor?.earning}
                   />
                 )}
               </div>
