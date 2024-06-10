@@ -467,6 +467,13 @@ const Home = ({ params }: { params: { id: string } }) => {
                       <div className="text-[18px]">{data?.currentbidder}</div>
                     </>
                   )}
+                {
+                  Number(withdrawAmount) > 0 &&
+                  <>
+                      <div className="text-gray-400 mt-3">Withdraw Amount</div>
+                      <div className="text-[18px]">{withdrawAmount} USDC</div>
+                    </>
+                }
               </div>
               <div className="flex flex-col mt-3 mb-[35px]">
                 {Number(data?.auctiontype) === 1 &&
@@ -507,7 +514,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                         BID
                       </button>
                     )}
-                    {Number(withdrawAmount) > 0 && (
+                    {Number(withdrawAmount) > 0 && ((Number(data?.auctiontype) === 0) || ((Number(data?.auctiontype) === 2) && data?.status === "sold")) && (
                       <button
                         className="w-full bg-[#000] rounded-full text-white h-[30px]"
                         onClick={() => setWithdrawModalState(true)}
