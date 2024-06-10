@@ -662,7 +662,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
                       alt="uploaded content"
                     />
                     {isDirector && (
-                      <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-black-main/80 rounded-lg">
+                      <div className="content-card-menu hidden justify-center gap-1 flex-col items-center absolute top-0 w-full h-full bg-black/80 rounded-lg">
                         <button
                           className="border bg-[#000] text-white rounded-full w-[75%] text-[18px] h-[30px]"
                           onClick={() => {
@@ -783,7 +783,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
             <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
               <button
                 onClick={withdrawFromGroup}
-                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
+                className="border border-chocolate-main rounded-full px-[50px] text-lg hover:bg-black hover:text-white transition-all text-center flex items-center justify-center xs:w-full md:w-auto"
               >
                 {isLoadingWithdrawButton ? (
                   <>
@@ -815,7 +815,7 @@ const PrivateGroupProfile = ({ params }: { params: { id: string } }) => {
               <div className="lg:block xs:flex xs:justify-center xs:mt-5 lg:mt-0 lg:ms-[25px]">
                 <button
                   onClick={withdrawFromMarketplace}
-                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-black-main hover:text-white transition-all text-center flex items-center justify-center"
+                  className="border border-chocolate-main rounded-full px-[50px] xs:w-full md:w-auto text-lg hover:bg-black hover:text-white transition-all text-center flex items-center justify-center"
                 >
                   {isLoadingWithdrawMarketplaceButton ? (
                     <>

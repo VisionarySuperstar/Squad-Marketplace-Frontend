@@ -3,8 +3,6 @@
 import useDisplayingControlStore from "@/store/UI_control/displaying";
 import React, { useEffect, useRef } from "react";
 
-
-
 const LoadingScreen: React.FC = () => {
   const isDisplaying = useDisplayingControlStore((state) => state.displaying);
   const setIsDisplaying = useDisplayingControlStore(
@@ -17,10 +15,10 @@ const LoadingScreen: React.FC = () => {
   return (
     <>
       {isDisplaying ? (
-        <div className="fixed w-full h-[100vh] top-0 z-[9000] bg-black/20">
+        <div className="fixed w-full h-[100vh] top-0 z-[9000] bg-black/80">
           <div className="w-full h-full flex flex-col justify-center items-center">
             <div className="loader"></div>
-            <div className="text-center mt-[50px] text-white text-2xl">
+            <div className="text-center mt-[50px] text-white text-2xl font-Maxeville">
               {mainText}
             </div>
           </div>

@@ -52,7 +52,7 @@ export default function GroupsPage() {
         <Split_line />
         <h1 className="my-5 text-lg">GROUP SEARCH</h1>
         <Split_line />
-        <div className="my-5 lg:flex items-center justify-between sm:grid sm:grid-cols-1">
+        <div className="my-5 lg:flex items-center justify-between sm:grid sm:grid-cols-1 bg-white">
           <div className="flex justify-between w-[60%] mt-2">
             <Sort onItemSelected={setSortBy} />
             {enableScale && (
@@ -63,7 +63,7 @@ export default function GroupsPage() {
           </div>
           <div className="flex p-[1px] border rounded-full border-black h-[30px] lg:w-[35%] lg:mt-0 sm:w-full mt-[20px]">
             <input
-              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+              className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
               value={searchInput}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 const value = event.target.value as string;
@@ -76,7 +76,7 @@ export default function GroupsPage() {
               placeholder="SEARCH"
             />
             <button
-              className="bg-black-main text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
+              className="bg-black text-white w-[100px] rounded-[30px] font-Maxeville hover:opacity-60"
               onClick={() => setSearchFilter(searchInput)}
             >
               ENTER

@@ -341,11 +341,8 @@ body {
 .generalModal {
   position: fixed;
   background-color: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   border-radius: 15px;
-  animation: pulse 0.3s;
+  padding: 35px;
 }
 
 .welcome-container {
@@ -401,8 +398,8 @@ body {
 }
 
 .page_container_p40 {
-  padding-left: min(40px, max(18px, calc(var(--perX) * 40)));
-  padding-right: min(40px, max(18px, calc(var(--perX) * 40)));
+  padding-left: min(100px, max(18px, calc(var(--perX) * 100)));
+  padding-right: min(100px, max(18px, calc(var(--perX) * 100)));
 }
 
 .userlist_avatar {
@@ -425,10 +422,10 @@ body {
 }
 
 .height-handler {
-  max-height: 600px;
+  max-height: 700px;
 }
 
-@media (max-height: 600px) {
+/* @media (max-height: 600px) {
   .generalModal {
     width: max(565px, calc(var(--perX) * 565));
     background-color: white;
@@ -439,7 +436,7 @@ body {
     transition: opacity 0.3s;
     height: 100vh;
   }
-}
+} */
 
 @media (max-width: 600px) {
   .height-handler {
@@ -449,14 +446,10 @@ body {
   .generalModal {
     position: fixed;
     width: 100%;
-    height: 600px;
     bottom: 0px;
     left: 0px;
     z-index: 1000;
-    top: auto;
-    border-radius: 0px;
-    transform: none;
-    animation: mobilePulse 0.3s;
+    border-radius: 20px 20px 0px 0px;
   }
 
   .join_form {
@@ -718,4 +711,25 @@ body {
     box-shadow: 0 0 0 1rem #fff;
     opacity: 1;
   }
+}
+
+/* Custom styles for Swiper pagination */
+.swiper-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  color: #000 !important;
+  background-color: #333;
+  opacity: 0.5;
+  margin: 0 5px;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #333;
+  opacity: 1;
 }

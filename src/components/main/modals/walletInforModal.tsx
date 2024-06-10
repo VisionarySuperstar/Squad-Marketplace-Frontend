@@ -107,17 +107,15 @@ const WalletInforModal = () => {
   return (
     <>
       {walletInforModalState && (
-        <div className="z-100 font-Maxeville">
+        <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
           <div
-            className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+            className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
             onClick={() => {
               setWalletInforModalState(false);
             }}
           ></div>
-          <div className="generalModal w-[400px] z-[1300] drop-shadow-lg rounded-xl  ">
-            <div
-              className={`rounded-xl flex flex-col  text-[#141416] dark:text-[#FAFCFF] pb-5 `}
-            >
+          <div className="generalModal w-[400px] z-[1300] drop-shadow-lg rounded-xl !p-0 ">
+            <div className={`rounded-xl flex flex-col  text-[#141416] pb-5 `}>
               {step !== 1 && (
                 <div className="bg-[#F6F6F6] pb-5 rounded-xl">
                   <div className="flex justify-between gap-2  h-[100px] p-2 pt-4 pb-4">

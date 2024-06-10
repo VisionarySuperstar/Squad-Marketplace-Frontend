@@ -1,9 +1,4 @@
-import {
-  IGROUP,
-  NFTFilter,
-  auctionToString,
-  auctionTypes,
-} from "@/types";
+import { IGROUP, NFTFilter, auctionToString, auctionTypes } from "@/types";
 import React from "react";
 
 interface ListItemProps {
@@ -13,7 +8,7 @@ interface ListItemProps {
 }
 
 const ListItem = ({ text, selected, onClick }: ListItemProps) => {
-  const selectedClass = selected ? "bg-black-main" : "";
+  const selectedClass = selected ? "bg-black" : "";
   return (
     <div className="flex gap-2.5 mt-5 items-center">
       <button
@@ -88,11 +83,7 @@ type FilterPanelProps = {
   groups: IGROUP[];
 };
 
-const FilterPanel = ({
-  filter,
-  setFilter,
-  groups,
-}: FilterPanelProps) => {
+const FilterPanel = ({ filter, setFilter, groups }: FilterPanelProps) => {
   const handleFilterUpdate = <T extends keyof NFTFilter>(
     key: T,
     value: NFTFilter[T]

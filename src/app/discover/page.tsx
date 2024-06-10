@@ -58,7 +58,7 @@ export default function DiscoverPage() {
         <div className="text-center">
           <Link
             href="/marketplace"
-            className="inline-block px-6 py-3 text-white bg-black-main rounded-3xl hover:opacity-60"
+            className="inline-block px-6 py-3 text-white bg-black rounded-3xl hover:opacity-60"
           >
             GO TO MARKETPLACE
           </Link>

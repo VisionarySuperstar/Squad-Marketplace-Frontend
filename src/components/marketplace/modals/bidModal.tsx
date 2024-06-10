@@ -207,9 +207,9 @@ const BidGroupModal = ({
     setBidModalState(false);
   };
   return (
-    <div className="font-Maxeville">
+    <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
       <div
-        className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
         onClick={() => {
           setBidModalState(false);
         }}
@@ -240,7 +240,7 @@ const BidGroupModal = ({
               <input
                 value={bidAmount}
                 onChange={(e) => setBidAmount(e.target.value)}
-                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                 type="text"
                 placeholder="3000"
               />

@@ -89,7 +89,7 @@ const CreateProfileModal = () => {
         console.log("update process");
         const response = await api
           .post("/api/auth/user/update", {
-            avatar: _avatar === ""? user.avatar : _avatar,
+            avatar: _avatar === "" ? user.avatar : _avatar,
             name,
             email,
           })
@@ -97,9 +97,8 @@ const CreateProfileModal = () => {
             toast.error(error.message);
           });
         if (response?.data === "Update Success") {
-          
-            setCurrentUser(_avatar === ""? user.avatar : _avatar, name, email );
-          
+          setCurrentUser(_avatar === "" ? user.avatar : _avatar, name, email);
+
           setAvatar(avatar);
           toast.success("Profile Updated Successfully.");
         } else {
@@ -145,7 +144,7 @@ const CreateProfileModal = () => {
     <>
       <div className="z-100 font-Maxeville">
         <div
-          className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
           onClick={() => {
             setProfileModalState(false);
           }}
@@ -173,11 +172,13 @@ const CreateProfileModal = () => {
           <div
             className={`p-5  rounded-lg sm:h-[500px] h-[600px] flex flex-col justify-between`}
           >
-            <div className="flex w-full flex-col gap-2 text-[#141416] dark:text-[#FAFCFF] justify-center mt-5">
-              <h1 className="text-lg px-1 text-center">{!user?"Create":"Edit"} Your Profile</h1>
-              <div className="dark:bg-[#100E28] bg-white px-3 xs:px-6 py-6 rounded-xl ">
+            <div className="flex w-full flex-col gap-2 text-[#141416] justify-center mt-5">
+              <h1 className="text-lg px-1 text-center">
+                {!user ? "Create" : "Edit"} Your Profile
+              </h1>
+              <div className=" bg-white px-3 xs:px-6 py-6 rounded-xl ">
                 <section className="mt-5  sm:flex sm:flex-row gap-2 items-center justify-start flex-col">
-                  <div className="flex justify-center">
+                  {/* <div className="flex justify-center">
                     {preview ? (
                       <Image
                         src={preview}
@@ -194,13 +195,26 @@ const CreateProfileModal = () => {
                         className="rounded-full bg-[#46455367] opacity-50"
                       />
                     )}
-                  </div>
-                  <label
-                    htmlFor="avatar"
-                    className="border bg-[#000] cursor-pointer p-2 text-white rounded-full pl-4 pr-4  text-md flex items-center justify-center text-center mt-5 sm:mt-0"
-                  >
-                    <Icon icon="ph:plus-bold" width={14} />
-                    <span>Upload new avatar</span>
+                  </div> */}
+                  <label htmlFor="avatar">
+                    <div className="flex justify-center hover:backdrop:blur-lg">
+                      {preview ? (
+                        <Image
+                          src={preview}
+                          width={70}
+                          height={70}
+                          alt=""
+                          className="rounded-full object-cover aspect-square bg-[#be6a6a6b] z-[10000]"
+                        />
+                      ) : (
+                        <Icon
+                          icon="flowbite:user-solid"
+                          width={70}
+                          height={70}
+                          className="rounded-full bg-[#46455367] opacity-50"
+                        />
+                      )}
+                    </div>
                   </label>
                   <input
                     hidden

@@ -28,7 +28,6 @@ import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
 import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
-
 import Content_ABI from "@/constants/content_nft.json";
 type transferHistoryType = {
   from: string;
@@ -270,7 +269,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              localTimeZone?localTimeZone:"America/New_York"
+              localTimeZone ? localTimeZone : "America/New_York"
             )
         )
       )
@@ -349,13 +348,13 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-        await api
+      await api
         .post("/api/addSoldNumberToGroup", {
           id: groupId,
         })
         .catch((error) => {
           toast.error(error.message);
-        })
+        });
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -386,7 +385,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="lg:me-[40px] sm:me-0">
+            <div className="lg:me-[40px] sm:me-0 bg-[#fcfcfd] rounded-sm">
               <div>
                 <ImageView avatar={data.content} />
               </div>
@@ -423,7 +422,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                 )}
                 {Number(data?.auctiontype) !== 2 && (
                   <>
-                    <div className="text-gray-400 mt-3">{data?.status === "sold"?"Sold":"Current"} Price</div>
+                    <div className="text-gray-400 mt-3">
+                      {data?.status === "sold" ? "Sold" : "Current"} Price
+                    </div>
                     <div className="text-[18px]">
                       {Number(data?.auctiontype) !== 1
                         ? data?.currentprice
@@ -499,7 +500,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     className={`grid grid-cols-1 gap-1 ${
                       data?.status === "sold"
                         ? "sm:grid-cols-1"
-                        : "sm:grid-cols-2"
+                        : "sm:grid-cols-1"
                     }`}
                   >
                     {data?.status !== "sold" && (
@@ -533,7 +534,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     </span>
                     {formatDateWithTimeZone(
                       Number(data?.created_at),
-                      localTimeZone?localTimeZone:"America/New_York"
+                      localTimeZone ? localTimeZone : "America/New_York"
                     )}
                   </p>
                   {transferHistory.length >= 1 &&
@@ -544,7 +545,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                             {key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
+                            <span className="text-xl text-black">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}
@@ -561,7 +562,6 @@ const Home = ({ params }: { params: { id: string } }) => {
 
       <div>
         <div className="page_container_p40 mt-5">
-          <Split_line />
           <h1 className="text-xl my-[30px] font-Maxeville">
             MORE FROM THIS GROUP
           </h1>

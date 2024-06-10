@@ -25,7 +25,7 @@ const Notification: React.FC = () => {
               setNotificationState(false);
             }}
           ></div>
-          <div className=" text-black-main">
+          <div className=" text-black">
             <div className="fixed top-[80px] z-20 !w-[360px] ml-[-360px] xs:right-0 md:rounded-none md:left-auto md:right-auto border drop-shadow-xl bg-white">
               <div className="z-20">
                 <div className="flex justify-between p-5">
