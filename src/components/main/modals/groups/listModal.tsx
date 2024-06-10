@@ -15,6 +15,8 @@ import useAuth from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import useDisplayingControlStore from "@/store/UI_control/displaying";
+import { scale } from "@/utils/conversions";
+import { useUSDC } from "@/hooks/web3/useUSDC";
 
 type auctionQueryType = {
   initialPrice: string;
@@ -55,6 +57,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
   const [contract, setContract] = useState<Contract | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn, isAuthenticated, user } = useAuth();
+  const { symbol, decimals } = useUSDC();
 
   useEffect(() => {
     if (!address || !chainId || !signer) {
@@ -113,11 +116,12 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         if (!contract) throw "no contract";
         if (!chainId) throw "Invalid chain id";
         if (!user) throw "You must sign in";
+        if (!decimals) throw "no decimals";
         setIsLoading(true);
         setIsDisplaying(true);
         setMainText("Waiting for user confirmation...");
         console.log("groupAddress", groupAddress);
-        console.log("listNft.collectionaddress ", );
+        console.log("listNft.collectionaddress ");
         console.log("listNft.collectionid ", listNft.collectionid);
         const nftId = await contract.getNFTId(
           listNft.collectionaddress,
@@ -171,7 +175,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
         const listNumber = Number(Number(listed_number) - 1).toString();
         console.log("listed_number", listNumber);
         setMainText("Waiting for backend process...");
-        await api 
+        await api
           .post("/api/updateNft", {
             id: listNft.id,
             owner: listNft.owner,
@@ -215,9 +219,9 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
 
   return (
     <>
-      <div className="font-Maxeville">
+      <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] font-Maxeville fixed top-0 left-0">
         <div
-          className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
           onClick={() => {
             close();
           }}
@@ -252,10 +256,10 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                 <h1 className="text-center mt-2 text-gray-400 text-lg ">
                   LIST TO MARKETPLACE
                 </h1>
-                <h1 className="text-left mt-5 text-black-main text-lg ">
+                <h1 className="text-left mt-5 text-black text-lg ">
                   CHOOSE AN AUCTION TYPE
                 </h1>
-                <form className="mt-2 text-lg text-black-main">
+                <form className="mt-2 text-lg text-black">
                   <label className="flex  rounded-md  py-2 my-1  hover:bg-indigo-300 cursor-pointer ">
                     <input
                       type="radio"
@@ -286,7 +290,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                     <div className="pl-2">OFFERING</div>
                   </label>
                 </form>
-                <h1 className="text-left mt-5 text-black-main text-lg ">
+                <h1 className="text-left mt-5 text-black text-lg ">
                   SET A INITIAL PRICE
                 </h1>
                 <div className="flex items-center gap-3 mt-2">
@@ -299,7 +303,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                           initialPrice: e.target.value,
                         }))
                       }
-                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                      className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                       type="text"
                       placeholder="3000"
                     />
@@ -310,7 +314,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                 </div>
                 {auctionType === 1 && (
                   <>
-                    <h1 className="text-left mt-5 text-black-main text-lg ">
+                    <h1 className="text-left mt-5 text-black text-lg ">
                       REDUCING RATE
                     </h1>
                     <div className="flex items-center gap-3 mt-2">
@@ -323,7 +327,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                               reducingRate: e.target.value,
                             }))
                           }
-                          className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                          className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                           type="text"
                           placeholder="10"
                         />
@@ -337,7 +341,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
 
                 {auctionType !== 2 && (
                   <>
-                    <h1 className="text-left mt-5 text-black-main text-lg ">
+                    <h1 className="text-left mt-5 text-black text-lg ">
                       SET SALE PERIOD
                     </h1>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 ">
@@ -351,7 +355,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                                 salePeriod_day: e.target.value,
                               }))
                             }
-                            className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                            className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                             type="text"
                             placeholder="1"
                           />
@@ -370,7 +374,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                                 salePeriod_hour: e.target.value,
                               }))
                             }
-                            className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                            className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                             type="text"
                             placeholder="10"
                           />
@@ -389,7 +393,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                                 salePeriod_minute: e.target.value,
                               }))
                             }
-                            className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black-main"
+                            className="w-full h-full bg-transparent  border border-none outline-none outline-[0px] px-[10px] text-black"
                             type="text"
                             placeholder="0"
                           />
@@ -411,7 +415,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                   </h1>
 
                   <h1 className="text-gray-400 text-lg mt-3">AUCTION TYPE</h1>
-                  <div className="text-black-main text-xl">
+                  <div className="text-black text-xl">
                     {!auctionType
                       ? "ENGLISH AUCTION"
                       : auctionType === 1
@@ -419,7 +423,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                       : "OFFERING"}
                   </div>
                   <h1 className="text-gray-400 text-lg mt-5">INITIAL PRICE</h1>
-                  <div className="text-black-main text-xl">
+                  <div className="text-black text-xl">
                     {auctionQuery.initialPrice}
                   </div>
 
@@ -428,7 +432,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                       <h1 className="text-gray-400 text-lg mt-5">
                         REDUCING RATE
                       </h1>
-                      <div className="text-black-main text-xl">
+                      <div className="text-black text-xl">
                         {auctionQuery.reducingRate}
                       </div>
                     </>
@@ -439,7 +443,7 @@ const ListModal = ({ listNft, groupAddress }: ListModalInterface) => {
                         {" "}
                         EXPIRES IN
                       </h1>
-                      <div className="text-black-main text-xl">
+                      <div className="text-black text-xl">
                         {auctionQuery.salePeriod_day +
                           " DAY, " +
                           auctionQuery.salePeriod_hour +

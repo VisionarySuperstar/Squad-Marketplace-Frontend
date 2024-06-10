@@ -28,7 +28,6 @@ import NftCard from "@/components/main/cards/nftCard";
 import { useRouter } from "next/navigation";
 import useLocalTimeZone from "@/hooks/views/useLocalTimeZone";
 
-
 import Content_ABI from "@/constants/content_nft.json";
 type transferHistoryType = {
   from: string;
@@ -70,9 +69,8 @@ const Home = ({ params }: { params: { id: string } }) => {
   const { user } = useAuth();
   const { address, chainId, signer } = useActiveWeb3();
   const [contract, setContract] = useState<Contract | undefined>(undefined);
-  const [usdc_contract, setUsdc_Contract] = useState<Contract | undefined>(
-    undefined
-  );
+  const { contract: usdcContract, decimals } = useUSDC();
+
   const [contentContract, setContentContract] = useState<Contract | undefined>(
     undefined
   );
@@ -173,12 +171,6 @@ const Home = ({ params }: { params: { id: string } }) => {
       signer
     );
     setContract(_contract);
-    const _usdc_contract = new Contract(
-      USDC_ADDRESS[chainId],
-      USDC_ABI,
-      signer
-    );
-    setUsdc_Contract(_usdc_contract);
   }, [address, chainId, signer]);
 
   const calcRemainTime = async () => {
@@ -200,7 +192,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     setRemainTime(endTime - currentTime);
   };
   const getWithdrawAmounts = async () => {
-    if (!contract || !data) return;
+    if (!contract || !data || !decimals) return;
     if (Number(data.auctiontype) === 0) {
       const value = await contract.withdrawBalanceForEnglishAuction(
         BigInt(data.listednumber),
@@ -222,6 +214,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       Number(data?.auctiontype) === 1 &&
       contract &&
       data &&
+      decimals &&
       data.status !== "sold"
     ) {
       const value = await contract.getDutchAuctionPrice(data?.listednumber);
@@ -232,7 +225,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     calcRemainTime();
     getWithdrawAmounts();
     getDutchAuctionPrice();
-  }, [contract, data]);
+  }, [contract, data, decimals]);
 
   useEffect(() => {
     if (!address || !chainId || !signer || !data) {
@@ -270,7 +263,7 @@ const Home = ({ params }: { params: { id: string } }) => {
           async (index: transferHistoryType, key: number) =>
             await formatDateWithTimeZone(
               Number(index.timestamp),
-              localTimeZone?localTimeZone:"America/New_York"
+              localTimeZone ? localTimeZone : "America/New_York"
             )
         )
       )
@@ -318,14 +311,15 @@ const Home = ({ params }: { params: { id: string } }) => {
   const buyClick = async () => {
     try {
       if (!contract) throw "no contract";
-      if (!usdc_contract) throw "no contract";
+      if (!usdcContract) throw "no contract";
       if (!chainId) throw "Invalid chain id";
       if (!user) throw "You must sign in";
       if (!data) throw "no data";
+      if (!decimals) throw "no decimals";
       setIsLoading(true);
       setIsDisplaying(true);
       setMainText("Waiting for user confirmation...");
-      const tx1 = await usdc_contract.approve(
+      const tx1 = await usdcContract.approve(
         Marketplace_ADDRESSES[chainId],
         BigInt(Number(currentDutchPrice) * 1e6)
       );
@@ -349,13 +343,13 @@ const Home = ({ params }: { params: { id: string } }) => {
         .catch((error) => {
           toast.error(error.message);
         });
-        await api
+      await api
         .post("/api/addSoldNumberToGroup", {
           id: groupId,
         })
         .catch((error) => {
           toast.error(error.message);
-        })
+        });
       getData();
     } catch (err: any) {
       if (String(err.code) === "ACTION_REJECTED") {
@@ -386,7 +380,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       <div className="md:mt-[120px] xs:mt-[100px] font-Maxeville">
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 groups md:p-[40px] xl:pt-5 xs:p-[15px]">
           {data && (
-            <div className="lg:me-[40px] sm:me-0">
+            <div className="lg:me-[40px] sm:me-0 bg-[#fcfcfd] rounded-sm">
               <div>
                 <ImageView avatar={data.content} />
               </div>
@@ -423,7 +417,9 @@ const Home = ({ params }: { params: { id: string } }) => {
                 )}
                 {Number(data?.auctiontype) !== 2 && (
                   <>
-                    <div className="text-gray-400 mt-3">{data?.status === "sold"?"Sold":"Current"} Price</div>
+                    <div className="text-gray-400 mt-3">
+                      {data?.status === "sold" ? "Sold" : "Current"} Price
+                    </div>
                     <div className="text-[18px]">
                       {Number(data?.auctiontype) !== 1
                         ? data?.currentprice
@@ -499,7 +495,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     className={`grid grid-cols-1 gap-1 ${
                       data?.status === "sold"
                         ? "sm:grid-cols-1"
-                        : "sm:grid-cols-2"
+                        : "sm:grid-cols-1"
                     }`}
                   >
                     {data?.status !== "sold" && (
@@ -533,7 +529,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                     </span>
                     {formatDateWithTimeZone(
                       Number(data?.created_at),
-                      localTimeZone?localTimeZone:"America/New_York"
+                      localTimeZone ? localTimeZone : "America/New_York"
                     )}
                   </p>
                   {transferHistory.length >= 1 &&
@@ -544,7 +540,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                             {key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
+                            <span className="text-xl text-black">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}
@@ -561,7 +557,6 @@ const Home = ({ params }: { params: { id: string } }) => {
 
       <div>
         <div className="page_container_p40 mt-5">
-          <Split_line />
           <h1 className="text-xl my-[30px] font-Maxeville">
             MORE FROM THIS GROUP
           </h1>

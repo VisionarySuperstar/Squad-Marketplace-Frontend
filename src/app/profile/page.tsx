@@ -213,14 +213,6 @@ export default function Home() {
                           COLLECTED (
                           {collectedNfts ? collectedNfts.length : "0"})
                         </a>
-                        <a
-                          onClick={() => {
-                            scrollToElement("setting");
-                          }}
-                          className="border-b-2 border-transparent hover:border-gray-400 px-3 py-2 text-lg"
-                        >
-                          SETTINGS
-                        </a>
                       </div>
                     </div>
                   </div>

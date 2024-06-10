@@ -110,11 +110,7 @@ const NewGroupModal = () => {
         Number(numberOfCreators) - 1
       );
       console.log("_group_Address", _group_Address);
-      const _contract = new Contract(
-        _group_Address,
-        GROUP_ABI,
-        signer
-      );
+      const _contract = new Contract(_group_Address, GROUP_ABI, signer);
       const _collection_address = await _contract.collectionAddress();
 
       let _avatar = "";
@@ -142,7 +138,7 @@ const NewGroupModal = () => {
           member: JSON.stringify(memberData),
           description: groupDescription,
           address: _group_Address,
-          collectionAddress: _collection_address
+          collectionAddress: _collection_address,
         })
         .catch((error) => {
           toast.error(error.message);
@@ -169,7 +165,8 @@ const NewGroupModal = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     console.log("submit");
     if (isLoading) return;
 
@@ -239,14 +236,15 @@ const NewGroupModal = () => {
       {addMemberModalState && (
         <AddMemberModal addSelectedUsers={addSelectedUsers} />
       )}
-      <div
-        className="bg-black/35 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
-        onClick={() => {
-          close();
-        }}
-      ></div>
-      <div className="z-[1000] font-Maxeville ">
-        <div className="generalModal w-[565px] z-[1300] drop-shadow-lg">
+      <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
+        <div
+          className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+          onClick={() => {
+            close();
+          }}
+        ></div>
+
+        <div className="generalModal w-[565px] drop-shadow-lg z-[1300] font-Maxeville">
           <div
             className="closeBtn"
             onClick={() => {
@@ -266,103 +264,107 @@ const NewGroupModal = () => {
               />
             </svg>
           </div>
-
-          <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
-            <h1 className="text-center mt-2 mb-[20px] text-black-main text-lg ">
-              CREATE A NEW GROUP
-            </h1>
-            <div className="height-handler overflow-auto scrollbar">
-              <div className="flex justify-center items-center mt-2">
-                <div className="border bg-gray-200 relative w-[200px] ">
-                  <Image
-                    src={preview}
-                    className="w-full h-full aspect-square object-cover"
-                    width={300}
-                    height={300}
-                    alt=""
-                  />
-                  <div className="absolute top-0 w-full h-full">
-                    <label htmlFor="avatar" className="w-full h-full ">
-                      <div className=" text-black-main pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center hover:bg-black-main/20 active:bg-black-main/30 transition-all"></div>
-                      <input
-                        hidden
-                        id="avatar"
-                        type="file"
-                        onChange={onFileChange}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <h2 className="text-left text-lg text-black-main my-3">
-                GROUP NAME
-              </h2>
-              <div className="flex p-[1px] border rounded-[30px] border-chocolate-main h-[30px] mt-2 w-1/2">
-                <input
-                  className="w-full h-full bg-transparent border border-none outline-none outline-[0px] px-[10px] text-black-main"
-                  type="text"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                  placeholder=" E.G. 'TOP ARTISTS'"
-                />
-              </div>
-              <h2 className="text-left text-lg text-black-main my-3">
-                GROUP DESCRIPTION
-              </h2>
-              <textarea
-                placeholder="Write a description..."
-                value={groupDescription}
-                onChange={(e) => setGroupDescription(e.target.value)}
-                className="mt-2 outline-none border-[1px] border-chocolate-main w-4/5 p-[10px] rounded-xl text-black-main resize-none"
-                rows={4}
-              />
-              <h2 className="text-left text-lg text-black-main my-3">
-                ADD MEMBERS
-              </h2>
-
-              <div className="flex flex-wrap gap-3">
-                {selectedUsers.map((index, key) => (
-                  <div key={key}>
+          <form onSubmit={handleSubmit}>
+            <div className="ps-[20px] pe-[10px] py-[20px] rounded-lg">
+              <h1 className="text-center mt-2 mb-[20px] text-black text-lg">
+                CREATE A NEW GROUP
+              </h1>
+              <div className="height-handler overflow-auto scrollbar">
+                <div className="flex justify-center items-center mt-2">
+                  <div className="border bg-gray-200 relative w-[200px] ">
                     <Image
-                      src={index.avatar}
-                      className="rounded-full object-cover aspect-square"
-                      width={60}
-                      height={60}
-                      alt="avatar"
+                      src={preview}
+                      className="w-full h-full aspect-square object-cover"
+                      width={300}
+                      height={300}
+                      alt=""
                     />
-                    <h2 className="text-center">
-                      {index.name === user?.name ? "You" : index.name}
-                    </h2>
+                    <div className="absolute top-0 w-full h-full">
+                      <label htmlFor="avatar" className="w-full h-full ">
+                        <div className=" text-black pt-2 pb-2 pl-3 pr-3 w-full text-lg text-center cursor-pointer h-full flex items-center justify-center hover:bg-black/20 active:bg-black/30 transition-all"></div>
+                        <input
+                          hidden
+                          id="avatar"
+                          type="file"
+                          onChange={onFileChange}
+                          required
+                        />
+                      </label>
+                    </div>
                   </div>
-                ))}
-                <div
-                  className=" cursor-pointer items-center rounded-full object-cover w-[60px] h-[60px] text-lg text-center justify-center flex bg-gray-200 hover:bg-gray-300 active:bg-gray-400"
-                  onClick={() => setAddMemberModalState(true)}
-                >
-                  +
                 </div>
-              </div>
-              <div className="flex justify-center items-center mt-5 mb-3">
-                <button
-                  className="border-[1px] border-chocolate-main bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg flex items-center justify-center text-center hover:bg-white hover:text-black-main transition-all"
-                  onClick={handleSubmit}
-                >
-                  {isLoading ? (
-                    <>
-                      <Icon
-                        icon="eos-icons:bubble-loading"
-                        width={20}
-                        height={20}
+                <h2 className="text-left text-lg text-black my-3">
+                  GROUP NAME
+                </h2>
+                <div className="flex p-[1px] border rounded-[30px] border-chocolate-main h-[30px] mt-2 w-full">
+                  <input
+                    className="w-full h-full bg-transparent border border-none outline-none outline-[0px] px-[10px] text-black"
+                    type="text"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                    placeholder=" E.G. 'TOP ARTISTS'"
+                    required
+                  />
+                </div>
+                <h2 className="text-left text-lg text-black mt-3">
+                  GROUP DESCRIPTION
+                </h2>
+                <textarea
+                  placeholder="Write a description..."
+                  value={groupDescription}
+                  onChange={(e) => setGroupDescription(e.target.value)}
+                  className="mt-2 outline-none border-[1px] border-chocolate-main w-full p-[20px] rounded-xl text-black resize-none"
+                  rows={4}
+                  required
+                />
+                <h2 className="text-left text-lg text-black my-3">
+                  ADD MEMBERS
+                </h2>
+
+                <div className="flex flex-wrap gap-3">
+                  {selectedUsers.map((index, key) => (
+                    <div key={key}>
+                      <Image
+                        src={index.avatar}
+                        className="rounded-full object-cover aspect-square"
+                        width={60}
+                        height={60}
+                        alt="avatar"
                       />
-                      PROCESSING...
-                    </>
-                  ) : (
-                    "CREATE GROUP"
-                  )}
-                </button>
+                      <h2 className="text-center">
+                        {index.name === user?.name ? "You" : index.name}
+                      </h2>
+                    </div>
+                  ))}
+                  <div
+                    className=" cursor-pointer items-center rounded-full object-cover w-[60px] h-[60px] text-lg text-center justify-center flex bg-gray-200 hover:bg-gray-300 active:bg-gray-400"
+                    onClick={() => setAddMemberModalState(true)}
+                  >
+                    +
+                  </div>
+                </div>
+                <div className="flex justify-center items-center mt-5 mb-3">
+                  <button
+                    className="border-[1px] border-chocolate-main bg-[#000] text-white rounded-full pl-4 pr-4 w-[380px] text-lg flex items-center justify-center text-center hover:bg-white hover:text-black transition-all"
+                    type="submit"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Icon
+                          icon="eos-icons:bubble-loading"
+                          width={20}
+                          height={20}
+                        />
+                        PROCESSING...
+                      </>
+                    ) : (
+                      "CREATE GROUP"
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

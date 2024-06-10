@@ -283,7 +283,7 @@ const Home = ({ params }: { params: { id: string } }) => {
                             {key === transferHistory.length - 1
                               ? "Owner"
                               : "Owned"}{" "}
-                            <span className="text-xl text-black-main">
+                            <span className="text-xl text-black">
                               {ownedName[key]}
                             </span>{" "}
                             {displayingTime && "\t" + displayingTime[key]}

@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-"use client"
+"use client";
 import { ReactElement, createContext } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -15,8 +15,9 @@ const ToastProvider = ({ children }: { children: ReactElement }) => {
       case "success":
         toast.custom((t) => (
           <div
-            className={`${t.visible ? "animate-enter" : "animate-leave"
-              } max-w-96 dark:bg-gray-900 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black dark:text-white`}
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } max-w-96  bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black `}
             onClick={() => toast.dismiss(t.id)}
             style={{ zIndex: "100000!important" }}
           >
@@ -58,10 +59,11 @@ const ToastProvider = ({ children }: { children: ReactElement }) => {
       case "warning":
         toast.custom((t) => (
           <div
-            className={`${t.visible ? "animate-enter" : "animate-leave"
-              } max-w-96  dark:bg-gray-900 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black dark:text-white`}
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } max-w-96   bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black `}
             onClick={() => toast.dismiss(t.id)}
-            style={{ zIndex: "100000!important", width: '320px' }}
+            style={{ zIndex: "100000!important", width: "320px" }}
           >
             <div className="flex-1 p-4">
               <div className="flex items-center">
@@ -101,8 +103,9 @@ const ToastProvider = ({ children }: { children: ReactElement }) => {
       case "question":
         toast.custom((t) => (
           <div
-            className={`${t.visible ? "animate-enter" : "animate-leave"
-              } max-w-96  dark:bg-gray-900 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black dark:text-white`}
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } max-w-96 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black`}
             onClick={() => toast.dismiss(t.id)}
             style={{ zIndex: "100000!important" }}
           >
@@ -113,7 +116,7 @@ const ToastProvider = ({ children }: { children: ReactElement }) => {
                   alt=""
                   width={40}
                   height={40}
-                  sizes="100vw"                     
+                  sizes="100vw"
                 />
                 <div className="ml-3 flex items-center">
                   <p className="text-sm font-medium text-light-gray">{str}</p>
@@ -144,8 +147,9 @@ const ToastProvider = ({ children }: { children: ReactElement }) => {
       case "error":
         toast.custom((t) => (
           <div
-            className={`${t.visible ? "animate-enter" : "animate-leave"
-              } max-w-96  dark:bg-gray-900 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black dark:text-white`}
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } max-w-96 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 text-black`}
             onClick={() => toast.dismiss(t.id)}
             style={{ zIndex: "100000!important" }}
           >

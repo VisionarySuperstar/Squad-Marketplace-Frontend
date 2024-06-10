@@ -99,9 +99,9 @@ const WithdrawGroupModal = ({
     }
   };
   return (
-    <div className="">
+    <div className="flex justify-center items-center z-[1000] w-[100vw] h-[100vh] fixed top-0 left-0">
       <div
-        className="bg-black-main/50 w-[100vw] h-[100vh] fixed top-0 z-[1000]"
+        className="bg-black/80 w-[100vw] h-[100vh] fixed top-0 left-0 z-[1000]"
         onClick={() => {
           setWithdrawModalState(false);
         }}
